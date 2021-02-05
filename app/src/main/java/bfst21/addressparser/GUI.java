@@ -25,7 +25,7 @@ public class GUI extends Application {
         pane.setTop(input);
         pane.setCenter(output);
         primaryStage.setScene(new Scene(pane));
-        primaryStage.setTitle("Advanced Address Alignment Advertiser 2.0");
+        primaryStage.setTitle("Hello World!");
         primaryStage.show();
     }
 }
