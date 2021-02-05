@@ -29,7 +29,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'bfst21.App'
+    mainClass = 'bfst21.addressparser.GUI'
 }
 
 tasks.named('test') {
