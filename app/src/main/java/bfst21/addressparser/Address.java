@@ -21,13 +21,19 @@ public class Address {
       + postcode + " " + city;
   }
 
-  static String regex = "(?<street>.*?) +(?<house>\\d+)";
+  static String regex = "(?<street>.*?) *?(?<house>\\d+\\S{1}) (?<floor>(?=\\d{1,2} +)(\\d{1,2}))?" +
+          " *?(?<side>(?=\\D{1,2}\\.?)?(\\D{1,2}\\.?))? *?(?<postcode>\\d+)\\s(?<city>.*?) *$";
   static Pattern pattern = Pattern.compile(regex);
 
   public static Address parse(String input) {
-    var matcher = pattern.matcher(input);
+    Matcher matcher = pattern.matcher(input);
     if (matcher.matches()) {
-      return new Builder().street(matcher.group("street")).house(matcher.group("house")).build();
+      return new Builder().street(matcher.group("street"))
+              .house(matcher.group("house"))
+              .floor(matcher.group("floor"))
+              .side(matcher.group("side"))
+              .postcode(matcher.group("postcode"))
+              .city(matcher.group("city")).build();
     } else {
       return new Builder().build();
     }
