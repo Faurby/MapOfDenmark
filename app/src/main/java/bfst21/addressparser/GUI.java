@@ -25,7 +25,7 @@ public class GUI extends Application {
         pane.setTop(input);
         pane.setCenter(output);
         primaryStage.setScene(new Scene(pane));
-        primaryStage.setTitle("Hello World!");
+        primaryStage.setTitle("Test test yo");
         primaryStage.show();
     }
 }
