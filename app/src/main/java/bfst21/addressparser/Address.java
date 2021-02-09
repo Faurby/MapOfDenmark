@@ -21,8 +21,8 @@ public class Address {
       + postcode + " " + city;
   }
 
-  static String regex = "(?<street>.*?) *?(?<house>\\d+\\S{1}) (?<floor>(?=\\d{1,2} +)(\\d{1,2}))?" +
-          " *?(?<side>(?=\\D{1,2}\\.?)?(\\D{1,2}\\.?))? *?(?<postcode>\\d+)\\s(?<city>.*?) *$";
+  static String regex = "(?<street>.*?) +(?<house>\\d{1,3}[A-z]?)? *?\\,? *((?<floor>\\d{1,2}\\.?|st\\.?)\\,? *)? *?((?<side>[A-z]{1,2}\\.? *?)\\,? ?)?" +
+          " *?((?<postcode>\\d{4}) *)? *?(?<city>([A-z]*|[^A-z\\d\\,])*)?$";
   static Pattern pattern = Pattern.compile(regex);
 
   public static Address parse(String input) {
