@@ -10,6 +10,8 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'jacoco'
+    id 'com.adarshr.test-logger' version '2.1.1'
 }
 
 javafx {
@@ -23,6 +25,8 @@ repositories {
 }
 
 dependencies {
+    implementation 'junit:junit:4.12'
+
     // Use JUnit Jupiter API for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
 
