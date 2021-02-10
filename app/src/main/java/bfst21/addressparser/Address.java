@@ -83,7 +83,24 @@ public class Address {
       return this;
     }
 
+    public String replaceNullWithEmptyString(String str){
+      if (str == null){
+        return "";
+      } else {
+        return str;
+      }
+    }
+
     public Address build() {
+      if(street == null){
+        street = "Please write correct street and streetnumber";
+      }
+      house = replaceNullWithEmptyString(house);
+      floor = replaceNullWithEmptyString(floor);
+      side = replaceNullWithEmptyString(side);
+      postcode = replaceNullWithEmptyString(postcode);
+      city = replaceNullWithEmptyString(city);
+
       return new Address(street, house, floor, side, postcode, city);
     }
   }
