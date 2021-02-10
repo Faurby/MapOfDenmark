@@ -11,7 +11,8 @@ import javafx.stage.Stage;
 public class GUI extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) throws Exception{
+        Main.main();
         TextField input = new TextField();
         TextArea output = new TextArea();
         BorderPane pane = new BorderPane();
