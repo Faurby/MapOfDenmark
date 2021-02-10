@@ -19,7 +19,7 @@ public class Address {
   }
 
   public String toString() {
-    return street + " " + house + ", " + floor + " " + side + "\n"
+    return street + " " + house + ", " + floor + " " + side + " \n"
       + postcode + " " + city;
   }
 
@@ -73,7 +73,7 @@ public class Address {
     }
 
     public Builder city(String _city) {
-      if (_city == null || _city.equals("")){
+      if (_city == null || _city.isEmpty()){
         if(postcode != null && postcode.length() == 4){
           city = cityController.getCityNameFromPostcode(postcode);
         }
