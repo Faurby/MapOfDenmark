@@ -12,7 +12,8 @@ public class GUI extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Main.main();
+        CityController cityController = CityController.getInstance();
+        cityController.readCities();
         TextField input = new TextField();
         TextArea output = new TextArea();
         BorderPane pane = new BorderPane();

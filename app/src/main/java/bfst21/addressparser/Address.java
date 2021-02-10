@@ -1,5 +1,7 @@
 package bfst21.addressparser;
 
+import bfst21.models.City;
+
 import java.util.regex.*;
 
 public class Address {
@@ -41,8 +43,11 @@ public class Address {
 
   public static class Builder {
     private String street, house, floor, side, postcode, city;
+    private CityController cityController;
 
     public Builder street(String _street) {
+      cityController = CityController.getInstance();
+
       street = _street;
       return this;
     }
@@ -68,7 +73,13 @@ public class Address {
     }
 
     public Builder city(String _city) {
-      city = _city;
+      if (_city == null || _city.equals("")){
+        if(postcode != null && postcode.length() == 4){
+          city = cityController.getCityNameFromPostcode(postcode);
+        }
+      } else {
+        city = _city;
+      }
       return this;
     }
 
