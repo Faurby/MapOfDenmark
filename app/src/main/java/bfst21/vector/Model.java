@@ -1,6 +1,8 @@
 package bfst21.vector;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -14,10 +16,21 @@ public class Model implements Iterable<Line> {
     List<Runnable> observers = new ArrayList<>();
 
     public Model(String filename) throws IOException {
+        load(filename);
+    }
+
+    public void load(String filename) throws IOException {
         long time = -System.nanoTime();
         lines = Files.lines(Path.of(filename)).map(Line::new).collect(Collectors.toList());
         time += System.nanoTime();
         Logger.getGlobal().info(String.format("Load time: %dms", time / 1000000));
+    }
+
+    public void save(String filename) throws FileNotFoundException {
+        try (var out = new PrintStream(filename)) {
+            for (var line : lines)
+                out.println(line);
+        }
     }
 
     void addObserver(Runnable observer) {

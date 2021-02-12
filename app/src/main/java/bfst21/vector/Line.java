@@ -30,4 +30,8 @@ public class Line {
         gc.lineTo(to.getX(), to.getY());
         gc.stroke();
     }
+
+    public String toString() {
+        return String.format("LINE %f %f %f %f", from.getX(), from.getY(), to.getX(), to.getY());
+    }
 }
