@@ -1,34 +1,45 @@
 package bfst21.vector;
 
+import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 
 public class Controller {
 	private Model model;
-    private View view;
     private Point2D lastMouse;
 
-    public Controller(Model model, View view) {
+    @FXML
+    private MapCanvas canvas;
+
+    public void init(Model model) {
         this.model = model;
-        this.view = view;
-        view.canvas.setOnMousePressed(e -> {
-            lastMouse = new Point2D(e.getX(), e.getY());
-        });
-        view.canvas.setOnMouseDragged(e -> {
-            double dx = e.getX() - lastMouse.getX();
-            double dy = e.getY() - lastMouse.getY();
-            if (e.isPrimaryButtonDown()) {
-                view.pan(dx, dy);
-            } else {
-                var from = view.mouseToModelCoords(lastMouse);
-                var to = view.mouseToModelCoords(new Point2D(e.getX(), e.getY()));
-                model.add(new Line(from, to));
-                view.repaint();
-            }
-            lastMouse = new Point2D(e.getX(), e.getY());
-        });
-        view.canvas.setOnScroll(e -> {
-            double factor = Math.pow(1.01, e.getDeltaY());
-            view.zoom(factor, new Point2D(e.getX(), e.getY()));
-        });
+        canvas.init(model);
 	}
+
+    @FXML
+    private void onScroll(ScrollEvent e) {
+        double factor = Math.pow(1.01, e.getDeltaY());
+        canvas.zoom(factor, new Point2D(e.getX(), e.getY()));
+    }
+
+    @FXML
+    private void onMouseDragged(MouseEvent e) {
+        double dx = e.getX() - lastMouse.getX();
+        double dy = e.getY() - lastMouse.getY();
+        if (e.isPrimaryButtonDown()) {
+            canvas.pan(dx, dy);
+        } else {
+            var from = canvas.mouseToModelCoords(lastMouse);
+            var to = canvas.mouseToModelCoords(new Point2D(e.getX(), e.getY()));
+            model.add(new Line(from, to));
+            canvas.repaint();
+        }
+        onMousePressed(e);
+    }
+
+    @FXML
+    private void onMousePressed(MouseEvent e) {
+        lastMouse = new Point2D(e.getX(), e.getY());
+    }
 }

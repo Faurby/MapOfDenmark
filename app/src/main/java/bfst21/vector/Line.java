@@ -1,12 +1,9 @@
 package bfst21.vector;
 
-import java.util.Locale;
-import java.util.Scanner;
-
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 
-public class Line {
+public class Line implements Drawable {
     Point2D from, to;
 
     public Line(String line) {
@@ -24,7 +21,7 @@ public class Line {
         this.to = to;
     }
 
-    void draw(GraphicsContext gc) {
+    public void draw(GraphicsContext gc) {
         gc.beginPath();
         gc.moveTo(from.getX(), from.getY());
         gc.lineTo(to.getX(), to.getY());
