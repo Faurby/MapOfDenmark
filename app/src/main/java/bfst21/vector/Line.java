@@ -1,9 +1,12 @@
 package bfst21.vector;
 
+import java.io.Serializable;
+
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 
-public class Line implements Drawable {
+public class Line implements Drawable, Serializable {
+    private static final long serialVersionUID = 1007313956054198315L;
     Point2D from, to;
 
     public Line(String line) {
@@ -21,11 +24,9 @@ public class Line implements Drawable {
         this.to = to;
     }
 
-    public void draw(GraphicsContext gc) {
-        gc.beginPath();
+    public void trace(GraphicsContext gc) {
         gc.moveTo(from.getX(), from.getY());
         gc.lineTo(to.getX(), to.getY());
-        gc.stroke();
     }
 
     public String toString() {

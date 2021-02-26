@@ -20,18 +20,17 @@ public class MapCanvas extends Canvas {
         var gc = getGraphicsContext2D();
         gc.save();
         gc.setTransform(new Affine());
-        gc.setFill(Color.WHITE);
+        gc.setFill(Color.LIGHTBLUE);
         gc.fillRect(0, 0, getWidth(), getHeight());
         gc.setTransform(trans);
+        gc.setFill(Color.LIGHTYELLOW);
+        for (var line : model.islands) {
+            line.fill(gc);
+        }
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(1/Math.sqrt(trans.determinant()));
-        for (var line : model)
-            line.draw(gc);
-        gc.setFill(Color.RED);
-        for (var building : model.buildings) {
-            building.draw(gc);
-            gc.fill();
-        }
+        // for (var line : model)
+        //     line.draw(gc);
         gc.restore();
     }
 
