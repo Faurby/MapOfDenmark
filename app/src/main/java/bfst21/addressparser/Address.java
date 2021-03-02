@@ -1,5 +1,7 @@
 package bfst21.addressparser;
 
+import bfst21.models.City;
+
 import java.util.regex.*;
 
 public class Address {
@@ -17,17 +19,23 @@ public class Address {
   }
 
   public String toString() {
-    return street + " " + house + ", " + floor + " " + side + "\n"
+    return street + " " + house + ", " + floor + " " + side + " \n"
       + postcode + " " + city;
   }
 
-  static String regex = "(?<street>.*?) +(?<house>\\d+)";
+  static String regex = "(?<street>.*?)\\,? +(?<house>\\d{1,3}[A-z]?)? *?\\,? *( (?<floor>\\d{1,2}\\.?|st\\.?)\\,? *)?" +
+          " *?((?<side>th\\.?|tv\\.?|mf\\.?)\\,? ?)? *?((?<postcode>\\d{4}) *)? *?( (?<city>([A-z]*|[^A-z\\d\\,])*))?$";
   static Pattern pattern = Pattern.compile(regex);
 
   public static Address parse(String input) {
-    var matcher = pattern.matcher(input);
+    Matcher matcher = pattern.matcher(input);
     if (matcher.matches()) {
-      return new Builder().street(matcher.group("street")).house(matcher.group("house")).build();
+      return new Builder().street(matcher.group("street"))
+              .house(matcher.group("house"))
+              .floor(matcher.group("floor"))
+              .side(matcher.group("side"))
+              .postcode(matcher.group("postcode"))
+              .city(matcher.group("city")).build();
     } else {
       return new Builder().build();
     }
@@ -35,8 +43,11 @@ public class Address {
 
   public static class Builder {
     private String street, house, floor, side, postcode, city;
+    private CityController cityController;
 
     public Builder street(String _street) {
+      cityController = CityController.getInstance();
+
       street = _street;
       return this;
     }
@@ -62,11 +73,34 @@ public class Address {
     }
 
     public Builder city(String _city) {
-      city = _city;
+      if (_city == null || _city.isEmpty()){
+        if(postcode != null && postcode.length() == 4){
+          city = cityController.getCityNameFromPostcode(postcode);
+        }
+      } else {
+        city = _city;
+      }
       return this;
     }
 
+    public String replaceNullWithEmptyString(String str){
+      if (str == null){
+        return "";
+      } else {
+        return str;
+      }
+    }
+
     public Address build() {
+      if(street == null){
+        street = "Please write correct street and streetnumber";
+      }
+      house = replaceNullWithEmptyString(house);
+      floor = replaceNullWithEmptyString(floor);
+      side = replaceNullWithEmptyString(side);
+      postcode = replaceNullWithEmptyString(postcode);
+      city = replaceNullWithEmptyString(city);
+
       return new Address(street, house, floor, side, postcode, city);
     }
   }
