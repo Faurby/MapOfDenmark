@@ -48,5 +48,5 @@ tasks.named('test') {
 }
 
 run {
-    args = ['data/map.osm.zip.obj']
+    args = ['data/amager.zip.obj']
 }
