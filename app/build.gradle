@@ -48,5 +48,5 @@ tasks.named('test') {
 }
 
 run {
-    args = ['data/bornholm.osm.zip.obj']
+    args = ['data/map.osm.zip.obj']
 }
