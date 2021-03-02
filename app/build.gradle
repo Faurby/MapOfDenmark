@@ -16,7 +16,7 @@ plugins {
 
 javafx {
     version = "15.0.1"
-    modules = [ 'javafx.controls' ]
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
 repositories {
@@ -39,10 +39,14 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'bfst21.addressparser.GUI'
+    mainClass = 'bfst21.vector.Launcher'
 }
 
 tasks.named('test') {
     // Use junit platform for unit tests.
     useJUnitPlatform()
+}
+
+run {
+    args = ['data/bornholm.osm.zip.obj']
 }
