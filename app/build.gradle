@@ -21,6 +21,9 @@ jar {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     from('data/amager.zip.obj')
+    from('data/amager.zip.obj') {
+        into 'bfst21/vector'
+    }
 }
 
 javafx {
