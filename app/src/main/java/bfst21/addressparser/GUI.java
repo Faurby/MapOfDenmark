@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 public class GUI extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) {
         CityController cityController = CityController.getInstance();
         cityController.readCities();
         TextField input = new TextField();
@@ -47,11 +47,9 @@ public class GUI extends Application {
             previousAddress.setPrefHeight(60);
             previousAddress.setPrefWidth(vbox.getPrefWidth());
 
-            previousAddress.setOnAction(i -> {
-                input.setText(previousAddress.getText());
-            });
+            previousAddress.setOnAction(i -> input.setText(previousAddress.getText()));
 
-            vbox.getChildren().add(1,previousAddress);
+            vbox.getChildren().add(1, previousAddress);
         });
 
         scrollpane.setContent(vbox);

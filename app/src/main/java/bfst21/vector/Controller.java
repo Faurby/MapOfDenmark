@@ -6,7 +6,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
 public class Controller {
-	private Model model;
+    private Model model;
     private Point2D lastMouse;
 
     @FXML
@@ -15,7 +15,7 @@ public class Controller {
     public void init(Model model) {
         this.model = model;
         canvas.init(model);
-	}
+    }
 
     @FXML
     private void onScroll(ScrollEvent e) {

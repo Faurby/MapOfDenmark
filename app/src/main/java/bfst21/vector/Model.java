@@ -20,15 +20,12 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
-
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
 import bfst21.vector.osm.Node;
 import bfst21.vector.osm.Way;
-
 import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model implements Iterable<Drawable> {
@@ -36,7 +33,7 @@ public class Model implements Iterable<Drawable> {
     List<Drawable> buildings = new ArrayList<>();
     List<Drawable> islands = new ArrayList<>();
     List<Runnable> observers = new ArrayList<>();
-    float minx,miny,maxx,maxy;
+    float minx, miny, maxx, maxy;
 
     public Model(String filename) throws IOException, XMLStreamException, FactoryConfigurationError,
             ClassNotFoundException {
@@ -44,11 +41,11 @@ public class Model implements Iterable<Drawable> {
     }
 
     @SuppressWarnings("unchecked")
-    public void loadOBJ(String filename) throws FileNotFoundException, IOException, ClassNotFoundException {
+    public void loadOBJ(String filename) throws IOException, ClassNotFoundException {
         try (var input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)))) {
-            shapes    = (List<Drawable>) input.readObject();
+            shapes = (List<Drawable>) input.readObject();
             buildings = (List<Drawable>) input.readObject();
-            islands   = (List<Drawable>) input.readObject();
+            islands = (List<Drawable>) input.readObject();
             minx = input.readFloat();
             maxx = input.readFloat();
             miny = input.readFloat();
@@ -56,7 +53,7 @@ public class Model implements Iterable<Drawable> {
         }
     }
 
-    public void saveOBJ(String filename) throws FileNotFoundException, IOException {
+    public void saveOBJ(String filename) throws IOException {
         try (var output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filename)))) {
             output.writeObject(shapes);
             output.writeObject(buildings);
@@ -77,7 +74,7 @@ public class Model implements Iterable<Drawable> {
             loadOSM(filename);
         } else if (filename.endsWith(".zip")) {
             loadZIP(filename);
-            saveOBJ(filename+".obj");
+            saveOBJ(filename + ".obj");
         } else if (filename.endsWith(".obj")) {
             loadOBJ(filename);
         }
@@ -95,10 +92,10 @@ public class Model implements Iterable<Drawable> {
         loadOSM(new FileInputStream(filename));
     }
 
-    private void loadOSM(InputStream input) throws FileNotFoundException, XMLStreamException, FactoryConfigurationError {
+    private void loadOSM(InputStream input) throws XMLStreamException, FactoryConfigurationError {
         XMLStreamReader reader = XMLInputFactory
-            .newInstance()
-            .createXMLStreamReader(new BufferedInputStream(input));
+                .newInstance()
+                .createXMLStreamReader(new BufferedInputStream(input));
         var idToNode = new LongIndex();
         Way way = null;
         shapes = new ArrayList<>();
@@ -112,8 +109,8 @@ public class Model implements Iterable<Drawable> {
                         case "bounds":
                             minx = Float.parseFloat(reader.getAttributeValue(null, "minlon"));
                             maxx = Float.parseFloat(reader.getAttributeValue(null, "maxlon"));
-                            maxy = Float.parseFloat(reader.getAttributeValue(null, "minlat"))/-0.56f;
-                            miny = Float.parseFloat(reader.getAttributeValue(null, "maxlat"))/-0.56f;
+                            maxy = Float.parseFloat(reader.getAttributeValue(null, "minlat")) / -0.56f;
+                            miny = Float.parseFloat(reader.getAttributeValue(null, "maxlat")) / -0.56f;
                             break;
                         case "node":
                             var id = Long.parseLong(reader.getAttributeValue(null, "id"));
@@ -147,7 +144,7 @@ public class Model implements Iterable<Drawable> {
                         case "way":
                             if (iscoastline) coastlines.add(way);
                             if (isbuilding) buildings.add(way);
-                            break;  
+                            break;
                     }
                     break;
             }
@@ -156,17 +153,17 @@ public class Model implements Iterable<Drawable> {
     }
 
     private List<Drawable> mergeCoastLines(ArrayList<Way> coastlines) {
-        Map<Node,Way> pieces = new HashMap<>();
+        Map<Node, Way> pieces = new HashMap<>();
         for (var coast : coastlines) {
             var before = pieces.remove(coast.first());
             var after = pieces.remove(coast.last());
             if (before == after) after = null;
             var merged = Way.merge(before, coast, after);
-            pieces.put(merged.first(),merged);
-            pieces.put(merged.last(),merged);
+            pieces.put(merged.first(), merged);
+            pieces.put(merged.last(), merged);
         }
         List<Drawable> merged = new ArrayList<>();
-        pieces.forEach((node,way) -> {
+        pieces.forEach((node, way) -> {
             if (way.last() == node) {
                 merged.add(way);
             }
@@ -194,8 +191,8 @@ public class Model implements Iterable<Drawable> {
         return shapes.iterator();
     }
 
-	public void add(Line line) {
+    public void add(Line line) {
         shapes.add(line);
         notifyObservers();
-	}
+    }
 }

@@ -1,23 +1,21 @@
 package bfst21.addressparser;
 
 import bfst21.models.City;
-
 import java.util.List;
 
 public class CityController {
 
     private static CityController instance;
-    private  List<City> cityList;
+    private List<City> cityList;
 
-    public  void readCities(){
+    public void readCities() {
         FileReader filereader = new FileReader();
-        List<City> cityList = filereader.getCityList();
-        this.cityList = cityList;
+        this.cityList = filereader.getCityList();
     }
 
-    public String getCityNameFromPostcode(String postcode){
-        for(City c : cityList){
-            if (c.getPostcode() == Integer.parseInt(postcode)){
+    public String getCityNameFromPostcode(String postcode) {
+        for (City c : cityList) {
+            if (c.getPostcode() == Integer.parseInt(postcode)) {
                 return c.getName();
             }
         }

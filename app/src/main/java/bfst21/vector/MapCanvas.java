@@ -12,8 +12,8 @@ public class MapCanvas extends Canvas {
 
     public void init(Model model) {
         this.model = model;
-        pan(-model.minx,-model.miny);
-        zoom(getWidth()/(model.maxx-model.minx), new Point2D(0,0));
+        pan(-model.minx, -model.miny);
+        zoom(getWidth() / (model.maxx - model.minx), new Point2D(0, 0));
     }
 
     void repaint() {
@@ -28,7 +28,7 @@ public class MapCanvas extends Canvas {
             line.fill(gc);
         }
         gc.setStroke(Color.BLACK);
-        gc.setLineWidth(1/Math.sqrt(trans.determinant()));
+        gc.setLineWidth(1 / Math.sqrt(trans.determinant()));
         // for (var line : model)
         //     line.draw(gc);
         gc.restore();
@@ -51,6 +51,6 @@ public class MapCanvas extends Canvas {
             e.printStackTrace();
             return null;
         }
-	}
-    
+    }
+
 }

@@ -1,22 +1,22 @@
 package bfst21.vector;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-
 import bfst21.vector.osm.Node;
 
 public class LongIndex {
     List<Node> nodes = new ArrayList<>();
     boolean sorted = true;
 
-	public void put(Node node) {
+    public void put(Node node) {
         nodes.add(node);
         sorted = false;
-	}
+    }
 
-	public Node get(long ref) {
+    public Node get(long ref) {
         if (!sorted) {
-            nodes.sort((a, b) -> Long.compare(a.getID(), b.getID()));
+            nodes.sort(Comparator.comparingLong(Node::getID));
             sorted = true;
         }
         int lo = 0;            // nodes.get(lo).getID() <= ref
@@ -31,5 +31,5 @@ public class LongIndex {
         }
         Node node = nodes.get(lo);
         return node.getID() == ref ? node : null;
-	}
+    }
 }

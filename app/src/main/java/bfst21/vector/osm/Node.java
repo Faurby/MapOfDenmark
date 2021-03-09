@@ -10,7 +10,7 @@ public class Node implements Serializable {
     public Node(long id, float lat, float lon) {
         this.id = id;
         this.x = lon;
-        this.y = -lat/0.56f;
+        this.y = -lat / 0.56f;
     }
 
     public float getX() {
@@ -21,7 +21,7 @@ public class Node implements Serializable {
         return y;
     }
 
-	public long getID() {
-		return id;
-	}
+    public long getID() {
+        return id;
+    }
 }

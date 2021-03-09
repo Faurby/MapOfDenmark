@@ -3,7 +3,6 @@ package bfst21.vector.osm;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import bfst21.vector.Drawable;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -16,7 +15,7 @@ public class Way implements Drawable, Serializable {
     }
 
     public Node last() {
-        return nodes.get(nodes.size()-1);
+        return nodes.get(nodes.size() - 1);
     }
 
     public void add(Node node) {
@@ -31,18 +30,18 @@ public class Way implements Drawable, Serializable {
         }
     }
 
-	public static Way merge(Way first, Way second) {
-        if (first == null)  return second;
-        if (second == null)  return first;
+    public static Way merge(Way first, Way second) {
+        if (first == null) return second;
+        if (second == null) return first;
         Way merged = new Way();
         merged.nodes.addAll(first.nodes);
         merged.nodes.addAll(second.nodes.subList(1, second.nodes.size()));
         return merged;
     }
 
-	public static Way merge(Way before, Way coast, Way after) {
-		return merge(merge(before, coast), after);
-	}
+    public static Way merge(Way before, Way coast, Way after) {
+        return merge(merge(before, coast), after);
+    }
 
     @Override
     public int hashCode() {
@@ -62,10 +61,7 @@ public class Way implements Drawable, Serializable {
             return false;
         Way other = (Way) obj;
         if (nodes == null) {
-            if (other.nodes != null)
-                return false;
-        } else if (!nodes.equals(other.nodes))
-            return false;
-        return true;
+            return other.nodes == null;
+        } else return nodes.equals(other.nodes);
     }
 }
