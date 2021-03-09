@@ -7,7 +7,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        var filename = getParameters().getRaw().get(0);
+        var filename = "amager.zip.obj";
         var model = new Model(filename);
         new View(model, primaryStage);
     }
