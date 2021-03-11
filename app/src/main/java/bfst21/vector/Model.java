@@ -42,7 +42,7 @@ public class Model implements Iterable<Drawable> {
 
     @SuppressWarnings("unchecked")
     public void loadOBJ(String filename) throws IOException, ClassNotFoundException {
-        try (var input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)))) {
+        try (var input = new ObjectInputStream(new BufferedInputStream(getClass().getClassLoader().getResourceAsStream(filename)))) {
             shapes = (List<Drawable>) input.readObject();
             buildings = (List<Drawable>) input.readObject();
             islands = (List<Drawable>) input.readObject();
