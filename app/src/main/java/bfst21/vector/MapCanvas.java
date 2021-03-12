@@ -65,7 +65,6 @@ public class MapCanvas extends Canvas {
         for (Drawable line : list) {
             line.fill(gc);
         }
-
     }
 
     public void drawRoad(GraphicsContext gc, List<Drawable> list, double size, Color roadColor, Color outline) {
