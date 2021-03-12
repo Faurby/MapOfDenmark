@@ -36,23 +36,22 @@ public class XmlParser {
         List<Drawable> buildings = new ArrayList<>();
         List<Drawable> islands;
         float minx = 0, miny = 0, maxx = 0, maxy = 0;
-        boolean isCoastline = false;
-        boolean isBuilding = false;
+        boolean isCoastline = false, isBuilding = false;
         ArrayList<Way> coastlines = new ArrayList<>();
         while (reader.hasNext()) {
             switch (reader.next()) {
                 case START_ELEMENT:
                     switch (reader.getLocalName()) {
                         case "bounds":
-                            minx = Float.parseFloat(reader.getAttributeValue(null, "minlon"));
-                            maxx = Float.parseFloat(reader.getAttributeValue(null, "maxlon"));
-                            maxy = Float.parseFloat(reader.getAttributeValue(null, "minlat")) / -0.56f;
-                            miny = Float.parseFloat(reader.getAttributeValue(null, "maxlat")) / -0.56f;
+                            minx = getFloat(reader, "minlon");
+                            maxx = getFloat(reader, "maxlon");
+                            maxy = getFloat(reader, "minlat") / -0.56f;
+                            miny = getFloat(reader, "maxlat") / -0.56f;
                             break;
                         case "node":
-                            long id = Long.parseLong(reader.getAttributeValue(null, "id"));
-                            float lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
-                            float lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
+                            long id = getLong(reader, "id");
+                            float lon = getFloat(reader, "lon");
+                            float lat = getFloat(reader, "lat");
                             idToNode.put(new Node(id, lat, lon));
                             break;
                         case "way":
@@ -70,7 +69,7 @@ public class XmlParser {
                             }
                             break;
                         case "nd":
-                            long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
+                            long ref = getLong(reader, "ref");
                             way.add(idToNode.get(ref));
                             break;
 
@@ -107,5 +106,13 @@ public class XmlParser {
             }
         });
         return merged;
+    }
+
+    private float getFloat(XMLStreamReader reader, String localName) {
+        return Float.parseFloat(reader.getAttributeValue(null, localName));
+    }
+
+    private long getLong(XMLStreamReader reader, String localName) {
+        return Long.parseLong(reader.getAttributeValue(null, localName));
     }
 }
