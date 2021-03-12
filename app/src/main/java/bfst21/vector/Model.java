@@ -1,7 +1,5 @@
 package bfst21.vector;
 
-import javafx.beans.Observable;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;

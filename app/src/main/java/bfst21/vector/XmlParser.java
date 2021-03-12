@@ -21,8 +21,6 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 public class XmlParser {
 
-
-
     public MapData loadOSM(String filename) throws FileNotFoundException, XMLStreamException, FactoryConfigurationError {
         return loadOSM(new FileInputStream(filename));
     }
@@ -36,11 +34,8 @@ public class XmlParser {
         Way way = null;
         List<Drawable> shapes = new ArrayList<>();
         List<Drawable> buildings = new ArrayList<>();
-        List<Drawable> islands = new ArrayList<>();
-        float minx = 0;
-        float miny = 0;
-        float maxx = 0;
-        float maxy = 0;
+        List<Drawable> islands;
+        float minx = 0, miny = 0, maxx = 0, maxy = 0;
         boolean iscoastline = false;
         boolean isbuilding = false;
         ArrayList<Way> coastlines = new ArrayList<>();
@@ -92,7 +87,7 @@ public class XmlParser {
             }
         }
         islands = mergeCoastLines(coastlines);
-        return new MapData( shapes, buildings, islands, minx, maxx, miny, maxy);
+        return new MapData(shapes, buildings, islands, minx, miny, maxx, maxy);
     }
 
     private List<Drawable> mergeCoastLines(ArrayList<Way> coastlines) {
