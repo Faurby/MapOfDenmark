@@ -92,7 +92,7 @@ public class XmlParser {
             }
         }
         islands = mergeCoastLines(coastlines);
-        return new MapData( shapes, buildings, islands, minx, miny, maxx, maxy);
+        return new MapData( shapes, buildings, islands, minx, maxx, miny, maxy);
     }
 
     private List<Drawable> mergeCoastLines(ArrayList<Way> coastlines) {

@@ -10,7 +10,7 @@ public class MapData {
 
     private float minx, miny, maxx, maxy;
 
-    public MapData(List<Drawable> shapes, List<Drawable> buildings, List<Drawable> islands, float minx, float miny, float maxx, float maxy) {
+    public MapData(List<Drawable> shapes, List<Drawable> buildings, List<Drawable> islands, float minx, float maxx, float miny, float maxy) {
         this.shapes = shapes;
         this.buildings = buildings;
         this.islands = islands;
