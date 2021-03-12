@@ -1,5 +1,6 @@
 package bfst21.vector;
 
+import bfst21.vector.osm.ExtendedWay;
 import bfst21.vector.osm.Node;
 import bfst21.vector.osm.Way;
 
@@ -26,33 +27,33 @@ public class XmlParser {
     }
 
     public MapData loadOSM(InputStream input) throws XMLStreamException, FactoryConfigurationError {
-
         XMLStreamReader reader = XMLInputFactory
                 .newInstance()
                 .createXMLStreamReader(new BufferedInputStream(input));
         LongIndex idToNode = new LongIndex();
         Way way = null;
+        ExtendedWay extendedWay = null;
         List<Drawable> shapes = new ArrayList<>();
         List<Drawable> buildings = new ArrayList<>();
         List<Drawable> islands;
+        List<Drawable> extendedWays = new ArrayList<>();
         float minx = 0, miny = 0, maxx = 0, maxy = 0;
-        boolean isCoastline = false;
-        boolean isBuilding = false;
+        boolean isCoastline = false, isBuilding = false, isExtendedWay = false;
         ArrayList<Way> coastlines = new ArrayList<>();
         while (reader.hasNext()) {
             switch (reader.next()) {
                 case START_ELEMENT:
                     switch (reader.getLocalName()) {
                         case "bounds":
-                            minx = Float.parseFloat(reader.getAttributeValue(null, "minlon"));
-                            maxx = Float.parseFloat(reader.getAttributeValue(null, "maxlon"));
-                            maxy = Float.parseFloat(reader.getAttributeValue(null, "minlat")) / -0.56f;
-                            miny = Float.parseFloat(reader.getAttributeValue(null, "maxlat")) / -0.56f;
+                            minx = getFloat(reader, "minlon");
+                            maxx = getFloat(reader, "maxlon");
+                            maxy = getFloat(reader, "minlat") / -0.56f;
+                            miny = getFloat(reader, "maxlat") / -0.56f;
                             break;
                         case "node":
-                            long id = Long.parseLong(reader.getAttributeValue(null, "id"));
-                            float lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
-                            float lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
+                            long id = getLong(reader, "id");
+                            float lon = getFloat(reader, "lon");
+                            float lat = getFloat(reader, "lat");
                             idToNode.put(new Node(id, lat, lon));
                             break;
                         case "way":
@@ -67,10 +68,16 @@ public class XmlParser {
                                 isCoastline = true;
                             } else if (k.equals("building")) {
                                 isBuilding = true;
+                            } else {
+                                if (way != null) {
+                                    extendedWay = new ExtendedWay(k, v);
+                                    isExtendedWay = true;
+                                    extendedWay.setNodes(way.getNodes());
+                                }
                             }
                             break;
                         case "nd":
-                            long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
+                            long ref = getLong(reader, "ref");
                             way.add(idToNode.get(ref));
                             break;
 
@@ -81,13 +88,14 @@ public class XmlParser {
                         case "way":
                             if (isCoastline) coastlines.add(way);
                             if (isBuilding) buildings.add(way);
+                            if (isExtendedWay) extendedWays.add(extendedWay);
                             break;
                     }
                     break;
             }
         }
         islands = mergeCoastLines(coastlines);
-        return new MapData(shapes, buildings, islands, minx, maxx, miny, maxy);
+        return new MapData(shapes, buildings, islands, extendedWays, minx, maxx, miny, maxy);
     }
 
     private List<Drawable> mergeCoastLines(ArrayList<Way> coastlines) {
@@ -107,5 +115,13 @@ public class XmlParser {
             }
         });
         return merged;
+    }
+
+    private float getFloat(XMLStreamReader reader, String localName) {
+        return Float.parseFloat(reader.getAttributeValue(null, localName));
+    }
+
+    private long getLong(XMLStreamReader reader, String localName) {
+        return Long.parseLong(reader.getAttributeValue(null, localName));
     }
 }
