@@ -12,8 +12,8 @@ public class MapCanvas extends Canvas {
 
     public void init(Model model) {
         this.model = model;
-        pan(-model.minx, -model.miny);
-        zoom(getWidth() / (model.maxx - model.minx), new Point2D(0, 0));
+        pan(-model.getMapData().getMinx(), -model.getMapData().getMiny());
+        zoom(getWidth() / (model.getMapData().getMaxx() - model.getMapData().getMinx()), new Point2D(0, 0));
     }
 
     void repaint() {
@@ -24,7 +24,7 @@ public class MapCanvas extends Canvas {
         gc.fillRect(0, 0, getWidth(), getHeight());
         gc.setTransform(trans);
         gc.setFill(Color.LIGHTYELLOW);
-        for (var line : model.islands) {
+        for (var line : model.getMapData().getIslands()) {
             line.fill(gc);
         }
         gc.setStroke(Color.BLACK);

@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class FileReader {
+public class TextFileParser {
 
     private List<City> cityList;
 
-    public FileReader() {
+    public TextFileParser() {
         readFile();
     }
 
