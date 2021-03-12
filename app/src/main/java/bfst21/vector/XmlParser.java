@@ -32,7 +32,7 @@ public class XmlParser {
         XMLStreamReader reader = XMLInputFactory
                 .newInstance()
                 .createXMLStreamReader(new BufferedInputStream(input));
-        var idToNode = new LongIndex();
+        LongIndex idToNode = new LongIndex();
         Way way = null;
         List<Drawable> shapes = new ArrayList<>();
         List<Drawable> buildings = new ArrayList<>();
@@ -43,7 +43,7 @@ public class XmlParser {
         float maxy = 0;
         boolean iscoastline = false;
         boolean isbuilding = false;
-        var coastlines = new ArrayList<Way>();
+        ArrayList<Way> coastlines = new ArrayList<>();
         while (reader.hasNext()) {
             switch (reader.next()) {
                 case START_ELEMENT:
@@ -55,9 +55,9 @@ public class XmlParser {
                             miny = Float.parseFloat(reader.getAttributeValue(null, "maxlat")) / -0.56f;
                             break;
                         case "node":
-                            var id = Long.parseLong(reader.getAttributeValue(null, "id"));
-                            var lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
-                            var lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
+                            long id = Long.parseLong(reader.getAttributeValue(null, "id"));
+                            float lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
+                            float lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
                             idToNode.put(new Node(id, lat, lon));
                             break;
                         case "way":
@@ -66,8 +66,8 @@ public class XmlParser {
                             isbuilding = false;
                             break;
                         case "tag":
-                            var k = reader.getAttributeValue(null, "k");
-                            var v = reader.getAttributeValue(null, "v");
+                            String k = reader.getAttributeValue(null, "k");
+                            String v = reader.getAttributeValue(null, "v");
                             if (k.equals("natural") && v.equals("coastline")) {
                                 iscoastline = true;
                             } else if (k.equals("building") && v.equals("yes")) {
@@ -75,7 +75,7 @@ public class XmlParser {
                             }
                             break;
                         case "nd":
-                            var ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
+                            long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
                             way.add(idToNode.get(ref));
                             break;
 
@@ -97,11 +97,11 @@ public class XmlParser {
 
     private List<Drawable> mergeCoastLines(ArrayList<Way> coastlines) {
         Map<Node, Way> pieces = new HashMap<>();
-        for (var coast : coastlines) {
-            var before = pieces.remove(coast.first());
-            var after = pieces.remove(coast.last());
+        for (Way coast : coastlines) {
+            Way before = pieces.remove(coast.first());
+            Way after = pieces.remove(coast.last());
             if (before == after) after = null;
-            var merged = Way.merge(before, coast, after);
+            Way merged = Way.merge(before, coast, after);
             pieces.put(merged.first(), merged);
             pieces.put(merged.last(), merged);
         }

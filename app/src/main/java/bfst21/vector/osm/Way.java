@@ -25,7 +25,7 @@ public class Way implements Drawable, Serializable {
     @Override
     public void trace(GraphicsContext gc) {
         gc.moveTo(nodes.get(0).getX(), nodes.get(0).getY());
-        for (var node : nodes) {
+        for (Node node : nodes) {
             gc.lineTo(node.getX(), node.getY());
         }
     }

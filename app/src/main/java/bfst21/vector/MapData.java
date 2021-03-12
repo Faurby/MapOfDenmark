@@ -1,6 +1,5 @@
 package bfst21.vector;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MapData {

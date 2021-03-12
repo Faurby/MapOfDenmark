@@ -2,7 +2,6 @@ package bfst21.vector;
 
 import java.io.*;
 import java.util.List;
-import java.util.Map;
 
 public class BinaryFileManager {
 
@@ -18,7 +17,7 @@ public class BinaryFileManager {
     }
 
     public void saveOBJ(String filename, MapData mapData) throws IOException {
-        try (var output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filename)))) {
+        try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filename)))) {
             output.writeObject(mapData.getShapes());
             output.writeObject(mapData.getBuildings());
             output.writeObject(mapData.getIslands());

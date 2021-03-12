@@ -30,8 +30,8 @@ public class Controller {
         if (e.isPrimaryButtonDown()) {
             canvas.pan(dx, dy);
         } else {
-            var from = canvas.mouseToModelCoords(lastMouse);
-            var to = canvas.mouseToModelCoords(new Point2D(e.getX(), e.getY()));
+            Point2D from = canvas.mouseToModelCoords(lastMouse);
+            Point2D to = canvas.mouseToModelCoords(new Point2D(e.getX(), e.getY()));
             model.add(new Line(from, to));
             canvas.repaint();
         }

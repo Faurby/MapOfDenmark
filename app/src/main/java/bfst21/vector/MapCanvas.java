@@ -2,6 +2,7 @@ package bfst21.vector;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
@@ -17,14 +18,14 @@ public class MapCanvas extends Canvas {
     }
 
     void repaint() {
-        var gc = getGraphicsContext2D();
+        GraphicsContext gc = getGraphicsContext2D();
         gc.save();
         gc.setTransform(new Affine());
         gc.setFill(Color.LIGHTBLUE);
         gc.fillRect(0, 0, getWidth(), getHeight());
         gc.setTransform(trans);
         gc.setFill(Color.LIGHTYELLOW);
-        for (var line : model.getMapData().getIslands()) {
+        for (Drawable line : model.getMapData().getIslands()) {
             line.fill(gc);
         }
         gc.setStroke(Color.BLACK);
