@@ -35,22 +35,26 @@ public class Model implements Iterable<Drawable> {
     List<Runnable> observers = new ArrayList<>();
     float minx, miny, maxx, maxy;
 
-    public Model(String filename) throws IOException, XMLStreamException, FactoryConfigurationError,
+    public Model(String filename, boolean jarFile) throws IOException, XMLStreamException, FactoryConfigurationError,
             ClassNotFoundException {
-        load(filename);
+        load(filename, jarFile);
     }
 
     @SuppressWarnings("unchecked")
-    public void loadOBJ(String filename) throws IOException, ClassNotFoundException {
-        try (var input = new ObjectInputStream(new BufferedInputStream(getClass().getClassLoader().getResourceAsStream(filename)))) {
-            shapes = (List<Drawable>) input.readObject();
-            buildings = (List<Drawable>) input.readObject();
-            islands = (List<Drawable>) input.readObject();
-            minx = input.readFloat();
-            maxx = input.readFloat();
-            miny = input.readFloat();
-            maxy = input.readFloat();
+    public void loadOBJ(String filename, boolean jarFile) throws IOException, ClassNotFoundException {
+        ObjectInputStream input;
+        if (jarFile) {
+            input = new ObjectInputStream(new BufferedInputStream(getClass().getClassLoader().getResourceAsStream(filename)));
+        } else {
+            input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)));
         }
+        shapes = (List<Drawable>) input.readObject();
+        buildings = (List<Drawable>) input.readObject();
+        islands = (List<Drawable>) input.readObject();
+        minx = input.readFloat();
+        maxx = input.readFloat();
+        miny = input.readFloat();
+        maxy = input.readFloat();
     }
 
     public void saveOBJ(String filename) throws IOException {
@@ -65,7 +69,7 @@ public class Model implements Iterable<Drawable> {
         }
     }
 
-    public void load(String filename) throws IOException, XMLStreamException, FactoryConfigurationError,
+    public void load(String filename, boolean jarFile) throws IOException, XMLStreamException, FactoryConfigurationError,
             ClassNotFoundException {
         long time = -System.nanoTime();
         if (filename.endsWith(".txt")) {
@@ -76,7 +80,7 @@ public class Model implements Iterable<Drawable> {
             loadZIP(filename);
             saveOBJ(filename + ".obj");
         } else if (filename.endsWith(".obj")) {
-            loadOBJ(filename);
+            loadOBJ(filename, jarFile);
         }
         time += System.nanoTime();
         Logger.getGlobal().info(String.format("Load time: %dms", time / 1000000));
