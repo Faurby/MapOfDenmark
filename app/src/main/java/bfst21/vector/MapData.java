@@ -6,13 +6,15 @@ public class MapData {
     private List<Drawable> shapes;
     private List<Drawable> buildings;
     private List<Drawable> islands;
+    private List<Drawable> extendedWays;
 
     private float minx, miny, maxx, maxy;
 
-    public MapData(List<Drawable> shapes, List<Drawable> buildings, List<Drawable> islands, float minx, float maxx, float miny, float maxy) {
+    public MapData(List<Drawable> shapes, List<Drawable> buildings, List<Drawable> islands, List<Drawable> extendedWays, float minx, float maxx, float miny, float maxy) {
         this.shapes = shapes;
         this.buildings = buildings;
         this.islands = islands;
+        this.extendedWays = extendedWays;
         this.minx = minx;
         this.miny = miny;
         this.maxx = maxx;
@@ -30,6 +32,8 @@ public class MapData {
     public List<Drawable> getIslands() {
         return islands;
     }
+
+    public List<Drawable> getExtendedWays() { return extendedWays; }
 
     public float getMinx() {
         return minx;
