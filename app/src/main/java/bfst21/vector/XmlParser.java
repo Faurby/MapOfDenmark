@@ -36,8 +36,8 @@ public class XmlParser {
         List<Drawable> buildings = new ArrayList<>();
         List<Drawable> islands;
         float minx = 0, miny = 0, maxx = 0, maxy = 0;
-        boolean iscoastline = false;
-        boolean isbuilding = false;
+        boolean isCoastline = false;
+        boolean isBuilding = false;
         ArrayList<Way> coastlines = new ArrayList<>();
         while (reader.hasNext()) {
             switch (reader.next()) {
@@ -57,16 +57,16 @@ public class XmlParser {
                             break;
                         case "way":
                             way = new Way();
-                            iscoastline = false;
-                            isbuilding = false;
+                            isCoastline = false;
+                            isBuilding = false;
                             break;
                         case "tag":
                             String k = reader.getAttributeValue(null, "k");
                             String v = reader.getAttributeValue(null, "v");
                             if (k.equals("natural") && v.equals("coastline")) {
-                                iscoastline = true;
-                            } else if (k.equals("building") && v.equals("yes")) {
-                                isbuilding = true;
+                                isCoastline = true;
+                            } else if (k.equals("building")) {
+                                isBuilding = true;
                             }
                             break;
                         case "nd":
@@ -79,15 +79,15 @@ public class XmlParser {
                 case END_ELEMENT:
                     switch (reader.getLocalName()) {
                         case "way":
-                            if (iscoastline) coastlines.add(way);
-                            if (isbuilding) buildings.add(way);
+                            if (isCoastline) coastlines.add(way);
+                            if (isBuilding) buildings.add(way);
                             break;
                     }
                     break;
             }
         }
         islands = mergeCoastLines(coastlines);
-        return new MapData(shapes, buildings, islands, minx, miny, maxx, maxy);
+        return new MapData(shapes, buildings, islands, minx, maxx, miny, maxy);
     }
 
     private List<Drawable> mergeCoastLines(ArrayList<Way> coastlines) {
