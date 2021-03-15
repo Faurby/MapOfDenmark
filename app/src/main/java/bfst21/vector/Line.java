@@ -2,9 +2,9 @@ package bfst21.vector;
 
 import java.io.Serializable;
 import java.util.Locale;
-
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+
 
 public class Line implements Drawable, Serializable {
     private static final long serialVersionUID = 1007313956054198315L;
@@ -31,6 +31,6 @@ public class Line implements Drawable, Serializable {
     }
 
     public String toString() {
-        return String.format(Locale.US,"LINE %f %f %f %f", from.getX(), from.getY(), to.getX(), to.getY());
+        return String.format(Locale.US, "LINE %f %f %f %f", from.getX(), from.getY(), to.getX(), to.getY());
     }
 }

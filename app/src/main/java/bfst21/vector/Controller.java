@@ -5,7 +5,9 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
+
 public class Controller {
+
     private Model model;
     private Point2D lastMouse;
 

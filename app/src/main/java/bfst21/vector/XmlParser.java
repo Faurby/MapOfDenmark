@@ -3,7 +3,6 @@ package bfst21.vector;
 import bfst21.vector.osm.ExtendedWay;
 import bfst21.vector.osm.Node;
 import bfst21.vector.osm.Way;
-
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -16,9 +15,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
 
 public class XmlParser {
 
@@ -27,19 +26,24 @@ public class XmlParser {
     }
 
     public MapData loadOSM(InputStream input) throws XMLStreamException, FactoryConfigurationError {
+
         XMLStreamReader reader = XMLInputFactory
-                .newInstance()
-                .createXMLStreamReader(new BufferedInputStream(input));
-        LongIndex idToNode = new LongIndex();
+            .newInstance()
+            .createXMLStreamReader(new BufferedInputStream(input));
+
         Way way = null;
         ExtendedWay extendedWay = null;
+        LongIndex idToNode = new LongIndex();
+
         List<Drawable> shapes = new ArrayList<>();
         List<Drawable> buildings = new ArrayList<>();
-        List<Drawable> islands;
         List<Drawable> extendedWays = new ArrayList<>();
+        ArrayList<Way> coastlines = new ArrayList<>();
+        List<Drawable> islands;
+
         float minx = 0, miny = 0, maxx = 0, maxy = 0;
         boolean isCoastline = false, isBuilding = false, isExtendedWay = false;
-        ArrayList<Way> coastlines = new ArrayList<>();
+
         while (reader.hasNext()) {
             switch (reader.next()) {
                 case START_ELEMENT:
@@ -100,6 +104,7 @@ public class XmlParser {
 
     private List<Drawable> mergeCoastLines(ArrayList<Way> coastlines) {
         Map<Node, Way> pieces = new HashMap<>();
+
         for (Way coast : coastlines) {
             Way before = pieces.remove(coast.first());
             Way after = pieces.remove(coast.last());

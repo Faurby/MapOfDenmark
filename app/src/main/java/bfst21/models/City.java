@@ -1,6 +1,7 @@
 package bfst21.models;
 
 public class City {
+
     private int postcode;
     private String name;
 

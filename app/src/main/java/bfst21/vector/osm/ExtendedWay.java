@@ -2,6 +2,7 @@ package bfst21.vector.osm;
 
 import java.util.List;
 
+
 public class ExtendedWay extends Way {
 
     private String key;
@@ -14,5 +15,13 @@ public class ExtendedWay extends Way {
 
     public void setNodes(List<Node> nodes) {
         this.nodes = nodes;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getValue() {
+        return value;
     }
 }
