@@ -31,6 +31,7 @@ public class BinaryFileManager {
             output.writeObject(mapData.getShapes());
             output.writeObject(mapData.getBuildings());
             output.writeObject(mapData.getIslands());
+            output.writeObject(mapData.getExtendedWays());
             output.writeFloat(mapData.getMinx());
             output.writeFloat(mapData.getMaxx());
             output.writeFloat(mapData.getMiny());
