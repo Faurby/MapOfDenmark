@@ -1,5 +1,6 @@
 package bfst21.vector;
 
+import bfst21.vector.osm.ExtendedWay;
 import bfst21.vector.osm.Node;
 import bfst21.vector.osm.Way;
 
@@ -26,17 +27,18 @@ public class XmlParser {
     }
 
     public MapData loadOSM(InputStream input) throws XMLStreamException, FactoryConfigurationError {
-
         XMLStreamReader reader = XMLInputFactory
                 .newInstance()
                 .createXMLStreamReader(new BufferedInputStream(input));
         LongIndex idToNode = new LongIndex();
         Way way = null;
+        ExtendedWay extendedWay = null;
         List<Drawable> shapes = new ArrayList<>();
         List<Drawable> buildings = new ArrayList<>();
         List<Drawable> islands;
+        List<Drawable> extendedWays = new ArrayList<>();
         float minx = 0, miny = 0, maxx = 0, maxy = 0;
-        boolean isCoastline = false, isBuilding = false;
+        boolean isCoastline = false, isBuilding = false, isExtendedWay = false;
         ArrayList<Way> coastlines = new ArrayList<>();
         while (reader.hasNext()) {
             switch (reader.next()) {
@@ -66,6 +68,12 @@ public class XmlParser {
                                 isCoastline = true;
                             } else if (k.equals("building")) {
                                 isBuilding = true;
+                            } else {
+                                if (way != null) {
+                                    extendedWay = new ExtendedWay(k, v);
+                                    isExtendedWay = true;
+                                    extendedWay.setNodes(way.getNodes());
+                                }
                             }
                             break;
                         case "nd":
@@ -80,13 +88,14 @@ public class XmlParser {
                         case "way":
                             if (isCoastline) coastlines.add(way);
                             if (isBuilding) buildings.add(way);
+                            if (isExtendedWay) extendedWays.add(extendedWay);
                             break;
                     }
                     break;
             }
         }
         islands = mergeCoastLines(coastlines);
-        return new MapData(shapes, buildings, islands, minx, maxx, miny, maxy);
+        return new MapData(shapes, buildings, islands, extendedWays, minx, maxx, miny, maxy);
     }
 
     private List<Drawable> mergeCoastLines(ArrayList<Way> coastlines) {
