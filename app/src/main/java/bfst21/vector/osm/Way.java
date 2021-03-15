@@ -7,8 +7,9 @@ import bfst21.vector.Drawable;
 import javafx.scene.canvas.GraphicsContext;
 
 public class Way implements Drawable, Serializable {
-    private static final long serialVersionUID = 3139576893143362100L;
-    private List<Node> nodes = new ArrayList<>();
+
+    private static final long serialVersionUID = 3139576893143362100L; //Used for creating binary files
+    protected List<Node> nodes = new ArrayList<>();
 
     public Node first() {
         return nodes.get(0);
@@ -18,6 +19,10 @@ public class Way implements Drawable, Serializable {
         return nodes.get(nodes.size() - 1);
     }
 
+    public List<Node> getNodes() {
+        return nodes;
+    }
+
     public void add(Node node) {
         nodes.add(node);
     }
@@ -25,7 +30,7 @@ public class Way implements Drawable, Serializable {
     @Override
     public void trace(GraphicsContext gc) {
         gc.moveTo(nodes.get(0).getX(), nodes.get(0).getY());
-        for (var node : nodes) {
+        for (Node node : nodes) {
             gc.lineTo(node.getX(), node.getY());
         }
     }

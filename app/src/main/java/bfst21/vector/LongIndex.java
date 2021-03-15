@@ -3,6 +3,7 @@ package bfst21.vector;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
 import bfst21.vector.osm.Node;
 
 public class LongIndex {

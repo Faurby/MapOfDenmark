@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 
 public class View {
     public View(Model model, Stage stage) throws IOException {
-        var loader = new FXMLLoader(View.class.getResource("View.fxml"));
+        FXMLLoader loader = new FXMLLoader(View.class.getResource("View.fxml"));
         Scene scene = loader.load();
         stage.setScene(scene);
         stage.setTitle("Awesome drawing program");

@@ -8,13 +8,13 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        var filename = "amager.obj";
+        String filename = "amager.obj";
         boolean jarFile = true;
         if (getParameters().getRaw().size() > 0) {
             filename = getParameters().getRaw().get(0);
             jarFile = false;
         }
-        var model = new Model(filename, jarFile);
+        Model model = new Model(filename, jarFile);
         new View(model, primaryStage);
     }
 
