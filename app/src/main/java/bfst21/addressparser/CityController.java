@@ -9,7 +9,7 @@ public class CityController {
     private List<City> cityList;
 
     public void readCities() {
-        TextFileParser filereader = new TextFileParser();
+        FileReader filereader = new FileReader();
         this.cityList = filereader.getCityList();
     }
 
