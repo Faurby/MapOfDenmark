@@ -7,8 +7,8 @@ import java.util.List;
 import bfst21.vector.osm.Node;
 
 public class LongIndex {
-    List<Node> nodes = new ArrayList<>();
-    boolean sorted = true;
+    private List<Node> nodes = new ArrayList<>();
+    private boolean sorted = true;
 
     public void put(Node node) {
         nodes.add(node);
