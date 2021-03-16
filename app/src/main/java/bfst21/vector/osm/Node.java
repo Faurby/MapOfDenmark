@@ -2,6 +2,7 @@ package bfst21.vector.osm;
 
 import java.io.Serializable;
 
+
 public class Node extends Element implements Serializable {
 
     private static final long serialVersionUID = -343957913094540189L;

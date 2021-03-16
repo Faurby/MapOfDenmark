@@ -23,7 +23,7 @@ public class XmlParser {
     }
 
     //TODO: Consider using a stack for parent elements
-    // You can then peek to see what type of parent it has
+    //You can then peek to see what type of parent it has
     public MapData loadOSM(InputStream input) throws XMLStreamException, FactoryConfigurationError {
 
         reader = XMLInputFactory
@@ -69,9 +69,7 @@ public class XmlParser {
                         case "way":
                             long wayID = getLong("id");
                             way = new Way(wayID);
-
                             extendedWay = new ExtendedWay(wayID);
-
                             isCoastline = false;
                             isBuilding = false;
                             break;
@@ -113,7 +111,6 @@ public class XmlParser {
                                 } else if (key.equals("building")) {
                                     isBuilding = true;
                                 } else {
-
                                     extendedWay.addTag(key, value);
                                 }
                             }
@@ -152,7 +149,6 @@ public class XmlParser {
         islands = mergeCoastLines(coastlines);
         return new MapData(shapes, buildings, islands, extendedWays, idToRelation, minx, maxx, miny, maxy);
     }
-
 
     private List<Way> mergeCoastLines(List<Way> coastlines) {
         Map<Node, Way> pieces = new HashMap<>();

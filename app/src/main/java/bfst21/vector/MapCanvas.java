@@ -36,8 +36,8 @@ public class MapCanvas extends Canvas {
         //paintFill(gc, model.getMapData().getBuildings(), Color.LIGHTGRAY);
         //drawLine(gc, model.getMapData().getBuildings(), Color.DARKGRAY);
         //drawRoad(gc, model.getMapData().getExtendedWays(), 0.00001, Color.DARKGREY, Color.BLACK);
-        drawRoad(gc, model.getMapData().getMotorways(), 0.0004, Color.rgb(248, 197, 81), Color.rgb(252, 172, 12));
-        drawRoad(gc, model.getMapData().getTertiaryWays(), 0.0004, Color.WHITE, Color.DARKGREY);
+        drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(248, 197, 81), Color.rgb(252, 172, 12));
+        drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.WHITE, Color.DARKGREY);
 
         gc.restore();
     }
