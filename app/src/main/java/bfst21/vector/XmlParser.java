@@ -27,8 +27,8 @@ public class XmlParser {
     public MapData loadOSM(InputStream input) throws XMLStreamException, FactoryConfigurationError {
 
         reader = XMLInputFactory
-            .newInstance()
-            .createXMLStreamReader(new BufferedInputStream(input));
+                .newInstance()
+                .createXMLStreamReader(new BufferedInputStream(input));
 
         Way way = null;
         ExtendedWay extendedWay = null;

@@ -9,7 +9,6 @@ import javafx.scene.canvas.GraphicsContext;
 
 public class Way extends Element implements Drawable, Serializable {
 
-    //Used for creating binary files
     private static final long serialVersionUID = 3139576893143362100L;
     protected List<Node> nodes = new ArrayList<>();
 

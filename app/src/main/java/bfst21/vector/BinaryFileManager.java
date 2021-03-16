@@ -16,15 +16,15 @@ public class BinaryFileManager {
             input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)));
         }
         return new MapData(
-            (List<Drawable>) input.readObject(),
-            (List<Way>) input.readObject(),
-            (List<Way>) input.readObject(),
-            (List<Way>) input.readObject(),
-            (LongIndex) input.readObject(),
-            input.readFloat(),
-            input.readFloat(),
-            input.readFloat(),
-            input.readFloat()
+                (List<Drawable>) input.readObject(),
+                (List<Way>) input.readObject(),
+                (List<Way>) input.readObject(),
+                (List<Way>) input.readObject(),
+                (LongIndex) input.readObject(),
+                input.readFloat(),
+                input.readFloat(),
+                input.readFloat(),
+                input.readFloat()
         );
     }
 
