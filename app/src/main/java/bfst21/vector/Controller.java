@@ -13,6 +13,10 @@ public class Controller {
 
     @FXML
     private MapCanvas canvas;
+    private double zoomLevel = 1.0;
+    private double zoomLevelMin = 0.018682;
+    private double zoomLevelMax = 80.0;
+
 
     public void init(Model model) {
         this.model = model;
@@ -22,7 +26,12 @@ public class Controller {
     @FXML
     private void onScroll(ScrollEvent e) {
         double factor = Math.pow(1.01, e.getDeltaY());
-        canvas.zoom(factor, new Point2D(e.getX(), e.getY()));
+        double zoomLevelPre = zoomLevel * factor;
+        if (zoomLevelPre < zoomLevelMax && zoomLevelPre > zoomLevelMin) {
+            zoomLevel = zoomLevelPre;
+            canvas.zoom(factor, new Point2D(e.getX(), e.getY()));
+            System.out.println(zoomLevel);
+        }
     }
 
     @FXML
