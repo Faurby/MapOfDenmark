@@ -23,7 +23,7 @@ public class XmlParser {
     }
 
     //TODO: Consider using a stack for parent elements
-    //You can then peek to see what type of parent it has
+    // You can then peek to see what type of parent it has
     public MapData loadOSM(InputStream input) throws XMLStreamException, FactoryConfigurationError {
 
         reader = XMLInputFactory
