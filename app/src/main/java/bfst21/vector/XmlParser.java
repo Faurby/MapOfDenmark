@@ -69,7 +69,9 @@ public class XmlParser {
                         case "way":
                             long wayID = getLong("id");
                             way = new Way(wayID);
+
                             extendedWay = new ExtendedWay(wayID);
+
                             isCoastline = false;
                             isBuilding = false;
                             break;
@@ -111,6 +113,7 @@ public class XmlParser {
                                 } else if (key.equals("building")) {
                                     isBuilding = true;
                                 } else {
+
                                     extendedWay.addTag(key, value);
                                 }
                             }

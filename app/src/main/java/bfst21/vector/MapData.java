@@ -1,6 +1,9 @@
 package bfst21.vector;
 
+import bfst21.vector.osm.ExtendedWay;
 import bfst21.vector.osm.Way;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -52,6 +55,36 @@ public class MapData {
     public List<Way> getExtendedWays() {
         return extendedWays;
     }
+
+    public List<Way> getTertiaryWays() {
+        List<Way> tertiaryWays = new ArrayList<>();
+
+        for (Way w : extendedWays) {
+            if (w instanceof ExtendedWay) {
+                ExtendedWay exWay = (ExtendedWay) w;
+                if (exWay.getValue("highway") != null && exWay.getValue("highway").contains("tertiary")) {
+                    tertiaryWays.add(w);
+                }
+            }
+        }
+
+        return tertiaryWays;
+    }
+
+
+    public List<Way> getMotorways() {
+        List<Way> motorways = new ArrayList<>();
+
+        for (Way w : extendedWays) {
+            if (w instanceof ExtendedWay) {
+                ExtendedWay exWay = (ExtendedWay) w;
+                if (exWay.getValue("highway") != null && exWay.getValue("highway").equalsIgnoreCase("motorway")) {
+                    motorways.add(w);
+                }
+            }
+        }
+
+        return motorways;
 
     public LongIndex getIdToRelation() {
         return idToRelation;
