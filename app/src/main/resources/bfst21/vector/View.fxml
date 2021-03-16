@@ -33,20 +33,29 @@
                          minWidth="${scene.width}"
                 >
 
-                    <Menu text="testMenuItem1">
-                        <MenuItem fx:id="MenuItem1"
-                            text="testSubMenuItem1"
+                    <Menu text="File">
+                        <MenuItem
+                            text="Load"
                         />
-
-
-                        <MenuItem text="testSubMenuItem2"/>
+                        <MenuItem
+                            text="Save"
+                        />
                     </Menu>
-                    <Menu text="testMenuItem2">
-                        <MenuItem text="testSubMenu2Item1"/>
+
+                    <Menu text="View">
+                        <MenuItem
+                                fx:id="zoomIn"
+                                text="Zoom in" onAction="#zoomButtonClicked"
+                        />
+                        <MenuItem text="Zoom out" onAction="#zoomButtonClicked"/>
                     </Menu>
+
+                    <Menu text="Color options">
+                        <MenuItem text="Crazy"/>
+                        <MenuItem text="Dull"/>
+                    </Menu>
+
                 </MenuBar>
-
-
 
             </HBox>
         </BorderPane>

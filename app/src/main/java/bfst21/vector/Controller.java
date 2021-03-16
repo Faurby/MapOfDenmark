@@ -1,5 +1,6 @@
 package bfst21.vector;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
@@ -48,5 +49,14 @@ public class Controller {
     @FXML
     public void handleKeyInput(KeyEvent keyEvent) {
         System.out.println("Test. KeyEvent: " + keyEvent);
+    }
+
+    public void zoomButtonClicked(ActionEvent actionEvent) {
+        if (actionEvent.getSource().toString().contains("zoomIn")){
+            canvas.preZoom(2.0,new Point2D(canvas.getWidth()/2,canvas.getHeight()/2));
+        } else {
+            canvas.preZoom(0.50,new Point2D(canvas.getWidth()/2,canvas.getHeight()/2));
+        }
+        //TODO: tjek at zoom centreres præcis i midten af vinduet, så menubaren ikke tæller med
     }
 }
