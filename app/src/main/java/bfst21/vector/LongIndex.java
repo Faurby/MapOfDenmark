@@ -11,6 +11,10 @@ public class LongIndex {
     private List<Element> elements = new ArrayList<>();
     private boolean sorted = true;
 
+    public List<Element> getElements() {
+        return elements;
+    }
+
     public void put(Element element) {
         elements.add(element);
         sorted = false;

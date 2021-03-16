@@ -1,9 +1,7 @@
 package bfst21.vector;
 
-import bfst21.vector.osm.ExtendedWay;
-import bfst21.vector.osm.Node;
-import bfst21.vector.osm.Relation;
-import bfst21.vector.osm.Way;
+import bfst21.vector.osm.*;
+
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -35,8 +33,6 @@ public class XmlParser {
         Way way = null;
         Relation relation = null;
         ExtendedWay extendedWay = null;
-
-        boolean checkingRelation = false;
 
         LongIndex idToNode = new LongIndex();
         LongIndex idToWay = new LongIndex();
@@ -70,7 +66,6 @@ public class XmlParser {
                             break;
 
                         case "way":
-                            checkingRelation = false;
                             long wayID = getLong(reader, "id");
                             way = new Way(wayID);
                             isCoastline = false;
@@ -78,7 +73,6 @@ public class XmlParser {
                             break;
 
                         case "relation":
-                            checkingRelation = true;
                             long relationID = getLong(reader, "id");
                             relation = new Relation(relationID);
 
@@ -99,7 +93,7 @@ public class XmlParser {
                                 } else if (type.equalsIgnoreCase("relation")) {
                                     Relation memRelation = (Relation) idToRelation.get(Long.parseLong(memRef));
                                     if (memRelation != null) {
-                                        relation.addMember(memRelation);
+                                        relation.addMember(memRelation.getID());
                                     }
                                 }
                             }
@@ -107,7 +101,7 @@ public class XmlParser {
                         case "tag":
                             String k = reader.getAttributeValue(null, "k");
                             String v = reader.getAttributeValue(null, "v");
-                            if (!checkingRelation) {
+                            if (way != null) {
                                 if (k.equals("natural") && v.equals("coastline")) {
                                     isCoastline = true;
                                 } else if (k.equals("building")) {
@@ -144,14 +138,34 @@ public class XmlParser {
                             if (extendedWay != null) {
                                 extendedWays.add(extendedWay);
                             }
+                            way = null;
                             break;
                         case "relation":
                             idToRelation.put(relation);
+                            relation = null;
                             break;
                     }
                     break;
             }
         }
+
+//        for (Element em : idToRelation.getElements()) {
+//            Relation rel = (Relation) em;
+//
+//            for (Element mem : rel.getMembers()) {
+//                if (mem instanceof Node) {
+//                    System.out.println("Rel: "+rel.getID()+ " node: "+mem.getID());
+//                }
+//                if (mem instanceof Way) {
+//                    System.out.println("Rel: "+rel.getID()+ " way: "+mem.getID());
+//                }
+//                if (mem instanceof Relation) {
+//                    System.out.println("Rel: "+rel.getID()+ " relation: "+mem.getID());
+//                }
+//            }
+//        }
+
+
         islands = mergeCoastLines(coastlines);
         return new MapData(shapes, buildings, islands, extendedWays, minx, maxx, miny, maxy);
     }

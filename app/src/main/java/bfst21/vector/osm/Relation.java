@@ -6,19 +6,39 @@ import java.util.List;
 
 public class Relation extends Element {
 
-    private List<Element> members;
+    private List<Node> nodes;
+    private List<Way> ways;
+    private List<Long> relationIDs;
 
     public Relation(long id) {
         super(id);
-        members = new ArrayList<>();
+        nodes = new ArrayList<>();
+        ways = new ArrayList<>();
+        relationIDs = new ArrayList<>();
     }
 
-    public List<Element> getMembers() {
-        return members;
+    public List<Node> getNodes() {
+        return nodes;
     }
 
-    public void addMember(Element element) {
-        members.add(element);
+    public List<Way> getWays() {
+        return ways;
+    }
+
+    public List<Long> getRelations() {
+        return relationIDs;
+    }
+
+    public void addMember(Node node) {
+        nodes.add(node);
+    }
+
+    public void addMember(Way way) {
+        ways.add(way);
+    }
+
+    public void addMember(Long relationID) {
+        relationIDs.add(relationID);
     }
 
     @Override
