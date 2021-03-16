@@ -13,6 +13,9 @@ public class MapCanvas extends Canvas {
 
     private Model model;
     private Affine trans = new Affine();
+    private double zoomLevel = 1.0;
+    private double zoomLevelMin = 0.018682;
+    private double zoomLevelMax = 80.0;
 
     public void init(Model model) {
         this.model = model;
@@ -41,8 +44,12 @@ public class MapCanvas extends Canvas {
     }
 
     public void zoom(double factor, Point2D center) {
-        trans.prependScale(factor, factor, center);
-        repaint();
+        double zoomLevelPre = zoomLevel * factor;
+        if (zoomLevelPre < zoomLevelMax && zoomLevelPre > zoomLevelMin) {
+            zoomLevel = zoomLevelPre;
+            trans.prependScale(factor, factor, center);
+            repaint();
+        }
     }
 
     public Point2D mouseToModelCoords(Point2D point) {
