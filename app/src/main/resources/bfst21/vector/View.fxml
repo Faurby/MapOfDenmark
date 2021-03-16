@@ -28,23 +28,27 @@
             </center>
 
             <HBox>
-                <Button fx:id="button"
-                        minHeight="25"
-                        minWidth="${scene.width}"
-                        contentDisplay="CENTER"
-                        defaultButton="true"
-                        text="Click Me!" />
-            </HBox>
+                <MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput"
+                         minHeight="25"
+                         minWidth="${scene.width}"
+                >
 
-            <MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput">
-                <Menu text="testMenuItem1">
-                    <MenuItem text="testSubMenuItem1"/>
-                    <MenuItem text="testSubMenuItem2"/>
-                </Menu>
-                <Menu text="testMenuItem2">
-                    <MenuItem text="testSubMenu2Item1"/>
-                </Menu>
-            </MenuBar>
+                    <Menu text="testMenuItem1">
+                        <MenuItem fx:id="MenuItem1"
+                            text="testSubMenuItem1"
+                        />
+
+
+                        <MenuItem text="testSubMenuItem2"/>
+                    </Menu>
+                    <Menu text="testMenuItem2">
+                        <MenuItem text="testSubMenu2Item1"/>
+                    </Menu>
+                </MenuBar>
+
+
+
+            </HBox>
         </BorderPane>
     </root>
 </Scene>

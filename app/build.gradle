@@ -20,7 +20,7 @@ jar {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
-    from('data/amager.obj')
+    from('data/amager.zip.obj')
 }
 
 javafx {
@@ -57,5 +57,5 @@ tasks.named('test') {
 }
 
 run {
-    args = ['data/amager.zip.obj']
+    args = ['data/amager.zip']
 }
