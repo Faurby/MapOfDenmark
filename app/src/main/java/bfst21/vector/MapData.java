@@ -1,18 +1,20 @@
 package bfst21.vector;
 
+import bfst21.vector.osm.Way;
 import java.util.List;
 
 
 public class MapData {
 
     private List<Drawable> shapes;
-    private List<Drawable> buildings;
-    private List<Drawable> islands;
-    private List<Drawable> extendedWays;
+
+    private List<Way> buildings;
+    private List<Way> islands;
+    private List<Way> extendedWays;
 
     private float minx, miny, maxx, maxy;
 
-    public MapData(List<Drawable> shapes, List<Drawable> buildings, List<Drawable> islands, List<Drawable> extendedWays, float minx, float maxx, float miny, float maxy) {
+    public MapData(List<Drawable> shapes, List<Way> buildings, List<Way> islands, List<Way> extendedWays, float minx, float maxx, float miny, float maxy) {
         this.shapes = shapes;
         this.buildings = buildings;
         this.islands = islands;
@@ -27,15 +29,15 @@ public class MapData {
         return shapes;
     }
 
-    public List<Drawable> getBuildings() {
+    public List<Way> getBuildings() {
         return buildings;
     }
 
-    public List<Drawable> getIslands() {
+    public List<Way> getIslands() {
         return islands;
     }
 
-    public List<Drawable> getExtendedWays() {
+    public List<Way> getExtendedWays() {
         return extendedWays;
     }
 

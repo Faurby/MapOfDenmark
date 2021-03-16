@@ -85,19 +85,6 @@ public class Way extends Element implements Drawable, Serializable {
         }
     }
 
-    public void draw(GraphicsContext gc) {
-        gc.beginPath();
-        trace(gc);
-        gc.stroke();
-    }
-
-    public void fill(GraphicsContext gc) {
-        gc.beginPath();
-        trace(gc);
-        gc.fill();
-    }
-
-
     @Override
     public ElementType getType() {
         return ElementType.WAY;
