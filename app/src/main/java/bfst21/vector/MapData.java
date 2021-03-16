@@ -11,14 +11,26 @@ public class MapData {
     private List<Way> buildings;
     private List<Way> islands;
     private List<Way> extendedWays;
+    private LongIndex idToRelation;
 
     private float minx, miny, maxx, maxy;
 
-    public MapData(List<Drawable> shapes, List<Way> buildings, List<Way> islands, List<Way> extendedWays, float minx, float maxx, float miny, float maxy) {
+    public MapData(
+            List<Drawable> shapes,
+            List<Way> buildings,
+            List<Way> islands,
+            List<Way> extendedWays,
+            LongIndex idToRelation,
+            float minx,
+            float maxx,
+            float miny,
+            float maxy) {
+
         this.shapes = shapes;
         this.buildings = buildings;
         this.islands = islands;
         this.extendedWays = extendedWays;
+        this.idToRelation = idToRelation;
         this.minx = minx;
         this.miny = miny;
         this.maxx = maxx;
@@ -39,6 +51,10 @@ public class MapData {
 
     public List<Way> getExtendedWays() {
         return extendedWays;
+    }
+
+    public LongIndex getIdToRelation() {
+        return idToRelation;
     }
 
     public float getMinx() {
