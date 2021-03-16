@@ -44,9 +44,9 @@ public class MapCanvas extends Canvas {
     }
 
     public void zoom(double factor, Point2D center) {
-        double zoomLevelPre = zoomLevel * factor;
-        if (zoomLevelPre < zoomLevelMax && zoomLevelPre > zoomLevelMin) {
-            zoomLevel = zoomLevelPre;
+        double zoomLevelNext = zoomLevel * factor;
+        if (zoomLevelNext < zoomLevelMax && zoomLevelNext > zoomLevelMin) {
+            zoomLevel = zoomLevelNext;
             trans.prependScale(factor, factor, center);
             repaint();
         }
