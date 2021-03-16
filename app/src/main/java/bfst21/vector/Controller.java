@@ -60,4 +60,9 @@ public class Controller {
         }
         //TODO: tjek at zoom centreres præcis i midten af vinduet, så menubaren ikke tæller med
     }
+
+    @FXML
+    public void testSuMenuItem1Clicked(ActionEvent actionEvent) {
+        System.out.println("Test. KeyEvent: " + actionEvent);
+    }
 }

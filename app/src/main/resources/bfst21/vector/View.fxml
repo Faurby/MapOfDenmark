@@ -28,28 +28,19 @@
                            onMouseDragged="#onMouseDragged"
                 />
             </center>
-
             <top>
                 <HBox>
                     <MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput"
                              minHeight="25"
                              minWidth="${scene.width}"
                     >
-
                         <Menu text="File">
-                            <MenuItem
-                                text="Load"
-                            />
-                            <MenuItem
-                                text="Save"
-                            />
+                            <MenuItem text="Load"/>
+                            <MenuItem text="Save"/>
                         </Menu>
 
                         <Menu text="View">
-                            <MenuItem
-                                    fx:id="zoomIn"
-                                    text="Zoom in" onAction="#zoomButtonClicked"
-                            />
+                            <MenuItem fx:id="zoomIn" text="Zoom in" onAction="#zoomButtonClicked"/>
                             <MenuItem text="Zoom out" onAction="#zoomButtonClicked"/>
                         </Menu>
 
@@ -57,12 +48,9 @@
                             <MenuItem text="Crazy"/>
                             <MenuItem text="Dull"/>
                         </Menu>
-
                     </MenuBar>
-
                 </HBox>
             </top>
-
             <left>
                 <VBox maxWidth="175">
 
