@@ -6,6 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
+
 import java.util.List;
 
 
@@ -32,9 +33,9 @@ public class MapCanvas extends Canvas {
         gc.setTransform(trans);
 
         paintFill(gc, model.getMapData().getIslands(), Color.LIGHTYELLOW);
-        paintFill(gc, model.getMapData().getBuildings(), Color.LIGHTGRAY);
-        drawLine(gc, model.getMapData().getBuildings(), Color.DARKGRAY);
-        drawRoad(gc, model.getMapData().getExtendedWays(), 0.00001, Color.DARKGREY, Color.BLACK);
+        //paintFill(gc, model.getMapData().getBuildings(), Color.LIGHTGRAY);
+        //drawLine(gc, model.getMapData().getBuildings(), Color.DARKGRAY);
+        //drawRoad(gc, model.getMapData().getExtendedWays(), 0.00001, Color.DARKGREY, Color.BLACK);
         gc.restore();
     }
 
@@ -43,13 +44,18 @@ public class MapCanvas extends Canvas {
         repaint();
     }
 
-    public void zoom(double factor, Point2D center) {
-        double zoomLevelPre = zoomLevel * factor;
-        if (zoomLevelPre < zoomLevelMax && zoomLevelPre > zoomLevelMin) {
-            zoomLevel = zoomLevelPre;
-            trans.prependScale(factor, factor, center);
-            repaint();
+    public void preZoom(double factor, Point2D center) {
+        double zoomLevelNext = zoomLevel * factor;
+        if (zoomLevelNext < zoomLevelMax && zoomLevelNext > zoomLevelMin) {
+            zoomLevel = zoomLevelNext;
+            zoom(factor, center);
         }
+    }
+
+    public void zoom(double factor, Point2D center) {
+        trans.prependScale(factor, factor, center);
+        repaint();
+        System.out.println(zoomLevel);
     }
 
     public Point2D mouseToModelCoords(Point2D point) {
