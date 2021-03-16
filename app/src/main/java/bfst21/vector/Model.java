@@ -1,5 +1,7 @@
 package bfst21.vector;
 
+import bfst21.vector.osm.Way;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;

@@ -1,12 +1,12 @@
 package bfst21.vector;
 
+import bfst21.vector.osm.Way;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
-
 import java.util.List;
 
 
@@ -33,9 +33,9 @@ public class MapCanvas extends Canvas {
         gc.setTransform(trans);
 
         paintFill(gc, model.getMapData().getIslands(), Color.LIGHTYELLOW);
-        //paintFill(gc, model.getMapData().getBuildings(), Color.LIGHTGRAY);
-        //drawLine(gc, model.getMapData().getBuildings(), Color.DARKGRAY);
-        //drawRoad(gc, model.getMapData().getExtendedWays(), 0.00001, Color.DARKGREY, Color.BLACK);
+        paintFill(gc, model.getMapData().getBuildings(), Color.LIGHTGRAY);
+        drawLine(gc, model.getMapData().getBuildings(), Color.DARKGRAY);
+        drawRoad(gc, model.getMapData().getExtendedWays(), 0.00001, Color.DARKGREY, Color.BLACK);
         gc.restore();
     }
 
@@ -67,30 +67,30 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void drawLine(GraphicsContext gc, List<Drawable> list, Color color) {
+    public void drawLine(GraphicsContext gc, List<Way> list, Color color) {
         gc.setStroke(color);
         gc.setLineWidth(1 / Math.sqrt(trans.determinant()));
-        for (Drawable line : list) {
+        for (Way line : list) {
             line.draw(gc);
         }
     }
 
-    public void paintFill(GraphicsContext gc, List<Drawable> list, Color color) {
+    public void paintFill(GraphicsContext gc, List<Way> list, Color color) {
         gc.setFill(color);
-        for (Drawable line : list) {
+        for (Way line : list) {
             line.fill(gc);
         }
     }
 
-    public void drawRoad(GraphicsContext gc, List<Drawable> list, double size, Color roadColor, Color outline) {
+    public void drawRoad(GraphicsContext gc, List<Way> list, double size, Color roadColor, Color outline) {
         gc.setStroke(outline);
         gc.setLineWidth(size);
-        for (Drawable line : list) {
+        for (Way line : list) {
             line.draw(gc);
         }
         gc.setStroke(roadColor);
         gc.setLineWidth(size * 0.75);
-        for (Drawable line : list) {
+        for (Way line : list) {
             line.draw(gc);
         }
     }

@@ -1,5 +1,6 @@
 package bfst21.vector;
 
+import bfst21.vector.osm.Way;
 import java.io.*;
 import java.util.List;
 
@@ -16,9 +17,9 @@ public class BinaryFileManager {
         }
         return new MapData(
             (List<Drawable>) input.readObject(),
-            (List<Drawable>) input.readObject(),
-            (List<Drawable>) input.readObject(),
-            (List<Drawable>) input.readObject(),
+            (List<Way>) input.readObject(),
+            (List<Way>) input.readObject(),
+            (List<Way>) input.readObject(),
             input.readFloat(),
             input.readFloat(),
             input.readFloat(),

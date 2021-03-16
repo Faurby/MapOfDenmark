@@ -3,35 +3,39 @@ package bfst21.vector;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import bfst21.vector.osm.Node;
+import bfst21.vector.osm.Element;
 
 
 public class LongIndex {
-    private List<Node> nodes = new ArrayList<>();
+
+    private List<Element> elements = new ArrayList<>();
     private boolean sorted = true;
 
-    public void put(Node node) {
-        nodes.add(node);
+    public List<Element> getElements() {
+        return elements;
+    }
+
+    public void put(Element element) {
+        elements.add(element);
         sorted = false;
     }
 
-    public Node get(long ref) {
+    public Element get(long ref) {
         if (!sorted) {
-            nodes.sort(Comparator.comparingLong(Node::getID));
+            elements.sort(Comparator.comparingLong(Element::getID));
             sorted = true;
         }
         int lo = 0;            // nodes.get(lo).getID() <= ref
-        int hi = nodes.size(); // nodes.get(hi).getID() > ref
+        int hi = elements.size(); // nodes.get(hi).getID() > ref
         while (lo + 1 < hi) {
             int mi = (lo + hi) / 2;
-            if (nodes.get(mi).getID() <= ref) {
+            if (elements.get(mi).getID() <= ref) {
                 lo = mi;
             } else {
                 hi = mi;
             }
         }
-        Node node = nodes.get(lo);
-        return node.getID() == ref ? node : null;
+        Element element = elements.get(lo);
+        return element.getID() == ref ? element : null;
     }
 }
