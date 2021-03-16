@@ -85,6 +85,7 @@ public class MapData {
         }
 
         return motorways;
+    }
 
     public LongIndex getIdToRelation() {
         return idToRelation;
