@@ -1,10 +1,13 @@
 package bfst21.vector.osm;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class Relation extends Element {
+public class Relation extends Element implements Serializable {
+
+    private static final long serialVersionUID = 4549832550595113105L;
 
     private List<Node> nodes;
     private List<Way> ways;

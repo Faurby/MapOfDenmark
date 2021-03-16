@@ -9,25 +9,26 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 
 public class XmlParser {
 
+    private XMLStreamReader reader;
+
     public MapData loadOSM(String filename) throws FileNotFoundException, XMLStreamException, FactoryConfigurationError {
         return loadOSM(new FileInputStream(filename));
     }
 
+    //TODO: Consider using a stack for parent elements
+    // You can then peek to see what type of parent it has
     public MapData loadOSM(InputStream input) throws XMLStreamException, FactoryConfigurationError {
 
-        XMLStreamReader reader = XMLInputFactory
-                .newInstance()
-                .createXMLStreamReader(new BufferedInputStream(input));
+        reader = XMLInputFactory
+            .newInstance()
+            .createXMLStreamReader(new BufferedInputStream(input));
 
         Way way = null;
         ExtendedWay extendedWay = null;
@@ -52,33 +53,37 @@ public class XmlParser {
                 case START_ELEMENT:
                     switch (reader.getLocalName()) {
                         case "bounds":
-                            minx = getFloat(reader, "minlon");
-                            maxx = getFloat(reader, "maxlon");
-                            maxy = getFloat(reader, "minlat") / -0.56f;
-                            miny = getFloat(reader, "maxlat") / -0.56f;
+                            minx = getFloat("minlon");
+                            maxx = getFloat("maxlon");
+                            maxy = getFloat("minlat") / -0.56f;
+                            miny = getFloat("maxlat") / -0.56f;
                             break;
+
                         case "node":
-                            long nodeID = getLong(reader, "id");
-                            float lon = getFloat(reader, "lon");
-                            float lat = getFloat(reader, "lat");
+                            long nodeID = getLong("id");
+                            float lon = getFloat("lon");
+                            float lat = getFloat("lat");
                             idToNode.put(new Node(nodeID, lat, lon));
                             break;
+
                         case "way":
-                            long wayID = getLong(reader, "id");
+                            long wayID = getLong("id");
                             way = new Way(wayID);
-                            extendedWay= new ExtendedWay(wayID);
+
+                            extendedWay = new ExtendedWay(wayID);
+
                             isCoastline = false;
                             isBuilding = false;
                             break;
 
                         case "relation":
-                            long relationID = getLong(reader, "id");
+                            long relationID = getLong("id");
                             relation = new Relation(relationID);
                             break;
 
                         case "member":
-                            String type = reader.getAttributeValue(null, "type");
-                            String memRef = reader.getAttributeValue(null, "ref");
+                            String type = getAttribute("type");
+                            String memRef = getAttribute("ref");
                             if (type != null) {
                                 if (type.equalsIgnoreCase("node")) {
                                     Node memNode = (Node) idToNode.get(Long.parseLong(memRef));
@@ -100,25 +105,27 @@ public class XmlParser {
                             break;
 
                         case "tag":
-                            String k = reader.getAttributeValue(null, "k");
-                            String v = reader.getAttributeValue(null, "v");
+                            String key = getAttribute("k");
+                            String value = getAttribute("v");
                             if (way != null) {
-                                if (k.equals("natural") && v.equals("coastline")) {
+                                if (key.equals("natural") && value.equals("coastline")) {
                                     isCoastline = true;
-                                } else if (k.equals("building")) {
+                                } else if (key.equals("building")) {
                                     isBuilding = true;
                                 } else {
-                                    extendedWay.addTag(k, v);
+
+                                    extendedWay.addTag(key, value);
                                 }
                             }
                             break;
 
                         case "nd":
-                            long ref = getLong(reader, "ref");
+                            long ref = getLong("ref");
                             way.add((Node) idToNode.get(ref));
                             break;
                     }
                     break;
+
                 case END_ELEMENT:
                     switch (reader.getLocalName()) {
                         case "way":
@@ -134,6 +141,7 @@ public class XmlParser {
                                 extendedWay.setNodes(way.getNodes());
                             }
                             break;
+
                         case "relation":
                             idToRelation.put(relation);
                             break;
@@ -142,7 +150,7 @@ public class XmlParser {
             }
         }
         islands = mergeCoastLines(coastlines);
-        return new MapData(shapes, buildings, islands, extendedWays, minx, maxx, miny, maxy);
+        return new MapData(shapes, buildings, islands, extendedWays, idToRelation, minx, maxx, miny, maxy);
     }
 
 
@@ -166,11 +174,15 @@ public class XmlParser {
         return merged;
     }
 
-    private float getFloat(XMLStreamReader reader, String localName) {
-        return Float.parseFloat(reader.getAttributeValue(null, localName));
+    private String getAttribute(String name) {
+        return reader.getAttributeValue(null, name);
     }
 
-    private long getLong(XMLStreamReader reader, String localName) {
-        return Long.parseLong(reader.getAttributeValue(null, localName));
+    private float getFloat(String name) {
+        return Float.parseFloat(getAttribute(name));
+    }
+
+    private long getLong(String name) {
+        return Long.parseLong(getAttribute(name));
     }
 }

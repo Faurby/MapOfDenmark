@@ -1,12 +1,13 @@
 package bfst21.vector;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import bfst21.vector.osm.Element;
 
 
-public class LongIndex {
+public class LongIndex implements Serializable {
 
     private List<Element> elements = new ArrayList<>();
     private boolean sorted = true;
