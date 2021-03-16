@@ -21,7 +21,7 @@ public class Controller {
     @FXML
     private void onScroll(ScrollEvent e) {
         double factor = Math.pow(1.01, e.getDeltaY());
-        canvas.zoom(factor, new Point2D(e.getX(), e.getY()));
+        canvas.preZoom(factor, new Point2D(e.getX(), e.getY()));
     }
 
     @FXML

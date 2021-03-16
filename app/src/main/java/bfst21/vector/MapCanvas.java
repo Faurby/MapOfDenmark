@@ -6,6 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
+
 import java.util.List;
 
 
@@ -43,13 +44,18 @@ public class MapCanvas extends Canvas {
         repaint();
     }
 
-    public void zoom(double factor, Point2D center) {
+    public void preZoom(double factor, Point2D center) {
         double zoomLevelNext = zoomLevel * factor;
         if (zoomLevelNext < zoomLevelMax && zoomLevelNext > zoomLevelMin) {
             zoomLevel = zoomLevelNext;
-            trans.prependScale(factor, factor, center);
-            repaint();
+            zoom(factor, center);
         }
+    }
+
+    public void zoom(double factor, Point2D center) {
+        trans.prependScale(factor, factor, center);
+        repaint();
+        System.out.println(zoomLevel);
     }
 
     public Point2D mouseToModelCoords(Point2D point) {
