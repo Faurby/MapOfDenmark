@@ -2,7 +2,9 @@ package bfst21.vector;
 
 import java.util.List;
 
+
 public class MapData {
+
     private List<Drawable> shapes;
     private List<Drawable> buildings;
     private List<Drawable> islands;
@@ -33,7 +35,9 @@ public class MapData {
         return islands;
     }
 
-    public List<Drawable> getExtendedWays() { return extendedWays; }
+    public List<Drawable> getExtendedWays() {
+        return extendedWays;
+    }
 
     public float getMinx() {
         return minx;

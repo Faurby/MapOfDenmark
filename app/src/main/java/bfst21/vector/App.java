@@ -10,6 +10,7 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception {
         String filename = "amager.obj";
         boolean jarFile = true;
+
         if (getParameters().getRaw().size() > 0) {
             filename = getParameters().getRaw().get(0);
             jarFile = false;

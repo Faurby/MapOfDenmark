@@ -12,26 +12,28 @@ import java.util.zip.ZipInputStream;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
+
 public class Model implements Iterable<Drawable> {
 
     private List<Runnable> observers = new ArrayList<>();
     private MapData mapData;
 
-    public Model(String filename, boolean jarFile) throws IOException, XMLStreamException, FactoryConfigurationError,
-            ClassNotFoundException {
+    public Model(String filename, boolean jarFile) throws IOException, XMLStreamException, FactoryConfigurationError, ClassNotFoundException {
         load(filename, jarFile);
     }
 
-    public void load(String filename, boolean jarFile) throws IOException, XMLStreamException, FactoryConfigurationError,
-            ClassNotFoundException {
+    public void load(String filename, boolean jarFile) throws IOException, XMLStreamException, FactoryConfigurationError, ClassNotFoundException {
         long time = -System.nanoTime();
+
         if (filename.endsWith(".osm")) {
             XmlParser xmlParser = new XmlParser();
             mapData = xmlParser.loadOSM(filename);
+
         } else if (filename.endsWith(".zip")) {
             BinaryFileManager binaryFileManager = new BinaryFileManager();
             loadZIP(filename);
             binaryFileManager.saveOBJ(filename + ".obj", mapData);
+
         } else if (filename.endsWith(".obj")) {
             BinaryFileManager binaryFileManager = new BinaryFileManager();
             mapData = binaryFileManager.loadOBJ(filename, jarFile);
@@ -49,8 +51,9 @@ public class Model implements Iterable<Drawable> {
 
     public void save(String filename) throws FileNotFoundException {
         try (PrintStream out = new PrintStream(filename)) {
-            for (Drawable line : mapData.getShapes())
+            for (Drawable line : mapData.getShapes()) {
                 out.println(line);
+            }
         }
     }
 
@@ -59,7 +62,9 @@ public class Model implements Iterable<Drawable> {
     }
 
     void notifyObservers() {
-        for (Runnable observer : observers) observer.run();
+        for (Runnable observer : observers) {
+            observer.run();
+        }
     }
 
     @Override

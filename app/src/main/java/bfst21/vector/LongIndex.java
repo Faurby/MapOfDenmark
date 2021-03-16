@@ -6,6 +6,7 @@ import java.util.List;
 
 import bfst21.vector.osm.Node;
 
+
 public class LongIndex {
     private List<Node> nodes = new ArrayList<>();
     private boolean sorted = true;

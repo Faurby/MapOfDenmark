@@ -3,13 +3,14 @@ package bfst21.addressparser;
 import bfst21.models.City;
 import java.util.List;
 
+
 public class CityController {
 
     private static CityController instance;
     private List<City> cityList;
 
     public void readCities() {
-        TextFileParser filereader = new TextFileParser();
+        FileReader filereader = new FileReader();
         this.cityList = filereader.getCityList();
     }
 

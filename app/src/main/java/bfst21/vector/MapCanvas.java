@@ -8,7 +8,9 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 import java.util.List;
 
+
 public class MapCanvas extends Canvas {
+
     private Model model;
     private Affine trans = new Affine();
 
@@ -52,14 +54,15 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void drawLine(GraphicsContext gc, List<Drawable> list, Color color){
+    public void drawLine(GraphicsContext gc, List<Drawable> list, Color color) {
         gc.setStroke(color);
         gc.setLineWidth(1 / Math.sqrt(trans.determinant()));
-        for (Drawable line : list)
+        for (Drawable line : list) {
             line.draw(gc);
+        }
     }
 
-    public void paintFill(GraphicsContext gc, List<Drawable> list, Color color){
+    public void paintFill(GraphicsContext gc, List<Drawable> list, Color color) {
         gc.setFill(color);
         for (Drawable line : list) {
             line.fill(gc);
@@ -73,7 +76,7 @@ public class MapCanvas extends Canvas {
             line.draw(gc);
         }
         gc.setStroke(roadColor);
-        gc.setLineWidth(size*0.75);
+        gc.setLineWidth(size * 0.75);
         for (Drawable line : list) {
             line.draw(gc);
         }
