@@ -3,6 +3,10 @@
 <?import bfst21.vector.MapCanvas?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.Scene?>
+<?import javafx.scene.control.Button?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst21.vector.Controller"
@@ -19,6 +23,15 @@
                            onMouseDragged="#onMouseDragged"
                 />
             </center>
+
+            <HBox>
+                <Button fx:id="button"
+                        minHeight="25"
+                        minWidth="${scene.width}"
+                        contentDisplay="CENTER"
+                        defaultButton="true"
+                        text="Click Me!" />
+            </HBox>
         </BorderPane>
     </root>
 </Scene>
