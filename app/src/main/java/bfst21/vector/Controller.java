@@ -2,6 +2,7 @@ package bfst21.vector;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
@@ -42,5 +43,10 @@ public class Controller {
     @FXML
     private void onMousePressed(MouseEvent e) {
         lastMouse = new Point2D(e.getX(), e.getY());
+    }
+
+    @FXML
+    public void handleKeyInput(KeyEvent keyEvent) {
+        System.out.println("Test. KeyEvent: " + keyEvent);
     }
 }

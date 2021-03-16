@@ -57,5 +57,5 @@ tasks.named('test') {
 }
 
 run {
-    args = ['data/amager.osm']
+    args = ['data/amager.zip.obj']
 }
