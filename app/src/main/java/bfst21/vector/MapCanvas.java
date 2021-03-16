@@ -33,9 +33,9 @@ public class MapCanvas extends Canvas {
         gc.setTransform(trans);
 
         paintFill(gc, model.getMapData().getIslands(), Color.LIGHTYELLOW);
-        //paintFill(gc, model.getMapData().getBuildings(), Color.LIGHTGRAY);
-        //drawLine(gc, model.getMapData().getBuildings(), Color.DARKGRAY);
-        //drawRoad(gc, model.getMapData().getExtendedWays(), 0.00001, Color.DARKGREY, Color.BLACK);
+        paintFill(gc, model.getMapData().getBuildings(), Color.LIGHTGRAY);
+        drawLine(gc, model.getMapData().getBuildings(), Color.DARKGRAY);
+        drawRoad(gc, model.getMapData().getExtendedWays(), 0.00001, Color.DARKGREY, Color.BLACK);
         gc.restore();
     }
 

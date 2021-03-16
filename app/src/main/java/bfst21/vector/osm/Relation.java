@@ -1,29 +1,28 @@
 package bfst21.vector.osm;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class Relation {
+public class Relation extends Element {
 
-    private List<Node> nodes;
-    private List<Way> ways;
-    private List<Relation> relations;
+    private List<Element> members;
 
-    public Relation(List<Node> nodes, List<Way> ways, List<Relation> relations) {
-        this.nodes = nodes;
-        this.ways = ways;
-        this.relations = relations;
+    public Relation(long id) {
+        super(id);
+        members = new ArrayList<>();
     }
 
-    public List<Node> getNodes() {
-        return nodes;
+    public List<Element> getMembers() {
+        return members;
     }
 
-    public List<Way> getWays() {
-        return ways;
+    public void addMember(Element element) {
+        members.add(element);
     }
 
-    public List<Relation> getRelations() {
-        return relations;
+    @Override
+    public ElementType getType() {
+        return ElementType.RELATION;
     }
 }
