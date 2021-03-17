@@ -19,6 +19,7 @@ public class MapCanvas extends Canvas {
     private double zoomLevel = 1.0;
     private double zoomLevelMin = 0.018682;
     private double zoomLevelMax = 80.0;
+    private double widthModifier = 1.0;
 
     public void init(Model model) {
         this.model = model;
@@ -39,10 +40,6 @@ public class MapCanvas extends Canvas {
         paintFill(gc, model.getMapData().getIslands(), Color.rgb(232, 234, 237));
         //paintFill(gc, model.getMapData().getBuildings(), Color.LIGHTGRAY);
         //drawLine(gc, model.getMapData().getBuildings(), Color.DARKGRAY);
-        //drawRoad(gc, model.getMapData().getExtendedWays(), 0.00001, Color.DARKGREY, Color.BLACK);
-        //drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.WHITE, Color.DARKGREY);
-        //drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(248, 197, 81), Color.rgb(252, 172, 12));
-        //drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.WHITE, Color.DARKGREY);
         drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.DARKGREY);
         drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(252, 172, 12));
         drawRoadOutline(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.DARKGREY);
@@ -50,7 +47,6 @@ public class MapCanvas extends Canvas {
         drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.WHITE);
         drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(248, 197, 81));
         drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.WHITE);
-
 
         gc.restore();
     }
@@ -99,6 +95,8 @@ public class MapCanvas extends Canvas {
     }
 
     public void drawRoad(GraphicsContext gc, List<Way> list, double size, Color roadColor) {
+        adjustWidthModifier();
+        size *= widthModifier;
         gc.setStroke(roadColor);
         gc.setLineWidth(size * 0.75);
         for (Way line : list) {
@@ -107,10 +105,24 @@ public class MapCanvas extends Canvas {
     }
 
     public void drawRoadOutline(GraphicsContext gc, List<Way> list, double size, Color outline) {
+        adjustWidthModifier();
+        size *= widthModifier;
         gc.setStroke(outline);
         gc.setLineWidth(size);
         for (Way line : list) {
             line.draw(gc);
+        }
+    }
+
+    public void adjustWidthModifier(){
+        if(zoomLevel < 5){
+            widthModifier = 1;
+        } else if (zoomLevel < 15){
+            widthModifier = 0.75;
+        } else if (zoomLevel < 35) {
+            widthModifier = 0.50;
+        } else if (zoomLevel < 80) {
+            widthModifier = 0.25;
         }
     }
 
