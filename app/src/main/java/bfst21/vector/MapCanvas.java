@@ -5,6 +5,8 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 import java.util.List;
@@ -31,6 +33,8 @@ public class MapCanvas extends Canvas {
         gc.setFill(Color.LIGHTBLUE);
         gc.fillRect(0, 0, getWidth(), getHeight());
         gc.setTransform(trans);
+        gc.setLineCap(StrokeLineCap.ROUND);
+        gc.setLineJoin(StrokeLineJoin.ROUND);
 
         paintFill(gc, model.getMapData().getIslands(), Color.rgb(232, 234, 237));
         //paintFill(gc, model.getMapData().getBuildings(), Color.LIGHTGRAY);
