@@ -69,6 +69,33 @@ public class MapData {
         return ways;
     }
 
+    public List<Way> getWater() {
+        List<Way> water = new ArrayList<>();
+
+        for (Way w : extendedWays) {
+            if (w instanceof ExtendedWay) {
+                ExtendedWay exWay = (ExtendedWay) w;
+                if (exWay.getValue("natural") != null && exWay.getValue("natural").contains("water")) {
+                    water.add(w);
+                }
+            }
+        }
+        return water;
+    }
+
+    public List<Way> getWaterWays() {
+        List<Way> waterWays = new ArrayList<>();
+        for (Way w : extendedWays) {
+            if (w instanceof ExtendedWay) {
+                ExtendedWay exWay = (ExtendedWay) w;
+                if (exWay.getValue("waterway") != null) {
+                    waterWays.add(w);
+                }
+            }
+        }
+        return waterWays;
+    }
+
     public LongIndex getIdToRelation() {
         return idToRelation;
     }

@@ -37,9 +37,10 @@ public class MapCanvas extends Canvas {
         gc.setLineCap(StrokeLineCap.ROUND);
         gc.setLineJoin(StrokeLineJoin.ROUND);
 
-        paintFill(gc, model.getMapData().getIslands(), Color.rgb(232, 234, 237));
-        //paintFill(gc, model.getMapData().getBuildings(), Color.LIGHTGRAY);
-        //drawLine(gc, model.getMapData().getBuildings(), Color.DARKGRAY);
+        paintFill(gc, model.getMapData().getIslands(), Color.rgb(223,222,222));
+
+
+        paintFill(gc, model.getMapData().getWater(), Color.rgb(170, 211, 223));
         drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.DARKGREY);
         drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(252, 172, 12));
         drawRoadOutline(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.DARKGREY);
@@ -47,6 +48,12 @@ public class MapCanvas extends Canvas {
         drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.WHITE);
         drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(248, 197, 81));
         drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.WHITE);
+
+        if(zoomLevel > 4){
+            drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, Color.rgb(170, 211, 223));
+            paintFill(gc, model.getMapData().getBuildings(), Color.rgb(216,206,199));
+            drawLine(gc, model.getMapData().getBuildings(), Color.rgb(197,185,175));
+        }
 
         gc.restore();
     }
