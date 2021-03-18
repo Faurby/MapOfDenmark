@@ -49,6 +49,8 @@ public class MapCanvas extends Canvas {
         drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(248, 197, 81));
         drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.WHITE);
 
+
+
         if(zoomLevel > 4){
             drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, Color.rgb(170, 211, 223));
             paintFill(gc, model.getMapData().getBuildings(), Color.rgb(216,206,199));

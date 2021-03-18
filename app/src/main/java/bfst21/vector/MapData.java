@@ -105,7 +105,7 @@ public class MapData {
                     (exWay.getValue("landuse").equalsIgnoreCase("grass") ||
                     exWay.getValue("landuse").equalsIgnoreCase("meadow") ||
                     exWay.getValue("landuse").equalsIgnoreCase("orchard") ||
-                    exWay.getValue("landuse").equalsIgnoreCase("allotment"))) {
+                    exWay.getValue("landuse").equalsIgnoreCase("allotments"))) {
 
                     greenFills.add(w);
                 } else if (exWay.getValue("leisure") != null && exWay.getValue("leisure").equalsIgnoreCase("park")){
