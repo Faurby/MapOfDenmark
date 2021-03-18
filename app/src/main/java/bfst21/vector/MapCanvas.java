@@ -39,7 +39,7 @@ public class MapCanvas extends Canvas {
 
         paintFill(gc, model.getMapData().getIslands(), Color.rgb(223,222,222));
 
-
+        paintFill(gc, model.getMapData().getGreenFill(), Color.rgb(203,234,177));
         paintFill(gc, model.getMapData().getWater(), Color.rgb(170, 211, 223));
         drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.DARKGREY);
         drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(252, 172, 12));

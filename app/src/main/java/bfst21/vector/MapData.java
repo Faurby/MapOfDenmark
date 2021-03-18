@@ -96,6 +96,26 @@ public class MapData {
         return waterWays;
     }
 
+    public List<Way> getGreenFill() {
+        List<Way> greenFills = new ArrayList<>();
+        for (Way w : extendedWays) {
+            if (w instanceof ExtendedWay) {
+                ExtendedWay exWay = (ExtendedWay) w;
+                if (exWay.getValue("landuse") != null &&
+                    (exWay.getValue("landuse").equalsIgnoreCase("grass") ||
+                    exWay.getValue("landuse").equalsIgnoreCase("meadow") ||
+                    exWay.getValue("landuse").equalsIgnoreCase("orchard") ||
+                    exWay.getValue("landuse").equalsIgnoreCase("allotment"))) {
+
+                    greenFills.add(w);
+                } else if (exWay.getValue("leisure") != null && exWay.getValue("leisure").equalsIgnoreCase("park")){
+                    greenFills.add(w);
+                }
+            }
+        }
+        return greenFills;
+    }
+
     public LongIndex getIdToRelation() {
         return idToRelation;
     }
