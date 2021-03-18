@@ -47,11 +47,6 @@ public class Controller {
         lastMouse = new Point2D(e.getX(), e.getY());
     }
 
-    @FXML
-    public void handleKeyInput(KeyEvent keyEvent) {
-        System.out.println("Test. KeyEvent: " + keyEvent);
-    }
-
     public void zoomButtonClicked(ActionEvent actionEvent) {
         if (actionEvent.toString().contains("zoomIn")) {
             canvas.preZoom(2.0,new Point2D(canvas.getWidth()/2,canvas.getHeight()/2));

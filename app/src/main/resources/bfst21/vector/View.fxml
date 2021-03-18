@@ -29,7 +29,7 @@
             </center>
             <top>
                 <HBox>
-                    <MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput" minHeight="25" minWidth="${scene.width}">
+                    <MenuBar fx:id="menuBar" minHeight="25" minWidth="${scene.width}">
                         <Menu text="File">
                             <MenuItem text="Load"/>
                             <MenuItem text="Save"/>
