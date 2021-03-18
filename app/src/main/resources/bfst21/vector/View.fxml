@@ -3,7 +3,6 @@
 <?import bfst21.vector.MapCanvas?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.Scene?>
-<?import javafx.scene.control.Button?>
 
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
@@ -30,10 +29,7 @@
             </center>
             <top>
                 <HBox>
-                    <MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput"
-                             minHeight="25"
-                             minWidth="${scene.width}"
-                    >
+                    <MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput" minHeight="25" minWidth="${scene.width}">
                         <Menu text="File">
                             <MenuItem text="Load"/>
                             <MenuItem text="Save"/>
@@ -44,7 +40,12 @@
                             <MenuItem text="Zoom out" onAction="#zoomButtonClicked"/>
                         </Menu>
 
-                        <Menu text="Color options">
+                        <Menu text="Accessibility">
+                            <Menu text="Color modes">
+                                <MenuItem fx:id="colorModeStandard" text="Standard colors" onAction="#changeColorMode"/>
+                                <MenuItem fx:id="colorModeInverted" text="Inverted colors" onAction="#changeColorMode"/>
+                                <MenuItem fx:id="colorModeBlackWhite" text="Black and White" onAction="#changeColorMode"/>
+                            </Menu>
                             <MenuItem text="Crazy"/>
                             <MenuItem text="Dull"/>
                         </Menu>
@@ -53,13 +54,8 @@
             </top>
             <left>
                 <VBox maxWidth="175">
-
-                    <TextField
-                            text="Address?"
-                    />
-                    <TextArea
-                            text="Write something..."
-                    />
+                    <TextField text="Address?"/>
+                    <TextArea text="Write something..."/>
                 </VBox>
             </left>
         </BorderPane>

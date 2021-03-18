@@ -53,7 +53,7 @@ public class Controller {
     }
 
     public void zoomButtonClicked(ActionEvent actionEvent) {
-        if (actionEvent.getSource().toString().contains("zoomIn")){
+        if (actionEvent.toString().contains("zoomIn")) {
             canvas.preZoom(2.0,new Point2D(canvas.getWidth()/2,canvas.getHeight()/2));
         } else {
             canvas.preZoom(0.50,new Point2D(canvas.getWidth()/2,canvas.getHeight()/2));
@@ -62,7 +62,17 @@ public class Controller {
     }
 
     @FXML
-    public void testSuMenuItem1Clicked(ActionEvent actionEvent) {
-        System.out.println("Test. KeyEvent: " + actionEvent);
+    public void changeColorMode(ActionEvent actionEvent) {
+        String buttonClicked = actionEvent.toString().toLowerCase();
+        if(buttonClicked.contains("standard")) {
+            canvas.setColorMode(ColorMode.STANDARD);
+        }
+        else if(buttonClicked.contains("inverted")) {
+            canvas.setColorMode(ColorMode.INVERTED);
+        }
+        else if(buttonClicked.contains("blackwhite")) {
+            canvas.setColorMode(ColorMode.BLACKWHITE);
+        }
+        canvas.repaint();
     }
 }
