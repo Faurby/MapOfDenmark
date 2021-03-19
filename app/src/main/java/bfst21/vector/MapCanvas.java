@@ -43,11 +43,11 @@ public class MapCanvas extends Canvas {
         gc.setLineCap(StrokeLineCap.ROUND);
         gc.setLineJoin(StrokeLineJoin.ROUND);
 
-
-
         switch (colorMode) {
             case STANDARD:
-                paintFill(gc, model.getMapData().getIslands(), Color.rgb(223,222,222));
+                paintFill(gc, model.getMapData().getIslands(), Color.valueOf("#dfdede"));
+                paintFill(gc, model.getMapData().getGreenFill(), Color.valueOf("#cbeab1"));
+                paintFill(gc, model.getMapData().getWater(), Color.valueOf("#aad3df"));
 
                 drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.valueOf("#A9A9A9"));
                 drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.valueOf("#FFFCAC0C"));
@@ -81,8 +81,6 @@ public class MapCanvas extends Canvas {
                 drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.valueOf("#FFFFFF"));
                 drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.valueOf("#A9A9A9"));
                 drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.valueOf("#FFFFFF"));
-
-
 
                 if(zoomLevel > 4){
                     drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, Color.valueOf("#FFFFFF"));

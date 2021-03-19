@@ -64,6 +64,11 @@ public class Controller {
         else if(buttonClicked.contains("blackwhite")) {
             canvas.setColorMode(ColorMode.BLACKWHITE);
         }
+        else if(buttonClicked.contains("colorblind")) {
+            canvas.setColorMode(ColorMode.COLORBLIND);
+        }
+
+
         canvas.repaint();
     }
 }
