@@ -16,5 +16,12 @@ public class View {
         Controller controller = loader.getController();
         stage.show();
         controller.init(model);
+
+        stage.widthProperty().addListener(e -> {
+            controller.onWindowResize();
+        });
+        stage.heightProperty().addListener(e -> {
+            controller.onWindowResize();
+        });
     }
 }

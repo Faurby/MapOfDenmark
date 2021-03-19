@@ -51,7 +51,7 @@
                 </HBox>
             </top>
             <left>
-                <VBox maxWidth="175">
+                <VBox maxWidth="175" fx:id="vbox">
                     <TextField text="Address?"/>
                     <TextArea text="Write something..."/>
                 </VBox>

@@ -6,6 +6,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Controller {
@@ -15,10 +16,17 @@ public class Controller {
 
     @FXML
     private MapCanvas canvas;
+    @FXML
+    private VBox vbox;
 
     public void init(Model model) {
         this.model = model;
         canvas.init(model);
+    }
+
+    public void onWindowResize(){
+        vbox.setMaxWidth(canvas.getWidth()*0.25);
+        System.out.println(canvas.getWidth());
     }
 
     @FXML
