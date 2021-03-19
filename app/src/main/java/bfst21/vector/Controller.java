@@ -61,9 +61,6 @@ public class Controller {
         if(buttonClicked.contains("standard")) {
             canvas.setColorMode(ColorMode.STANDARD);
         }
-        else if(buttonClicked.contains("inverted")) {
-            canvas.setColorMode(ColorMode.INVERTED);
-        }
         else if(buttonClicked.contains("blackwhite")) {
             canvas.setColorMode(ColorMode.BLACKWHITE);
         }

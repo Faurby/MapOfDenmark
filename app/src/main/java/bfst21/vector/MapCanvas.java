@@ -49,67 +49,70 @@ public class MapCanvas extends Canvas {
             case STANDARD:
                 paintFill(gc, model.getMapData().getIslands(), Color.rgb(223,222,222));
 
-                paintFill(gc, model.getMapData().getGreenFill(), Color.rgb(203,234,177));
-                paintFill(gc, model.getMapData().getWater(), Color.rgb(170, 211, 223));
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.DARKGREY);
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(252, 172, 12));
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.DARKGREY);
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.valueOf("#A9A9A9"));
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.valueOf("#FFFCAC0C"));
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.valueOf("#A9A9A9"));
 
-                drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.WHITE);
-                drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(248, 197, 81));
-                drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.WHITE);
-
-
+                drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.valueOf("#FFFFFF"));
+                drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.valueOf("#f8c551"));
+                drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.valueOf("#FFFFFF"));
 
                 if(zoomLevel > 4){
-                    drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, Color.rgb(170, 211, 223));
-                    paintFill(gc, model.getMapData().getBuildings(), Color.rgb(216,206,199));
-                    drawLine(gc, model.getMapData().getBuildings(), Color.rgb(197,185,175));
+                    drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, Color.valueOf("#aad3df"));
+                    paintFill(gc, model.getMapData().getBuildings(), Color.valueOf("#d8cec7"));
+                    drawLine(gc, model.getMapData().getBuildings(), Color.valueOf("#c5b9af"));
                 }
-                break;
-            case INVERTED:
-                paintFill(gc, model.getMapData().getIslands(), Color.rgb(223,222,222).invert());
 
-                paintFill(gc, model.getMapData().getGreenFill(), Color.rgb(203,234,177).invert());
-                paintFill(gc, model.getMapData().getWater(), Color.rgb(170, 211, 223).invert());
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.DARKGREY.invert());
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(252, 172, 12).invert());
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.DARKGREY.invert());
-
-                drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.WHITE.invert());
-                drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(248, 197, 81).invert());
-                drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.WHITE.invert());
-
-
-
-                if(zoomLevel > 4){
-                    drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, Color.rgb(170, 211, 223).invert());
-                    paintFill(gc, model.getMapData().getBuildings(), Color.rgb(216,206,199).invert());
-                    drawLine(gc, model.getMapData().getBuildings(), Color.rgb(197,185,175).invert());
-                }
                 break;
             case BLACKWHITE:
-                paintFill(gc, model.getMapData().getIslands(), Color.LIGHTGREY);
+                gc.setTransform(new Affine());
+                gc.setFill(Color.valueOf("#000000"));
+                gc.fillRect(0, 0, getWidth(), getHeight());
+                gc.setTransform(trans);
 
-                paintFill(gc, model.getMapData().getGreenFill(), Color.LIGHTGREY);
-                paintFill(gc, model.getMapData().getWater(), Color.WHITE);
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.DARKGREY);
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.DARKGREY);
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.DARKGREY);
+                paintFill(gc, model.getMapData().getIslands(), Color.valueOf("#D3D3D3"));
+                paintFill(gc, model.getMapData().getGreenFill(), Color.valueOf("#D3D3D3"));
+                paintFill(gc, model.getMapData().getWater(), Color.valueOf("FFFFFF"));
 
-                drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.WHITE);
-                drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.DARKGREY);
-                drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.WHITE);
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.valueOf("#A9A9A9"));
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.valueOf("#A9A9A9"));
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.valueOf("#A9A9A9"));
+
+                drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.valueOf("#FFFFFF"));
+                drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.valueOf("#A9A9A9"));
+                drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.valueOf("#FFFFFF"));
 
 
 
                 if(zoomLevel > 4){
-                    drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, Color.WHITE);
-                    paintFill(gc, model.getMapData().getBuildings(), Color.DARKGREY);
-                    drawLine(gc, model.getMapData().getBuildings(), Color.DARKGREY);
+                    drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, Color.valueOf("#FFFFFF"));
+                    paintFill(gc, model.getMapData().getBuildings(), Color.valueOf("#A9A9A9"));
+                    drawLine(gc, model.getMapData().getBuildings(), Color.valueOf("#A9A9A9"));
                 }
                 break;
-            case REDGREEN:
+            case COLORBLIND:
+                gc.setTransform(new Affine());
+                gc.setFill(Color.valueOf("#007eaa"));
+                gc.fillRect(0, 0, getWidth(), getHeight());
+                gc.setTransform(trans);
+
+                paintFill(gc, model.getMapData().getIslands(), Color.valueOf("#979797"));
+                paintFill(gc, model.getMapData().getGreenFill(), Color.valueOf("#455007"));
+                paintFill(gc, model.getMapData().getWater(), Color.valueOf("#007eaa"));
+
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.valueOf("#A9A9A9"));
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.valueOf("#FFFCAC0C"));
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.valueOf("#A9A9A9"));
+
+                drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.valueOf("#FFFFFF"));
+                drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.valueOf("#f8c651"));
+                drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.valueOf("#FFFFFF"));
+
+                if(zoomLevel > 4){
+                    drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, Color.valueOf("#007eaa"));
+                    paintFill(gc, model.getMapData().getBuildings(), Color.valueOf("#d8cec7"));
+                    drawLine(gc, model.getMapData().getBuildings(), Color.valueOf("#333333"));
+                }
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + colorMode);

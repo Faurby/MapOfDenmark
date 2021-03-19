@@ -40,8 +40,7 @@
 
                         <Menu text="Accessibility">
                             <Menu text="Color modes">
-                                <MenuItem fx:id="colorModeStandard" text="Standard colors" onAction="#changeColorMode"/>
-                                <MenuItem fx:id="colorModeInverted" text="Inverted colors" onAction="#changeColorMode"/>
+                                <MenuItem fx:id="colorModeStandard" text="Standard" onAction="#changeColorMode"/>
                                 <MenuItem fx:id="colorModeBlackWhite" text="Black and White" onAction="#changeColorMode"/>
                             </Menu>
                             <MenuItem text="Crazy"/>
