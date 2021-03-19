@@ -1,18 +1,23 @@
 package bfst21.vector.osm;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class Relation {
+public class Relation extends Element implements Serializable {
+
+    private static final long serialVersionUID = 4549832550595113105L;
 
     private List<Node> nodes;
     private List<Way> ways;
-    private List<Relation> relations;
+    private List<Long> relationIDs;
 
-    public Relation(List<Node> nodes, List<Way> ways, List<Relation> relations) {
-        this.nodes = nodes;
-        this.ways = ways;
-        this.relations = relations;
+    public Relation(long id) {
+        super(id);
+        nodes = new ArrayList<>();
+        ways = new ArrayList<>();
+        relationIDs = new ArrayList<>();
     }
 
     public List<Node> getNodes() {
@@ -23,7 +28,24 @@ public class Relation {
         return ways;
     }
 
-    public List<Relation> getRelations() {
-        return relations;
+    public List<Long> getRelations() {
+        return relationIDs;
+    }
+
+    public void addMember(Node node) {
+        nodes.add(node);
+    }
+
+    public void addMember(Way way) {
+        ways.add(way);
+    }
+
+    public void addMember(Long relationID) {
+        relationIDs.add(relationID);
+    }
+
+    @Override
+    public ElementType getType() {
+        return ElementType.RELATION;
     }
 }

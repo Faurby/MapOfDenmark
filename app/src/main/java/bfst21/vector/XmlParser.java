@@ -1,8 +1,6 @@
 package bfst21.vector;
 
-import bfst21.vector.osm.ExtendedWay;
-import bfst21.vector.osm.Node;
-import bfst21.vector.osm.Way;
+import bfst21.vector.osm.*;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -11,98 +9,148 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 
 public class XmlParser {
 
+    private XMLStreamReader reader;
+
     public MapData loadOSM(String filename) throws FileNotFoundException, XMLStreamException, FactoryConfigurationError {
         return loadOSM(new FileInputStream(filename));
     }
 
+    //TODO: Consider using a stack for parent elements
+    // You can then peek to see what type of parent it has
     public MapData loadOSM(InputStream input) throws XMLStreamException, FactoryConfigurationError {
 
-        XMLStreamReader reader = XMLInputFactory
-            .newInstance()
-            .createXMLStreamReader(new BufferedInputStream(input));
+        reader = XMLInputFactory
+                .newInstance()
+                .createXMLStreamReader(new BufferedInputStream(input));
 
         Way way = null;
         ExtendedWay extendedWay = null;
+        Relation relation = null;
+
         LongIndex idToNode = new LongIndex();
+        LongIndex idToWay = new LongIndex();
+        LongIndex idToRelation = new LongIndex();
 
         List<Drawable> shapes = new ArrayList<>();
-        List<Drawable> buildings = new ArrayList<>();
-        List<Drawable> extendedWays = new ArrayList<>();
-        ArrayList<Way> coastlines = new ArrayList<>();
-        List<Drawable> islands;
+
+        List<Way> buildings = new ArrayList<>();
+        List<Way> extendedWays = new ArrayList<>();
+        List<Way> coastlines = new ArrayList<>();
+        List<Way> islands;
 
         float minx = 0, miny = 0, maxx = 0, maxy = 0;
-        boolean isCoastline = false, isBuilding = false, isExtendedWay = false;
+        boolean isCoastline = false, isBuilding = false;
 
         while (reader.hasNext()) {
             switch (reader.next()) {
                 case START_ELEMENT:
                     switch (reader.getLocalName()) {
                         case "bounds":
-                            minx = getFloat(reader, "minlon");
-                            maxx = getFloat(reader, "maxlon");
-                            maxy = getFloat(reader, "minlat") / -0.56f;
-                            miny = getFloat(reader, "maxlat") / -0.56f;
+                            minx = getFloat("minlon");
+                            maxx = getFloat("maxlon");
+                            maxy = getFloat("minlat") / -0.56f;
+                            miny = getFloat("maxlat") / -0.56f;
                             break;
+
                         case "node":
-                            long id = getLong(reader, "id");
-                            float lon = getFloat(reader, "lon");
-                            float lat = getFloat(reader, "lat");
-                            idToNode.put(new Node(id, lat, lon));
+                            long nodeID = getLong("id");
+                            float lon = getFloat("lon");
+                            float lat = getFloat("lat");
+                            idToNode.put(new Node(nodeID, lat, lon));
                             break;
+
                         case "way":
-                            way = new Way();
+                            long wayID = getLong("id");
+                            way = new Way(wayID);
+                            extendedWay = new ExtendedWay(wayID);
                             isCoastline = false;
                             isBuilding = false;
                             break;
-                        case "tag":
-                            String k = reader.getAttributeValue(null, "k");
-                            String v = reader.getAttributeValue(null, "v");
-                            if (k.equals("natural") && v.equals("coastline")) {
-                                isCoastline = true;
-                            } else if (k.equals("building")) {
-                                isBuilding = true;
-                            } else {
-                                if (way != null) {
-                                    extendedWay = new ExtendedWay(k, v);
-                                    isExtendedWay = true;
-                                    extendedWay.setNodes(way.getNodes());
+
+                        case "relation":
+                            long relationID = getLong("id");
+                            relation = new Relation(relationID);
+                            break;
+
+                        case "member":
+                            String type = getAttribute("type");
+                            String memRef = getAttribute("ref");
+                            if (type != null) {
+                                if (type.equalsIgnoreCase("node")) {
+                                    Node memNode = (Node) idToNode.get(Long.parseLong(memRef));
+                                    if (memNode != null) {
+                                        relation.addMember(memNode);
+                                    }
+                                } else if (type.equalsIgnoreCase("way")) {
+                                    Way memWay = (Way) idToWay.get(Long.parseLong(memRef));
+                                    if (memWay != null) {
+                                        relation.addMember(memWay);
+                                    }
+                                } else if (type.equalsIgnoreCase("relation")) {
+                                    Relation memRelation = (Relation) idToRelation.get(Long.parseLong(memRef));
+                                    if (memRelation != null) {
+                                        relation.addMember(memRelation.getID());
+                                    }
                                 }
                             }
                             break;
-                        case "nd":
-                            long ref = getLong(reader, "ref");
-                            way.add(idToNode.get(ref));
+
+                        case "tag":
+                            String key = getAttribute("k");
+                            String value = getAttribute("v");
+                            if (way != null) {
+                                if (key.equals("natural") && value.equals("coastline")) {
+                                    isCoastline = true;
+                                } else if (key.equals("building")) {
+                                    isBuilding = true;
+                                } else {
+                                    extendedWay.addTag(key, value);
+                                }
+                            }
                             break;
 
+                        case "nd":
+                            long ref = getLong("ref");
+                            way.add((Node) idToNode.get(ref));
+                            break;
                     }
                     break;
+
                 case END_ELEMENT:
                     switch (reader.getLocalName()) {
                         case "way":
-                            if (isCoastline) coastlines.add(way);
-                            if (isBuilding) buildings.add(way);
-                            if (isExtendedWay) extendedWays.add(extendedWay);
+                            idToWay.put(way);
+                            if (isCoastline) {
+                                coastlines.add(way);
+
+                            } else if (isBuilding) {
+                                buildings.add(way);
+
+                            } else if (extendedWay != null) {
+                                extendedWays.add(extendedWay);
+                                extendedWay.setNodes(way.getNodes());
+                            }
+                            break;
+
+                        case "relation":
+                            idToRelation.put(relation);
                             break;
                     }
                     break;
             }
         }
         islands = mergeCoastLines(coastlines);
-        return new MapData(shapes, buildings, islands, extendedWays, minx, maxx, miny, maxy);
+        return new MapData(shapes, buildings, islands, extendedWays, idToRelation, minx, maxx, miny, maxy);
     }
 
-    private List<Drawable> mergeCoastLines(ArrayList<Way> coastlines) {
+    private List<Way> mergeCoastLines(List<Way> coastlines) {
         Map<Node, Way> pieces = new HashMap<>();
 
         for (Way coast : coastlines) {
@@ -113,7 +161,7 @@ public class XmlParser {
             pieces.put(merged.first(), merged);
             pieces.put(merged.last(), merged);
         }
-        List<Drawable> merged = new ArrayList<>();
+        List<Way> merged = new ArrayList<>();
         pieces.forEach((node, way) -> {
             if (way.last() == node) {
                 merged.add(way);
@@ -122,11 +170,15 @@ public class XmlParser {
         return merged;
     }
 
-    private float getFloat(XMLStreamReader reader, String localName) {
-        return Float.parseFloat(reader.getAttributeValue(null, localName));
+    private String getAttribute(String name) {
+        return reader.getAttributeValue(null, name);
     }
 
-    private long getLong(XMLStreamReader reader, String localName) {
-        return Long.parseLong(reader.getAttributeValue(null, localName));
+    private float getFloat(String name) {
+        return Float.parseFloat(getAttribute(name));
+    }
+
+    private long getLong(String name) {
+        return Long.parseLong(getAttribute(name));
     }
 }

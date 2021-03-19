@@ -32,12 +32,12 @@ public class Address {
         Matcher matcher = pattern.matcher(input);
         if (matcher.matches()) {
             return new Builder().street(matcher.group("street"))
-                                .house(matcher.group("house"))
-                                .floor(matcher.group("floor"))
-                                .side(matcher.group("side"))
-                                .postcode(matcher.group("postcode"))
-                                .city(matcher.group("city"))
-                                .build();
+                    .house(matcher.group("house"))
+                    .floor(matcher.group("floor"))
+                    .side(matcher.group("side"))
+                    .postcode(matcher.group("postcode"))
+                    .city(matcher.group("city"))
+                    .build();
         } else {
             return new Builder().build();
         }

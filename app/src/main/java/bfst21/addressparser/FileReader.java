@@ -1,7 +1,6 @@
 package bfst21.addressparser;
 
 import bfst21.models.City;
-
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,5 +1,6 @@
 package bfst21.vector;
 
+import bfst21.vector.osm.Way;
 import java.io.*;
 import java.util.List;
 
@@ -15,14 +16,15 @@ public class BinaryFileManager {
             input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)));
         }
         return new MapData(
-            (List<Drawable>) input.readObject(),
-            (List<Drawable>) input.readObject(),
-            (List<Drawable>) input.readObject(),
-            (List<Drawable>) input.readObject(),
-            input.readFloat(),
-            input.readFloat(),
-            input.readFloat(),
-            input.readFloat()
+                (List<Drawable>) input.readObject(),
+                (List<Way>) input.readObject(),
+                (List<Way>) input.readObject(),
+                (List<Way>) input.readObject(),
+                (LongIndex) input.readObject(),
+                input.readFloat(),
+                input.readFloat(),
+                input.readFloat(),
+                input.readFloat()
         );
     }
 
@@ -32,6 +34,7 @@ public class BinaryFileManager {
             output.writeObject(mapData.getBuildings());
             output.writeObject(mapData.getIslands());
             output.writeObject(mapData.getExtendedWays());
+            output.writeObject(mapData.getIdToRelation());
             output.writeFloat(mapData.getMinx());
             output.writeFloat(mapData.getMaxx());
             output.writeFloat(mapData.getMiny());

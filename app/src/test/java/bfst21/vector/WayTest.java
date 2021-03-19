@@ -16,15 +16,15 @@ public class WayTest {
         Node n4 = new Node(4,4,1);
         Node n5 = new Node(5,5,1);
         Node n6 = new Node(6,6,1);
-        Way w1 = new Way();
+        Way w1 = new Way(1);
             w1.add(n1);
             w1.add(n2);
             w1.add(n3);
-        Way w2 = new Way();
+        Way w2 = new Way(2);
             w2.add(n3);
             w2.add(n4);
             w2.add(n1);
-        Way w3 = new Way();
+        Way w3 = new Way(3);
             w3.add(n1);
             w3.add(n2);
             w3.add(n3);
@@ -38,7 +38,7 @@ public class WayTest {
         Node n1 = new Node(1,1,1);
         Node n2 = new Node(2,2,1);
         Node n3 = new Node(3,3,1);
-        Way w1 = new Way();
+        Way w1 = new Way(1);
             w1.add(n1);
             w1.add(n2);
             w1.add(n3);
