@@ -17,11 +17,11 @@ public class View {
         stage.show();
         controller.init(model);
 
-        stage.widthProperty().addListener(e -> {
-            controller.onWindowResize();
-        });
-        stage.heightProperty().addListener(e -> {
-            controller.onWindowResize();
+        stage.widthProperty().addListener(e -> { controller.onWindowResize(stage); });
+        stage.heightProperty().addListener(e -> { controller.onWindowResize(stage); });
+        stage.maximizedProperty().addListener(e -> {
+            System.out.println("Fullscreen");
+            controller.onWindowResize(stage);
         });
     }
 }

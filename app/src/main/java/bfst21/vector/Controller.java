@@ -24,9 +24,11 @@ public class Controller {
         canvas.init(model);
     }
 
-    public void onWindowResize(){
-        vbox.setMaxWidth(canvas.getWidth()*0.25);
-        System.out.println(canvas.getWidth());
+    public void onWindowResize(Stage stage){
+        vbox.setMaxWidth(stage.getWidth()*0.25);
+        System.out.println("Stage width: " + stage.getWidth());
+        System.out.println("Stage height: " + stage.getHeight());
+        canvas.repaint();
     }
 
     @FXML

@@ -43,8 +43,6 @@ public class MapCanvas extends Canvas {
         gc.setLineCap(StrokeLineCap.ROUND);
         gc.setLineJoin(StrokeLineJoin.ROUND);
 
-
-
         switch (colorMode) {
             case STANDARD:
                 paintFill(gc, model.getMapData().getIslands(), Color.rgb(223,222,222));
