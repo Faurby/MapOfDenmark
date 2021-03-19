@@ -119,6 +119,9 @@ public class MapCanvas extends Canvas {
         if (zoomLevelNext < zoomLevelMax && zoomLevelNext > zoomLevelMin) {
             zoomLevel = zoomLevelNext;
             zoom(factor, center);
+        } else if (zoomLevelNext > zoomLevelMax && zoomLevel != zoomLevelMax){
+            zoomLevel = zoomLevelMax;
+            zoom(factor, center);
         }
     }
 
@@ -184,4 +187,9 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    //TODO: Fix better representation of zoom. Problem is the difference
+    // between max and min zoom level doesnt represent well in percent.
+    public String getZoomPercent() {
+        return Math.round((zoomLevel / 80)*100*100)/100 + "%";
+    }
 }

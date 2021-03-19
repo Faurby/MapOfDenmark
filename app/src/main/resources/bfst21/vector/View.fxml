@@ -11,19 +11,28 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.StackPane?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst21.vector.Controller"
        fx:id="scene">
     <root>
-        <BorderPane prefHeight="480.0" prefWidth="640.0" >
+        <BorderPane prefHeight="480.0" prefWidth="640.0" fx:id="borderPane">
             <center>
-                <MapCanvas fx:id="canvas"
-                           width="${scene.width}"
-                           height="${scene.height}"
-                           onScroll="#onScroll"
-                           onMousePressed="#onMousePressed"
-                           onMouseDragged="#onMouseDragged" />
+                <StackPane fx:id="stackPane" minHeight="0" minWidth="0">
+                    <MapCanvas fx:id="canvas"
+                               width="${stackPane.width}"
+                               height="${stackPane.height}"
+                               onScroll="#onScroll"
+                               onMousePressed="#onMousePressed"
+                               onMouseDragged="#onMouseDragged" />
+                    <VBox fx:id="zoomBox" maxWidth="40" maxHeight="20" style="-fx-padding: 5">
+                        <Text text="zoomText" fx:id="zoomText"/>
+                    </VBox>
+                </StackPane>
+
+
             </center>
             <top>
                 <HBox>
@@ -50,6 +59,7 @@
                     </MenuBar>
                 </HBox>
             </top>
+
             <left>
                 <VBox maxWidth="175" fx:id="vbox">
                     <TextField text="Address?"/>
