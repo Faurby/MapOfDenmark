@@ -1,9 +1,12 @@
 package bfst21.vector;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.stage.Stage;
 
 public class Controller {
 
@@ -42,5 +45,29 @@ public class Controller {
     @FXML
     private void onMousePressed(MouseEvent e) {
         lastMouse = new Point2D(e.getX(), e.getY());
+    }
+
+    public void zoomButtonClicked(ActionEvent actionEvent) {
+        if (actionEvent.toString().contains("zoomIn")) {
+            canvas.preZoom(2.0,new Point2D(canvas.getWidth()/2,canvas.getHeight()/2));
+        } else {
+            canvas.preZoom(0.50,new Point2D(canvas.getWidth()/2,canvas.getHeight()/2));
+        }
+        //TODO: tjek at zoom centreres præcis i midten af vinduet, så menubaren ikke tæller med
+    }
+
+    @FXML
+    public void changeColorMode(ActionEvent actionEvent) {
+        String buttonClicked = actionEvent.toString().toLowerCase();
+        if(buttonClicked.contains("standard")) {
+            canvas.setColorMode(ColorMode.STANDARD);
+        }
+        else if(buttonClicked.contains("inverted")) {
+            canvas.setColorMode(ColorMode.INVERTED);
+        }
+        else if(buttonClicked.contains("blackwhite")) {
+            canvas.setColorMode(ColorMode.BLACKWHITE);
+        }
+        canvas.repaint();
     }
 }

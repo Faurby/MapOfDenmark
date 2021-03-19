@@ -3,12 +3,20 @@
 <?import bfst21.vector.MapCanvas?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.Scene?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TextArea?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst21.vector.Controller"
        fx:id="scene">
     <root>
-        <BorderPane prefHeight="480.0" prefWidth="640.0">
+        <BorderPane prefHeight="480.0" prefWidth="640.0" >
             <center>
                 <MapCanvas fx:id="canvas"
                            width="${scene.width}"
@@ -17,6 +25,37 @@
                            onMousePressed="#onMousePressed"
                            onMouseDragged="#onMouseDragged" />
             </center>
+            <top>
+                <HBox>
+                    <MenuBar fx:id="menuBar" minHeight="25" minWidth="${scene.width}">
+                        <Menu text="File">
+                            <MenuItem text="Load"/>
+                            <MenuItem text="Save"/>
+                        </Menu>
+
+                        <Menu text="View">
+                            <MenuItem fx:id="zoomIn" text="Zoom in" onAction="#zoomButtonClicked"/>
+                            <MenuItem text="Zoom out" onAction="#zoomButtonClicked"/>
+                        </Menu>
+
+                        <Menu text="Accessibility">
+                            <Menu text="Color modes">
+                                <MenuItem fx:id="colorModeStandard" text="Standard colors" onAction="#changeColorMode"/>
+                                <MenuItem fx:id="colorModeInverted" text="Inverted colors" onAction="#changeColorMode"/>
+                                <MenuItem fx:id="colorModeBlackWhite" text="Black and White" onAction="#changeColorMode"/>
+                            </Menu>
+                            <MenuItem text="Crazy"/>
+                            <MenuItem text="Dull"/>
+                        </Menu>
+                    </MenuBar>
+                </HBox>
+            </top>
+            <left>
+                <VBox maxWidth="175">
+                    <TextField text="Address?"/>
+                    <TextArea text="Write something..."/>
+                </VBox>
+            </left>
         </BorderPane>
     </root>
 </Scene>

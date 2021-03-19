@@ -16,6 +16,8 @@ public class App extends Application {
             jarFile = false;
         }
         Model model = new Model(filename, jarFile);
+
+
         new View(model, primaryStage);
     }
 

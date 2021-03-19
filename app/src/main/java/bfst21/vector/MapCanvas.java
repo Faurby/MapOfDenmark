@@ -21,6 +21,12 @@ public class MapCanvas extends Canvas {
     private double zoomLevelMax = 80.0;
     private double widthModifier = 1.0;
 
+    private ColorMode colorMode = ColorMode.STANDARD;
+
+    public void setColorMode(ColorMode colorMode) {
+        this.colorMode = colorMode;
+    }
+
     public void init(Model model) {
         this.model = model;
         pan(-model.getMapData().getMinx(), -model.getMapData().getMiny());
@@ -57,6 +63,30 @@ public class MapCanvas extends Canvas {
             drawLine(gc, model.getMapData().getBuildings(), Color.rgb(197,185,175));
         }
 
+        switch (colorMode) {
+            case STANDARD:
+                paintFill(gc, model.getMapData().getIslands(), Color.LIGHTYELLOW);
+                paintFill(gc, model.getMapData().getBuildings(), Color.LIGHTGRAY);
+                drawLine(gc, model.getMapData().getBuildings(), Color.DARKGRAY);
+                drawRoad(gc, model.getMapData().getExtendedWays(), 0.00001, Color.DARKGREY, Color.BLACK);
+                break;
+            case INVERTED:
+                paintFill(gc, model.getMapData().getIslands(), Color.LIGHTYELLOW.invert());
+                paintFill(gc, model.getMapData().getBuildings(), Color.LIGHTGRAY.invert());
+                drawLine(gc, model.getMapData().getBuildings(), Color.DARKGRAY.invert());
+                drawRoad(gc, model.getMapData().getExtendedWays(), 0.00001, Color.DARKGREY.invert(), Color.BLACK.invert());
+                break;
+            case BLACKWHITE:
+                paintFill(gc, model.getMapData().getIslands(), Color.LIGHTGRAY);
+                paintFill(gc, model.getMapData().getBuildings(), Color.GRAY);
+                drawLine(gc, model.getMapData().getBuildings(), Color.DARKGRAY);
+                drawRoad(gc, model.getMapData().getExtendedWays(), 0.00001, Color.DARKGREY.darker(), Color.BLACK);
+                break;
+            case REDGREEN:
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + colorMode);
+        }
         gc.restore();
     }
 
