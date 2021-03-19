@@ -43,44 +43,71 @@ public class MapCanvas extends Canvas {
         gc.setLineCap(StrokeLineCap.ROUND);
         gc.setLineJoin(StrokeLineJoin.ROUND);
 
-        paintFill(gc, model.getMapData().getIslands(), Color.rgb(223,222,222));
 
-        paintFill(gc, model.getMapData().getGreenFill(), Color.rgb(203,234,177));
-        paintFill(gc, model.getMapData().getWater(), Color.rgb(170, 211, 223));
-        drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.DARKGREY);
-        drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(252, 172, 12));
-        drawRoadOutline(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.DARKGREY);
-
-        drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.WHITE);
-        drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(248, 197, 81));
-        drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.WHITE);
-
-
-
-        if(zoomLevel > 4){
-            drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, Color.rgb(170, 211, 223));
-            paintFill(gc, model.getMapData().getBuildings(), Color.rgb(216,206,199));
-            drawLine(gc, model.getMapData().getBuildings(), Color.rgb(197,185,175));
-        }
 
         switch (colorMode) {
             case STANDARD:
-                paintFill(gc, model.getMapData().getIslands(), Color.LIGHTYELLOW);
-                paintFill(gc, model.getMapData().getBuildings(), Color.LIGHTGRAY);
-                drawLine(gc, model.getMapData().getBuildings(), Color.DARKGRAY);
-                drawRoad(gc, model.getMapData().getExtendedWays(), 0.00001, Color.DARKGREY, Color.BLACK);
+                paintFill(gc, model.getMapData().getIslands(), Color.rgb(223,222,222));
+
+                paintFill(gc, model.getMapData().getGreenFill(), Color.rgb(203,234,177));
+                paintFill(gc, model.getMapData().getWater(), Color.rgb(170, 211, 223));
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.DARKGREY);
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(252, 172, 12));
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.DARKGREY);
+
+                drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.WHITE);
+                drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(248, 197, 81));
+                drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.WHITE);
+
+
+
+                if(zoomLevel > 4){
+                    drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, Color.rgb(170, 211, 223));
+                    paintFill(gc, model.getMapData().getBuildings(), Color.rgb(216,206,199));
+                    drawLine(gc, model.getMapData().getBuildings(), Color.rgb(197,185,175));
+                }
                 break;
             case INVERTED:
-                paintFill(gc, model.getMapData().getIslands(), Color.LIGHTYELLOW.invert());
-                paintFill(gc, model.getMapData().getBuildings(), Color.LIGHTGRAY.invert());
-                drawLine(gc, model.getMapData().getBuildings(), Color.DARKGRAY.invert());
-                drawRoad(gc, model.getMapData().getExtendedWays(), 0.00001, Color.DARKGREY.invert(), Color.BLACK.invert());
+                paintFill(gc, model.getMapData().getIslands(), Color.rgb(223,222,222).invert());
+
+                paintFill(gc, model.getMapData().getGreenFill(), Color.rgb(203,234,177).invert());
+                paintFill(gc, model.getMapData().getWater(), Color.rgb(170, 211, 223).invert());
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.DARKGREY.invert());
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(252, 172, 12).invert());
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.DARKGREY.invert());
+
+                drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.WHITE.invert());
+                drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.rgb(248, 197, 81).invert());
+                drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.WHITE.invert());
+
+
+
+                if(zoomLevel > 4){
+                    drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, Color.rgb(170, 211, 223).invert());
+                    paintFill(gc, model.getMapData().getBuildings(), Color.rgb(216,206,199).invert());
+                    drawLine(gc, model.getMapData().getBuildings(), Color.rgb(197,185,175).invert());
+                }
                 break;
             case BLACKWHITE:
-                paintFill(gc, model.getMapData().getIslands(), Color.LIGHTGRAY);
-                paintFill(gc, model.getMapData().getBuildings(), Color.GRAY);
-                drawLine(gc, model.getMapData().getBuildings(), Color.DARKGRAY);
-                drawRoad(gc, model.getMapData().getExtendedWays(), 0.00001, Color.DARKGREY.darker(), Color.BLACK);
+                paintFill(gc, model.getMapData().getIslands(), Color.LIGHTGREY);
+
+                paintFill(gc, model.getMapData().getGreenFill(), Color.LIGHTGREY);
+                paintFill(gc, model.getMapData().getWater(), Color.WHITE);
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.DARKGREY);
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.DARKGREY);
+                drawRoadOutline(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.DARKGREY);
+
+                drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.WHITE);
+                drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.DARKGREY);
+                drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.WHITE);
+
+
+
+                if(zoomLevel > 4){
+                    drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, Color.WHITE);
+                    paintFill(gc, model.getMapData().getBuildings(), Color.DARKGREY);
+                    drawLine(gc, model.getMapData().getBuildings(), Color.DARKGREY);
+                }
                 break;
             case REDGREEN:
                 break;
