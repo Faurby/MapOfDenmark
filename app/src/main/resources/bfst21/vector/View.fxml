@@ -13,6 +13,9 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.geometry.Insets?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst21.vector.Controller"
@@ -62,8 +65,38 @@
 
             <left>
                 <VBox maxWidth="175" fx:id="vbox">
-                    <TextField text="Address?"/>
-                    <TextArea text="Write something..."/>
+                    <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                    <Text
+                            text="Compute route"
+                            style="-fx-font-size: 15"
+                    />
+                    <Text
+                            text="Starting point:"
+                    />
+                    <TextArea
+                            promptText="Route from..."
+                            scaleY="0.96"
+                            prefHeight="42"
+                            wrapText="true"
+                    />
+                    <Text
+                            text="Destination:"
+                    />
+                    <TextArea
+                            promptText="Route to..."
+                            scaleY="0.96"
+                            prefHeight="42"
+                            wrapText="true"
+                    />
+
+                    <GridPane alignment="CENTER_RIGHT" style="-fx-padding: 5 0 0 0" >
+
+                        <Button
+                            text="Search"
+                            GridPane.columnIndex="0" GridPane.rowIndex="1"
+                            GridPane.columnSpan = "1"
+                        />
+                    </GridPane>
                 </VBox>
             </left>
         </BorderPane>

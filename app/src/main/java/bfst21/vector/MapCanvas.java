@@ -189,8 +189,10 @@ public class MapCanvas extends Canvas {
 
     //TODO: Fix better representation of zoom. Problem is the difference
     public String getZoomPercent() {
-        if (zoomLevel >= 1) {
-            return Math.round((zoomLevel/zoomLevelMax)*100*100)/100 + 99 + "%";
+        if (zoomLevel == 1 ){
+            return 100 + "%";
+        } else if (zoomLevel > 1) {
+            return Math.round((zoomLevel/zoomLevelMax)*100*100)/100 + 100 + "%";
         } else {
             return Math.round(zoomLevel*100*100)/100 + "%";
         }
