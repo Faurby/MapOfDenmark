@@ -1,12 +1,12 @@
 package bfst21.vector;
 
+import bfst21.addressparser.Address;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
@@ -34,6 +34,10 @@ public class Controller {
     private BorderPane borderPane;
     @FXML
     private Text zoomText;
+    @FXML
+    private TextArea startingPoint;
+    @FXML
+    private TextArea destinationPoint;
 
     public void init(Model model) {
         this.model = model;
@@ -42,9 +46,9 @@ public class Controller {
         zoomText.setText(canvas.getZoomPercent());
     }
 
-    public void onWindowResize(Stage stage){
+    public void onWindowResize(Stage stage) {
         stackPane.setAlignment(zoomBox, Pos.TOP_RIGHT);
-        vbox.setMaxWidth(stage.getWidth()*0.25);
+        vbox.setMaxWidth(stage.getWidth() * 0.25);
         System.out.println("StackPane width: " + stackPane.getWidth());
         System.out.println("StackPane height: " + stackPane.getHeight());
         canvas.repaint();
@@ -77,26 +81,44 @@ public class Controller {
         lastMouse = new Point2D(e.getX(), e.getY());
     }
 
+
     public void zoomButtonClicked(ActionEvent actionEvent) {
+
         if (actionEvent.toString().contains("zoomIn")) {
-            canvas.preZoom(2.0,new Point2D(stackPane.getWidth()/2,stackPane.getHeight()/2));
+            canvas.preZoom(2.0, new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2));
         } else {
-            canvas.preZoom(0.50,new Point2D(stackPane.getWidth()/2,stackPane.getHeight()/2));
+            canvas.preZoom(0.50, new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2));
         }
+
+        //TODO her er begyndelsen på et fix af zoomIndikatoren oppe til højre når man bruger zoom knappen.
+        // PT er den ret scuffed. Jeg er ikke sikker på functionen af 'factor'.
+        double factor = 1;
+        canvas.preZoom(factor, new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2));
+        zoomText.setText(canvas.getZoomPercent());;
     }
 
     @FXML
     public void changeColorMode(ActionEvent actionEvent) {
         String buttonClicked = actionEvent.toString().toLowerCase();
-        if(buttonClicked.contains("standard")) {
+        if (buttonClicked.contains("standard")) {
             canvas.setColorMode(ColorMode.STANDARD);
-        }
-        else if(buttonClicked.contains("inverted")) {
+        } else if (buttonClicked.contains("inverted")) {
             canvas.setColorMode(ColorMode.INVERTED);
-        }
-        else if(buttonClicked.contains("blackwhite")) {
+        } else if (buttonClicked.contains("blackwhite")) {
             canvas.setColorMode(ColorMode.BLACKWHITE);
         }
         canvas.repaint();
+    }
+
+    @FXML
+    public void searchAddressString(ActionEvent actionEvent) {
+        String sAddress = startingPoint.getText();
+        Address parsedSA = Address.parse(sAddress);
+
+        String dAddress = destinationPoint.getText();
+        Address parsedDA = Address.parse(dAddress);
+
+        System.out.println(parsedSA.toString());
+        System.out.println(parsedDA.toString());
     }
 }

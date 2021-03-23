@@ -73,18 +73,18 @@
                     <Text
                             text="Starting point:"
                     />
-                    <TextArea
+                    <TextArea fx:id="startingPoint"
                             promptText="Route from..."
-                            scaleY="0.96"
+                            scaleY="0.98"
                             prefHeight="42"
                             wrapText="true"
                     />
                     <Text
                             text="Destination:"
                     />
-                    <TextArea
+                    <TextArea fx:id="destinationPoint"
                             promptText="Route to..."
-                            scaleY="0.96"
+                            scaleY="0.98"
                             prefHeight="42"
                             wrapText="true"
                     />
@@ -95,6 +95,7 @@
                             text="Search"
                             GridPane.columnIndex="0" GridPane.rowIndex="1"
                             GridPane.columnSpan = "1"
+                            onAction="#searchAddressString"
                         />
                     </GridPane>
                 </VBox>
