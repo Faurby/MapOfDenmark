@@ -32,8 +32,10 @@ public class Controller {
     private void onMouseDragged(MouseEvent e) {
         double dx = e.getX() - lastMouse.getX();
         double dy = e.getY() - lastMouse.getY();
+
         if (e.isPrimaryButtonDown()) {
             canvas.pan(dx, dy);
+
         } else {
             Point2D from = canvas.mouseToModelCoords(lastMouse);
             Point2D to = canvas.mouseToModelCoords(new Point2D(e.getX(), e.getY()));
@@ -48,7 +50,6 @@ public class Controller {
         lastMouse = new Point2D(e.getX(), e.getY());
     }
 
-    //TODO: tjek at zoom centreres præcis i midten af vinduet, så menubaren ikke tæller med
     public void zoomButtonClicked(ActionEvent actionEvent) {
         if (actionEvent.toString().contains("zoomIn")) {
             canvas.preZoom(2.0, new Point2D(canvas.getWidth() / 2, canvas.getHeight() / 2));
