@@ -1,5 +1,6 @@
 package bfst21.vector;
 
+import bfst21.models.Config;
 import bfst21.vector.osm.Way;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -9,6 +10,7 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -20,15 +22,14 @@ public class MapCanvas extends Canvas {
     private double zoomLevelMin = 0.018682;
     private double zoomLevelMax = 80.0;
     private double widthModifier = 1.0;
+    private Config config;
 
     private ColorMode colorMode = ColorMode.STANDARD;
 
-    public void setColorMode(ColorMode colorMode) {
-        this.colorMode = colorMode;
-    }
-
-    public void init(Model model) {
+    public void init(Model model) throws IOException {
         this.model = model;
+        this.config = new Config();
+
         pan(-model.getMapData().getMinx(), -model.getMapData().getMiny());
         zoom(getWidth() / (model.getMapData().getMaxx() - model.getMapData().getMinx()), new Point2D(0, 0));
     }
@@ -37,83 +38,28 @@ public class MapCanvas extends Canvas {
         GraphicsContext gc = getGraphicsContext2D();
         gc.save();
         gc.setTransform(new Affine());
-        gc.setFill(Color.LIGHTBLUE);
+        gc.setFill(getColor("water"));
         gc.fillRect(0, 0, getWidth(), getHeight());
         gc.setTransform(trans);
         gc.setLineCap(StrokeLineCap.ROUND);
         gc.setLineJoin(StrokeLineJoin.ROUND);
 
-        switch (colorMode) {
-            case STANDARD:
-                paintFill(gc, model.getMapData().getIslands(), Color.valueOf("#dfdede"));
-                paintFill(gc, model.getMapData().getGreenFill(), Color.valueOf("#cbeab1"));
-                paintFill(gc, model.getMapData().getWater(), Color.valueOf("#aad3df"));
+        paintFill(gc, model.getMapData().getIslands(), getColor("island"));
+        paintFill(gc, model.getMapData().getLandUse(), getColor("landuse"));
+        paintFill(gc, model.getMapData().getWater(), getColor("water"));
 
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.valueOf("#A9A9A9"));
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.valueOf("#FFFCAC0C"));
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.valueOf("#A9A9A9"));
+        drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, getColor("residential.outline"));
+        drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, getColor("motorway.outline"));
+        drawRoadOutline(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, getColor("tertiary.outline"));
 
-                drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.valueOf("#FFFFFF"));
-                drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.valueOf("#f8c551"));
-                drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.valueOf("#FFFFFF"));
+        drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, getColor("residential"));
+        drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, getColor("motorway"));
+        drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, getColor("tertiary"));
 
-                if(zoomLevel > 4){
-                    drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, Color.valueOf("#aad3df"));
-                    paintFill(gc, model.getMapData().getBuildings(), Color.valueOf("#d8cec7"));
-                    drawLine(gc, model.getMapData().getBuildings(), Color.valueOf("#c5b9af"));
-                }
-
-                break;
-            case BLACKWHITE:
-                gc.setTransform(new Affine());
-                gc.setFill(Color.valueOf("#000000"));
-                gc.fillRect(0, 0, getWidth(), getHeight());
-                gc.setTransform(trans);
-
-                paintFill(gc, model.getMapData().getIslands(), Color.valueOf("#D3D3D3"));
-                paintFill(gc, model.getMapData().getGreenFill(), Color.valueOf("#D3D3D3"));
-                paintFill(gc, model.getMapData().getWater(), Color.valueOf("FFFFFF"));
-
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.valueOf("#A9A9A9"));
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.valueOf("#A9A9A9"));
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.valueOf("#A9A9A9"));
-
-                drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.valueOf("#FFFFFF"));
-                drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.valueOf("#A9A9A9"));
-                drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.valueOf("#FFFFFF"));
-
-                if(zoomLevel > 4){
-                    drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, Color.valueOf("#FFFFFF"));
-                    paintFill(gc, model.getMapData().getBuildings(), Color.valueOf("#A9A9A9"));
-                    drawLine(gc, model.getMapData().getBuildings(), Color.valueOf("#A9A9A9"));
-                }
-                break;
-            case COLORBLIND:
-                gc.setTransform(new Affine());
-                gc.setFill(Color.valueOf("#007eaa"));
-                gc.fillRect(0, 0, getWidth(), getHeight());
-                gc.setTransform(trans);
-
-                paintFill(gc, model.getMapData().getIslands(), Color.valueOf("#979797"));
-                paintFill(gc, model.getMapData().getGreenFill(), Color.valueOf("#455007"));
-                paintFill(gc, model.getMapData().getWater(), Color.valueOf("#007eaa"));
-
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.valueOf("#A9A9A9"));
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.valueOf("#FFFCAC0C"));
-                drawRoadOutline(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.valueOf("#A9A9A9"));
-
-                drawRoad(gc, model.getMapData().getExtendedWays("residential"), 0.0002, Color.valueOf("#FFFFFF"));
-                drawRoad(gc, model.getMapData().getExtendedWays("motorway"), 0.0004, Color.valueOf("#f8c651"));
-                drawRoad(gc, model.getMapData().getExtendedWays("tertiary"), 0.0004, Color.valueOf("#FFFFFF"));
-
-                if(zoomLevel > 4){
-                    drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, Color.valueOf("#007eaa"));
-                    paintFill(gc, model.getMapData().getBuildings(), Color.valueOf("#d8cec7"));
-                    drawLine(gc, model.getMapData().getBuildings(), Color.valueOf("#333333"));
-                }
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + colorMode);
+        if (zoomLevel > 4) {
+            drawRoad(gc, model.getMapData().getWaterWays(), 0.0002, getColor("water"));
+            paintFill(gc, model.getMapData().getBuildings(), getColor("building"));
+            drawLine(gc, model.getMapData().getBuildings(), getColor("building"));
         }
         gc.restore();
     }
@@ -181,10 +127,26 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void adjustWidthModifier(){
-        if(zoomLevel < 5){
+    public void setColorMode(ColorMode colorMode) {
+        this.colorMode = colorMode;
+    }
+
+    public Color getColor(String type) {
+        System.out.println(colorMode.toString().toLowerCase());
+        String prop = config.getProp("colors."+type+"."+colorMode.toString().toLowerCase());
+        System.out.println("Prop: "+prop);
+        Color color = Color.valueOf("#"+prop);
+
+        if (color != null) {
+            return color;
+        }
+        return Color.RED;
+    }
+
+    public void adjustWidthModifier() {
+        if (zoomLevel < 5) {
             widthModifier = 1;
-        } else if (zoomLevel < 15){
+        } else if (zoomLevel < 15) {
             widthModifier = 0.75;
         } else if (zoomLevel < 35) {
             widthModifier = 0.50;
@@ -192,5 +154,4 @@ public class MapCanvas extends Canvas {
             widthModifier = 0.25;
         }
     }
-
 }

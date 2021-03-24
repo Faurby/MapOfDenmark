@@ -6,6 +6,8 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
+import java.io.IOException;
+
 
 public class Controller {
 
@@ -15,7 +17,7 @@ public class Controller {
     @FXML
     private MapCanvas canvas;
 
-    public void init(Model model) {
+    public void init(Model model) throws IOException {
         this.model = model;
         canvas.init(model);
     }
@@ -46,29 +48,28 @@ public class Controller {
         lastMouse = new Point2D(e.getX(), e.getY());
     }
 
+    //TODO: tjek at zoom centreres præcis i midten af vinduet, så menubaren ikke tæller med
     public void zoomButtonClicked(ActionEvent actionEvent) {
         if (actionEvent.toString().contains("zoomIn")) {
-            canvas.preZoom(2.0,new Point2D(canvas.getWidth()/2,canvas.getHeight()/2));
+            canvas.preZoom(2.0, new Point2D(canvas.getWidth() / 2, canvas.getHeight() / 2));
         } else {
-            canvas.preZoom(0.50,new Point2D(canvas.getWidth()/2,canvas.getHeight()/2));
+            canvas.preZoom(0.50, new Point2D(canvas.getWidth() / 2, canvas.getHeight() / 2));
         }
-        //TODO: tjek at zoom centreres præcis i midten af vinduet, så menubaren ikke tæller med
     }
 
     @FXML
     public void changeColorMode(ActionEvent actionEvent) {
         String buttonClicked = actionEvent.toString().toLowerCase();
-        if(buttonClicked.contains("standard")) {
+
+        if (buttonClicked.contains("standard")) {
             canvas.setColorMode(ColorMode.STANDARD);
-        }
-        else if(buttonClicked.contains("blackwhite")) {
-            canvas.setColorMode(ColorMode.BLACKWHITE);
-        }
-        else if(buttonClicked.contains("colorblind")) {
-            canvas.setColorMode(ColorMode.COLORBLIND);
-        }
 
+        } else if (buttonClicked.contains("blackwhite")) {
+            canvas.setColorMode(ColorMode.BLACK_WHITE);
 
+        } else if (buttonClicked.contains("colorblind")) {
+            canvas.setColorMode(ColorMode.COLOR_BLIND);
+        }
         canvas.repaint();
     }
 }

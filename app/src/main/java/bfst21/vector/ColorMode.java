@@ -2,6 +2,6 @@ package bfst21.vector;
 
 public enum ColorMode {
     STANDARD,
-    BLACKWHITE,
-    COLORBLIND;
+    BLACK_WHITE,
+    COLOR_BLIND;
 }

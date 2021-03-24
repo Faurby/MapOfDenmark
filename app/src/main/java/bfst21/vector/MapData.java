@@ -39,6 +39,81 @@ public class MapData {
         this.maxy = maxy;
     }
 
+    public List<Way> getExtendedWays(String type) {
+        List<Way> ways = new ArrayList<>();
+
+        for (Way way : extendedWays) {
+            if (way instanceof ExtendedWay) {
+                ExtendedWay exWay = (ExtendedWay) way;
+
+                if (exWay.getValue("highway") != null) {
+                    if (exWay.getValue("highway").contains(type)) {
+                        ways.add(way);
+                    }
+                }
+            }
+        }
+        return ways;
+    }
+
+    public List<Way> getWater() {
+        List<Way> water = new ArrayList<>();
+
+        for (Way way : extendedWays) {
+            if (way instanceof ExtendedWay) {
+                ExtendedWay exWay = (ExtendedWay) way;
+
+                if (exWay.getValue("natural") != null) {
+                    if (exWay.getValue("natural").contains("water")) {
+                        water.add(way);
+                    }
+                }
+            }
+        }
+        return water;
+    }
+
+    public List<Way> getWaterWays() {
+        List<Way> waterWays = new ArrayList<>();
+
+        for (Way way : extendedWays) {
+            if (way instanceof ExtendedWay) {
+                ExtendedWay exWay = (ExtendedWay) way;
+
+                if (exWay.getValue("waterway") != null) {
+                    waterWays.add(way);
+                }
+            }
+        }
+        return waterWays;
+    }
+
+    public List<Way> getLandUse() {
+        List<Way> landUse = new ArrayList<>();
+
+        for (Way way : extendedWays) {
+            if (way instanceof ExtendedWay) {
+                ExtendedWay exWay = (ExtendedWay) way;
+
+                if (exWay.getValue("landuse") != null) {
+                    if (exWay.getValue("landuse").equalsIgnoreCase("grass") ||
+                        exWay.getValue("landuse").equalsIgnoreCase("meadow") ||
+                        exWay.getValue("landuse").equalsIgnoreCase("orchard") ||
+                        exWay.getValue("landuse").equalsIgnoreCase("allotments")) {
+
+                        landUse.add(way);
+                    }
+                } else if (exWay.getValue("leisure") != null) {
+                    if (exWay.getValue("leisure").equalsIgnoreCase("park")) {
+
+                        landUse.add(way);
+                    }
+                }
+            }
+        }
+        return landUse;
+    }
+
     public List<Drawable> getShapes() {
         return shapes;
     }
@@ -53,67 +128,6 @@ public class MapData {
 
     public List<Way> getExtendedWays() {
         return extendedWays;
-    }
-
-    public List<Way> getExtendedWays(String type) {
-        List<Way> ways = new ArrayList<>();
-
-        for (Way w : extendedWays) {
-            if (w instanceof ExtendedWay) {
-                ExtendedWay exWay = (ExtendedWay) w;
-                if (exWay.getValue("highway") != null && exWay.getValue("highway").contains(type)) {
-                    ways.add(w);
-                }
-            }
-        }
-        return ways;
-    }
-
-    public List<Way> getWater() {
-        List<Way> water = new ArrayList<>();
-
-        for (Way w : extendedWays) {
-            if (w instanceof ExtendedWay) {
-                ExtendedWay exWay = (ExtendedWay) w;
-                if (exWay.getValue("natural") != null && exWay.getValue("natural").contains("water")) {
-                    water.add(w);
-                }
-            }
-        }
-        return water;
-    }
-
-    public List<Way> getWaterWays() {
-        List<Way> waterWays = new ArrayList<>();
-        for (Way w : extendedWays) {
-            if (w instanceof ExtendedWay) {
-                ExtendedWay exWay = (ExtendedWay) w;
-                if (exWay.getValue("waterway") != null) {
-                    waterWays.add(w);
-                }
-            }
-        }
-        return waterWays;
-    }
-
-    public List<Way> getGreenFill() {
-        List<Way> greenFills = new ArrayList<>();
-        for (Way w : extendedWays) {
-            if (w instanceof ExtendedWay) {
-                ExtendedWay exWay = (ExtendedWay) w;
-                if (exWay.getValue("landuse") != null &&
-                    (exWay.getValue("landuse").equalsIgnoreCase("grass") ||
-                    exWay.getValue("landuse").equalsIgnoreCase("meadow") ||
-                    exWay.getValue("landuse").equalsIgnoreCase("orchard") ||
-                    exWay.getValue("landuse").equalsIgnoreCase("allotments"))) {
-
-                    greenFills.add(w);
-                } else if (exWay.getValue("leisure") != null && exWay.getValue("leisure").equalsIgnoreCase("park")){
-                    greenFills.add(w);
-                }
-            }
-        }
-        return greenFills;
     }
 
     public LongIndex getIdToRelation() {
