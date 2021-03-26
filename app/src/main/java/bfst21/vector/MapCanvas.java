@@ -10,6 +10,7 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -75,7 +76,7 @@ public class MapCanvas extends Canvas {
         if (zoomLevelNext < zoomLevelMax && zoomLevelNext > zoomLevelMin) {
             zoomLevel = zoomLevelNext;
             zoom(factor, center);
-        } else if (zoomLevelNext > zoomLevelMax && zoomLevel != zoomLevelMax){
+        } else if (zoomLevelNext > zoomLevelMax && zoomLevel != zoomLevelMax) {
             zoomLevel = zoomLevelMax;
             zoom(factor, center);
         }
@@ -135,7 +136,7 @@ public class MapCanvas extends Canvas {
     }
 
     public Color getColor(String type) {
-        String path = "colors."+type+"."+colorMode.toString().toLowerCase();
+        String path = "colors." + type + "." + colorMode.toString().toLowerCase();
         try {
             Color color = Color.valueOf("#" + config.getProp(path));
             if (color != null) {
@@ -164,12 +165,12 @@ public class MapCanvas extends Canvas {
 
     //TODO: Fix better representation of zoom. Problem is the difference
     public String getZoomPercent() {
-        if (zoomLevel == 1 ){
+        if (zoomLevel == 1) {
             return 100 + "%";
         } else if (zoomLevel > 1) {
-            return Math.round((zoomLevel/zoomLevelMax)*100*100)/100 + 100 + "%";
+            return Math.round((zoomLevel / zoomLevelMax) * 100 * 100) / 100 + 100 + "%";
         } else {
-            return Math.round(zoomLevel*100*100)/100 + "%";
+            return Math.round(zoomLevel * 100 * 100) / 100 + "%";
         }
 
     }

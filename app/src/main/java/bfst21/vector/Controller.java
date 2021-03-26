@@ -1,5 +1,6 @@
 package bfst21.vector;
 
+import bfst21.addressparser.Address;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
@@ -13,7 +14,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 
@@ -97,7 +97,8 @@ public class Controller {
         // PT er den ret scuffed. Jeg er ikke sikker på functionen af 'factor'.
         double factor = 1;
         canvas.preZoom(factor, new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2));
-        zoomText.setText(canvas.getZoomPercent());;
+        zoomText.setText(canvas.getZoomPercent());
+        ;
     }
 
     @FXML
