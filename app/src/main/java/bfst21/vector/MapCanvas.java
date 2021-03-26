@@ -12,6 +12,7 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.List;
 
 
@@ -46,25 +47,25 @@ public class MapCanvas extends Canvas {
         gc.setLineCap(StrokeLineCap.ROUND);
         gc.setLineJoin(StrokeLineJoin.ROUND);
 
-        paintFill(model.getMapData().getIslands(), getColor("island"));
-        paintFill(model.getMapData().getLandUse(), getColor("landuse"));
-        paintFill(model.getMapData().getWater(), getColor("water"));
+        paintFill(model.getMapData().getIslands(), getColor("island"), getDrawAtZoom("island"));
+        paintFill(model.getMapData().getLandUse(), getColor("landuse"), getDrawAtZoom("landuse"));
+        paintFill(model.getMapData().getWater(), getColor("water"), getDrawAtZoom("water"));
 
-        drawRoadOutline(model.getMapData().getExtendedWays("residential"), 0.0002, getColor("residential.outline"));
-        drawRoadOutline(model.getMapData().getExtendedWays("motorway"), 0.0004, getColor("motorway.outline"));
-        drawRoadOutline(model.getMapData().getExtendedWays("tertiary"), 0.0004, getColor("tertiary.outline"));
+        drawRoadOutline(model.getMapData().getExtendedWays("residential"), 0.0002, getColor("residential.outline"), getDrawAtZoom("residential"));
+        drawRoadOutline(model.getMapData().getExtendedWays("motorway"), 0.0004, getColor("motorway.outline"), getDrawAtZoom("motorway"));
+        drawRoadOutline(model.getMapData().getExtendedWays("tertiary"), 0.0004, getColor("tertiary.outline"), getDrawAtZoom("tertiary"));
 
-        drawRoad(model.getMapData().getExtendedWays("residential"), 0.0002, getColor("residential"));
-        drawRoad(model.getMapData().getExtendedWays("motorway"), 0.0004, getColor("motorway"));
-        drawRoad(model.getMapData().getExtendedWays("tertiary"), 0.0004, getColor("tertiary"));
+        drawRoad(model.getMapData().getExtendedWays("residential"), 0.0002, getColor("residential"), getDrawAtZoom("residential"));
+        drawRoad(model.getMapData().getExtendedWays("motorway"), 0.0004, getColor("motorway"), getDrawAtZoom("motorway"));
+        drawRoad(model.getMapData().getExtendedWays("tertiary"), 0.0004, getColor("tertiary"), getDrawAtZoom("tertiary"));
 
-        if (zoomLevel > 4) {
-            drawRoad(model.getMapData().getWaterWays(), 0.0002, getColor("water"));
-            paintFill(model.getMapData().getBuildings(), getColor("building"));
-            drawLine(model.getMapData().getBuildings(), getColor("building"));
-        }
+        drawRoad(model.getMapData().getWaterWays(), 0.0002, getColor("water"), getDrawAtZoom("waterWay"));
+        paintFill(model.getMapData().getBuildings(), getColor("building"), getDrawAtZoom("building"));
+        drawLine(model.getMapData().getBuildings(), getColor("building"), getDrawAtZoom("building"));
+
         gc.restore();
     }
+
 
     public void pan(double dx, double dy) {
         trans.prependTranslation(dx, dy);
@@ -96,38 +97,50 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void drawLine(List<Way> list, Color color) {
-        gc.setStroke(color);
-        gc.setLineWidth(1 / Math.sqrt(trans.determinant()));
-        for (Way line : list) {
-            line.draw(gc);
+    public void drawLine(List<Way> list, Color color, int drawAtZoom) {
+        int currentZoomPercent = Integer.parseInt(getZoomPercent().substring(0, getZoomPercent().length() - 1));
+        if (drawAtZoom <= currentZoomPercent) {
+            gc.setStroke(color);
+            gc.setLineWidth(1 / Math.sqrt(trans.determinant()));
+            for (Way line : list) {
+                line.draw(gc);
+            }
         }
     }
 
-    public void paintFill(List<Way> list, Color color) {
-        gc.setFill(color);
-        for (Way line : list) {
-            line.fill(gc);
+    public void paintFill(List<Way> list, Color color, int drawAtZoom) {
+        int currentZoomPercent = Integer.parseInt(getZoomPercent().substring(0, getZoomPercent().length() - 1));
+        if (drawAtZoom <= currentZoomPercent) {
+            gc.setFill(color);
+            for (Way line : list) {
+                line.fill(gc);
+            }
         }
     }
 
-    public void drawRoad(List<Way> list, double size, Color roadColor) {
-        adjustWidthModifier();
-        size *= widthModifier;
-        gc.setStroke(roadColor);
-        gc.setLineWidth(size * 0.75);
-        for (Way line : list) {
-            line.draw(gc);
+    public void drawRoad(List<Way> list, double size, Color roadColor, int drawAtZoom) {
+        int currentZoomPercent = Integer.parseInt(getZoomPercent().substring(0, getZoomPercent().length() - 1));
+        if (drawAtZoom <= currentZoomPercent) {
+            adjustWidthModifier();
+            size *= widthModifier;
+            gc.setStroke(roadColor);
+            gc.setLineWidth(size * 0.75);
+            for (Way line : list) {
+                line.draw(gc);
+            }
         }
     }
 
-    public void drawRoadOutline(List<Way> list, double size, Color outline) {
-        adjustWidthModifier();
-        size *= widthModifier;
-        gc.setStroke(outline);
-        gc.setLineWidth(size);
-        for (Way line : list) {
-            line.draw(gc);
+    public void drawRoadOutline(List<Way> list, double size, Color outline, int drawAtZoom) {
+        int currentZoomPercent = Integer.parseInt(getZoomPercent().substring(0, getZoomPercent().length() - 1));
+        if (drawAtZoom <= currentZoomPercent) {
+            adjustWidthModifier();
+            size *= widthModifier;
+            gc.setStroke(outline);
+            gc.setLineWidth(size);
+            for (Way line : list) {
+                line.draw(gc);
+            }
         }
     }
 
@@ -146,6 +159,21 @@ public class MapCanvas extends Canvas {
             System.out.println("Invalid color code at " + path);
         }
         return Color.RED;
+    }
+
+    public int getDrawAtZoom(String type) {
+        //String zoomPercent = getZoomPercent();
+        //String currentZoomPercent = zoomPercent.substring(0, zoomPercent.length() - 1);
+        String path = "zoom." + type;
+        try {
+            int drawAtZoom = Integer.parseInt(config.getProp(path));
+            if (drawAtZoom > -1) {
+                return drawAtZoom;
+            }
+        } catch (IllegalArgumentException ex) {
+            System.out.println("Invalid draw zoom level at " + path);
+        }
+        return 0;
     }
 
     public void adjustWidthModifier() {
@@ -172,6 +200,5 @@ public class MapCanvas extends Canvas {
         } else {
             return Math.round(zoomLevel * 100 * 100) / 100 + "%";
         }
-
     }
 }

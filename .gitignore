@@ -291,6 +291,4 @@ gradle-app.setting
 **/build/
 
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,vscode,intellij+all,emacs,vim,windows,linux,macos
-/app/data/amager.zip.obj
-/app/data/denmark-latest.osm.bz2
-/app/data/denmark-latest.osm
+/app/data/
