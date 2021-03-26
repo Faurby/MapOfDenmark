@@ -53,21 +53,21 @@ public class XmlParser {
                 case START_ELEMENT:
                     switch (reader.getLocalName()) {
                         case "bounds":
-                            minx = getFloat("minlon");
-                            maxx = getFloat("maxlon");
-                            maxy = getFloat("minlat") / -0.56f;
-                            miny = getFloat("maxlat") / -0.56f;
+                            minx = Float.parseFloat(reader.getAttributeValue(null, "minlon"));
+                            maxx = Float.parseFloat(reader.getAttributeValue(null, "maxlon"));
+                            maxy = Float.parseFloat(reader.getAttributeValue(null, "minlat")) / -0.56f;
+                            miny = Float.parseFloat(reader.getAttributeValue(null, "maxlat")) / -0.56f;
                             break;
 
                         case "node":
-                            long nodeID = getLong("id");
-                            float lon = getFloat("lon");
-                            float lat = getFloat("lat");
+                            long nodeID = Long.parseLong(reader.getAttributeValue(null, "id"));
+                            float lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
+                            float lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
                             idToNode.put(new Node(nodeID, lat, lon));
                             break;
 
                         case "way":
-                            long wayID = getLong("id");
+                            long wayID = Long.parseLong(reader.getAttributeValue(null, "id"));
                             way = new Way(wayID);
                             extendedWay = new ExtendedWay(wayID);
                             isCoastline = false;
@@ -75,13 +75,13 @@ public class XmlParser {
                             break;
 
                         case "relation":
-                            long relationID = getLong("id");
+                            long relationID = Long.parseLong(reader.getAttributeValue(null, "id"));
                             relation = new Relation(relationID);
                             break;
 
                         case "member":
-                            String type = getAttribute("type");
-                            String memRef = getAttribute("ref");
+                            String type = reader.getAttributeValue(null, "type");
+                            String memRef = reader.getAttributeValue(null, "ref");
                             if (type != null) {
                                 if (type.equalsIgnoreCase("node")) {
                                     Node memNode = (Node) idToNode.get(Long.parseLong(memRef));
@@ -103,8 +103,8 @@ public class XmlParser {
                             break;
 
                         case "tag":
-                            String key = getAttribute("k");
-                            String value = getAttribute("v");
+                            String key = reader.getAttributeValue(null, "k");
+                            String value = reader.getAttributeValue(null, "v");
                             if (way != null) {
                                 if (key.equals("natural") && value.equals("coastline")) {
                                     isCoastline = true;
@@ -117,7 +117,7 @@ public class XmlParser {
                             break;
 
                         case "nd":
-                            long ref = getLong("ref");
+                            long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
                             way.add((Node) idToNode.get(ref));
                             break;
                     }
@@ -168,17 +168,5 @@ public class XmlParser {
             }
         });
         return merged;
-    }
-
-    private String getAttribute(String name) {
-        return reader.getAttributeValue(null, name);
-    }
-
-    private float getFloat(String name) {
-        return Float.parseFloat(getAttribute(name));
-    }
-
-    private long getLong(String name) {
-        return Long.parseLong(getAttribute(name));
     }
 }
