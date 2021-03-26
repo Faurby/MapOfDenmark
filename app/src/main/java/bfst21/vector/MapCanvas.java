@@ -10,9 +10,7 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
-
 import java.io.IOException;
-import java.sql.SQLOutput;
 import java.util.List;
 
 
@@ -77,9 +75,11 @@ public class MapCanvas extends Canvas {
         if (zoomLevelNext < zoomLevelMax && zoomLevelNext > zoomLevelMin) {
             zoomLevel = zoomLevelNext;
             zoom(factor, center);
+            System.out.println("Zoom: " + zoomLevel);
         } else if (zoomLevelNext > zoomLevelMax && zoomLevel != zoomLevelMax) {
             zoomLevel = zoomLevelMax;
             zoom(factor, center);
+            System.out.println("Zoom: " + zoomLevel);
         }
     }
 
@@ -103,7 +103,7 @@ public class MapCanvas extends Canvas {
             gc.setStroke(color);
             gc.setLineWidth(1 / Math.sqrt(trans.determinant()));
             for (Way line : list) {
-                line.draw(gc);
+                line.draw(gc, zoomLevel);
             }
         }
     }
@@ -113,7 +113,7 @@ public class MapCanvas extends Canvas {
         if (drawAtZoom <= currentZoomPercent) {
             gc.setFill(color);
             for (Way line : list) {
-                line.fill(gc);
+                line.fill(gc, zoomLevel);
             }
         }
     }
@@ -126,7 +126,7 @@ public class MapCanvas extends Canvas {
             gc.setStroke(roadColor);
             gc.setLineWidth(size * 0.75);
             for (Way line : list) {
-                line.draw(gc);
+                line.draw(gc, zoomLevel);
             }
         }
     }
@@ -139,7 +139,7 @@ public class MapCanvas extends Canvas {
             gc.setStroke(outline);
             gc.setLineWidth(size);
             for (Way line : list) {
-                line.draw(gc);
+                line.draw(gc, zoomLevel);
             }
         }
     }

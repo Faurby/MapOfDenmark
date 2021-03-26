@@ -33,11 +33,21 @@ public class Way extends Element implements Drawable, Serializable {
     }
 
     @Override
-    public void trace(GraphicsContext gc) {
+    public void trace(GraphicsContext gc, double zoomLevel) {
         gc.moveTo(nodes.get(0).getX(), nodes.get(0).getY());
-        for (Node node : nodes) {
-            gc.lineTo(node.getX(), node.getY());
+
+        int inc = 1;
+        if (zoomLevel <= 1) {
+            inc = 10;
         }
+        for (int i = 0; i < nodes.size(); i+=inc) {
+            if (i <= nodes.size() - 2) {
+                Node node = nodes.get(i);
+                gc.lineTo(node.getX(), node.getY());
+            }
+        }
+        int last = nodes.size() - 1;
+        gc.lineTo(nodes.get(last).getX(), nodes.get(last).getY());
     }
 
     public static Way merge(Way first, Way second) {

@@ -25,7 +25,7 @@ public class Line implements Drawable, Serializable {
         this.to = to;
     }
 
-    public void trace(GraphicsContext gc) {
+    public void trace(GraphicsContext gc, double zoomLevel) {
         gc.moveTo(from.getX(), from.getY());
         gc.lineTo(to.getX(), to.getY());
     }
