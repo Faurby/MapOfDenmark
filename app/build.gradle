@@ -55,6 +55,9 @@ tasks.named('test') {
     // Use junit platform for unit tests.
     useJUnitPlatform()
 }
+tasks.withType(JavaExec) {
+    jvmArgs = ['-Xms1000m', '-Xmx2500m']
+}
 
 run {
     args = ['data/amager.zip']

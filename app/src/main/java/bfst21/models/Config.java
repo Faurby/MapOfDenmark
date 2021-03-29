@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class Config {
 
-    private Properties configProps;
+    private final Properties configProps;
 
     public Config() throws IOException {
         configProps = new Properties();

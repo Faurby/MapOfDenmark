@@ -98,7 +98,6 @@ public class Controller {
         double factor = 1;
         canvas.preZoom(factor, new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2));
         zoomText.setText(canvas.getZoomPercent());
-        ;
     }
 
     @FXML

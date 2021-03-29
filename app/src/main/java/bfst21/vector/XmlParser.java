@@ -16,8 +16,6 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 public class XmlParser {
 
-    private XMLStreamReader reader;
-
     public MapData loadOSM(String filename) throws FileNotFoundException, XMLStreamException, FactoryConfigurationError {
         return loadOSM(new FileInputStream(filename));
     }
@@ -26,16 +24,15 @@ public class XmlParser {
     // You can then peek to see what type of parent it has
     public MapData loadOSM(InputStream input) throws XMLStreamException, FactoryConfigurationError {
 
-        reader = XMLInputFactory
+        XMLStreamReader reader = XMLInputFactory
                 .newInstance()
                 .createXMLStreamReader(new BufferedInputStream(input));
 
         Way way = null;
-        ExtendedWay extendedWay = null;
         Relation relation = null;
 
-        LongIndex idToNode = new LongIndex();
-        LongIndex idToWay = new LongIndex();
+        NodeIndex idToNode = new NodeIndex();
+        WayIndex idToWay = new WayIndex();
         LongIndex idToRelation = new LongIndex();
 
         List<Drawable> shapes = new ArrayList<>();
@@ -70,7 +67,6 @@ public class XmlParser {
                         case "way":
                             long wayID = Long.parseLong(reader.getAttributeValue(null, "id"));
                             way = new Way(wayID);
-                            extendedWay = new ExtendedWay(wayID);
                             isCoastline = false;
                             isBuilding = false;
                             break;
@@ -85,12 +81,12 @@ public class XmlParser {
                             String memRef = reader.getAttributeValue(null, "ref");
                             if (type != null) {
                                 if (type.equalsIgnoreCase("node")) {
-                                    Node memNode = (Node) idToNode.get(Long.parseLong(memRef));
+                                    Node memNode = idToNode.get(Long.parseLong(memRef));
                                     if (memNode != null) {
                                         relation.addMember(memNode);
                                     }
                                 } else if (type.equalsIgnoreCase("way")) {
-                                    Way memWay = (Way) idToWay.get(Long.parseLong(memRef));
+                                    Way memWay = idToWay.get(Long.parseLong(memRef));
                                     if (memWay != null) {
                                         relation.addMember(memWay);
                                     }
@@ -112,14 +108,14 @@ public class XmlParser {
                                 } else if (key.equals("building")) {
                                     isBuilding = true;
                                 } else {
-                                    extendedWay.addTag(key, value);
+                                    way.addTag(key, value);
                                 }
                             }
                             break;
 
                         case "nd":
                             long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
-                            way.add((Node) idToNode.get(ref));
+                            way.add(idToNode.get(ref));
                             break;
                     }
                     break;
@@ -134,9 +130,8 @@ public class XmlParser {
                             } else if (isBuilding) {
                                 buildings.add(way);
 
-                            } else if (extendedWay != null) {
-                                extendedWays.add(extendedWay);
-                                extendedWay.setNodes(way.getNodes());
+                            } else if (way.getTags() != null) {
+                                extendedWays.add(way);
                             }
                             break;
 

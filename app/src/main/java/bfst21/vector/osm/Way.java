@@ -2,6 +2,7 @@ package bfst21.vector.osm;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import bfst21.vector.Drawable;
 import javafx.scene.canvas.GraphicsContext;
@@ -12,8 +13,30 @@ public class Way extends Element implements Drawable, Serializable {
     private static final long serialVersionUID = 3139576893143362100L;
     protected List<Node> nodes = new ArrayList<>();
 
+    private HashMap<String, String> tags;
+
     public Way(long id) {
         super(id);
+    }
+
+    private void createTags() {
+        if (tags == null) {
+            tags = new HashMap<>();
+        }
+    }
+
+    public void addTag(String key, String value) {
+        createTags();
+        tags.put(key, value);
+    }
+
+    public String getValue(String key) {
+        createTags();
+        return tags.get(key);
+    }
+
+    public HashMap<String, String> getTags() {
+        return tags;
     }
 
     public Node first() {

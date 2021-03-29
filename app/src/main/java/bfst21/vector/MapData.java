@@ -1,6 +1,5 @@
 package bfst21.vector;
 
-import bfst21.vector.osm.ExtendedWay;
 import bfst21.vector.osm.Way;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,14 +7,14 @@ import java.util.List;
 
 public class MapData {
 
-    private List<Drawable> shapes;
+    private final List<Drawable> shapes;
 
-    private List<Way> buildings;
-    private List<Way> islands;
-    private List<Way> extendedWays;
-    private LongIndex idToRelation;
+    private final List<Way> buildings;
+    private final List<Way> islands;
+    private final List<Way> extendedWays;
+    private final LongIndex idToRelation;
 
-    private float minx, miny, maxx, maxy;
+    private final float minx, miny, maxx, maxy;
 
     public MapData(
             List<Drawable> shapes,
@@ -43,13 +42,9 @@ public class MapData {
         List<Way> ways = new ArrayList<>();
 
         for (Way way : extendedWays) {
-            if (way instanceof ExtendedWay) {
-                ExtendedWay exWay = (ExtendedWay) way;
-
-                if (exWay.getValue("highway") != null) {
-                    if (exWay.getValue("highway").contains(type)) {
-                        ways.add(way);
-                    }
+            if (way.getValue("highway") != null) {
+                if (way.getValue("highway").contains(type)) {
+                    ways.add(way);
                 }
             }
         }
@@ -60,13 +55,9 @@ public class MapData {
         List<Way> water = new ArrayList<>();
 
         for (Way way : extendedWays) {
-            if (way instanceof ExtendedWay) {
-                ExtendedWay exWay = (ExtendedWay) way;
-
-                if (exWay.getValue("natural") != null) {
-                    if (exWay.getValue("natural").contains("water")) {
-                        water.add(way);
-                    }
+            if (way.getValue("natural") != null) {
+                if (way.getValue("natural").contains("water")) {
+                    water.add(way);
                 }
             }
         }
@@ -77,12 +68,8 @@ public class MapData {
         List<Way> waterWays = new ArrayList<>();
 
         for (Way way : extendedWays) {
-            if (way instanceof ExtendedWay) {
-                ExtendedWay exWay = (ExtendedWay) way;
-
-                if (exWay.getValue("waterway") != null) {
-                    waterWays.add(way);
-                }
+            if (way.getValue("waterway") != null) {
+                waterWays.add(way);
             }
         }
         return waterWays;
@@ -92,22 +79,18 @@ public class MapData {
         List<Way> landUse = new ArrayList<>();
 
         for (Way way : extendedWays) {
-            if (way instanceof ExtendedWay) {
-                ExtendedWay exWay = (ExtendedWay) way;
+            if (way.getValue("landuse") != null) {
+                if (way.getValue("landuse").equalsIgnoreCase("grass") ||
+                        way.getValue("landuse").equalsIgnoreCase("meadow") ||
+                        way.getValue("landuse").equalsIgnoreCase("orchard") ||
+                        way.getValue("landuse").equalsIgnoreCase("allotments")) {
 
-                if (exWay.getValue("landuse") != null) {
-                    if (exWay.getValue("landuse").equalsIgnoreCase("grass") ||
-                        exWay.getValue("landuse").equalsIgnoreCase("meadow") ||
-                        exWay.getValue("landuse").equalsIgnoreCase("orchard") ||
-                        exWay.getValue("landuse").equalsIgnoreCase("allotments")) {
+                    landUse.add(way);
+                }
+            } else if (way.getValue("leisure") != null) {
+                if (way.getValue("leisure").equalsIgnoreCase("park")) {
 
-                        landUse.add(way);
-                    }
-                } else if (exWay.getValue("leisure") != null) {
-                    if (exWay.getValue("leisure").equalsIgnoreCase("park")) {
-
-                        landUse.add(way);
-                    }
+                    landUse.add(way);
                 }
             }
         }
