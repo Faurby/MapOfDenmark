@@ -8,7 +8,7 @@ public class ExtendedWay extends Way {
 
     private HashMap<String, String> tags;
 
-    public ExtendedWay(long id) {
+    public ExtendedWay(int id) {
         super(id);
         this.tags = new HashMap<>();
     }

@@ -3,13 +3,13 @@ package bfst21.vector.osm;
 
 public abstract class Element {
 
-    private transient long id;
+    private transient int id;
 
-    public Element(long id) {
+    public Element(int id) {
         this.id = id;
     }
 
-    public long getID() {
+    public int getID() {
         return id;
     }
 

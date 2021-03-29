@@ -13,7 +13,7 @@ public class Relation extends Element implements Serializable {
     private List<Way> ways;
     private List<Long> relationIDs;
 
-    public Relation(long id) {
+    public Relation(int id) {
         super(id);
         nodes = new ArrayList<>();
         ways = new ArrayList<>();

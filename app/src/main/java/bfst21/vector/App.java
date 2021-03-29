@@ -11,6 +11,9 @@ public class App extends Application {
         String filename = "amager.obj";
         boolean jarFile = true;
 
+        System.out.println("Sun: "+System.getProperty("sun.arch.data.model"));
+        System.out.println("Mem: "+Runtime.getRuntime().maxMemory());
+
         if (getParameters().getRaw().size() > 0) {
             filename = getParameters().getRaw().get(0);
             jarFile = false;
