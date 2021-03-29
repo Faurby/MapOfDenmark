@@ -12,7 +12,7 @@ public class Way extends Element implements Drawable, Serializable {
     private static final long serialVersionUID = 3139576893143362100L;
     protected List<Node> nodes = new ArrayList<>();
 
-    public Way(int id) {
+    public Way(long id) {
         super(id);
     }
 

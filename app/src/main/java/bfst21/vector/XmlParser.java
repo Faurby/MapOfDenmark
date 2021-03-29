@@ -45,12 +45,6 @@ public class XmlParser {
         List<Way> coastlines = new ArrayList<>();
         List<Way> islands;
 
-        long maxNodeID = 8_492_965_134L;
-        long minNodeID = 115_722L;
-
-        long maxWayID = 921_067_438L;
-        long minWayID = 2_080L;
-
         float minx = 0, miny = 0, maxx = 0, maxy = 0;
         boolean isCoastline = false, isBuilding = false;
 
@@ -66,50 +60,48 @@ public class XmlParser {
                             break;
 
                         case "node":
-                            long preNodeID = Long.parseLong(reader.getAttributeValue(null, "id"));
+                            long nodeID = Long.parseLong(reader.getAttributeValue(null, "id"));
                             float lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
                             float lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
-                            //int nodeID = Long.hashCode(preNodeID);
-                            int nodeID = toNewRange(preNodeID, maxNodeID, minNodeID);
 
                             idToNode.put(new Node(nodeID, lat, lon));
                             break;
 
                         case "way":
-                            int wayID = Integer.parseInt(reader.getAttributeValue(null, "id"));
+                            long wayID = Long.parseLong(reader.getAttributeValue(null, "id"));
                             way = new Way(wayID);
                             extendedWay = new ExtendedWay(wayID);
                             isCoastline = false;
                             isBuilding = false;
                             break;
 
-//                        case "relation":
-//                            long relationID = Long.parseLong(reader.getAttributeValue(null, "id"));
-//                            relation = new Relation(relationID);
-//                            break;
-//
-//                        case "member":
-//                            String type = reader.getAttributeValue(null, "type");
-//                            String memRef = reader.getAttributeValue(null, "ref");
-//                            if (type != null) {
-//                                if (type.equalsIgnoreCase("node")) {
-//                                    Node memNode = (Node) idToNode.get(Long.parseLong(memRef));
-//                                    if (memNode != null) {
-//                                        relation.addMember(memNode);
-//                                    }
-//                                } else if (type.equalsIgnoreCase("way")) {
-//                                    Way memWay = (Way) idToWay.get(Long.parseLong(memRef));
-//                                    if (memWay != null) {
-//                                        relation.addMember(memWay);
-//                                    }
-//                                } else if (type.equalsIgnoreCase("relation")) {
-//                                    Relation memRelation = (Relation) idToRelation.get(Long.parseLong(memRef));
-//                                    if (memRelation != null) {
-//                                        relation.addMember(memRelation.getID());
-//                                    }
-//                                }
-//                            }
-//                            break;
+                        case "relation":
+                            long relationID = Long.parseLong(reader.getAttributeValue(null, "id"));
+                            relation = new Relation(relationID);
+                            break;
+
+                        case "member":
+                            String type = reader.getAttributeValue(null, "type");
+                            String memRef = reader.getAttributeValue(null, "ref");
+                            if (type != null) {
+                                if (type.equalsIgnoreCase("node")) {
+                                    Node memNode = (Node) idToNode.get(Long.parseLong(memRef));
+                                    if (memNode != null) {
+                                        relation.addMember(memNode);
+                                    }
+                                } else if (type.equalsIgnoreCase("way")) {
+                                    Way memWay = (Way) idToWay.get(Long.parseLong(memRef));
+                                    if (memWay != null) {
+                                        relation.addMember(memWay);
+                                    }
+                                } else if (type.equalsIgnoreCase("relation")) {
+                                    Relation memRelation = (Relation) idToRelation.get(Long.parseLong(memRef));
+                                    if (memRelation != null) {
+                                        relation.addMember(memRelation.getID());
+                                    }
+                                }
+                            }
+                            break;
 
                         case "tag":
                             String key = reader.getAttributeValue(null, "k");
@@ -126,10 +118,7 @@ public class XmlParser {
                             break;
 
                         case "nd":
-                            long preRef = Long.parseLong(reader.getAttributeValue(null, "ref"));
-                            //int ref = Long.hashCode(preRef);
-                            int ref = toNewRange(preRef, maxNodeID, minNodeID);
-
+                            long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
                             way.add((Node) idToNode.get(ref));
                             break;
                     }
@@ -180,75 +169,5 @@ public class XmlParser {
             }
         });
         return merged;
-    }
-
-    //private List<Integer> numbers = new ArrayList<>();
-    private HashMap<Integer, List<Long>> map = new HashMap<>();
-
-    public int toNewRange(long oldValue, long oldMax, long oldMin) {
-        int newMax = Integer.MAX_VALUE;
-        int newMin = 1;
-
-        long oldRange = (oldMax - oldMin);
-        long newRange = (newMax - newMin);
-
-        int toReturn;
-        if (oldValue < Integer.MAX_VALUE) {
-            toReturn = (int) oldValue;
-        } else {
-            toReturn = (int) (((oldValue - oldMin) * (newRange)) / (oldRange) + newMin) * -1;
-            //System.out.println("Converted "+oldValue+" to "+toReturn);
-        }
-        //int newMax = Integer.MAX_VALUE;
-        //int newMin = Integer.MIN_VALUE;
-
-        //Try negative values in the range too?
-
-        //long oldRange = (oldMax - oldMin);
-        //long newRange = (newMax - newMin);
-
-        //System.out.println("--------------------------------");
-        //System.out.println("Old range: " + oldRange);
-        //System.out.println("New range: " + newRange);
-
-        //int toReturn = Long.hashCode(oldValue);
-
-        //Converted 20930776
-
-        //int toReturn = (int) (((oldValue - oldMin) * (newRange)) / (oldRange) + newMin);
-
-        //long oldRange = (oldMax - oldMin);
-        //long newRange = (newMax - newMin);
-        //long newValue = (((oldValue - oldMin) * newRange) / oldRange) + newMin;
-        //Converted 4707529748 to -981725805
-
-        //oldRange = 8_492_849_412L;
-        //newRange = 2_147_483_646;
-
-        //4707529748 - 115722
-        //4.707.414.026
-        //4.707.414.026 *
-
-        //int toReturn = (int) newValue;
-
-        //System.out.println("Converted "+oldValue+" to "+(int)newValue);
-
-//        List<Long> list = new ArrayList<>();
-//        if (map.containsKey(toReturn)) {
-//            list = map.get(toReturn);
-//        }
-//        if (!list.contains(oldValue)) {
-//            list.add(oldValue);
-//        }
-//        if (list.size() > 1) {
-//            String valStr = "";
-//            for (long val : list) {
-//                valStr += val + " ";
-//            }
-//            System.out.println("Same toReturn: "+toReturn+ " old values: "+valStr);
-//        }
-//        map.put(toReturn, list);
-
-        return toReturn;
     }
 }
