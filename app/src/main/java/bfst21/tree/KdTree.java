@@ -37,9 +37,8 @@ public class KdTree {
     }
 
     public void rangeSearch(BoundingBox boundingBox, KdNode kdNode, List<KdNode> list) {
-
         if (kdNode != null) {
-            if (boundingBox.contains(kdNode)) {
+            if (boundingBox.intersects(kdNode.getBoundingBox())) {
                 list.add(kdNode);
             }
             boolean checkRight = false;

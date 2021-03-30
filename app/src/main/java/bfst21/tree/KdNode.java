@@ -12,7 +12,7 @@ public class KdNode {
     private KdNode leftChild;
     private Way way;
 
-    //private float x, y;
+    private float x, y;
     private BoundingBox boundingBox;
 
     protected void updateBoundingBox() {
@@ -47,15 +47,16 @@ public class KdNode {
 
     public KdNode(Way way) {
         this.way = way;
+        updateBoundingBox();
     }
 
-//    public void updateMedian() {
-//        int size = way.getNodes().size();
-//        Node middle = way.getNodes().get(size / 2);
-//
-//        x = middle.getX();
-//        y = middle.getY();
-//    }
+    public void updateMedian() {
+        int size = way.getNodes().size();
+        Node middle = way.getNodes().get(size / 2);
+
+        x = middle.getX();
+        y = middle.getY();
+    }
 
     public Way getWay() {
         return way;
@@ -75,6 +76,10 @@ public class KdNode {
 
     public KdNode getLeftChild() {
         return leftChild;
+    }
+
+    public BoundingBox getBoundingBox() {
+        return boundingBox;
     }
 
     public float getX() {

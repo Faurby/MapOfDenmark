@@ -15,6 +15,26 @@ public class BoundingBox {
         this.minY = minY;
     }
 
+    public boolean intersects(BoundingBox boundingBox) {
+         float otherMaxX = boundingBox.getMaxX();
+         float otherMinX = boundingBox.getMinX();
+         float otherMaxY = boundingBox.getMaxY();
+         float otherMinY = boundingBox.getMinY();
+
+         if (otherMinX > minX && otherMaxX < maxX && otherMinY > minY && otherMaxY < maxY) {
+            return true;
+
+         } else if (otherMinX <= minX && otherMaxX >= maxX && otherMinY <= minY && otherMaxY >= maxY) {
+             return true;
+
+         } else if ((otherMinX > minX && otherMinX < maxX) || (otherMaxX > minX && otherMaxX < maxX)) {
+            if ((otherMinY > minY && otherMinY < maxY) || (otherMaxY > minY && otherMaxY < maxY)) {
+                return true;
+            }
+         }
+         return false;
+    }
+
     public boolean contains(KdNode kdNode) {
         float maxX = getMaxX();
         float minX = getMinX();
