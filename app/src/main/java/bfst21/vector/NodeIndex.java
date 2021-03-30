@@ -1,6 +1,7 @@
 package bfst21.vector;
 
 import bfst21.vector.osm.Node;
+import bfst21.vector.osm.NodeID;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,21 +12,21 @@ import java.util.List;
 public class NodeIndex implements Serializable {
 
     private static final long serialVersionUID = 2352785882692399165L;
-    private final List<Node> elements = new ArrayList<>();
+    private final List<NodeID> elements = new ArrayList<>();
     private boolean sorted = true;
 
-    public List<Node> getElements() {
+    public List<NodeID> getElements() {
         return elements;
     }
 
-    public void put(Node element) {
+    public void put(NodeID element) {
         elements.add(element);
         sorted = false;
     }
 
     public Node get(long ref) {
         if (!sorted) {
-            elements.sort(Comparator.comparingLong(Node::getID));
+            elements.sort(Comparator.comparingLong(NodeID::getID));
             sorted = true;
         }
         int lo = 0;               // nodes.get(lo).getID() <= ref
@@ -38,7 +39,7 @@ public class NodeIndex implements Serializable {
                 hi = mi;
             }
         }
-        Node element = elements.get(lo);
-        return element.getID() == ref ? element : null;
+        NodeID element = elements.get(lo);
+        return element.getID() == ref ? element.getNode() : null;
     }
 }

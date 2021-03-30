@@ -61,7 +61,7 @@ public class XmlParser {
                             float lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
                             float lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
 
-                            idToNode.put(new Node(nodeID, lat, lon));
+                            idToNode.put(new NodeID(nodeID, new Node(lat, lon)));
                             break;
 
                         case "way":

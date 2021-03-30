@@ -3,13 +3,12 @@ package bfst21.vector.osm;
 import java.io.Serializable;
 
 
-public class Node extends Element implements Serializable {
+public class Node implements Serializable {
 
     private static final long serialVersionUID = -343957913094540189L;
     private final float x, y;
 
-    public Node(long id, float lat, float lon) {
-        super(id);
+    public Node(float lat, float lon) {
         this.x = lon;
         this.y = -lat / 0.56f;
     }
@@ -20,10 +19,5 @@ public class Node extends Element implements Serializable {
 
     public float getY() {
         return y;
-    }
-
-    @Override
-    public ElementType getType() {
-        return ElementType.NODE;
     }
 }
