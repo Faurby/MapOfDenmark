@@ -48,9 +48,9 @@
                             <padding><Insets top="5" right="10" bottom="5" left="10"/></padding>
                             <Text text="Search" style="-fx-font-size: 15" />
                             <Text fx:id="startingPointText"
-                                  text="Starting point"
+                                  text="Starting point:"
                                   visible="false"
-                                  managed="false"></Text>
+                                  managed="false"/>
                             <TextArea fx:id="startingPoint"
                                       promptText="Choose an address..."
                                       wrapText="true"
@@ -63,7 +63,7 @@
                                         GridPane.columnIndex="0" GridPane.rowIndex="0"
                                         onAction="#expandSearchView"
                                 />
-                                <ToolBar HBox.hgrow="ALWAYS" visible="false"></ToolBar>
+                                <ToolBar HBox.hgrow="ALWAYS" visible="false"/>
                                 <Button
                                         text="Search"
                                         GridPane.columnIndex="2" GridPane.rowIndex="0"
@@ -83,9 +83,8 @@
                                     <Button fx:id="collapse"
                                             text="Collapse"
                                             GridPane.columnIndex="0" GridPane.rowIndex="0"
-                                            onAction="#expandSearchView"
-                                    ></Button>
-                                    <ToolBar HBox.hgrow="ALWAYS" visible="false"></ToolBar>
+                                            onAction="#expandSearchView"/>
+                                    <ToolBar HBox.hgrow="ALWAYS" visible="false">
                                     <Button
                                             text="Search"
                                             GridPane.columnIndex="2" GridPane.rowIndex="0"
