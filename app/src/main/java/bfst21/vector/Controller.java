@@ -139,7 +139,7 @@ public class Controller {
             expandAndSearchButtons.setVisible(false);
             expandAndSearchButtons.setManaged(false);
         } else{
-            if (destinationPoint.getText() != null && startingPoint.getText().equals("")){
+            if (!destinationPoint.getText().equals("") && startingPoint.getText().equals("")){
                 startingPoint.setText(destinationPoint.getText());
             }
             getDestinationBox.setVisible(false);
