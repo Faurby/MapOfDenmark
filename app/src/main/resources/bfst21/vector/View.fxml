@@ -9,13 +9,13 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.AnchorPane?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst21.vector.Controller"
@@ -29,17 +29,60 @@
                                height="${stackPane.height}"
                                onScroll="#onScroll"
                                onMousePressed="#onMousePressed"
-                               onMouseDragged="#onMouseDragged" />
+                               onMouseDragged="#onMouseDragged" >
+                    </MapCanvas>
                     <VBox fx:id="zoomBox" maxWidth="40" maxHeight="20" style="-fx-padding: 5">
                         <Text text="zoomText" fx:id="zoomText"/>
                     </VBox>
-                </StackPane>
 
+                    <AnchorPane minWidth="10" maxWidth="10" minHeight="10" maxHeight="10" StackPane.alignment="TOP_LEFT">
+                        <padding><Insets top="8" bottom="8" left="8"/></padding>
+
+                        <VBox minWidth="150" fx:id="vbox" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" style="-fx-background-color: #f3f3ee ; -fx-border-color: #e5e5de" >
+                            <padding><Insets top="5" right="10" bottom="10" left="10"/></padding>
+                            <Text text="Search" style="-fx-font-size: 15"/>
+
+                            <TextArea fx:id="startingPoint"
+                                      promptText="Type an address..."
+                                      wrapText="true"
+                                      minHeight="25"
+                                      prefHeight="25"
+                            />
+
+                            <GridPane alignment="BASELINE_CENTER" style="-fx-padding: 5 0 5 0" >
+
+                                <Button text="Expand"
+                                        fx:id="expand"
+                                        style="-fx-font-size: 10"
+                                        GridPane.columnIndex="0" GridPane.rowIndex="1"
+                                        GridPane.columnSpan = "1"
+                                        onAction="#expandSearchView"
+                                />
+                            </GridPane>
+                            <Text text="Destination:" />
+                            <TextArea fx:id="destinationPoint"
+                                      promptText="Route to..."
+                                      wrapText="true"
+                                      minHeight="25"
+                                      prefHeight="25"
+                            />
+
+                            <GridPane alignment="CENTER_RIGHT" style="-fx-padding: 5 0 0 0" >
+                                <Button
+                                        text="Search"
+                                        GridPane.columnIndex="0" GridPane.rowIndex="1"
+                                        GridPane.columnSpan = "1"
+                                        onAction="#searchAddressString"
+                                />
+                            </GridPane>
+                        </VBox>
+                    </AnchorPane>
+                </StackPane>
 
             </center>
             <top>
                 <HBox>
-                    <MenuBar fx:id="menuBar" minHeight="25" minWidth="${scene.width}">
+                    <MenuBar fx:id="menuBar" minHeight="25" minWidth="${scene.width}" >
                         <Menu text="File">
                             <MenuItem text="Load"/>
                             <MenuItem text="Save"/>
@@ -62,44 +105,6 @@
                     </MenuBar>
                 </HBox>
             </top>
-
-            <left>
-                <VBox maxWidth="175" fx:id="vbox">
-                    <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-                    <Text
-                            text="Compute route"
-                            style="-fx-font-size: 15"
-                    />
-                    <Text
-                            text="Starting point:"
-                    />
-                    <TextArea fx:id="startingPoint"
-                            promptText="Route from..."
-                            scaleY="0.98"
-                            prefHeight="42"
-                            wrapText="true"
-                    />
-                    <Text
-                            text="Destination:"
-                    />
-                    <TextArea fx:id="destinationPoint"
-                            promptText="Route to..."
-                            scaleY="0.98"
-                            prefHeight="42"
-                            wrapText="true"
-                    />
-
-                    <GridPane alignment="CENTER_RIGHT" style="-fx-padding: 5 0 0 0" >
-
-                        <Button
-                            text="Search"
-                            GridPane.columnIndex="0" GridPane.rowIndex="1"
-                            GridPane.columnSpan = "1"
-                            onAction="#searchAddressString"
-                        />
-                    </GridPane>
-                </VBox>
-            </left>
         </BorderPane>
     </root>
 </Scene>

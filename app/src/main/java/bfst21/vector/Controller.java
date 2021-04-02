@@ -31,10 +31,6 @@ public class Controller {
     @FXML
     private VBox zoomBox;
     @FXML
-    private Scene scene;
-    @FXML
-    private BorderPane borderPane;
-    @FXML
     private Text zoomText;
     @FXML
     private TextArea startingPoint;
@@ -126,5 +122,10 @@ public class Controller {
 
         System.out.println(parsedSA.toString());
         System.out.println(parsedDA.toString());
+    }
+
+    @FXML
+    public void expandSearchView(ActionEvent actionEvent){
+
     }
 }
