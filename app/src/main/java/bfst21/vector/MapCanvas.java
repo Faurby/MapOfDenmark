@@ -123,12 +123,7 @@ public class MapCanvas extends Canvas {
         Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
 
         BoundingBox boundingBox = new BoundingBox((float)p2.getX(), (float)p1.getX(), (float)p2.getY(), (float)p1.getY());
-        List<KdNode> list = model.getMapData().getKdTree().preRangeSearch(boundingBox);
-        List<Way> wayList = new ArrayList<>();
-
-        for (KdNode kdNode : list) {
-            wayList.add(kdNode.getWay());
-        }
+        List<Way> list = model.getMapData().getKdTree().preRangeSearch(boundingBox);
 
         System.out.println("p1: x "+p1.getX()+" y "+p1.getY());
         System.out.println("p2: x "+p2.getX()+" y "+p2.getY());
@@ -152,16 +147,16 @@ public class MapCanvas extends Canvas {
             draw(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
         }
 
-        drawRoad(wayList, 0.0003, Color.BLACK, getDrawAtZoom("tertiary"));
+        drawRoad(list, 0.0003, Color.BLACK, getDrawAtZoom("tertiary"));
 
-        for (KdNode kdNode : list) {
-            gc.setStroke(Color.DARKKHAKI);
-            gc.setLineWidth(0.0005);
-            gc.beginPath();
-            gc.moveTo(kdNode.getX(), kdNode.getY());
-            gc.lineTo(kdNode.getX() + 0.00001, kdNode.getY() + 0.00001);
-            gc.stroke();
-        }
+//        for (KdNode kdNode : list) {
+//            gc.setStroke(Color.DARKKHAKI);
+//            gc.setLineWidth(0.0005);
+//            gc.beginPath();
+//            gc.moveTo(kdNode.getX(), kdNode.getY());
+//            gc.lineTo(kdNode.getX() + 0.00001, kdNode.getY() + 0.00001);
+//            gc.stroke();
+//        }
 
 //        paintFill(model.getMapData().getLandUse(), getColor("landuse"), getDrawAtZoom("landuse"));
 //        paintFill(model.getMapData().getWater(), getColor("water"), getDrawAtZoom("water"));

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import bfst21.tree.BoundingBox;
 import bfst21.vector.Drawable;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -17,6 +19,48 @@ public class Way extends Element implements Drawable, Serializable {
 
     public Way(long id) {
         super(id);
+    }
+
+    public BoundingBox getBoundingBox() {
+
+        float maxX = Float.MIN_VALUE;
+        float maxY = Float.MIN_VALUE;
+        float minX = Float.MAX_VALUE;
+        float minY = Float.MAX_VALUE;
+
+        List<Node> list = getNodes();
+
+        for (Node node : list) {
+
+            float x = node.getX();
+            float y = node.getY();
+
+            if (x > maxX) {
+                maxX = x;
+            }
+            if (y > maxY) {
+                maxY = y;
+            }
+            if (x < minX) {
+                minX = x;
+            }
+            if (y < minY) {
+                minY = y;
+            }
+        }
+        return new BoundingBox(maxX, minX, maxY, minY);
+    }
+
+    public Node getMedian() {
+        return nodes.get(nodes.size() / 2);
+    }
+
+    public float getX() {
+        return nodes.get(nodes.size() / 2).getX();
+    }
+
+    public float getY() {
+        return nodes.get(nodes.size() / 2).getY();
     }
 
     private void createTags() {

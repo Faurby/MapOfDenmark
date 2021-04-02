@@ -1,6 +1,9 @@
 package bfst21.tree;
 
 
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
+
 public class BoundingBox {
 
     private float maxX;
@@ -21,18 +24,27 @@ public class BoundingBox {
          float otherMaxY = boundingBox.getMaxY();
          float otherMinY = boundingBox.getMinY();
 
-         if (otherMinX > minX && otherMaxX < maxX && otherMinY > minY && otherMaxY < maxY) {
-            return true;
+         //Rectangle2D rect = new Rectangle2D.Float(minX, minY,maxX-minX,maxY-minY);
+        //Rectangle2D otherRect = new Rectangle2D.Float(otherMinX, otherMinY,otherMaxX - otherMinX,otherMaxY - otherMinY);
+        //return rect.intersects(otherRect);
 
-         } else if (otherMinX <= minX && otherMaxX >= maxX && otherMinY <= minY && otherMaxY >= maxY) {
-             return true;
+        return (minX < otherMaxX) && (otherMinX < maxX) && (minY < otherMaxY) && (minY < otherMinY && otherMinY < maxY);
 
-         } else if ((otherMinX > minX && otherMinX < maxX) || (otherMaxX > minX && otherMaxX < maxX)) {
-            if ((otherMinY > minY && otherMinY < maxY) || (otherMaxY > minY && otherMaxY < maxY)) {
-                return true;
-            }
-         }
-         return false;
+        //return x < r.x + r.width && x + width > r.x && y < r.y + r.height && y + height > r.y;
+         //return minX < boundingBox.maxX && maxX > boundingBox.minX && minY < boundingBox.maxY && maxY > boundingBox.minY;
+
+//         if (otherMinX >= minX && otherMaxX <= maxX && otherMinY >= minY && otherMaxY <= maxY) {
+//            return true;
+//
+//         } else if (otherMinX <= minX && otherMaxX >= maxX && otherMinY <= minY && otherMaxY >= maxY) {
+//             return true;
+//
+//         } else if ((otherMinX >= minX && otherMinX <= maxX) || (otherMaxX >= minX && otherMaxX <= maxX)) {
+//            if ((otherMinY >= minY && otherMinY <= maxY) || (otherMaxY >= minY && otherMaxY <= maxY)) {
+//                return true;
+//            }
+//         }
+//         return false;
     }
 
     public boolean contains(KdNode kdNode) {

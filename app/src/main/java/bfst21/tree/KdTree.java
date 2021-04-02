@@ -2,7 +2,6 @@ package bfst21.tree;
 
 import bfst21.vector.osm.Way;
 
-import javax.annotation.CheckReturnValue;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -27,19 +26,24 @@ public class KdTree {
         return root;
     }
 
-    public List<KdNode> preRangeSearch(BoundingBox boundingBox) {
+    public List<Way> preRangeSearch(BoundingBox boundingBox) {
         depth = 0;
 
-        List<KdNode> list = new ArrayList<>();
+        List<Way> list = new ArrayList<>();
         rangeSearch(boundingBox, root, list);
 
         return list;
     }
 
-    public void rangeSearch(BoundingBox boundingBox, KdNode kdNode, List<KdNode> list) {
+    public void rangeSearch(BoundingBox boundingBox, KdNode kdNode, List<Way> list) {
         if (kdNode != null) {
-            if (boundingBox.intersects(kdNode.getBoundingBox())) {
-                list.add(kdNode);
+
+            if (kdNode.getList() != null) {
+                for (Way way : kdNode.getList()) {
+                    if (boundingBox.intersects(way.getBoundingBox())) {
+                        list.add(way);
+                    }
+                }
             }
             boolean checkRight = false;
             boolean checkLeft = false;
@@ -69,10 +73,10 @@ public class KdTree {
                     checkLeft = true;
 
                 } else if (minY > y) {
-                    checkLeft = true;
+                    checkRight = true;
 
                 } else if (maxY < y) {
-                    checkRight = true;
+                    checkLeft = true;
                 }
             }
             if (checkRight) {
@@ -88,48 +92,44 @@ public class KdTree {
         }
     }
 
-    public void preBuild() {
+    public void preBuild(List<Way> wayList) {
         depth = 0;
 
-        list.sort(Comparator.comparingDouble(KdNode::getX));
-        int median = list.size() / 2;
-        root = list.get(median);
+        wayList.sort(Comparator.comparingDouble(Way::getX));
+        int median = wayList.size() / 2;
 
-        List<KdNode> leftList = list.subList(0, median - 1);
-        List<KdNode> rightList = list.subList(median + 1, list.size() - 1);
+        Way medianWay = wayList.get(median);
+        root = new KdNode(medianWay.getX(), medianWay.getY());
+
+        List<Way> leftList = wayList.subList(0, median);
+        List<Way> rightList = wayList.subList(median, wayList.size());
 
         depth++;
         addChild(root, leftList, false);
         addChild(root, rightList, true);
     }
 
-    public void addChild(KdNode currentElement, List<KdNode> list, boolean right) {
+    public void addChild(KdNode currentElement, List<Way> list, boolean right) {
 
         if (list != null) {
             if (list.size() > 0) {
 
-                if (list.size() == 2) {
-                    currentElement.setLeftChild(list.get(0));
-                    currentElement.setRightChild(list.get(1));
+                if (list.size() <= 3) {
+                    currentElement.setList(list);
 
                 } else {
-                    KdNode medianNode = list.get(0);
-                    List<KdNode> leftList = null;
-                    List<KdNode> rightList = null;
-
-                    if (list.size() > 1) {
-                        if (depth % 2 == 0) {
-                            list.sort(Comparator.comparingDouble(KdNode::getX));
-                        } else {
-                            list.sort(Comparator.comparingDouble(KdNode::getY));
-                        }
-                        int median = list.size() / 2;
-                        medianNode = list.get(median);
-
-                        leftList = list.subList(0, median - 1);
-                        rightList = list.subList(median + 1, list.size() - 1);
+                    if (depth % 2 == 0) {
+                        list.sort(Comparator.comparingDouble(Way::getX));
+                    } else {
+                        list.sort(Comparator.comparingDouble(Way::getY));
                     }
+                    int median = list.size() / 2;
+                    Way medianWay = list.get(median);
 
+                    List<Way> leftList = list.subList(0, median);
+                    List<Way> rightList = list.subList(median, list.size());
+
+                    KdNode medianNode = new KdNode(medianWay.getX(), medianWay.getY());
                     if (right) {
                         currentElement.setRightChild(medianNode);
                     } else {

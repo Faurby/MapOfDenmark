@@ -2,6 +2,7 @@ package bfst21.vector;
 
 import bfst21.tree.KdNode;
 import bfst21.tree.KdTree;
+import bfst21.vector.osm.Node;
 import bfst21.vector.osm.Way;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +42,7 @@ public class MapData {
         this.maxy = maxy;
 
         kdTree = new KdTree();
-        for (Way way : extendedWays) {
-
-            KdNode kdNode = new KdNode(way);
-            kdNode.updateMedian();
-            kdTree.add(kdNode);
-        }
-        kdTree.preBuild();
+        kdTree.preBuild(extendedWays);
     }
 
     public KdTree getKdTree() {
