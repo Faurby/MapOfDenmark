@@ -36,6 +36,7 @@ public class Controller {
     private TextArea startingPoint;
     @FXML
     private TextArea destinationPoint;
+    
 
     public void init(Model model) throws IOException {
         this.model = model;
@@ -126,6 +127,10 @@ public class Controller {
 
     @FXML
     public void expandSearchView(ActionEvent actionEvent){
+        if(actionEvent.toString().contains("expand")){
 
+        } else{
+
+        }
     }
 }

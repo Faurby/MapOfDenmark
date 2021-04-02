@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.ToolBar?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst21.vector.Controller"
@@ -40,8 +41,7 @@
 
                         <VBox minWidth="150" fx:id="vbox" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" style="-fx-background-color: #f3f3ee ; -fx-border-color: #e5e5de" >
                             <padding><Insets top="5" right="10" bottom="10" left="10"/></padding>
-                            <Text text="Search" style="-fx-font-size: 15"/>
-
+                            <Text text="Search" style="-fx-font-size: 15" />
                             <TextArea fx:id="startingPoint"
                                       promptText="Type an address..."
                                       wrapText="true"
@@ -49,32 +49,43 @@
                                       prefHeight="25"
                             />
 
-                            <GridPane alignment="BASELINE_CENTER" style="-fx-padding: 5 0 5 0" >
-
+                            <HBox fx:id="sometimesDeleted" alignment="BASELINE_CENTER" style="-fx-padding: 15 5 15 5">
                                 <Button text="Expand"
                                         fx:id="expand"
-                                        style="-fx-font-size: 10"
-                                        GridPane.columnIndex="0" GridPane.rowIndex="1"
-                                        GridPane.columnSpan = "1"
+                                        GridPane.columnIndex="0" GridPane.rowIndex="0"
                                         onAction="#expandSearchView"
                                 />
-                            </GridPane>
-                            <Text text="Destination:" />
-                            <TextArea fx:id="destinationPoint"
-                                      promptText="Route to..."
-                                      wrapText="true"
-                                      minHeight="25"
-                                      prefHeight="25"
-                            />
-
-                            <GridPane alignment="CENTER_RIGHT" style="-fx-padding: 5 0 0 0" >
+                                <ToolBar HBox.hgrow="ALWAYS" visible="false"></ToolBar>
                                 <Button
                                         text="Search"
-                                        GridPane.columnIndex="0" GridPane.rowIndex="1"
-                                        GridPane.columnSpan = "1"
+                                        GridPane.columnIndex="2" GridPane.rowIndex="0"
                                         onAction="#searchAddressString"
                                 />
-                            </GridPane>
+                            </HBox>
+
+                            <VBox fx:id="getDestinationBox">
+                                <Text text="Destination:" />
+                                <TextArea fx:id="destinationPoint"
+                                          promptText="Route to..."
+                                          wrapText="true"
+                                          minHeight="25"
+                                          prefHeight="25"
+                                />
+                                <HBox alignment="BASELINE_CENTER" style="-fx-padding: 15 5 15 5">
+                                    <Button fx:id="collapse"
+                                            text="Collapse"
+                                            GridPane.columnIndex="0" GridPane.rowIndex="0"
+                                            onAction="#expandSearchView"
+                                    ></Button>
+                                    <ToolBar HBox.hgrow="ALWAYS" visible="false"></ToolBar>
+                                    <Button
+                                            text="Search"
+                                            GridPane.columnIndex="2" GridPane.rowIndex="0"
+                                            onAction="#searchAddressString"
+                                    />
+                                </HBox>
+                            </VBox>
+
                         </VBox>
                     </AnchorPane>
                 </StackPane>
