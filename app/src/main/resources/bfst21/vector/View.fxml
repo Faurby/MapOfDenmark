@@ -84,7 +84,7 @@
                                             text="Collapse"
                                             GridPane.columnIndex="0" GridPane.rowIndex="0"
                                             onAction="#expandSearchView"/>
-                                    <ToolBar HBox.hgrow="ALWAYS" visible="false">
+                                    <ToolBar HBox.hgrow="ALWAYS" visible="false"/>
                                     <Button
                                             text="Search"
                                             GridPane.columnIndex="2" GridPane.rowIndex="0"
