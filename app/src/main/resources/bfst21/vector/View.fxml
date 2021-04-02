@@ -49,7 +49,7 @@
                                       prefHeight="25"
                             />
 
-                            <HBox fx:id="sometimesDeleted" alignment="BASELINE_CENTER" style="-fx-padding: 15 5 15 5">
+                            <HBox fx:id="expandAndSearchButtons" alignment="BASELINE_CENTER" style="-fx-padding: 15 5 15 5">
                                 <Button text="Expand"
                                         fx:id="expand"
                                         GridPane.columnIndex="0" GridPane.rowIndex="0"
@@ -63,7 +63,7 @@
                                 />
                             </HBox>
 
-                            <VBox fx:id="getDestinationBox">
+                            <VBox fx:id="getDestinationBox" managed="false" visible="false">
                                 <Text text="Destination:" />
                                 <TextArea fx:id="destinationPoint"
                                           promptText="Route to..."
@@ -71,7 +71,7 @@
                                           minHeight="25"
                                           prefHeight="25"
                                 />
-                                <HBox alignment="BASELINE_CENTER" style="-fx-padding: 15 5 15 5">
+                                <HBox alignment="BASELINE_CENTER" style="-fx-padding: 15 5 5 5">
                                     <Button fx:id="collapse"
                                             text="Collapse"
                                             GridPane.columnIndex="0" GridPane.rowIndex="0"

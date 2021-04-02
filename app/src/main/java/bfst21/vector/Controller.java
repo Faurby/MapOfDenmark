@@ -5,11 +5,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -36,7 +35,10 @@ public class Controller {
     private TextArea startingPoint;
     @FXML
     private TextArea destinationPoint;
-    
+    @FXML
+    private VBox getDestinationBox;
+    @FXML
+    private HBox expandAndSearchButtons;
 
     public void init(Model model) throws IOException {
         this.model = model;
@@ -128,9 +130,15 @@ public class Controller {
     @FXML
     public void expandSearchView(ActionEvent actionEvent){
         if(actionEvent.toString().contains("expand")){
-
+            getDestinationBox.setVisible(true);
+            getDestinationBox.setManaged(true);
+            expandAndSearchButtons.setVisible(false);
+            expandAndSearchButtons.setManaged(false);
         } else{
-
+            getDestinationBox.setVisible(false);
+            getDestinationBox.setManaged(false);
+            expandAndSearchButtons.setVisible(true);
+            expandAndSearchButtons.setManaged(true);
         }
     }
 }
