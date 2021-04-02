@@ -24,7 +24,7 @@ public class Controller {
     @FXML
     private MapCanvas canvas;
     @FXML
-    private VBox vbox;
+    private VBox searchAddressVbox;
     @FXML
     private StackPane stackPane;
     @FXML
@@ -39,6 +39,8 @@ public class Controller {
     private VBox getDestinationBox;
     @FXML
     private HBox expandAndSearchButtons;
+    @FXML
+    private Text startingPointText;
 
     public void init(Model model) throws IOException {
         this.model = model;
@@ -49,7 +51,7 @@ public class Controller {
 
     public void onWindowResize(Stage stage) {
         stackPane.setAlignment(zoomBox, Pos.TOP_RIGHT);
-        vbox.setMaxWidth(stage.getWidth() * 0.25);
+        searchAddressVbox.setMaxWidth(stage.getWidth() * 0.25);
         System.out.println("StackPane width: " + stackPane.getWidth());
         System.out.println("StackPane height: " + stackPane.getHeight());
         canvas.repaint();
@@ -136,6 +138,9 @@ public class Controller {
             }
             getDestinationBox.setVisible(true);
             getDestinationBox.setManaged(true);
+            startingPointText.setVisible(true);
+            startingPointText.setManaged(true);
+            startingPoint.setPromptText("Choose a starting point...");
             expandAndSearchButtons.setVisible(false);
             expandAndSearchButtons.setManaged(false);
         } else{
@@ -144,6 +149,9 @@ public class Controller {
             }
             getDestinationBox.setVisible(false);
             getDestinationBox.setManaged(false);
+            startingPointText.setVisible(false);
+            startingPointText.setManaged(false);
+            startingPoint.setPromptText("Choose an address...");
             expandAndSearchButtons.setVisible(true);
             expandAndSearchButtons.setManaged(true);
         }
