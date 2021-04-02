@@ -45,8 +45,8 @@ public class KdTree {
                     }
                 }
             }
-            boolean checkRight = true;
-            boolean checkLeft = true;
+            boolean checkRight = false;
+            boolean checkLeft = false;
 
             if (depth % 2 == 0) {
                 float x = kdNode.getX();
