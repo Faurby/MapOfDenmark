@@ -14,7 +14,6 @@ import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,7 +26,7 @@ public class MapCanvas extends Canvas {
     private double zoomLevelMax = 80.0;
     private double widthModifier = 1.0;
 
-    private boolean debug = true;
+    private boolean debug = false;
 
     private int depth = 0;
 
@@ -114,78 +113,80 @@ public class MapCanvas extends Canvas {
         double x2 = this.getWidth() - x1;
         double y2 = this.getHeight() - y1;
 
-        x1 += 200;
-        y1 += 300;
-        x2 -= 200;
-        y2 -= 300;
+        x1 -= 100;
+        y1 -= 200;
+        x2 += 100;
+        y2 += 200;
 
         Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
         Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
 
         BoundingBox boundingBox = new BoundingBox((float)p2.getX(), (float)p1.getX(), (float)p2.getY(), (float)p1.getY());
-        List<Way> list = model.getMapData().getKdTree().preRangeSearch(boundingBox);
-
-        System.out.println("p1: x "+p1.getX()+" y "+p1.getY());
-        System.out.println("p2: x "+p2.getX()+" y "+p2.getY());
+        model.getMapData().rangeSearch(boundingBox);
 
         paintFill(model.getMapData().getIslands(), getColor("island"), getDrawAtZoom("island"));
 
         if (debug) {
             depth = 0;
 
-//            float maxX = model.getMapData().getMaxx();
-//            float maxY = model.getMapData().getMaxy();
-//            float minX = model.getMapData().getMinx();
-//            float minY = model.getMapData().getMiny();
+            float maxX = model.getMapData().getMaxx();
+            float maxY = model.getMapData().getMaxy();
+            float minX = model.getMapData().getMinx();
+            float minY = model.getMapData().getMiny();
 
-            float maxX = boundingBox.getMaxX();
-            float maxY = boundingBox.getMaxY();
-            float minX = boundingBox.getMinX();
-            float minY = boundingBox.getMinY();
+//            float maxX = boundingBox.getMaxX();
+//            float maxY = boundingBox.getMaxY();
+//            float minX = boundingBox.getMinX();
+//            float minY = boundingBox.getMinY();
 
             KdTree kdTree = model.getMapData().getKdTree();
             draw(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
+
+            gc.setStroke(Color.RED);
+            gc.setLineWidth(0.001);
+            gc.beginPath();
+            gc.moveTo(p1.getX(), p1.getY());
+            gc.lineTo(p2.getX(), p1.getY());
+            gc.lineTo(p2.getX(), p2.getY());
+            gc.lineTo(p1.getX(), p2.getY());
+            gc.lineTo(p1.getX(), p1.getY());
+            gc.stroke();
         }
 
-        drawRoad(list, 0.0003, Color.BLACK, getDrawAtZoom("tertiary"));
+        paintFill(model.getMapData().getLandUse(), getColor("landuse"), getDrawAtZoom("landuse"));
+        paintFill(model.getMapData().getWater(), getColor("water"), getDrawAtZoom("water"));
 
-//        for (KdNode kdNode : list) {
-//            gc.setStroke(Color.DARKKHAKI);
-//            gc.setLineWidth(0.0005);
-//            gc.beginPath();
-//            gc.moveTo(kdNode.getX(), kdNode.getY());
-//            gc.lineTo(kdNode.getX() + 0.00001, kdNode.getY() + 0.00001);
-//            gc.stroke();
-//        }
+        drawRoadOutline(model.getMapData().getExtendedWays("residential"), 0.0002, getColor("residential.outline"), getDrawAtZoom("residential"));
+        drawRoadOutline(model.getMapData().getExtendedWays("motorway"), 0.0004, getColor("motorway.outline"), getDrawAtZoom("motorway"));
+        drawRoadOutline(model.getMapData().getExtendedWays("tertiary"), 0.0004, getColor("tertiary.outline"), getDrawAtZoom("tertiary"));
 
-//        paintFill(model.getMapData().getLandUse(), getColor("landuse"), getDrawAtZoom("landuse"));
-//        paintFill(model.getMapData().getWater(), getColor("water"), getDrawAtZoom("water"));
-//
-//        drawRoadOutline(model.getMapData().getExtendedWays("residential"), 0.0002, getColor("residential.outline"), getDrawAtZoom("residential"));
-//        drawRoadOutline(model.getMapData().getExtendedWays("motorway"), 0.0004, getColor("motorway.outline"), getDrawAtZoom("motorway"));
-//        drawRoadOutline(model.getMapData().getExtendedWays("tertiary"), 0.0004, getColor("tertiary.outline"), getDrawAtZoom("tertiary"));
-//
-//        drawRoad(model.getMapData().getExtendedWays("residential"), 0.0002, getColor("residential"), getDrawAtZoom("residential"));
-//        drawRoad(model.getMapData().getExtendedWays("motorway"), 0.0004, getColor("motorway"), getDrawAtZoom("motorway"));
-//        drawRoad(model.getMapData().getExtendedWays("tertiary"), 0.0004, getColor("tertiary"), getDrawAtZoom("tertiary"));
-//
-//        drawRoad(model.getMapData().getWaterWays(), 0.0002, getColor("water"), getDrawAtZoom("waterWay"));
-//        paintFill(model.getMapData().getBuildings(), getColor("building"), getDrawAtZoom("building"));
-//        drawLine(model.getMapData().getBuildings(), getColor("building"), getDrawAtZoom("building"));
+        drawRoad(model.getMapData().getExtendedWays("residential"), 0.0002, getColor("residential"), getDrawAtZoom("residential"));
+        drawRoad(model.getMapData().getExtendedWays("motorway"), 0.0004, getColor("motorway"), getDrawAtZoom("motorway"));
+        drawRoad(model.getMapData().getExtendedWays("tertiary"), 0.0004, getColor("tertiary"), getDrawAtZoom("tertiary"));
 
-        gc.setStroke(Color.RED);
-        gc.setLineWidth(0.001);
-        gc.beginPath();
-        gc.moveTo(p1.getX(), p1.getY());
-        gc.lineTo(p2.getX(), p1.getY());
-        gc.lineTo(p2.getX(), p2.getY());
-        gc.lineTo(p1.getX(), p2.getY());
-        gc.lineTo(p1.getX(), p1.getY());
-        gc.stroke();
+        drawRoad(model.getMapData().getWaterWays(), 0.0002, getColor("water"), getDrawAtZoom("waterWay"));
+        paintFill(model.getMapData().getBuildings(), getColor("building"), getDrawAtZoom("building"));
+        drawLine(model.getMapData().getBuildings(), getColor("building"), getDrawAtZoom("building"));
 
         gc.restore();
     }
 
+    public void drawBoundingBox(BoundingBox boundingBox, Color color, double size) {
+        float bMaxX = boundingBox.getMaxX();
+        float bMaxY = boundingBox.getMaxY();
+        float bMinX = boundingBox.getMinX();
+        float bMinY = boundingBox.getMinY();
+
+        gc.setStroke(color);
+        gc.setLineWidth(size);
+        gc.beginPath();
+        gc.moveTo(bMinX, bMinY);
+        gc.lineTo(bMaxX, bMinY);
+        gc.lineTo(bMaxX, bMaxY);
+        gc.lineTo(bMinX, bMaxY);
+        gc.lineTo(bMinX, bMinY);
+        gc.stroke();
+    }
 
     public void pan(double dx, double dy) {
         trans.prependTranslation(dx, dy);

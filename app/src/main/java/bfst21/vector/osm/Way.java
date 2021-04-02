@@ -23,14 +23,12 @@ public class Way extends Element implements Drawable, Serializable {
 
     public BoundingBox getBoundingBox() {
 
-        float maxX = Float.MIN_VALUE;
-        float maxY = Float.MIN_VALUE;
-        float minX = Float.MAX_VALUE;
-        float minY = Float.MAX_VALUE;
+        float maxX = nodes.get(0).getX();
+        float maxY = nodes.get(0).getY();
+        float minX = nodes.get(0).getX();
+        float minY = nodes.get(0).getY();
 
-        List<Node> list = getNodes();
-
-        for (Node node : list) {
+        for (Node node : nodes) {
 
             float x = node.getX();
             float y = node.getY();

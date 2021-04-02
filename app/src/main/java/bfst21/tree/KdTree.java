@@ -45,8 +45,8 @@ public class KdTree {
                     }
                 }
             }
-            boolean checkRight = false;
-            boolean checkLeft = false;
+            boolean checkRight = true;
+            boolean checkLeft = true;
 
             if (depth % 2 == 0) {
                 float x = kdNode.getX();
@@ -107,6 +107,32 @@ public class KdTree {
         depth++;
         addChild(root, leftList, false);
         addChild(root, rightList, true);
+
+        depth = 0;
+        displayTree(root, true);
+    }
+
+    public void displayTree(KdNode node, boolean right) {
+
+        if (node != null) {
+            float x = node.getX();
+            float y = node.getY();
+
+            int elements = 0;
+            if (node.getList() != null) {
+                elements = node.getList().size();
+            }
+
+            System.out.println(depth + " - ("+x+","+y+") Right: "+right + " elements: "+elements);
+            System.out.println("-----------------------");
+
+            depth++;
+            displayTree(node.getRightChild(), true);
+            depth--;
+            depth++;
+            displayTree(node.getLeftChild(), false);
+            depth--;
+        }
     }
 
     public void addChild(KdNode currentElement, List<Way> list, boolean right) {
@@ -114,32 +140,31 @@ public class KdTree {
         if (list != null) {
             if (list.size() > 0) {
 
+                if (depth % 2 == 0) {
+                    list.sort(Comparator.comparingDouble(Way::getX));
+                } else {
+                    list.sort(Comparator.comparingDouble(Way::getY));
+                }
+                int median = list.size() / 2;
+                Way medianWay = list.get(median);
+
+                KdNode medianNode = new KdNode(medianWay.getX(), medianWay.getY());
+                if (right) {
+                    currentElement.setRightChild(medianNode);
+                } else {
+                    currentElement.setLeftChild(medianNode);
+                }
                 if (list.size() <= 3) {
-                    currentElement.setList(list);
+                    medianNode.setList(list);
 
                 } else {
-                    if (depth % 2 == 0) {
-                        list.sort(Comparator.comparingDouble(Way::getX));
-                    } else {
-                        list.sort(Comparator.comparingDouble(Way::getY));
-                    }
-                    int median = list.size() / 2;
-                    Way medianWay = list.get(median);
-
                     List<Way> leftList = list.subList(0, median);
                     List<Way> rightList = list.subList(median, list.size());
 
-                    KdNode medianNode = new KdNode(medianWay.getX(), medianWay.getY());
-                    if (right) {
-                        currentElement.setRightChild(medianNode);
-                    } else {
-                        currentElement.setLeftChild(medianNode);
-                    }
-                    if (list.size() > 1) {
-                        depth++;
-                        addChild(medianNode, leftList, false);
-                        addChild(medianNode, rightList, true);
-                    }
+                    depth++;
+                    addChild(medianNode, leftList, false);
+                    addChild(medianNode, rightList, true);
+                    depth--;
                 }
             }
         }

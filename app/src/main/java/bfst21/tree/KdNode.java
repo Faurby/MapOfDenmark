@@ -1,6 +1,8 @@
 package bfst21.tree;
 
 import bfst21.vector.osm.Way;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
