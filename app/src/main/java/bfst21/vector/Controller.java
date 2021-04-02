@@ -130,11 +130,18 @@ public class Controller {
     @FXML
     public void expandSearchView(ActionEvent actionEvent){
         if(actionEvent.toString().contains("expand")){
+            if (startingPoint.getText() != null){
+                destinationPoint.setText(startingPoint.getText());
+                startingPoint.setText("");
+            }
             getDestinationBox.setVisible(true);
             getDestinationBox.setManaged(true);
             expandAndSearchButtons.setVisible(false);
             expandAndSearchButtons.setManaged(false);
         } else{
+            if (destinationPoint.getText() != null && startingPoint.getText().equals("")){
+                startingPoint.setText(destinationPoint.getText());
+            }
             getDestinationBox.setVisible(false);
             getDestinationBox.setManaged(false);
             expandAndSearchButtons.setVisible(true);

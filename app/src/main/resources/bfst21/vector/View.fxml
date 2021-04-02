@@ -39,7 +39,7 @@
                     <AnchorPane minWidth="10" maxWidth="10" minHeight="10" maxHeight="10" StackPane.alignment="TOP_LEFT">
                         <padding><Insets top="8" bottom="8" left="8"/></padding>
 
-                        <VBox minWidth="150" fx:id="vbox" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" style="-fx-background-color: #f3f3ee ; -fx-border-color: #e5e5de" >
+                        <VBox minWidth="175" fx:id="vbox" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" style="-fx-background-color: #f6f6f6 ; -fx-border-color: #3E859B"  >
                             <padding><Insets top="5" right="10" bottom="10" left="10"/></padding>
                             <Text text="Search" style="-fx-font-size: 15" />
                             <TextArea fx:id="startingPoint"
@@ -48,7 +48,6 @@
                                       minHeight="25"
                                       prefHeight="25"
                             />
-
                             <HBox fx:id="expandAndSearchButtons" alignment="BASELINE_CENTER" style="-fx-padding: 15 5 15 5">
                                 <Button text="Expand"
                                         fx:id="expand"
@@ -71,7 +70,7 @@
                                           minHeight="25"
                                           prefHeight="25"
                                 />
-                                <HBox alignment="BASELINE_CENTER" style="-fx-padding: 15 5 5 5">
+                                <HBox alignment="BASELINE_CENTER" style="-fx-padding: 5 5 5 5">
                                     <Button fx:id="collapse"
                                             text="Collapse"
                                             GridPane.columnIndex="0" GridPane.rowIndex="0"
