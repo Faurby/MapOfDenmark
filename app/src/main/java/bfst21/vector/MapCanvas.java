@@ -314,6 +314,10 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    public void toggleDebug() {
+        debug = !debug;
+    }
+
     //TODO: Fix better representation of zoom. Problem is the difference
     public String getZoomPercent() {
         if (zoomLevel == 1) {

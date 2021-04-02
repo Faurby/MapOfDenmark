@@ -7,6 +7,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
@@ -46,6 +47,13 @@ public class Controller {
         canvas.init(model);
         stackPane.setAlignment(zoomBox, Pos.TOP_RIGHT);
         zoomText.setText(canvas.getZoomPercent());
+
+        scene.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.D && event.isControlDown()) {
+                canvas.toggleDebug();
+                canvas.repaint();
+            }
+        });
     }
 
     public void onWindowResize(Stage stage) {

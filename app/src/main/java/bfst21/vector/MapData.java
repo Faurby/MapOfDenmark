@@ -40,7 +40,7 @@ public class MapData {
         this.maxy = maxy;
 
         kdTree = new KdTree();
-        kdTree.preBuild(ways.subList(0, 20));
+        kdTree.preBuild(ways);
     }
 
     public KdTree getKdTree() {

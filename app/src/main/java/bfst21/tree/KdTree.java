@@ -107,9 +107,6 @@ public class KdTree {
         depth++;
         addChild(root, leftList, false);
         addChild(root, rightList, true);
-
-        depth = 0;
-        displayTree(root, true);
     }
 
     public void displayTree(KdNode node, boolean right) {
@@ -123,7 +120,7 @@ public class KdTree {
                 elements = node.getList().size();
             }
 
-            System.out.println(depth + " - ("+x+","+y+") Right: "+right + " elements: "+elements);
+            System.out.println(depth + " - (" + x + "," + y + ") Right: " + right + " elements: " + elements);
             System.out.println("-----------------------");
 
             depth++;
