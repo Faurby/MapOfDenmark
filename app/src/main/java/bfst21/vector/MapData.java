@@ -7,7 +7,6 @@ import bfst21.vector.osm.WayType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 
 public class MapData {
@@ -19,6 +18,7 @@ public class MapData {
     private final KdTree kdTree;
     private final List<Way> ways;
 
+    //TODO: Maybe this should be reconsidered. This list could end up containing all elements
     private List<Way> searchList;
 
     private final float minx, miny, maxx, maxy;

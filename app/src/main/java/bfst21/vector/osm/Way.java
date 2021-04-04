@@ -45,11 +45,7 @@ public class Way extends Element implements Drawable, Serializable {
                 minY = y;
             }
         }
-        return new BoundingBox(maxX, minX, maxY, minY);
-    }
-
-    public Node getMedian() {
-        return nodes.get(nodes.size() / 2);
+        return new BoundingBox(maxX, maxY, minX, minY);
     }
 
     public float getX() {
@@ -89,10 +85,6 @@ public class Way extends Element implements Drawable, Serializable {
         return nodes.get(nodes.size() - 1);
     }
 
-    public List<Node> getNodes() {
-        return nodes;
-    }
-
     public void add(Node node) {
         nodes.add(node);
     }
@@ -102,8 +94,16 @@ public class Way extends Element implements Drawable, Serializable {
         gc.moveTo(nodes.get(0).getX(), nodes.get(0).getY());
 
         int inc = 1;
-        if (zoomLevel <= 1) {
+        if (zoomLevel <= 0.25) {
             inc = 10;
+        } else if (zoomLevel <= 0.35) {
+            inc = 8;
+        } else if (zoomLevel <= 0.45) {
+            inc = 6;
+        } else if (zoomLevel <= 0.6) {
+            inc = 4;
+        } else if (zoomLevel <= 0.8) {
+            inc = 2;
         }
         for (int i = 0; i < nodes.size(); i += inc) {
             if (i <= nodes.size() - 2) {

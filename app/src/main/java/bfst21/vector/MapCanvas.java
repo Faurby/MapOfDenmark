@@ -44,62 +44,6 @@ public class MapCanvas extends Canvas {
         zoom(getWidth() / (model.getMapData().getMaxx() - model.getMapData().getMinx()), new Point2D(0, 0));
     }
 
-    //TODO: FIX max/min x/y you know
-    public void draw(KdNode kdNode,
-                     float maxX,
-                     float maxY,
-                     float minX,
-                     float minY,
-                     double lineWidth) {
-
-        if (kdNode != null) {
-
-            float x = kdNode.getX();
-            float y = kdNode.getY();
-
-            gc.setStroke(Color.PURPLE);
-            if (depth == 0) {
-                gc.setStroke(Color.RED);
-            } else if (depth == 1) {
-                gc.setStroke(Color.TURQUOISE);
-            } else if (depth == 2) {
-                gc.setStroke(Color.TEAL);
-            }
-
-            gc.setLineWidth(lineWidth);
-            gc.beginPath();
-
-            lineWidth *= 0.8D;
-
-            if (depth % 2 == 0) {
-                gc.moveTo(x, maxY);
-                gc.lineTo(x, minY);
-                gc.stroke();
-
-                depth++;
-                draw(kdNode.getLeftChild(), x, maxY, minX, minY, lineWidth);
-                draw(kdNode.getRightChild(), maxX, maxY, x, minY, lineWidth);
-
-            } else {
-                gc.moveTo(maxX, y);
-                gc.lineTo(minX, y);
-                gc.stroke();
-
-                depth++;
-                draw(kdNode.getLeftChild(), maxX, y, minX, minY, lineWidth);
-                draw(kdNode.getRightChild(), maxX, maxY, minX, y, lineWidth);
-            }
-            depth--;
-
-            gc.setStroke(Color.GREENYELLOW);
-            gc.setLineWidth(lineWidth * 3);
-            gc.beginPath();
-            gc.moveTo(kdNode.getX(), kdNode.getY());
-            gc.lineTo(kdNode.getX() + 0.00001, kdNode.getY() + 0.00001);
-            gc.stroke();
-        }
-    }
-
     void repaint() {
         gc.save();
         gc.setTransform(new Affine());
@@ -111,18 +55,13 @@ public class MapCanvas extends Canvas {
 
         double x1 = trans.getTx() / Math.sqrt(trans.determinant());
         double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
-        double x2 = this.getWidth() - x1;
-        double y2 = this.getHeight() - y1;
-
-        x1 -= 100;
-        y1 -= 200;
-        x2 += 100;
-        y2 += 200;
+        double x2 = getWidth() - x1;
+        double y2 = getHeight() - y1;
 
         Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
         Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
 
-        BoundingBox boundingBox = new BoundingBox((float) p2.getX(), (float) p1.getX(), (float) p2.getY(), (float) p1.getY());
+        BoundingBox boundingBox = new BoundingBox((float) p2.getX(), (float) p2.getY(), (float) p1.getX(), (float) p1.getY());
         model.getMapData().rangeSearch(boundingBox);
 
         paintFill(model.getMapData().getIslands(), getColor(WayType.ISLAND), getDrawAtZoom(WayType.ISLAND));
@@ -135,13 +74,8 @@ public class MapCanvas extends Canvas {
             float minX = model.getMapData().getMinx();
             float minY = model.getMapData().getMiny();
 
-//            float maxX = boundingBox.getMaxX();
-//            float maxY = boundingBox.getMaxY();
-//            float minX = boundingBox.getMinX();
-//            float minY = boundingBox.getMinY();
-
             KdTree kdTree = model.getMapData().getKdTree();
-            draw(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
+            drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
 
             gc.setStroke(Color.RED);
             gc.setLineWidth(0.001);
@@ -154,6 +88,7 @@ public class MapCanvas extends Canvas {
             gc.stroke();
         }
 
+        adjustWidthModifier();
         paintFill(model.getMapData().getLandUse(), getColor(WayType.LANDUSE), getDrawAtZoom(WayType.LANDUSE));
         paintFill(model.getMapData().getWater(), getColor(WayType.WATER), getDrawAtZoom(WayType.WATER));
 
@@ -189,6 +124,61 @@ public class MapCanvas extends Canvas {
         gc.stroke();
     }
 
+    public void drawKdTree(KdNode kdNode,
+                           float maxX,
+                           float maxY,
+                           float minX,
+                           float minY,
+                           double lineWidth) {
+
+        if (kdNode != null) {
+
+            float x = kdNode.getX();
+            float y = kdNode.getY();
+
+            gc.setStroke(Color.PURPLE);
+            if (depth == 0) {
+                gc.setStroke(Color.RED);
+            } else if (depth == 1) {
+                gc.setStroke(Color.TURQUOISE);
+            } else if (depth == 2) {
+                gc.setStroke(Color.TEAL);
+            }
+
+            gc.setLineWidth(lineWidth);
+            gc.beginPath();
+
+            lineWidth *= 0.8D;
+
+            if (depth % 2 == 0) {
+                gc.moveTo(x, maxY);
+                gc.lineTo(x, minY);
+                gc.stroke();
+
+                depth++;
+                drawKdTree(kdNode.getLeftChild(), x, maxY, minX, minY, lineWidth);
+                drawKdTree(kdNode.getRightChild(), maxX, maxY, x, minY, lineWidth);
+
+            } else {
+                gc.moveTo(maxX, y);
+                gc.lineTo(minX, y);
+                gc.stroke();
+
+                depth++;
+                drawKdTree(kdNode.getLeftChild(), maxX, y, minX, minY, lineWidth);
+                drawKdTree(kdNode.getRightChild(), maxX, maxY, minX, y, lineWidth);
+            }
+            depth--;
+
+            gc.setStroke(Color.GREENYELLOW);
+            gc.setLineWidth(lineWidth * 3);
+            gc.beginPath();
+            gc.moveTo(kdNode.getX(), kdNode.getY());
+            gc.lineTo(kdNode.getX() + 0.00001, kdNode.getY() + 0.00001);
+            gc.stroke();
+        }
+    }
+
     public void pan(double dx, double dy) {
         trans.prependTranslation(dx, dy);
         repaint();
@@ -221,9 +211,8 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void drawLine(List<Way> list, Color color, int drawAtZoom) {
-        int currentZoomPercent = Integer.parseInt(getZoomPercent().substring(0, getZoomPercent().length() - 1));
-        if (drawAtZoom <= currentZoomPercent) {
+    public void drawLine(List<Way> list, Color color, double drawAtZoom) {
+        if (zoomLevel >= drawAtZoom) {
             gc.setStroke(color);
             gc.setLineWidth(1 / Math.sqrt(trans.determinant()));
             for (Way line : list) {
@@ -232,9 +221,8 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void paintFill(List<Way> list, Color color, int drawAtZoom) {
-        int currentZoomPercent = Integer.parseInt(getZoomPercent().substring(0, getZoomPercent().length() - 1));
-        if (drawAtZoom <= currentZoomPercent) {
+    public void paintFill(List<Way> list, Color color, double drawAtZoom) {
+        if (zoomLevel >= drawAtZoom) {
             gc.setFill(color);
             for (Way line : list) {
                 line.fill(gc, zoomLevel);
@@ -242,10 +230,8 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void drawRoad(List<Way> list, double size, Color roadColor, int drawAtZoom) {
-        int currentZoomPercent = Integer.parseInt(getZoomPercent().substring(0, getZoomPercent().length() - 1));
-        if (drawAtZoom <= currentZoomPercent) {
-            adjustWidthModifier();
+    public void drawRoad(List<Way> list, double size, Color roadColor, double drawAtZoom) {
+        if (zoomLevel >= drawAtZoom) {
             size *= widthModifier;
             gc.setStroke(roadColor);
             gc.setLineWidth(size * 0.75);
@@ -255,10 +241,8 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void drawRoadOutline(List<Way> list, double size, Color outline, int drawAtZoom) {
-        int currentZoomPercent = Integer.parseInt(getZoomPercent().substring(0, getZoomPercent().length() - 1));
-        if (drawAtZoom <= currentZoomPercent) {
-            adjustWidthModifier();
+    public void drawRoadOutline(List<Way> list, double size, Color outline, double drawAtZoom) {
+        if (zoomLevel >= drawAtZoom) {
             size *= widthModifier;
             gc.setStroke(outline);
             gc.setLineWidth(size);
@@ -292,13 +276,10 @@ public class MapCanvas extends Canvas {
         return getColor(type, false);
     }
 
-    public int getDrawAtZoom(WayType type) {
+    public double getDrawAtZoom(WayType type) {
         String path = "zoom." + type.toString().toLowerCase();
         try {
-            int drawAtZoom = Integer.parseInt(config.getProp(path));
-            if (drawAtZoom > -1) {
-                return drawAtZoom;
-            }
+            return Double.parseDouble(config.getProp(path));
         } catch (IllegalArgumentException ex) {
             System.out.println("Invalid draw zoom level at " + path);
         }

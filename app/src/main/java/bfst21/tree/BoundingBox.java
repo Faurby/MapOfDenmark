@@ -3,19 +3,19 @@ package bfst21.tree;
 
 public class BoundingBox {
 
-    private final float maxX, minX, maxY, minY;
+    private final float maxX, maxY, minX, minY;
 
-    public BoundingBox(float maxX, float minX, float maxY, float minY) {
+    public BoundingBox(float maxX, float maxY, float minX, float minY) {
         this.maxX = maxX;
-        this.minX = minX;
         this.maxY = maxY;
+        this.minX = minX;
         this.minY = minY;
     }
 
     public boolean intersects(BoundingBox boundingBox) {
         float otherMaxX = boundingBox.getMaxX();
-        float otherMinX = boundingBox.getMinX();
         float otherMaxY = boundingBox.getMaxY();
+        float otherMinX = boundingBox.getMinX();
         float otherMinY = boundingBox.getMinY();
 
         //return (minX < otherMaxX) && (otherMinX < maxX) && (minY < otherMaxY) && (minY < otherMinY && otherMinY < maxY);
@@ -49,8 +49,8 @@ public class BoundingBox {
 
     public boolean contains(KdNode kdNode) {
         float maxX = getMaxX();
-        float minX = getMinX();
         float maxY = getMaxY();
+        float minX = getMinX();
         float minY = getMinY();
 
         float nodeX = kdNode.getX();
@@ -66,12 +66,12 @@ public class BoundingBox {
         return maxX;
     }
 
-    public float getMinX() {
-        return minX;
-    }
-
     public float getMaxY() {
         return maxY;
+    }
+
+    public float getMinX() {
+        return minX;
     }
 
     public float getMinY() {
