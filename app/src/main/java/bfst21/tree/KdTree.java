@@ -2,13 +2,15 @@ package bfst21.tree;
 
 import bfst21.vector.osm.Way;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 
-public class KdTree {
+public class KdTree implements Serializable {
 
+    private static final long serialVersionUID = -7974247333826441763L;
     private KdNode root;
     private int depth = 0;
 
@@ -91,8 +93,8 @@ public class KdTree {
         Way medianWay = wayList.get(median);
         root = new KdNode(medianWay.getX(), medianWay.getY());
 
-        List<Way> leftList = wayList.subList(0, median);
-        List<Way> rightList = wayList.subList(median, wayList.size());
+        List<Way> leftList = new ArrayList<>(wayList.subList(0, median));
+        List<Way> rightList = new ArrayList<>(wayList.subList(median, wayList.size()));
 
         depth++;
         addChild(root, leftList, false);
@@ -144,8 +146,8 @@ public class KdTree {
                     medianNode.setList(list);
 
                 } else {
-                    List<Way> leftList = list.subList(0, median);
-                    List<Way> rightList = list.subList(median, list.size());
+                    List<Way> leftList = new ArrayList<>(list.subList(0, median));
+                    List<Way> rightList = new ArrayList<>(list.subList(median, list.size()));
 
                     depth++;
                     addChild(medianNode, leftList, false);

@@ -1,11 +1,14 @@
 package bfst21.tree;
 
 import bfst21.vector.osm.Way;
+
+import java.io.Serializable;
 import java.util.List;
 
 
-public class KdNode {
+public class KdNode implements Serializable {
 
+    private static final long serialVersionUID = 8198499209216068048L;
     private KdNode rightChild;
     private KdNode leftChild;
 

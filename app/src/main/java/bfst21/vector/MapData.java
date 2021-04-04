@@ -4,7 +4,6 @@ import bfst21.tree.BoundingBox;
 import bfst21.tree.KdTree;
 import bfst21.vector.osm.Way;
 import bfst21.vector.osm.WayType;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,11 +11,10 @@ import java.util.List;
 public class MapData {
 
     private final List<Drawable> shapes;
-
     private final List<Way> islands;
+    private final List<Way> ways;
     private final LongIndex idToRelation;
     private final KdTree kdTree;
-    private final List<Way> ways;
 
     //TODO: Maybe this should be reconsidered. This list could end up containing all elements
     private List<Way> searchList;
@@ -28,6 +26,7 @@ public class MapData {
             List<Way> islands,
             List<Way> ways,
             LongIndex idToRelation,
+            KdTree kdTree,
             float minx,
             float maxx,
             float miny,
@@ -42,8 +41,12 @@ public class MapData {
         this.maxx = maxx;
         this.maxy = maxy;
 
-        kdTree = new KdTree();
-        kdTree.build(ways);
+        if (kdTree != null) {
+            this.kdTree = kdTree;
+        } else {
+            this.kdTree = new KdTree();
+            this.kdTree.build(ways);
+        }
     }
 
     public KdTree getKdTree() {
@@ -138,6 +141,10 @@ public class MapData {
 
     public LongIndex getIdToRelation() {
         return idToRelation;
+    }
+
+    public List<Way> getSearchList() {
+        return searchList;
     }
 
     public float getMinx() {
