@@ -12,10 +12,4 @@ public abstract class Element {
     public long getID() {
         return id;
     }
-
-    public abstract ElementType getType();
-
-    enum ElementType {
-        NODE, WAY, RELATION
-    }
 }

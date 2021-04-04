@@ -3,8 +3,11 @@ package bfst21.vector;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdTree;
 import bfst21.vector.osm.Way;
+import bfst21.vector.osm.WayType;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class MapData {
@@ -51,12 +54,12 @@ public class MapData {
         searchList = kdTree.preRangeSearch(boundingBox);
     }
 
-    public List<Way> getExtendedWays(String type) {
+    public List<Way> getExtendedWays(WayType type) {
         List<Way> list = new ArrayList<>();
 
         for (Way way : searchList) {
             if (way.getValue("highway") != null) {
-                if (way.getValue("highway").contains(type)) {
+                if (way.getValue("highway").contains(type.toString().toLowerCase())) {
                     list.add(way);
                 }
             }

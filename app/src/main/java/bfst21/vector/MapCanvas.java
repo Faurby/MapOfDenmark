@@ -5,6 +5,7 @@ import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
 import bfst21.tree.KdTree;
 import bfst21.vector.osm.Way;
+import bfst21.vector.osm.WayType;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -102,7 +103,7 @@ public class MapCanvas extends Canvas {
     void repaint() {
         gc.save();
         gc.setTransform(new Affine());
-        gc.setFill(getColor("water"));
+        gc.setFill(getColor(WayType.WATER));
         gc.fillRect(0, 0, getWidth(), getHeight());
         gc.setTransform(trans);
         gc.setLineCap(StrokeLineCap.ROUND);
@@ -124,7 +125,7 @@ public class MapCanvas extends Canvas {
         BoundingBox boundingBox = new BoundingBox((float) p2.getX(), (float) p1.getX(), (float) p2.getY(), (float) p1.getY());
         model.getMapData().rangeSearch(boundingBox);
 
-        paintFill(model.getMapData().getIslands(), getColor("island"), getDrawAtZoom("island"));
+        paintFill(model.getMapData().getIslands(), getColor(WayType.ISLAND), getDrawAtZoom(WayType.ISLAND));
 
         if (debug) {
             depth = 0;
@@ -153,20 +154,20 @@ public class MapCanvas extends Canvas {
             gc.stroke();
         }
 
-        paintFill(model.getMapData().getLandUse(), getColor("landuse"), getDrawAtZoom("landuse"));
-        paintFill(model.getMapData().getWater(), getColor("water"), getDrawAtZoom("water"));
+        paintFill(model.getMapData().getLandUse(), getColor(WayType.LANDUSE), getDrawAtZoom(WayType.LANDUSE));
+        paintFill(model.getMapData().getWater(), getColor(WayType.WATER), getDrawAtZoom(WayType.WATER));
 
-        drawRoadOutline(model.getMapData().getExtendedWays("residential"), 0.0002, getColor("residential.outline"), getDrawAtZoom("residential"));
-        drawRoadOutline(model.getMapData().getExtendedWays("motorway"), 0.0004, getColor("motorway.outline"), getDrawAtZoom("motorway"));
-        drawRoadOutline(model.getMapData().getExtendedWays("tertiary"), 0.0004, getColor("tertiary.outline"), getDrawAtZoom("tertiary"));
+        drawRoadOutline(model.getMapData().getExtendedWays(WayType.RESIDENTIAL), 0.0002, getColor(WayType.RESIDENTIAL, true), getDrawAtZoom(WayType.RESIDENTIAL));
+        drawRoadOutline(model.getMapData().getExtendedWays(WayType.MOTORWAY), 0.0004, getColor(WayType.MOTORWAY, true), getDrawAtZoom(WayType.MOTORWAY));
+        drawRoadOutline(model.getMapData().getExtendedWays(WayType.TERTIARY), 0.0004, getColor(WayType.TERTIARY, true), getDrawAtZoom(WayType.TERTIARY));
 
-        drawRoad(model.getMapData().getExtendedWays("residential"), 0.0002, getColor("residential"), getDrawAtZoom("residential"));
-        drawRoad(model.getMapData().getExtendedWays("motorway"), 0.0004, getColor("motorway"), getDrawAtZoom("motorway"));
-        drawRoad(model.getMapData().getExtendedWays("tertiary"), 0.0004, getColor("tertiary"), getDrawAtZoom("tertiary"));
+        drawRoad(model.getMapData().getExtendedWays(WayType.RESIDENTIAL), 0.0002, getColor(WayType.RESIDENTIAL), getDrawAtZoom(WayType.RESIDENTIAL));
+        drawRoad(model.getMapData().getExtendedWays(WayType.MOTORWAY), 0.0004, getColor(WayType.MOTORWAY), getDrawAtZoom(WayType.MOTORWAY));
+        drawRoad(model.getMapData().getExtendedWays(WayType.TERTIARY), 0.0004, getColor(WayType.TERTIARY), getDrawAtZoom(WayType.TERTIARY));
 
-        drawRoad(model.getMapData().getWaterWays(), 0.0002, getColor("water"), getDrawAtZoom("waterWay"));
-        paintFill(model.getMapData().getBuildings(), getColor("building"), getDrawAtZoom("building"));
-        drawLine(model.getMapData().getBuildings(), getColor("building"), getDrawAtZoom("building"));
+        drawRoad(model.getMapData().getWaterWays(), 0.0002, getColor(WayType.WATERWAY), getDrawAtZoom(WayType.WATERWAY));
+        paintFill(model.getMapData().getBuildings(), getColor(WayType.BUILDING), getDrawAtZoom(WayType.BUILDING));
+        drawLine(model.getMapData().getBuildings(), getColor(WayType.BUILDING), getDrawAtZoom(WayType.BUILDING));
 
         gc.restore();
     }
@@ -271,8 +272,11 @@ public class MapCanvas extends Canvas {
         this.colorMode = colorMode;
     }
 
-    public Color getColor(String type) {
-        String path = "colors." + type + "." + colorMode.toString().toLowerCase();
+    public Color getColor(WayType type, boolean outline) {
+        String path = "colors." + type.toString().toLowerCase() + "." + colorMode.toString().toLowerCase();
+        if (outline) {
+            path = "colors." + type.toString().toLowerCase() + ".outline." + colorMode.toString().toLowerCase();
+        }
         try {
             Color color = Color.valueOf("#" + config.getProp(path));
             if (color != null) {
@@ -284,10 +288,12 @@ public class MapCanvas extends Canvas {
         return Color.RED;
     }
 
-    public int getDrawAtZoom(String type) {
-        //String zoomPercent = getZoomPercent();
-        //String currentZoomPercent = zoomPercent.substring(0, zoomPercent.length() - 1);
-        String path = "zoom." + type;
+    public Color getColor(WayType type) {
+        return getColor(type, false);
+    }
+
+    public int getDrawAtZoom(WayType type) {
+        String path = "zoom." + type.toString().toLowerCase();
         try {
             int drawAtZoom = Integer.parseInt(config.getProp(path));
             if (drawAtZoom > -1) {

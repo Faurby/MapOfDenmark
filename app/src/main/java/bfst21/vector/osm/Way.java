@@ -158,9 +158,4 @@ public class Way extends Element implements Drawable, Serializable {
             return nodes.equals(other.nodes);
         }
     }
-
-    @Override
-    public ElementType getType() {
-        return ElementType.WAY;
-    }
 }

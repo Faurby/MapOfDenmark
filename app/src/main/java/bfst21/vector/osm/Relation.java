@@ -43,9 +43,4 @@ public class Relation extends Element implements Serializable {
     public void addMember(Long relationID) {
         relationIDs.add(relationID);
     }
-
-    @Override
-    public ElementType getType() {
-        return ElementType.RELATION;
-    }
 }
