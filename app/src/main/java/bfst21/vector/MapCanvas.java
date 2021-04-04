@@ -1,6 +1,9 @@
 package bfst21.vector;
 
 import bfst21.models.Config;
+import bfst21.tree.BoundingBox;
+import bfst21.tree.KdNode;
+import bfst21.tree.KdTree;
 import bfst21.vector.osm.Way;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -23,6 +26,10 @@ public class MapCanvas extends Canvas {
     private double zoomLevelMax = 80.0;
     private double widthModifier = 1.0;
 
+    private boolean debug = false;
+
+    private int depth = 0;
+
     private Config config;
     private ColorMode colorMode = ColorMode.STANDARD;
     private GraphicsContext gc = getGraphicsContext2D();
@@ -36,6 +43,62 @@ public class MapCanvas extends Canvas {
         zoom(getWidth() / (model.getMapData().getMaxx() - model.getMapData().getMinx()), new Point2D(0, 0));
     }
 
+    //TODO: FIX max/min x/y you know
+    public void draw(KdNode kdNode,
+                     float maxX,
+                     float maxY,
+                     float minX,
+                     float minY,
+                     double lineWidth) {
+
+        if (kdNode != null) {
+
+            float x = kdNode.getX();
+            float y = kdNode.getY();
+
+            gc.setStroke(Color.PURPLE);
+            if (depth == 0) {
+                gc.setStroke(Color.RED);
+            } else if (depth == 1) {
+                gc.setStroke(Color.TURQUOISE);
+            } else if (depth == 2) {
+                gc.setStroke(Color.TEAL);
+            }
+
+            gc.setLineWidth(lineWidth);
+            gc.beginPath();
+
+            lineWidth *= 0.8D;
+
+            if (depth % 2 == 0) {
+                gc.moveTo(x, maxY);
+                gc.lineTo(x, minY);
+                gc.stroke();
+
+                depth++;
+                draw(kdNode.getLeftChild(), x, maxY, minX, minY, lineWidth);
+                draw(kdNode.getRightChild(), maxX, maxY, x, minY, lineWidth);
+
+            } else {
+                gc.moveTo(maxX, y);
+                gc.lineTo(minX, y);
+                gc.stroke();
+
+                depth++;
+                draw(kdNode.getLeftChild(), maxX, y, minX, minY, lineWidth);
+                draw(kdNode.getRightChild(), maxX, maxY, minX, y, lineWidth);
+            }
+            depth--;
+
+            gc.setStroke(Color.GREENYELLOW);
+            gc.setLineWidth(lineWidth * 3);
+            gc.beginPath();
+            gc.moveTo(kdNode.getX(), kdNode.getY());
+            gc.lineTo(kdNode.getX() + 0.00001, kdNode.getY() + 0.00001);
+            gc.stroke();
+        }
+    }
+
     void repaint() {
         gc.save();
         gc.setTransform(new Affine());
@@ -45,7 +108,51 @@ public class MapCanvas extends Canvas {
         gc.setLineCap(StrokeLineCap.ROUND);
         gc.setLineJoin(StrokeLineJoin.ROUND);
 
+        double x1 = trans.getTx() / Math.sqrt(trans.determinant());
+        double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
+        double x2 = this.getWidth() - x1;
+        double y2 = this.getHeight() - y1;
+
+        x1 -= 100;
+        y1 -= 200;
+        x2 += 100;
+        y2 += 200;
+
+        Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
+        Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
+
+        BoundingBox boundingBox = new BoundingBox((float)p2.getX(), (float)p1.getX(), (float)p2.getY(), (float)p1.getY());
+        model.getMapData().rangeSearch(boundingBox);
+
         paintFill(model.getMapData().getIslands(), getColor("island"), getDrawAtZoom("island"));
+
+        if (debug) {
+            depth = 0;
+
+            float maxX = model.getMapData().getMaxx();
+            float maxY = model.getMapData().getMaxy();
+            float minX = model.getMapData().getMinx();
+            float minY = model.getMapData().getMiny();
+
+//            float maxX = boundingBox.getMaxX();
+//            float maxY = boundingBox.getMaxY();
+//            float minX = boundingBox.getMinX();
+//            float minY = boundingBox.getMinY();
+
+            KdTree kdTree = model.getMapData().getKdTree();
+            draw(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
+
+            gc.setStroke(Color.RED);
+            gc.setLineWidth(0.001);
+            gc.beginPath();
+            gc.moveTo(p1.getX(), p1.getY());
+            gc.lineTo(p2.getX(), p1.getY());
+            gc.lineTo(p2.getX(), p2.getY());
+            gc.lineTo(p1.getX(), p2.getY());
+            gc.lineTo(p1.getX(), p1.getY());
+            gc.stroke();
+        }
+
         paintFill(model.getMapData().getLandUse(), getColor("landuse"), getDrawAtZoom("landuse"));
         paintFill(model.getMapData().getWater(), getColor("water"), getDrawAtZoom("water"));
 
@@ -64,6 +171,22 @@ public class MapCanvas extends Canvas {
         gc.restore();
     }
 
+    public void drawBoundingBox(BoundingBox boundingBox, Color color, double size) {
+        float bMaxX = boundingBox.getMaxX();
+        float bMaxY = boundingBox.getMaxY();
+        float bMinX = boundingBox.getMinX();
+        float bMinY = boundingBox.getMinY();
+
+        gc.setStroke(color);
+        gc.setLineWidth(size);
+        gc.beginPath();
+        gc.moveTo(bMinX, bMinY);
+        gc.lineTo(bMaxX, bMinY);
+        gc.lineTo(bMaxX, bMaxY);
+        gc.lineTo(bMinX, bMaxY);
+        gc.lineTo(bMinX, bMinY);
+        gc.stroke();
+    }
 
     public void pan(double dx, double dy) {
         trans.prependTranslation(dx, dy);
@@ -189,6 +312,10 @@ public class MapCanvas extends Canvas {
         } else if (zoomLevel < 80) {
             widthModifier = 0.25;
         }
+    }
+
+    public void toggleDebug() {
+        debug = !debug;
     }
 
     //TODO: Fix better representation of zoom. Problem is the difference

@@ -16,24 +16,22 @@ public class BinaryFileManager {
             input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)));
         }
         return new MapData(
-                (List<Drawable>) input.readObject(),
-                (List<Way>) input.readObject(),
-                (List<Way>) input.readObject(),
-                (List<Way>) input.readObject(),
-                (LongIndex) input.readObject(),
-                input.readFloat(),
-                input.readFloat(),
-                input.readFloat(),
-                input.readFloat()
+            (List<Drawable>) input.readObject(),
+            (List<Way>) input.readObject(),
+            (List<Way>) input.readObject(),
+            (LongIndex) input.readObject(),
+            input.readFloat(),
+            input.readFloat(),
+            input.readFloat(),
+            input.readFloat()
         );
     }
 
     public void saveOBJ(String filename, MapData mapData) throws IOException {
         try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filename)))) {
             output.writeObject(mapData.getShapes());
-            output.writeObject(mapData.getBuildings());
             output.writeObject(mapData.getIslands());
-            output.writeObject(mapData.getExtendedWays());
+            output.writeObject(mapData.getWays());
             output.writeObject(mapData.getIdToRelation());
             output.writeFloat(mapData.getMinx());
             output.writeFloat(mapData.getMaxx());

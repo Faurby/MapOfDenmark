@@ -3,6 +3,9 @@ package bfst21.vector;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class App extends Application {
 

@@ -1,5 +1,7 @@
 package bfst21.vector;
 
+import bfst21.tree.BoundingBox;
+import bfst21.tree.KdTree;
 import bfst21.vector.osm.Way;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,18 +11,19 @@ public class MapData {
 
     private final List<Drawable> shapes;
 
-    private final List<Way> buildings;
     private final List<Way> islands;
-    private final List<Way> extendedWays;
     private final LongIndex idToRelation;
+    private final KdTree kdTree;
+    private final List<Way> ways;
+
+    private List<Way> searchList;
 
     private final float minx, miny, maxx, maxy;
 
     public MapData(
             List<Drawable> shapes,
-            List<Way> buildings,
             List<Way> islands,
-            List<Way> extendedWays,
+            List<Way> ways,
             LongIndex idToRelation,
             float minx,
             float maxx,
@@ -28,89 +31,106 @@ public class MapData {
             float maxy) {
 
         this.shapes = shapes;
-        this.buildings = buildings;
         this.islands = islands;
-        this.extendedWays = extendedWays;
+        this.ways = ways;
         this.idToRelation = idToRelation;
         this.minx = minx;
         this.miny = miny;
         this.maxx = maxx;
         this.maxy = maxy;
+
+        kdTree = new KdTree();
+        kdTree.preBuild(ways);
+    }
+
+    public KdTree getKdTree() {
+        return kdTree;
+    }
+
+    public void rangeSearch(BoundingBox boundingBox) {
+        searchList = kdTree.preRangeSearch(boundingBox);
     }
 
     public List<Way> getExtendedWays(String type) {
-        List<Way> ways = new ArrayList<>();
+        List<Way> list = new ArrayList<>();
 
-        for (Way way : extendedWays) {
+        for (Way way : searchList) {
             if (way.getValue("highway") != null) {
                 if (way.getValue("highway").contains(type)) {
-                    ways.add(way);
+                    list.add(way);
                 }
             }
         }
-        return ways;
+        return list;
     }
 
     public List<Way> getWater() {
-        List<Way> water = new ArrayList<>();
+        List<Way> list = new ArrayList<>();
 
-        for (Way way : extendedWays) {
+        for (Way way : searchList) {
             if (way.getValue("natural") != null) {
                 if (way.getValue("natural").contains("water")) {
-                    water.add(way);
+                    list.add(way);
                 }
             }
         }
-        return water;
+        return list;
+    }
+
+    public List<Way> getBuildings() {
+        List<Way> list = new ArrayList<>();
+
+        for (Way way : searchList) {
+            if (way.getValue("building") != null) {
+                list.add(way);
+            }
+        }
+        return list;
     }
 
     public List<Way> getWaterWays() {
-        List<Way> waterWays = new ArrayList<>();
+        List<Way> list = new ArrayList<>();
 
-        for (Way way : extendedWays) {
+        for (Way way : searchList) {
             if (way.getValue("waterway") != null) {
-                waterWays.add(way);
+                list.add(way);
             }
         }
-        return waterWays;
+        return list;
     }
 
     public List<Way> getLandUse() {
-        List<Way> landUse = new ArrayList<>();
+        List<Way> list = new ArrayList<>();
 
-        for (Way way : extendedWays) {
+        for (Way way : searchList) {
             if (way.getValue("landuse") != null) {
                 if (way.getValue("landuse").equalsIgnoreCase("grass") ||
                         way.getValue("landuse").equalsIgnoreCase("meadow") ||
                         way.getValue("landuse").equalsIgnoreCase("orchard") ||
                         way.getValue("landuse").equalsIgnoreCase("allotments")) {
 
-                    landUse.add(way);
+                    list.add(way);
                 }
             } else if (way.getValue("leisure") != null) {
                 if (way.getValue("leisure").equalsIgnoreCase("park")) {
 
-                    landUse.add(way);
+                    list.add(way);
                 }
             }
         }
-        return landUse;
+        return list;
     }
 
     public List<Drawable> getShapes() {
         return shapes;
     }
 
-    public List<Way> getBuildings() {
-        return buildings;
-    }
-
     public List<Way> getIslands() {
         return islands;
     }
 
-    public List<Way> getExtendedWays() {
-        return extendedWays;
+    public List<Way> getWays() {
+        return ways;
     }
 
     public LongIndex getIdToRelation() {

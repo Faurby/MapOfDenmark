@@ -37,13 +37,12 @@ public class XmlParser {
 
         List<Drawable> shapes = new ArrayList<>();
 
-        List<Way> buildings = new ArrayList<>();
-        List<Way> extendedWays = new ArrayList<>();
+        List<Way> ways = new ArrayList<>();
         List<Way> coastlines = new ArrayList<>();
         List<Way> islands;
 
         float minx = 0, miny = 0, maxx = 0, maxy = 0;
-        boolean isCoastline = false, isBuilding = false;
+        boolean isCoastline = false;
 
         while (reader.hasNext()) {
             switch (reader.next()) {
@@ -68,7 +67,6 @@ public class XmlParser {
                             long wayID = Long.parseLong(reader.getAttributeValue(null, "id"));
                             way = new Way(wayID);
                             isCoastline = false;
-                            isBuilding = false;
                             break;
 
                         case "relation":
@@ -105,8 +103,6 @@ public class XmlParser {
                             if (way != null) {
                                 if (key.equals("natural") && value.equals("coastline")) {
                                     isCoastline = true;
-                                } else if (key.equals("building")) {
-                                    isBuilding = true;
                                 } else {
                                     way.addTag(key, value);
                                 }
@@ -127,11 +123,8 @@ public class XmlParser {
                             if (isCoastline) {
                                 coastlines.add(way);
 
-                            } else if (isBuilding) {
-                                buildings.add(way);
-
                             } else if (way.getTags() != null) {
-                                extendedWays.add(way);
+                                ways.add(way);
                             }
                             break;
 
@@ -143,7 +136,7 @@ public class XmlParser {
             }
         }
         islands = mergeCoastLines(coastlines);
-        return new MapData(shapes, buildings, islands, extendedWays, idToRelation, minx, maxx, miny, maxy);
+        return new MapData(shapes, islands, ways, idToRelation, minx, maxx, miny, maxy);
     }
 
     private List<Way> mergeCoastLines(List<Way> coastlines) {
