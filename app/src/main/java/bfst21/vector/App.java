@@ -3,9 +3,6 @@ package bfst21.vector;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class App extends Application {
 
@@ -19,8 +16,6 @@ public class App extends Application {
             jarFile = false;
         }
         Model model = new Model(filename, jarFile);
-
-
         new View(model, primaryStage);
     }
 

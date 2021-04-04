@@ -1,8 +1,6 @@
 package bfst21.tree;
 
 import bfst21.vector.osm.Way;
-
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -11,7 +9,7 @@ public class KdNode {
     private KdNode rightChild;
     private KdNode leftChild;
 
-    private float x, y;
+    private final float x, y;
 
     private List<Way> list;
 

@@ -1,15 +1,9 @@
 package bfst21.tree;
 
 
-import java.awt.*;
-import java.awt.geom.Rectangle2D;
-
 public class BoundingBox {
 
-    private float maxX;
-    private float minX;
-    private float maxY;
-    private float minY;
+    private final float maxX, minX, maxY, minY;
 
     public BoundingBox(float maxX, float minX, float maxY, float minY) {
         this.maxX = maxX;
@@ -24,10 +18,6 @@ public class BoundingBox {
         float otherMaxY = boundingBox.getMaxY();
         float otherMinY = boundingBox.getMinY();
 
-        //Rectangle2D rect = new Rectangle2D.Float(minX, minY,maxX-minX,maxY-minY);
-        //Rectangle2D otherRect = new Rectangle2D.Float(otherMinX, otherMinY,otherMaxX - otherMinX,otherMaxY - otherMinY);
-        //return rect.intersects(otherRect);
-
         //return (minX < otherMaxX) && (otherMinX < maxX) && (minY < otherMaxY) && (minY < otherMinY && otherMinY < maxY);
         //return minX < boundingBox.maxX && maxX > boundingBox.minX && minY < boundingBox.maxY && maxY > boundingBox.minY;
 
@@ -35,7 +25,7 @@ public class BoundingBox {
         if (otherMinX >= minX && otherMaxX <= maxX && otherMinY >= minY && otherMaxY <= maxY) {
             return true;
 
-        //Check if this box is inside other box
+            //Check if this box is inside other box
         } else if (otherMinX <= minX && otherMaxX >= maxX && otherMinY <= minY && otherMaxY >= maxY) {
             return true;
 
@@ -67,9 +57,7 @@ public class BoundingBox {
         float nodeY = kdNode.getY();
 
         if (maxX >= nodeX && minX <= nodeX) {
-            if (maxY >= nodeY && minY <= nodeY) {
-                return true;
-            }
+            return maxY >= nodeY && minY <= nodeY;
         }
         return false;
     }

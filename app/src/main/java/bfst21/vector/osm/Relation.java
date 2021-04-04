@@ -9,9 +9,9 @@ public class Relation extends Element implements Serializable {
 
     private static final long serialVersionUID = 4549832550595113105L;
 
-    private List<Node> nodes;
-    private List<Way> ways;
-    private List<Long> relationIDs;
+    private final List<Node> nodes;
+    private final List<Way> ways;
+    private final List<Long> relationIDs;
 
     public Relation(long id) {
         super(id);

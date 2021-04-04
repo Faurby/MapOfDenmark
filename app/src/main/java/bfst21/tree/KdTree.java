@@ -10,17 +10,7 @@ import java.util.List;
 public class KdTree {
 
     private KdNode root;
-    private List<KdNode> list;
-
     private int depth = 0;
-
-    public KdTree() {
-        list = new ArrayList<>();
-    }
-
-    public void add(KdNode kdNode) {
-        list.add(kdNode);
-    }
 
     public KdNode getRoot() {
         return root;
@@ -92,7 +82,7 @@ public class KdTree {
         }
     }
 
-    public void preBuild(List<Way> wayList) {
+    public void build(List<Way> wayList) {
         depth = 0;
 
         wayList.sort(Comparator.comparingDouble(Way::getX));
@@ -110,7 +100,6 @@ public class KdTree {
     }
 
     public void displayTree(KdNode node, boolean right) {
-
         if (node != null) {
             float x = node.getX();
             float y = node.getY();

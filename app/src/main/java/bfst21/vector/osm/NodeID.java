@@ -3,8 +3,8 @@ package bfst21.vector.osm;
 
 public class NodeID {
 
-    private long id;
-    private Node node;
+    private final long id;
+    private final Node node;
 
     public NodeID(long id, Node node) {
         this.id = id;

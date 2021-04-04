@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import bfst21.tree.BoundingBox;
 import bfst21.vector.Drawable;
 import javafx.scene.canvas.GraphicsContext;
@@ -78,6 +77,7 @@ public class Way extends Element implements Drawable, Serializable {
     }
 
     public HashMap<String, String> getTags() {
+        createTags();
         return tags;
     }
 
@@ -105,7 +105,7 @@ public class Way extends Element implements Drawable, Serializable {
         if (zoomLevel <= 1) {
             inc = 10;
         }
-        for (int i = 0; i < nodes.size(); i+=inc) {
+        for (int i = 0; i < nodes.size(); i += inc) {
             if (i <= nodes.size() - 2) {
                 Node node = nodes.get(i);
                 gc.lineTo(node.getX(), node.getY());

@@ -7,6 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 
 
 public class Line implements Drawable, Serializable {
+
     private static final long serialVersionUID = 1007313956054198315L;
     Point2D from, to;
 

@@ -121,7 +121,7 @@ public class MapCanvas extends Canvas {
         Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
         Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
 
-        BoundingBox boundingBox = new BoundingBox((float)p2.getX(), (float)p1.getX(), (float)p2.getY(), (float)p1.getY());
+        BoundingBox boundingBox = new BoundingBox((float) p2.getX(), (float) p1.getX(), (float) p2.getY(), (float) p1.getY());
         model.getMapData().rangeSearch(boundingBox);
 
         paintFill(model.getMapData().getIslands(), getColor("island"), getDrawAtZoom("island"));

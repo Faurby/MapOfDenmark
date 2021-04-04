@@ -18,8 +18,12 @@ public class View {
         controller.init(model);
         controller.onWindowResize(stage);
 
-        stage.widthProperty().addListener(e -> { controller.onWindowResize(stage); });
-        stage.heightProperty().addListener(e -> { controller.onWindowResize(stage); });
+        stage.widthProperty().addListener(e -> {
+            controller.onWindowResize(stage);
+        });
+        stage.heightProperty().addListener(e -> {
+            controller.onWindowResize(stage);
+        });
         stage.maximizedProperty().addListener(e -> {
             System.out.println("Fullscreen");
             controller.onWindowResize(stage);

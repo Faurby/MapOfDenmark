@@ -1,6 +1,7 @@
 package bfst21.vector;
 
 import bfst21.vector.osm.*;
+
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;

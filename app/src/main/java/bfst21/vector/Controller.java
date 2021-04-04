@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
@@ -42,6 +43,8 @@ public class Controller {
     private HBox expandAndSearchButtons;
     @FXML
     private Text startingPointText;
+    @FXML
+    private Scene scene;
 
     public void init(Model model) throws IOException {
         this.model = model;
@@ -138,9 +141,9 @@ public class Controller {
     }
 
     @FXML
-    public void expandSearchView(ActionEvent actionEvent){
-        if(actionEvent.toString().contains("expand")){
-            if (startingPoint.getText() != null){
+    public void expandSearchView(ActionEvent actionEvent) {
+        if (actionEvent.toString().contains("expand")) {
+            if (startingPoint.getText() != null) {
                 destinationPoint.setText(startingPoint.getText());
                 startingPoint.setText("");
             }
@@ -151,8 +154,8 @@ public class Controller {
             startingPoint.setPromptText("Choose a starting point...");
             expandAndSearchButtons.setVisible(false);
             expandAndSearchButtons.setManaged(false);
-        } else{
-            if (!destinationPoint.getText().equals("") && startingPoint.getText().equals("")){
+        } else {
+            if (!destinationPoint.getText().equals("") && startingPoint.getText().equals("")) {
                 startingPoint.setText(destinationPoint.getText());
             }
             getDestinationBox.setVisible(false);
