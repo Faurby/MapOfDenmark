@@ -26,8 +26,8 @@ public class Options {
     }
 
     /**
-     * Creates an instance of PageController if it does not exist yet
-     * @return singleton instance of PageController
+     * Creates an instance of Options if it does not exist yet
+     * @return singleton instance of Options
      */
     public static Options getInstance() {
         if (instance == null) {
