@@ -9,12 +9,12 @@ import java.util.List;
 public class BinaryFileManager {
 
     @SuppressWarnings("unchecked")
-    public MapData loadOBJ(String filename, boolean jarFile) throws IOException, ClassNotFoundException {
+    public MapData loadOBJ(String fileName, boolean jarFile) throws IOException, ClassNotFoundException {
         ObjectInputStream input;
         if (jarFile) {
-            input = new ObjectInputStream(new BufferedInputStream(getClass().getClassLoader().getResourceAsStream(filename)));
+            input = new ObjectInputStream(new BufferedInputStream(getClass().getClassLoader().getResourceAsStream(fileName)));
         } else {
-            input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)));
+            input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fileName)));
         }
         return new MapData(
             (List<Drawable>) input.readObject(),
@@ -29,8 +29,8 @@ public class BinaryFileManager {
         );
     }
 
-    public void saveOBJ(String filename, MapData mapData) throws IOException {
-        try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filename)))) {
+    public void saveOBJ(String fileName, MapData mapData) throws IOException {
+        try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)))) {
             output.writeObject(mapData.getShapes());
             output.writeObject(mapData.getIslands());
             output.writeObject(mapData.getWays());

@@ -14,6 +14,8 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
+
+import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.util.List;
 
@@ -27,18 +29,23 @@ public class MapCanvas extends Canvas {
     private double zoomLevelMax = 80.0;
     private double widthModifier = 1.0;
 
-    private boolean debug = false;
+    private final Options options = Options.getInstance();
+    private final GraphicsContext gc = getGraphicsContext2D();
 
     private int depth = 0;
 
     private Config config;
     private ColorMode colorMode = ColorMode.STANDARD;
-    private GraphicsContext gc = getGraphicsContext2D();
     private Affine trans = new Affine();
 
     public void init(Model model) throws IOException {
         this.model = model;
         this.config = new Config();
+    }
+
+    public void load() throws XMLStreamException, IOException, ClassNotFoundException {
+        model.load();
+        trans = new Affine();
 
         pan(-model.getMapData().getMinx(), -model.getMapData().getMiny());
         zoom(getWidth() / (model.getMapData().getMaxx() - model.getMapData().getMinx()), new Point2D(0, 0));
@@ -55,61 +62,78 @@ public class MapCanvas extends Canvas {
         gc.setLineCap(StrokeLineCap.ROUND);
         gc.setLineJoin(StrokeLineJoin.ROUND);
 
-        double x1 = trans.getTx() / Math.sqrt(trans.determinant());
-        double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
-        double x2 = getWidth() - x1;
-        double y2 = getHeight() - y1;
+        if (model.getMapData() != null) {
 
-        Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
-        Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
+            if (options.getBool(Option.DISPLAY_ISLANDS)) {
+                paintFill(model.getMapData().getIslands(), getColor(WayType.ISLAND), getDrawAtZoom(WayType.ISLAND));
+            }
 
-        BoundingBox boundingBox = new BoundingBox((float) p2.getX(), (float) p2.getY(), (float) p1.getX(), (float) p1.getY());
-        model.getMapData().rangeSearch(boundingBox);
+            if (options.getBool(Option.USE_KD_TREE)) {
+                double x1 = trans.getTx() / Math.sqrt(trans.determinant());
+                double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
+                double x2 = getWidth() - x1;
+                double y2 = getHeight() - y1;
 
-        paintFill(model.getMapData().getIslands(), getColor(WayType.ISLAND), getDrawAtZoom(WayType.ISLAND));
+                Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
+                Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
 
-        if (debug) {
-            depth = 0;
+                BoundingBox boundingBox = new BoundingBox((float) p2.getX(), (float) p2.getY(), (float) p1.getX(), (float) p1.getY());
+                model.getMapData().rangeSearch(boundingBox);
 
-            float maxX = model.getMapData().getMaxx();
-            float maxY = model.getMapData().getMaxy();
-            float minX = model.getMapData().getMinx();
-            float minY = model.getMapData().getMiny();
+                if (options.getBool(Option.DISPLAY_KD_TREE)) {
+                    depth = 0;
 
-            KdTree kdTree = model.getMapData().getKdTree();
-            drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
+                    float maxX = model.getMapData().getMaxx();
+                    float maxY = model.getMapData().getMaxy();
+                    float minX = model.getMapData().getMinx();
+                    float minY = model.getMapData().getMiny();
 
-            gc.setStroke(Color.RED);
-            gc.setLineWidth(0.001);
-            gc.beginPath();
-            gc.moveTo(p1.getX(), p1.getY());
-            gc.lineTo(p2.getX(), p1.getY());
-            gc.lineTo(p2.getX(), p2.getY());
-            gc.lineTo(p1.getX(), p2.getY());
-            gc.lineTo(p1.getX(), p1.getY());
-            gc.stroke();
+                    KdTree kdTree = model.getMapData().getKdTree();
+                    drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
+
+                    gc.setStroke(Color.RED);
+                    gc.setLineWidth(0.001);
+                    gc.beginPath();
+                    gc.moveTo(p1.getX(), p1.getY());
+                    gc.lineTo(p2.getX(), p1.getY());
+                    gc.lineTo(p2.getX(), p2.getY());
+                    gc.lineTo(p1.getX(), p2.getY());
+                    gc.lineTo(p1.getX(), p1.getY());
+                    gc.stroke();
+                }
+            }
+
+            adjustWidthModifier();
+
+            if (options.getBool(Option.DISPLAY_LAND_USE)) {
+                paintFill(model.getMapData().getLandUse(), getColor(WayType.LANDUSE), getDrawAtZoom(WayType.LANDUSE));
+            }
+            if (options.getBool(Option.DISPLAY_WATER)) {
+                paintFill(model.getMapData().getWater(), getColor(WayType.WATER), getDrawAtZoom(WayType.WATER));
+            }
+
+            if (options.getBool(Option.DISPLAY_WAYS)) {
+                drawRoadOutline(model.getMapData().getExtendedWays(WayType.RESIDENTIAL), 0.0002, getColor(WayType.RESIDENTIAL, true), getDrawAtZoom(WayType.RESIDENTIAL));
+                drawRoadOutline(model.getMapData().getExtendedWays(WayType.MOTORWAY), 0.0004, getColor(WayType.MOTORWAY, true), getDrawAtZoom(WayType.MOTORWAY));
+                drawRoadOutline(model.getMapData().getExtendedWays(WayType.TERTIARY), 0.0004, getColor(WayType.TERTIARY, true), getDrawAtZoom(WayType.TERTIARY));
+
+                drawRoad(model.getMapData().getExtendedWays(WayType.RESIDENTIAL), 0.0002, getColor(WayType.RESIDENTIAL), getDrawAtZoom(WayType.RESIDENTIAL));
+                drawRoad(model.getMapData().getExtendedWays(WayType.MOTORWAY), 0.0004, getColor(WayType.MOTORWAY), getDrawAtZoom(WayType.MOTORWAY));
+                drawRoad(model.getMapData().getExtendedWays(WayType.TERTIARY), 0.0004, getColor(WayType.TERTIARY), getDrawAtZoom(WayType.TERTIARY));
+
+            }
+            if (options.getBool(Option.DISPLAY_WATER)) {
+                drawRoad(model.getMapData().getWaterWays(), 0.0002, getColor(WayType.WATERWAY), getDrawAtZoom(WayType.WATERWAY));
+            }
+            if (options.getBool(Option.DISPLAY_BUILDINGS)) {
+                paintFill(model.getMapData().getBuildings(), getColor(WayType.BUILDING), getDrawAtZoom(WayType.BUILDING));
+                drawLine(model.getMapData().getBuildings(), getColor(WayType.BUILDING), getDrawAtZoom(WayType.BUILDING));
+            }
         }
-
-        adjustWidthModifier();
-        paintFill(model.getMapData().getLandUse(), getColor(WayType.LANDUSE), getDrawAtZoom(WayType.LANDUSE));
-        paintFill(model.getMapData().getWater(), getColor(WayType.WATER), getDrawAtZoom(WayType.WATER));
-
-        drawRoadOutline(model.getMapData().getExtendedWays(WayType.RESIDENTIAL), 0.0002, getColor(WayType.RESIDENTIAL, true), getDrawAtZoom(WayType.RESIDENTIAL));
-        drawRoadOutline(model.getMapData().getExtendedWays(WayType.MOTORWAY), 0.0004, getColor(WayType.MOTORWAY, true), getDrawAtZoom(WayType.MOTORWAY));
-        drawRoadOutline(model.getMapData().getExtendedWays(WayType.TERTIARY), 0.0004, getColor(WayType.TERTIARY, true), getDrawAtZoom(WayType.TERTIARY));
-
-        drawRoad(model.getMapData().getExtendedWays(WayType.RESIDENTIAL), 0.0002, getColor(WayType.RESIDENTIAL), getDrawAtZoom(WayType.RESIDENTIAL));
-        drawRoad(model.getMapData().getExtendedWays(WayType.MOTORWAY), 0.0004, getColor(WayType.MOTORWAY), getDrawAtZoom(WayType.MOTORWAY));
-        drawRoad(model.getMapData().getExtendedWays(WayType.TERTIARY), 0.0004, getColor(WayType.TERTIARY), getDrawAtZoom(WayType.TERTIARY));
-
-        drawRoad(model.getMapData().getWaterWays(), 0.0002, getColor(WayType.WATERWAY), getDrawAtZoom(WayType.WATERWAY));
-        paintFill(model.getMapData().getBuildings(), getColor(WayType.BUILDING), getDrawAtZoom(WayType.BUILDING));
-        drawLine(model.getMapData().getBuildings(), getColor(WayType.BUILDING), getDrawAtZoom(WayType.BUILDING));
-
         gc.restore();
 
         time += System.nanoTime();
-        System.out.println(String.format("Repaint time: %dms", time / 1000000));
+        System.out.printf("Repaint time: %dms%n", time / 1000000);
     }
 
     public void drawBoundingBox(BoundingBox boundingBox, Color color, double size) {
@@ -194,11 +218,9 @@ public class MapCanvas extends Canvas {
         if (zoomLevelNext < zoomLevelMax && zoomLevelNext > zoomLevelMin) {
             zoomLevel = zoomLevelNext;
             zoom(factor, center);
-            System.out.println("Zoom: " + zoomLevel);
         } else if (zoomLevelNext > zoomLevelMax && zoomLevel != zoomLevelMax) {
             zoomLevel = zoomLevelMax;
             zoom(factor, center);
-            System.out.println("Zoom: " + zoomLevel);
         }
     }
 
@@ -306,10 +328,6 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void toggleDebug() {
-        debug = !debug;
-    }
-
     //TODO: Fix better representation of zoom. Problem is the difference
     public String getZoomPercent() {
         if (zoomLevel == 1) {
@@ -319,5 +337,13 @@ public class MapCanvas extends Canvas {
         } else {
             return Math.round(zoomLevel * 100 * 100) / 100 + "%";
         }
+    }
+
+    public String getZoomLevel() {
+        String value =  "" + zoomLevel;
+        if (value.length() > 8) {
+            return value.substring(0, 8);
+        }
+        return value;
     }
 }

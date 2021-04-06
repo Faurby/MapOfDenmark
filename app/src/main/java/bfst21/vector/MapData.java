@@ -21,6 +21,8 @@ public class MapData {
 
     private final float minx, miny, maxx, maxy;
 
+    private final Options options = Options.getInstance();
+
     public MapData(
             List<Drawable> shapes,
             List<Way> islands,
@@ -53,6 +55,13 @@ public class MapData {
         return kdTree;
     }
 
+    private List<Way> getList() {
+        if (options.getBool(Option.USE_KD_TREE)) {
+            return searchList;
+        }
+        return ways;
+    }
+
     public void rangeSearch(BoundingBox boundingBox) {
         searchList = kdTree.preRangeSearch(boundingBox);
     }
@@ -60,7 +69,7 @@ public class MapData {
     public List<Way> getExtendedWays(WayType type) {
         List<Way> list = new ArrayList<>();
 
-        for (Way way : searchList) {
+        for (Way way : getList()) {
             if (way.getValue("highway") != null) {
                 if (way.getValue("highway").contains(type.toString().toLowerCase())) {
                     list.add(way);
@@ -73,7 +82,7 @@ public class MapData {
     public List<Way> getWater() {
         List<Way> list = new ArrayList<>();
 
-        for (Way way : searchList) {
+        for (Way way : getList()) {
             if (way.getValue("natural") != null) {
                 if (way.getValue("natural").contains("water")) {
                     list.add(way);
@@ -86,7 +95,7 @@ public class MapData {
     public List<Way> getBuildings() {
         List<Way> list = new ArrayList<>();
 
-        for (Way way : searchList) {
+        for (Way way : getList()) {
             if (way.getValue("building") != null) {
                 list.add(way);
             }
@@ -97,7 +106,7 @@ public class MapData {
     public List<Way> getWaterWays() {
         List<Way> list = new ArrayList<>();
 
-        for (Way way : searchList) {
+        for (Way way : getList()) {
             if (way.getValue("waterway") != null) {
                 list.add(way);
             }
@@ -108,7 +117,7 @@ public class MapData {
     public List<Way> getLandUse() {
         List<Way> list = new ArrayList<>();
 
-        for (Way way : searchList) {
+        for (Way way : getList()) {
             if (way.getValue("landuse") != null) {
                 if (way.getValue("landuse").equalsIgnoreCase("grass") ||
                         way.getValue("landuse").equalsIgnoreCase("meadow") ||
@@ -141,10 +150,6 @@ public class MapData {
 
     public LongIndex getIdToRelation() {
         return idToRelation;
-    }
-
-    public List<Way> getSearchList() {
-        return searchList;
     }
 
     public float getMinx() {

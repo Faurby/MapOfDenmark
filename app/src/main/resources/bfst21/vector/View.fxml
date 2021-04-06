@@ -17,6 +17,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.ToolBar?>
+
+<?import javafx.scene.control.CheckBox?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst21.vector.Controller"
@@ -30,23 +32,44 @@
                                height="${stackPane.height}"
                                onScroll="#onScroll"
                                onMousePressed="#onMousePressed"
-                               onMouseDragged="#onMouseDragged" >
+                               onMouseDragged="#onMouseDragged">
                     </MapCanvas>
-                    <VBox fx:id="zoomBox" maxWidth="40" maxHeight="20" style="-fx-padding: 5">
+                    <VBox fx:id="debugBox" maxWidth="40" maxHeight="20" style="-fx-padding: 5">
+                        <Text text="zoomPercent" fx:id="zoomPercent"/>
                         <Text text="zoomText" fx:id="zoomText"/>
+                        <VBox fx:id="debugOptions"
+                              minWidth="150"
+                              style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B;">
+                            <padding>
+                                <Insets top="5" right="10" bottom="5" left="10"/>
+                            </padding>
+                            <Text text="Debug options:" style="-fx-padding: 2"/>
+                            <CheckBox text="Load relations" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                            <CheckBox text="Load tagged ways" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                            <CheckBox text="Use KD tree" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                            <CheckBox text="Display ways" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                            <CheckBox text="Display water" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                            <CheckBox text="Display buildings" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                            <CheckBox text="Display land use" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                            <CheckBox text="Display islands" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                        </VBox>
                     </VBox>
 
-                    <AnchorPane minWidth="10" maxWidth="10" minHeight="10" maxHeight="10" StackPane.alignment="TOP_LEFT">
-                        <padding><Insets top="8" bottom="8" left="8"/></padding>
+                    <AnchorPane minWidth="10" maxWidth="10" minHeight="10" maxHeight="10"
+                                StackPane.alignment="TOP_LEFT">
+                        <padding>
+                            <Insets top="8" bottom="8" left="8"/>
+                        </padding>
 
                         <VBox fx:id="searchAddressVbox"
                               AnchorPane.topAnchor="0.0"
                               AnchorPane.leftAnchor="0.0"
                               minWidth="175"
-                              style="-fx-background-color: #f6f6f6;
-                              -fx-border-color: #3E859B">
-                            <padding><Insets top="5" right="10" bottom="5" left="10"/></padding>
-                            <Text text="Search" style="-fx-font-size: 15" />
+                              style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B">
+                            <padding>
+                                <Insets top="5" right="10" bottom="5" left="10"/>
+                            </padding>
+                            <Text text="Search" style="-fx-font-size: 15"/>
                             <Text fx:id="startingPointText"
                                   text="Starting point:"
                                   visible="false"
@@ -57,7 +80,8 @@
                                       minHeight="20"
                                       prefHeight="25"
                             />
-                            <HBox fx:id="expandAndSearchButtons" alignment="BASELINE_CENTER" style="-fx-padding: 10 5 5 5">
+                            <HBox fx:id="expandAndSearchButtons" alignment="BASELINE_CENTER"
+                                  style="-fx-padding: 10 5 5 5">
                                 <Button text="Expand"
                                         fx:id="expand"
                                         GridPane.columnIndex="0" GridPane.rowIndex="0"
@@ -72,7 +96,7 @@
                             </HBox>
 
                             <VBox fx:id="getDestinationBox" managed="false" visible="false">
-                                <Text text="Destination:" />
+                                <Text text="Destination:"/>
                                 <TextArea fx:id="destinationPoint"
                                           promptText="Choose a destination..."
                                           wrapText="true"
@@ -100,8 +124,9 @@
             </center>
             <top>
                 <HBox>
-                    <MenuBar fx:id="menuBar" minHeight="25" minWidth="${scene.width}" >
+                    <MenuBar fx:id="menuBar" minHeight="25" minWidth="${scene.width}">
                         <Menu text="File">
+                            <MenuItem text="Load default" onAction="#loadDefault"/>
                             <MenuItem text="Load"/>
                             <MenuItem text="Save"/>
                         </Menu>
@@ -114,7 +139,8 @@
                         <Menu text="Accessibility">
                             <Menu text="Color modes">
                                 <MenuItem fx:id="colorModeStandard" text="Standard" onAction="#changeColorMode"/>
-                                <MenuItem fx:id="colorModeBlackWhite" text="Black and White" onAction="#changeColorMode"/>
+                                <MenuItem fx:id="colorModeBlackWhite" text="Black and White"
+                                          onAction="#changeColorMode"/>
                                 <MenuItem fx:id="colorModeColorBlind" text="Colorblind" onAction="#changeColorMode"/>
                             </Menu>
                             <MenuItem text="Crazy"/>

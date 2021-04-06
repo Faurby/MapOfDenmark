@@ -17,13 +17,15 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 public class XmlParser {
 
-    public MapData loadOSM(String filename) throws FileNotFoundException, XMLStreamException, FactoryConfigurationError {
-        return loadOSM(new FileInputStream(filename));
+    public MapData loadOSM(String fileName) throws FileNotFoundException, XMLStreamException, FactoryConfigurationError {
+        return loadOSM(new FileInputStream(fileName));
     }
 
     //TODO: Consider using a stack for parent elements
     // You can then peek to see what type of parent it has
     public MapData loadOSM(InputStream input) throws XMLStreamException, FactoryConfigurationError {
+
+        Options options = Options.getInstance();
 
         XMLStreamReader reader = XMLInputFactory
                 .newInstance()
@@ -71,28 +73,32 @@ public class XmlParser {
                             break;
 
                         case "relation":
-                            long relationID = Long.parseLong(reader.getAttributeValue(null, "id"));
-                            relation = new Relation(relationID);
+                            if (options.getBool(Option.LOAD_RELATIONS)) {
+                                long relationID = Long.parseLong(reader.getAttributeValue(null, "id"));
+                                relation = new Relation(relationID);
+                            }
                             break;
 
                         case "member":
-                            String type = reader.getAttributeValue(null, "type");
-                            String memRef = reader.getAttributeValue(null, "ref");
-                            if (type != null) {
-                                if (type.equalsIgnoreCase("node")) {
-                                    Node memNode = idToNode.get(Long.parseLong(memRef));
-                                    if (memNode != null) {
-                                        relation.addMember(memNode);
-                                    }
-                                } else if (type.equalsIgnoreCase("way")) {
-                                    Way memWay = idToWay.get(Long.parseLong(memRef));
-                                    if (memWay != null) {
-                                        relation.addMember(memWay);
-                                    }
-                                } else if (type.equalsIgnoreCase("relation")) {
-                                    Relation memRelation = (Relation) idToRelation.get(Long.parseLong(memRef));
-                                    if (memRelation != null) {
-                                        relation.addMember(memRelation.getID());
+                            if (options.getBool(Option.LOAD_RELATIONS)) {
+                                String type = reader.getAttributeValue(null, "type");
+                                String memRef = reader.getAttributeValue(null, "ref");
+                                if (type != null) {
+                                    if (type.equalsIgnoreCase("node")) {
+                                        Node memNode = idToNode.get(Long.parseLong(memRef));
+                                        if (memNode != null) {
+                                            relation.addMember(memNode);
+                                        }
+                                    } else if (type.equalsIgnoreCase("way")) {
+                                        Way memWay = idToWay.get(Long.parseLong(memRef));
+                                        if (memWay != null) {
+                                            relation.addMember(memWay);
+                                        }
+                                    } else if (type.equalsIgnoreCase("relation")) {
+                                        Relation memRelation = (Relation) idToRelation.get(Long.parseLong(memRef));
+                                        if (memRelation != null) {
+                                            relation.addMember(memRelation.getID());
+                                        }
                                     }
                                 }
                             }
@@ -104,7 +110,7 @@ public class XmlParser {
                             if (way != null) {
                                 if (key.equals("natural") && value.equals("coastline")) {
                                     isCoastline = true;
-                                } else {
+                                } else if (options.getBool(Option.LOAD_TAGGED_WAYS)) {
                                     way.addTag(key, value);
                                 }
                             }
@@ -124,13 +130,15 @@ public class XmlParser {
                             if (isCoastline) {
                                 coastlines.add(way);
 
-                            } else if (way.getTags() != null) {
+                            } else if (way.getTags() != null && options.getBool(Option.LOAD_TAGGED_WAYS)) {
                                 ways.add(way);
                             }
                             break;
 
                         case "relation":
-                            idToRelation.put(relation);
+                            if (options.getBool(Option.LOAD_RELATIONS)) {
+                                idToRelation.put(relation);
+                            }
                             break;
                     }
                     break;

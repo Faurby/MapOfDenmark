@@ -12,7 +12,7 @@ public class View {
         FXMLLoader loader = new FXMLLoader(View.class.getResource("View.fxml"));
         Scene scene = loader.load();
         stage.setScene(scene);
-        stage.setTitle("Awesome drawing program");
+        stage.setTitle("Map of Denmark");
         Controller controller = loader.getController();
         stage.show();
         controller.init(model);

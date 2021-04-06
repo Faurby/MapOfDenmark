@@ -18,25 +18,37 @@ public class Model implements Iterable<Drawable> {
     private List<Runnable> observers = new ArrayList<>();
     private MapData mapData;
 
-    public Model(String filename, boolean jarFile) throws IOException, XMLStreamException, FactoryConfigurationError, ClassNotFoundException {
-        load(filename, jarFile);
+    private String fileName;
+    private final boolean jarFile;
+
+    public Model(String fileName, boolean jarFile) {
+        this.fileName = fileName;
+        this.jarFile = jarFile;
     }
 
-    public void load(String filename, boolean jarFile) throws IOException, XMLStreamException, FactoryConfigurationError, ClassNotFoundException {
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public void load() throws XMLStreamException, IOException, ClassNotFoundException {
+        load(fileName);
+    }
+
+    public void load(String fileName) throws IOException, XMLStreamException, FactoryConfigurationError, ClassNotFoundException {
         long time = -System.nanoTime();
 
-        if (filename.endsWith(".osm")) {
+        if (fileName.endsWith(".osm")) {
             XmlParser xmlParser = new XmlParser();
-            mapData = xmlParser.loadOSM(filename);
+            mapData = xmlParser.loadOSM(fileName);
 
-        } else if (filename.endsWith(".zip")) {
+        } else if (fileName.endsWith(".zip")) {
             BinaryFileManager binaryFileManager = new BinaryFileManager();
-            loadZIP(filename);
-            binaryFileManager.saveOBJ(filename + ".obj", mapData);
+            loadZIP(fileName);
+            binaryFileManager.saveOBJ(fileName + ".obj", mapData);
 
-        } else if (filename.endsWith(".obj")) {
+        } else if (fileName.endsWith(".obj")) {
             BinaryFileManager binaryFileManager = new BinaryFileManager();
-            mapData = binaryFileManager.loadOBJ(filename, jarFile);
+            mapData = binaryFileManager.loadOBJ(fileName, jarFile);
         }
         time += System.nanoTime();
         Logger.getGlobal().info(String.format("Load time: %dms", time / 1000000));

@@ -87,18 +87,20 @@ public class KdTree implements Serializable {
     public void build(List<Way> wayList) {
         depth = 0;
 
-        wayList.sort(Comparator.comparingDouble(Way::getX));
-        int median = wayList.size() / 2;
+        if (wayList.size() > 0) {
+            wayList.sort(Comparator.comparingDouble(Way::getX));
+            int median = wayList.size() / 2;
 
-        Way medianWay = wayList.get(median);
-        root = new KdNode(medianWay.getX(), medianWay.getY());
+            Way medianWay = wayList.get(median);
+            root = new KdNode(medianWay.getX(), medianWay.getY());
 
-        List<Way> leftList = new ArrayList<>(wayList.subList(0, median));
-        List<Way> rightList = new ArrayList<>(wayList.subList(median, wayList.size()));
+            List<Way> leftList = new ArrayList<>(wayList.subList(0, median));
+            List<Way> rightList = new ArrayList<>(wayList.subList(median, wayList.size()));
 
-        depth++;
-        addChild(root, leftList, false);
-        addChild(root, rightList, true);
+            depth++;
+            addChild(root, leftList, false);
+            addChild(root, rightList, true);
+        }
     }
 
     public void displayTree(KdNode node, boolean right) {

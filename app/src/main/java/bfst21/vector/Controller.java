@@ -15,6 +15,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 
 
@@ -22,6 +24,7 @@ public class Controller {
 
     private Model model;
     private Point2D lastMouse;
+    private final Options options = Options.getInstance();
 
     @FXML
     private MapCanvas canvas;
@@ -30,9 +33,11 @@ public class Controller {
     @FXML
     private StackPane stackPane;
     @FXML
-    private VBox zoomBox;
+    private VBox debugBox;
     @FXML
     private Text zoomText;
+    @FXML
+    private Text zoomPercent;
     @FXML
     private TextArea startingPoint;
     @FXML
@@ -46,22 +51,27 @@ public class Controller {
     @FXML
     private Scene scene;
 
+    public void updateZoomBox() {
+        zoomPercent.setText("Zoom percent: " + canvas.getZoomPercent());
+        zoomText.setText("Zoom level: " + canvas.getZoomLevel());
+    }
+
     public void init(Model model) throws IOException {
         this.model = model;
         canvas.init(model);
-        stackPane.setAlignment(zoomBox, Pos.TOP_RIGHT);
-        zoomText.setText(canvas.getZoomPercent());
+        stackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
+        updateZoomBox();
 
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.D && event.isControlDown()) {
-                canvas.toggleDebug();
+                options.toggle(Option.DISPLAY_KD_TREE);
                 canvas.repaint();
             }
         });
     }
 
     public void onWindowResize(Stage stage) {
-        stackPane.setAlignment(zoomBox, Pos.TOP_RIGHT);
+        stackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
         searchAddressVbox.setMaxWidth(stage.getWidth() * 0.25);
         System.out.println("StackPane width: " + stackPane.getWidth());
         System.out.println("StackPane height: " + stackPane.getHeight());
@@ -72,7 +82,7 @@ public class Controller {
     private void onScroll(ScrollEvent e) {
         double factor = Math.pow(1.01, e.getDeltaY());
         canvas.preZoom(factor, new Point2D(e.getX(), e.getY()));
-        zoomText.setText(canvas.getZoomPercent());
+        updateZoomBox();
     }
 
     @FXML
@@ -97,6 +107,12 @@ public class Controller {
         lastMouse = new Point2D(e.getX(), e.getY());
     }
 
+    @FXML
+    public void loadDefault() throws XMLStreamException, IOException, ClassNotFoundException {
+        canvas.load();
+    }
+
+    @FXML
     public void zoomButtonClicked(ActionEvent actionEvent) {
 
         if (actionEvent.toString().contains("zoomIn")) {
@@ -109,7 +125,7 @@ public class Controller {
         // PT er den ret scuffed. Jeg er ikke sikker på functionen af 'factor'.
         double factor = 1;
         canvas.preZoom(factor, new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2));
-        zoomText.setText(canvas.getZoomPercent());
+        updateZoomBox();
     }
 
     @FXML
@@ -129,7 +145,7 @@ public class Controller {
     }
 
     @FXML
-    public void searchAddressString(ActionEvent actionEvent) {
+    public void searchAddressString() {
         String sAddress = startingPoint.getText();
         Address parsedSA = Address.parse(sAddress);
 
@@ -165,6 +181,19 @@ public class Controller {
             startingPoint.setPromptText("Choose an address...");
             expandAndSearchButtons.setVisible(true);
             expandAndSearchButtons.setManaged(true);
+        }
+    }
+
+    public void onCheckDebug(ActionEvent actionEvent) {
+        String text = actionEvent.toString().toLowerCase();
+
+        for (Option option : Option.values()) {
+            String optionText = option.toString().toLowerCase().replaceAll("_"," ");
+            if (text.contains(optionText)) {
+                options.toggle(option);
+                canvas.repaint();
+                break;
+            }
         }
     }
 }

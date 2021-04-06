@@ -8,14 +8,17 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        String filename = "amager.obj";
-        boolean jarFile = true;
+        String fileName = "amager.obj";
+        boolean jarFile = false;
 
-        if (getParameters().getRaw().size() > 0) {
-            filename = getParameters().getRaw().get(0);
-            jarFile = false;
+        String path = getClass().getResource("App.class").toString();
+        if (path.contains(".jar")) {
+            jarFile = true;
         }
-        Model model = new Model(filename, jarFile);
+        if (getParameters().getRaw().size() > 0) {
+            fileName = getParameters().getRaw().get(0);
+        }
+        Model model = new Model(fileName, jarFile);
         new View(model, primaryStage);
     }
 
