@@ -45,6 +45,8 @@ public class MapCanvas extends Canvas {
     }
 
     void repaint() {
+        long time = -System.nanoTime();
+
         gc.save();
         gc.setTransform(new Affine());
         gc.setFill(getColor(WayType.WATER));
@@ -105,6 +107,9 @@ public class MapCanvas extends Canvas {
         drawLine(model.getMapData().getBuildings(), getColor(WayType.BUILDING), getDrawAtZoom(WayType.BUILDING));
 
         gc.restore();
+
+        time += System.nanoTime();
+        System.out.println(String.format("Repaint time: %dms", time / 1000000));
     }
 
     public void drawBoundingBox(BoundingBox boundingBox, Color color, double size) {
