@@ -33,8 +33,12 @@
             </HBox>
             <AnchorPane maxHeight="10" maxWidth="10" minHeight="10" minWidth="10" StackPane.alignment="TOP_LEFT">
                 <padding><Insets bottom="8" left="8" top="8" /></padding>
-
-                <VBox fx:id="searchAddressVbox" fillWidth="false" minWidth="175" style="-fx-background-color: #f6f6f6; -fx-border-color: red;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <VBox fx:id="searchAddressVbox"
+                      fillWidth="false"
+                      minWidth="175"
+                      style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B"
+                      AnchorPane.leftAnchor="0.0"
+                      AnchorPane.topAnchor="0.0">
                     <padding><Insets bottom="5" left="10" right="10" top="5" /></padding>
                     <Text style="-fx-font-size: 15" text="Search" />
                     <Text fx:id="startingPointText" managed="false" text="Starting point:" visible="false" />
