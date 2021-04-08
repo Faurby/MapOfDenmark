@@ -41,6 +41,7 @@ public class Model implements Iterable<Drawable> {
 
     public void load(String fileName) throws IOException, XMLStreamException, FactoryConfigurationError, ClassNotFoundException {
         long time = -System.nanoTime();
+        Options options = Options.getInstance();
 
         if (fileName.endsWith(".osm")) {
             XmlParser xmlParser = new XmlParser();
@@ -49,7 +50,9 @@ public class Model implements Iterable<Drawable> {
         } else if (fileName.endsWith(".zip")) {
             BinaryFileManager binaryFileManager = new BinaryFileManager();
             loadZIP(fileName);
-            binaryFileManager.saveOBJ(fileName + ".obj", mapData);
+            if (options.getBool(Option.SAVE_OBJ_FILE)) {
+                binaryFileManager.saveOBJ(fileName.split("\\.")[0] + ".obj", mapData);
+            }
 
         } else if (fileName.endsWith(".obj")) {
             BinaryFileManager binaryFileManager = new BinaryFileManager();
