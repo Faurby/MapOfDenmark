@@ -1,5 +1,6 @@
 package bfst21.data;
 
+import bfst21.osm.WayType;
 import bfst21.tree.KdTree;
 import bfst21.view.Drawable;
 import bfst21.models.MapData;
@@ -35,7 +36,7 @@ public class BinaryFileManager {
     public void saveOBJ(String fileName, MapData mapData) throws IOException {
         try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)))) {
             output.writeObject(mapData.getShapes());
-            output.writeObject(mapData.getIslands());
+            output.writeObject(mapData.getWays(WayType.ISLAND));
             output.writeObject(mapData.getWays());
             output.writeObject(mapData.getIdToRelation());
             output.writeObject(mapData.getKdTree());

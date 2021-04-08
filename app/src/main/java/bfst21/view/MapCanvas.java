@@ -20,7 +20,6 @@ import javafx.scene.transform.NonInvertibleTransformException;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
-import java.util.List;
 
 
 public class MapCanvas extends Canvas {
@@ -28,8 +27,8 @@ public class MapCanvas extends Canvas {
     private Model model;
 
     private double zoomLevel = 1.0;
-    private double zoomLevelMin = 0.018682;
-    private double zoomLevelMax = 80.0;
+    private double zoomLevelMin = 50;
+    private double zoomLevelMax = 50000.0;
     private double widthModifier = 1.0;
 
     private final Options options = Options.getInstance();
@@ -51,7 +50,12 @@ public class MapCanvas extends Canvas {
         trans = new Affine();
 
         pan(-model.getMapData().getMinx(), -model.getMapData().getMiny());
-        zoom(getWidth() / (model.getMapData().getMaxx() - model.getMapData().getMinx()), new Point2D(0, 0));
+        double factor = getWidth() / (model.getMapData().getMaxx() - model.getMapData().getMinx());
+
+        zoomLevel *= factor;
+        System.out.println("Zoom: "+zoomLevel+" factor: "+factor);
+
+        zoom(factor, new Point2D(0, 0));
     }
 
     void repaint() {
@@ -68,7 +72,7 @@ public class MapCanvas extends Canvas {
         if (model.getMapData() != null) {
 
             if (options.getBool(Option.DISPLAY_ISLANDS)) {
-                paintFill(model.getMapData().getIslands(), getColor(WayType.ISLAND), getDrawAtZoom(WayType.ISLAND));
+                paintFill(WayType.ISLAND);
             }
 
             if (options.getBool(Option.USE_KD_TREE)) {
@@ -109,34 +113,40 @@ public class MapCanvas extends Canvas {
             adjustWidthModifier();
 
             if (options.getBool(Option.DISPLAY_LAND_USE)) {
-                paintFill(model.getMapData().getLandUse(), getColor(WayType.LANDUSE), getDrawAtZoom(WayType.LANDUSE));
+                paintFill(WayType.LANDUSE);
             }
             if (options.getBool(Option.DISPLAY_WATER)) {
-                paintFill(model.getMapData().getWater(), getColor(WayType.WATER), getDrawAtZoom(WayType.WATER));
+                paintFill(WayType.WATER);
             }
 
             if (options.getBool(Option.DISPLAY_WAYS)) {
-                drawRoadOutline(model.getMapData().getExtendedWays(WayType.RESIDENTIAL), 0.0002, getColor(WayType.RESIDENTIAL, true), getDrawAtZoom(WayType.RESIDENTIAL));
-                drawRoadOutline(model.getMapData().getExtendedWays(WayType.MOTORWAY), 0.0004, getColor(WayType.MOTORWAY, true), getDrawAtZoom(WayType.MOTORWAY));
-                drawRoadOutline(model.getMapData().getExtendedWays(WayType.TERTIARY), 0.0004, getColor(WayType.TERTIARY, true), getDrawAtZoom(WayType.TERTIARY));
-
-                drawRoad(model.getMapData().getExtendedWays(WayType.RESIDENTIAL), 0.0002, getColor(WayType.RESIDENTIAL), getDrawAtZoom(WayType.RESIDENTIAL));
-                drawRoad(model.getMapData().getExtendedWays(WayType.MOTORWAY), 0.0004, getColor(WayType.MOTORWAY), getDrawAtZoom(WayType.MOTORWAY));
-                drawRoad(model.getMapData().getExtendedWays(WayType.TERTIARY), 0.0004, getColor(WayType.TERTIARY), getDrawAtZoom(WayType.TERTIARY));
+                drawRoad(WayType.RESIDENTIAL, true);
+                drawRoad(WayType.MOTORWAY, true);
+                drawRoad(WayType.TERTIARY, true);
+                drawRoad(WayType.RESIDENTIAL, false);
+                drawRoad(WayType.MOTORWAY, false);
+                drawRoad(WayType.TERTIARY, false);
 
             }
             if (options.getBool(Option.DISPLAY_WATER)) {
-                drawRoad(model.getMapData().getWaterWays(), 0.0002, getColor(WayType.WATERWAY), getDrawAtZoom(WayType.WATERWAY));
+                drawRoad(WayType.WATERWAY, false);
             }
             if (options.getBool(Option.DISPLAY_BUILDINGS)) {
-                paintFill(model.getMapData().getBuildings(), getColor(WayType.BUILDING), getDrawAtZoom(WayType.BUILDING));
-                drawLine(model.getMapData().getBuildings(), getColor(WayType.BUILDING), getDrawAtZoom(WayType.BUILDING));
+                paintFill(WayType.BUILDING);
+                drawLine(WayType.BUILDING);
             }
         }
         gc.restore();
 
         time += System.nanoTime();
         System.out.printf("Repaint time: %dms%n", time / 1000000);
+    }
+
+    public void doDraw(WayType wayType) {
+        if (zoomLevel >= getDrawAtZoom(wayType)) {
+            Color color = getColor(wayType);
+
+        }
     }
 
     public void drawBoundingBox(BoundingBox boundingBox, Color color, double size) {
@@ -218,6 +228,7 @@ public class MapCanvas extends Canvas {
 
     public void preZoom(double factor, Point2D center) {
         double zoomLevelNext = zoomLevel * factor;
+
         if (zoomLevelNext < zoomLevelMax && zoomLevelNext > zoomLevelMin) {
             zoomLevel = zoomLevelNext;
             zoom(factor, center);
@@ -241,42 +252,35 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void drawLine(List<Way> list, Color color, double drawAtZoom) {
-        if (zoomLevel >= drawAtZoom) {
-            gc.setStroke(color);
+    public void drawLine(WayType wayType) {
+        if (zoomLevel >= getDrawAtZoom(wayType)) {
+            gc.setStroke(getColor(wayType));
             gc.setLineWidth(1 / Math.sqrt(trans.determinant()));
-            for (Way line : list) {
+            for (Way line : model.getMapData().getWays(wayType)) {
                 line.draw(gc, zoomLevel);
             }
         }
     }
 
-    public void paintFill(List<Way> list, Color color, double drawAtZoom) {
-        if (zoomLevel >= drawAtZoom) {
-            gc.setFill(color);
-            for (Way line : list) {
+    public void paintFill(WayType wayType) {
+        if (zoomLevel >= getDrawAtZoom(wayType)) {
+            gc.setFill(getColor(wayType));
+            for (Way line : model.getMapData().getWays(wayType)) {
                 line.fill(gc, zoomLevel);
             }
         }
     }
 
-    public void drawRoad(List<Way> list, double size, Color roadColor, double drawAtZoom) {
-        if (zoomLevel >= drawAtZoom) {
-            size *= widthModifier;
-            gc.setStroke(roadColor);
-            gc.setLineWidth(size * 0.75);
-            for (Way line : list) {
-                line.draw(gc, zoomLevel);
-            }
-        }
-    }
+    public void drawRoad(WayType wayType, boolean outline) {
+        if (zoomLevel >= getDrawAtZoom(wayType)) {
+            double size = getSize(wayType) * widthModifier;
 
-    public void drawRoadOutline(List<Way> list, double size, Color outline, double drawAtZoom) {
-        if (zoomLevel >= drawAtZoom) {
-            size *= widthModifier;
-            gc.setStroke(outline);
+            gc.setStroke(getColor(wayType, outline));
+            if (!outline) {
+                size *= 0.75;
+            }
             gc.setLineWidth(size);
-            for (Way line : list) {
+            for (Way line : model.getMapData().getWays(wayType)) {
                 line.draw(gc, zoomLevel);
             }
         }
@@ -284,6 +288,10 @@ public class MapCanvas extends Canvas {
 
     public void setColorMode(ColorMode colorMode) {
         this.colorMode = colorMode;
+    }
+
+    public Color getColor(WayType type) {
+        return getColor(type, false);
     }
 
     public Color getColor(WayType type, boolean outline) {
@@ -302,10 +310,6 @@ public class MapCanvas extends Canvas {
         return Color.RED;
     }
 
-    public Color getColor(WayType type) {
-        return getColor(type, false);
-    }
-
     public double getDrawAtZoom(WayType type) {
         String path = "zoom." + type.toString().toLowerCase();
         try {
@@ -316,17 +320,27 @@ public class MapCanvas extends Canvas {
         return 0;
     }
 
+    public double getSize(WayType type) {
+        String path = "size." + type.toString().toLowerCase();
+        try {
+            return Double.parseDouble(config.getProp(path));
+        } catch (IllegalArgumentException ex) {
+            System.out.println("Invalid size value at " + path);
+        }
+        return 0;
+    }
+
     public void adjustWidthModifier() {
-        if (zoomLevel < 5) {
+        if (zoomLevel < 5 * 3000) {
             widthModifier = 1;
 
-        } else if (zoomLevel < 15) {
+        } else if (zoomLevel < 15 * 3000) {
             widthModifier = 0.75;
 
-        } else if (zoomLevel < 35) {
+        } else if (zoomLevel < 35 * 3000) {
             widthModifier = 0.50;
 
-        } else if (zoomLevel < 80) {
+        } else if (zoomLevel < 80 * 3000) {
             widthModifier = 0.25;
         }
     }

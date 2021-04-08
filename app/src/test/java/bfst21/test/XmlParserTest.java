@@ -3,6 +3,7 @@ package bfst21.test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import bfst21.models.Model;
+import bfst21.osm.WayType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ public class XmlParserTest {
 
     @Test
     public void getBuildingsSize_correctAmount() {
-        int actual = model.getMapData().getBuildings().size();
+        int actual = model.getMapData().getWays(WayType.BUILDING).size();
         assertEquals(67946, actual);
         //der mangler cirka 650 buildings fordi ...
         // der er relations med k="building", men lige nu ser vi slet ikke relations.

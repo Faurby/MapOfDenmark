@@ -1,7 +1,5 @@
 package bfst21.models;
 
-import bfst21.models.Option;
-import bfst21.models.Options;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdTree;
 import bfst21.osm.ElementLongIndex;
@@ -71,12 +69,36 @@ public class MapData {
         searchList = kdTree.preRangeSearch(boundingBox);
     }
 
-    public List<Way> getExtendedWays(WayType type) {
+    public List<Way> getWays(WayType wayType) {
+        List<Way> list = new ArrayList<>();
+
+        switch (wayType) {
+            case ISLAND:
+                return islands;
+            case WATER:
+                return getWater();
+            case WATERWAY:
+                return getWaterWays();
+            case LANDUSE:
+                return getLandUse();
+            case BUILDING:
+                return getBuildings();
+            case MOTORWAY:
+                return getExtendedWays(wayType);
+            case TERTIARY:
+                return getExtendedWays(wayType);
+            case RESIDENTIAL:
+                return getExtendedWays(wayType);
+        }
+        return list;
+    }
+
+    private List<Way> getExtendedWays(WayType wayType) {
         List<Way> list = new ArrayList<>();
 
         for (Way way : getList()) {
             if (way.getValue("highway") != null) {
-                if (way.getValue("highway").contains(type.toString().toLowerCase())) {
+                if (way.getValue("highway").contains(wayType.toString().toLowerCase())) {
                     list.add(way);
                 }
             }
@@ -84,7 +106,7 @@ public class MapData {
         return list;
     }
 
-    public List<Way> getWater() {
+    private List<Way> getWater() {
         List<Way> list = new ArrayList<>();
 
         for (Way way : getList()) {
@@ -97,7 +119,7 @@ public class MapData {
         return list;
     }
 
-    public List<Way> getBuildings() {
+    private List<Way> getBuildings() {
         List<Way> list = new ArrayList<>();
 
         for (Way way : getList()) {
@@ -108,7 +130,7 @@ public class MapData {
         return list;
     }
 
-    public List<Way> getWaterWays() {
+    private List<Way> getWaterWays() {
         List<Way> list = new ArrayList<>();
 
         for (Way way : getList()) {
@@ -119,7 +141,7 @@ public class MapData {
         return list;
     }
 
-    public List<Way> getLandUse() {
+    private List<Way> getLandUse() {
         List<Way> list = new ArrayList<>();
 
         for (Way way : getList()) {
@@ -143,10 +165,6 @@ public class MapData {
 
     public List<Drawable> getShapes() {
         return shapes;
-    }
-
-    public List<Way> getIslands() {
-        return islands;
     }
 
     public List<Way> getWays() {

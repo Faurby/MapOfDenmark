@@ -94,15 +94,15 @@ public class Way extends Element implements Drawable, Serializable {
         gc.moveTo(nodes.get(0).getX(), nodes.get(0).getY());
 
         int inc = 1;
-        if (zoomLevel <= 0.25) {
+        if (zoomLevel <= 750) {
             inc = 10;
-        } else if (zoomLevel <= 0.35) {
+        } else if (zoomLevel <= 1050) {
             inc = 8;
-        } else if (zoomLevel <= 0.45) {
+        } else if (zoomLevel <= 1350) {
             inc = 6;
-        } else if (zoomLevel <= 0.6) {
+        } else if (zoomLevel <= 1800) {
             inc = 4;
-        } else if (zoomLevel <= 0.8) {
+        } else if (zoomLevel <= 2400) {
             inc = 2;
         }
         for (int i = 0; i < nodes.size(); i += inc) {
