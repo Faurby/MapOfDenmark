@@ -39,6 +39,8 @@ public class Controller {
     @FXML
     private VBox debugBox;
     @FXML
+    private VBox debugOptions;
+    @FXML
     private Text zoomText;
     @FXML
     private Text zoomPercent;
@@ -68,8 +70,11 @@ public class Controller {
 
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.D && event.isControlDown()) {
-                options.toggle(Option.DISPLAY_KD_TREE);
-                canvas.repaint();
+                if (debugOptions.isVisible()) {
+                    debugOptions.setVisible(false);
+                } else {
+                    debugOptions.setVisible(true);
+                }
             }
         });
     }
