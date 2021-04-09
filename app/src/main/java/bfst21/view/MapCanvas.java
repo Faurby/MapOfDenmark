@@ -17,7 +17,6 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
-
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 
@@ -56,9 +55,9 @@ public class MapCanvas extends Canvas {
         pan(-model.getMapData().getMinx(), -model.getMapData().getMiny());
         double factor = getWidth() / (model.getMapData().getMaxx() - model.getMapData().getMinx());
 
-        zoomLevel = 1;
+        zoomLevel = 1.0D;
         zoomLevel *= factor;
-        System.out.println("Zoom: "+zoomLevel+" factor: "+factor);
+        System.out.println("Zoom: " + zoomLevel + " factor: " + factor);
 
         zoom(factor, new Point2D(0, 0));
     }
@@ -147,7 +146,7 @@ public class MapCanvas extends Canvas {
         gc.restore();
 
         time += System.nanoTime();
-        System.out.println("Repaint time: "+time/1_000_000+" (Average: "+averageRepaintTime/1_000_000+")");
+        System.out.println("Repaint time: " + time / 1_000_000 + " (Average: " + averageRepaintTime / 1_000_000 + ")");
 
         totalRepaintTime += time;
         totalRepaints++;
@@ -360,7 +359,7 @@ public class MapCanvas extends Canvas {
     }
 
     public String getZoomLevel() {
-        String value =  "" + zoomLevel;
+        String value = "" + zoomLevel;
         if (value.length() > 8) {
             return value.substring(0, 8);
         }

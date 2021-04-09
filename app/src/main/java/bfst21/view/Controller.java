@@ -19,7 +19,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
@@ -129,7 +128,8 @@ public class Controller {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Load new map segment");
         File file = fileChooser.showOpenDialog(new Stage());
-        if(file != null) {
+
+        if (file != null) {
             String filename = file.getAbsolutePath();
             model.setFileName(filename);
             canvas.load(false);
@@ -213,7 +213,7 @@ public class Controller {
         String text = actionEvent.toString().toLowerCase();
 
         for (Option option : Option.values()) {
-            String optionText = option.toString().toLowerCase().replaceAll("_"," ");
+            String optionText = option.toString().toLowerCase().replaceAll("_", " ");
             if (text.contains(optionText)) {
                 options.toggle(option);
                 canvas.repaint();
