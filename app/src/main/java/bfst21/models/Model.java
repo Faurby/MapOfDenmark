@@ -22,12 +22,12 @@ public class Model implements Iterable<Drawable> {
 
     private List<Runnable> observers = new ArrayList<>();
     private MapData mapData;
-
+    private String defaultFileName;
     private String fileName;
     private final boolean jarFile;
 
-    public Model(String fileName, boolean jarFile) {
-        this.fileName = fileName;
+    public Model(String defaultFileName, boolean jarFile) {
+        this.defaultFileName = defaultFileName;
         this.jarFile = jarFile;
     }
 
@@ -35,8 +35,12 @@ public class Model implements Iterable<Drawable> {
         this.fileName = fileName;
     }
 
-    public void load() throws XMLStreamException, IOException, ClassNotFoundException {
-        load(fileName);
+    public void load(boolean loadDefault) throws XMLStreamException, IOException, ClassNotFoundException {
+        if (loadDefault == true) {
+            load(defaultFileName);
+        } else {
+            load(fileName);
+        }
     }
 
     public void load(String fileName) throws IOException, XMLStreamException, FactoryConfigurationError, ClassNotFoundException {

@@ -10,7 +10,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        String fileName = "amager.obj";
+        String defaultFileName = "amager.obj";
         boolean jarFile = false;
 
         String path = getClass().getResource("App.class").toString();
@@ -18,9 +18,9 @@ public class App extends Application {
             jarFile = true;
         }
         if (getParameters().getRaw().size() > 0) {
-            fileName = getParameters().getRaw().get(0);
+            defaultFileName = getParameters().getRaw().get(0);
         }
-        Model model = new Model(fileName, jarFile);
+        Model model = new Model(defaultFileName, jarFile);
         new View(model, primaryStage);
     }
 
