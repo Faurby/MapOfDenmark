@@ -23,7 +23,6 @@ import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
 
-
 public class Controller {
 
     private Model model;
