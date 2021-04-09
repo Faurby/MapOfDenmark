@@ -18,6 +18,7 @@
 <?import javafx.scene.control.ToolBar?>
 
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ProgressBar?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst21.view.Controller"
@@ -53,26 +54,6 @@
                     <CheckBox text="Save OBJ file" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                 </VBox>
             </VBox>
-            <HBox fx:id="menuBarHBox" maxHeight="25" minHeight="25" minWidth="${scene.width}" StackPane.alignment="TOP_LEFT">
-                <MenuBar fx:id="menuBar" minWidth="${menuBarHBox.width}">
-                    <Menu text="File">
-                        <MenuItem text="Load default" onAction="#loadDefault"/>
-                        <MenuItem text="Load new file" onAction="#loadNewFile"/>
-                        <MenuItem text="Save" />
-                    </Menu>
-                    <Menu text="View">
-                        <MenuItem fx:id="zoomIn" onAction="#zoomButtonClicked" text="Zoom in" />
-                        <MenuItem onAction="#zoomButtonClicked" text="Zoom out" />
-                    </Menu>
-                    <Menu text="Accessibility">
-                        <Menu text="Color modes">
-                            <MenuItem fx:id="colorModeStandard" onAction="#changeColorMode" text="Standard" />
-                            <MenuItem fx:id="colorModeBlackWhite" onAction="#changeColorMode" text="Black and White" />
-                            <MenuItem fx:id="colorModeColorBlind" onAction="#changeColorMode" text="Colorblind" />
-                        </Menu>
-                    </Menu>
-                </MenuBar>
-            </HBox>
             <AnchorPane maxHeight="10" maxWidth="10" minHeight="10" minWidth="10" StackPane.alignment="TOP_LEFT">
                 <padding><Insets bottom="8" left="8" top="8" /></padding>
 
@@ -100,10 +81,37 @@
                         </HBox>
                     </VBox>
                 </VBox>
-            <StackPane.margin>
-               <Insets top="30.0" />
-            </StackPane.margin>
+                <StackPane.margin>
+                    <Insets top="30.0" />
+                </StackPane.margin>
             </AnchorPane>
+            <VBox fx:id="loadingText" minHeight="100" minWidth="100" visible="false"
+                  style="-fx-background-color: WHITE; -fx-padding: 20;" alignment="CENTER">
+                <Text text="Loading..." style="-fx-font-size: 24;"></Text>
+                <ProgressBar fx:id="progressBar" style="-fx-padding: 20;" minWidth="200"></ProgressBar>
+            </VBox>
+            <HBox fx:id="menuBarHBox" maxHeight="25" minHeight="25" minWidth="${scene.width}" StackPane.alignment="TOP_LEFT">
+                <MenuBar fx:id="menuBar" minWidth="${menuBarHBox.width}">
+                    <Menu text="File">
+                        <MenuItem text="Load default" onAction="#loadDefault"/>
+                        <MenuItem text="Load new file" onAction="#loadNewFile"/>
+                        <MenuItem text="Save" />
+                    </Menu>
+                    <Menu text="View">
+                        <MenuItem fx:id="zoomIn" onAction="#zoomButtonClicked" text="Zoom in" />
+                        <MenuItem onAction="#zoomButtonClicked" text="Zoom out" />
+                    </Menu>
+                    <Menu text="Accessibility">
+                        <Menu text="Color modes">
+                            <MenuItem fx:id="colorModeStandard" onAction="#changeColorMode" text="Standard" />
+                            <MenuItem fx:id="colorModeBlackWhite" onAction="#changeColorMode" text="Black and White" />
+                            <MenuItem fx:id="colorModeColorBlind" onAction="#changeColorMode" text="Colorblind" />
+                        </Menu>
+                    </Menu>
+                </MenuBar>
+            </HBox>
+
+
         </StackPane>
     </root>
 </Scene>

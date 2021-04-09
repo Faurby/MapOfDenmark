@@ -4,11 +4,13 @@ import bfst21.address.Address;
 import bfst21.models.Option;
 import bfst21.models.Options;
 import bfst21.models.Model;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
@@ -55,6 +57,10 @@ public class Controller {
     private Text startingPointText;
     @FXML
     private Scene scene;
+    @FXML
+    private VBox loadingText;
+    @FXML
+    private ProgressBar progressBar;
 
     public void updateZoomBox() {
         zoomPercent.setText("Zoom percent: " + canvas.getZoomPercent());
@@ -119,21 +125,46 @@ public class Controller {
     }
 
     @FXML
-    public void loadDefault() throws XMLStreamException, IOException, ClassNotFoundException {
-        canvas.load(true);
-        updateZoomBox();
+    public void loadDefault() {
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                loadingText.setVisible(true);
+                canvas.load(true);
+                updateZoomBox();
+                return null;
+            }
+        };
+        task.setOnSucceeded(e -> {
+            loadingText.setVisible(false);
+        });
+        Thread thread2 = new Thread(task);
+        thread2.start();
     }
 
     @FXML
-    public void loadNewFile() throws IOException, XMLStreamException, ClassNotFoundException {
+    public void loadNewFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Load new map segment");
         File file = fileChooser.showOpenDialog(new Stage());
         if(file != null) {
             String filename = file.getAbsolutePath();
             model.setFileName(filename);
-            canvas.load(false);
-            updateZoomBox();
+            Task<Void> task = new Task<>() {
+                @Override
+                protected Void call() throws Exception {
+                    loadingText.setVisible(true);
+                    System.out.println(Thread.currentThread().getName());
+                    canvas.load(false);
+                    updateZoomBox();
+                    return null;
+                }
+            };
+            task.setOnSucceeded(e -> {
+                loadingText.setVisible(false);
+            });
+            Thread thread2 = new Thread(task);
+            thread2.start();
         }
     }
 
