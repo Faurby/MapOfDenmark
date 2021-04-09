@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import bfst21.view.MapCanvas?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.Scene?>
 
 <?import javafx.scene.layout.VBox?>
@@ -25,7 +24,13 @@
        fx:id="scene">
     <root>
         <StackPane fx:id="stackPane" minHeight="480" minWidth="640">
-            <MapCanvas fx:id="canvas" height="${stackPane.height}" onMouseDragged="#onMouseDragged" onMousePressed="#onMousePressed" onScroll="#onScroll" width="${stackPane.width}">
+            <MapCanvas fx:id="canvas"
+                       height="${stackPane.height}"
+                       width="${stackPane.width}"
+                       onMouseDragged="#onMouseDragged"
+                       onMousePressed="#onMousePressed"
+                       onScroll="#onScroll"
+            >
             </MapCanvas>
             <VBox fx:id="debugBox" maxWidth="40" maxHeight="20" style="-fx-padding: 5">
                 <Text text="zoomPercent" fx:id="zoomPercent"/>
@@ -98,9 +103,6 @@
                <Insets top="30.0" />
             </StackPane.margin>
             </AnchorPane>
-            <VBox fx:id="zoomBox" alignment="TOP_RIGHT" maxHeight="10" maxWidth="20" style="-fx-padding: 30 15 0 0;">
-                <Text fx:id="zoomText" text="zoomText" />
-            </VBox>
         </StackPane>
     </root>
 </Scene>
