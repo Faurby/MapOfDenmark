@@ -4,7 +4,6 @@ import bfst21.data.BinaryFileManager;
 import bfst21.data.XmlParser;
 import bfst21.view.Drawable;
 import bfst21.view.Line;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
