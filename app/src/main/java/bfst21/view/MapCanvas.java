@@ -31,6 +31,10 @@ public class MapCanvas extends Canvas {
     private double zoomLevelMax = 50000.0;
     private double widthModifier = 1.0;
 
+    private long averageRepaintTime = 0L;
+    private long totalRepaintTime = 0L;
+    private long totalRepaints = 0L;
+
     private final Options options = Options.getInstance();
     private final GraphicsContext gc = getGraphicsContext2D();
 
@@ -140,14 +144,12 @@ public class MapCanvas extends Canvas {
         gc.restore();
 
         time += System.nanoTime();
-        System.out.printf("Repaint time: %dms%n", time / 1000000);
-    }
+        System.out.println("Repaint time: "+time/1_000_000+" (Average: "+averageRepaintTime/1_000_000+")");
 
-    public void doDraw(WayType wayType) {
-        if (zoomLevel >= getDrawAtZoom(wayType)) {
-            Color color = getColor(wayType);
+        totalRepaintTime += time;
+        totalRepaints++;
 
-        }
+        averageRepaintTime = totalRepaintTime / totalRepaints;
     }
 
     public void drawBoundingBox(BoundingBox boundingBox, Color color, double size) {
