@@ -1,6 +1,6 @@
 package bfst21.tree;
 
-import bfst21.vector.osm.Way;
+import bfst21.osm.Way;
 
 import java.io.Serializable;
 import java.util.List;

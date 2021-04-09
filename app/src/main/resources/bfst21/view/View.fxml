@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import bfst21.view.MapCanvas?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.Scene?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.ToolBar?>
+
+<?import javafx.scene.control.CheckBox?>
+<Scene xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="bfst21.view.Controller"
+       fx:id="scene">
+    <root>
+        <StackPane fx:id="stackPane" minHeight="480" minWidth="640">
+            <MapCanvas fx:id="canvas" height="${stackPane.height}" onMouseDragged="#onMouseDragged" onMousePressed="#onMousePressed" onScroll="#onScroll" width="${stackPane.width}">
+            </MapCanvas>
+            <VBox fx:id="debugBox" maxWidth="40" maxHeight="20" style="-fx-padding: 5">
+                <Text text="zoomPercent" fx:id="zoomPercent"/>
+                <Text text="zoomText" fx:id="zoomText"/>
+                <VBox fx:id="debugOptions"
+                      minWidth="150"
+                      style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B;">
+                    <padding>
+                        <Insets top="5" right="10" bottom="5" left="10"/>
+                    </padding>
+                    <Text text="Debug options:" style="-fx-padding: 2"/>
+                    <CheckBox text="Load relations" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Load tagged ways" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Use KD tree" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display ways" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display water" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display buildings" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display land use" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display islands" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Save OBJ file" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                </VBox>
+            </VBox>
+            <HBox fx:id="menuBarHBox" maxHeight="25" minHeight="25" minWidth="${scene.width}" StackPane.alignment="TOP_LEFT">
+                <MenuBar fx:id="menuBar" minWidth="${menuBarHBox.width}">
+                    <Menu text="File">
+                        <MenuItem text="Load" />
+                        <MenuItem text="Save" />
+                    </Menu>
+                    <Menu text="View">
+                        <MenuItem fx:id="zoomIn" onAction="#zoomButtonClicked" text="Zoom in" />
+                        <MenuItem onAction="#zoomButtonClicked" text="Zoom out" />
+                    </Menu>
+                    <Menu text="Accessibility">
+                        <Menu text="Color modes">
+                            <MenuItem fx:id="colorModeStandard" onAction="#changeColorMode" text="Standard" />
+                            <MenuItem fx:id="colorModeBlackWhite" onAction="#changeColorMode" text="Black and White" />
+                            <MenuItem fx:id="colorModeColorBlind" onAction="#changeColorMode" text="Colorblind" />
+                        </Menu>
+                    </Menu>
+                </MenuBar>
+            </HBox>
+            <AnchorPane maxHeight="10" maxWidth="10" minHeight="10" minWidth="10" StackPane.alignment="TOP_LEFT">
+                <padding><Insets bottom="8" left="8" top="8" /></padding>
+
+                <VBox fx:id="searchAddressVbox"
+                      minWidth="175"
+                      style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B"
+                      AnchorPane.leftAnchor="0.0"
+                      AnchorPane.topAnchor="0.0">
+                    <padding><Insets bottom="5" left="10" right="10" top="5" /></padding>
+                    <Text style="-fx-font-size: 15" text="Search" />
+                    <Text fx:id="startingPointText" managed="false" text="Starting point:" visible="false" />
+                    <TextArea fx:id="startingPoint" minHeight="20" prefHeight="25" promptText="Choose an address..." wrapText="true" />
+                    <HBox fx:id="expandAndSearchButtons" alignment="BASELINE_CENTER" prefWidth="198.0" style="-fx-padding: 10 5 5 5">
+                        <Button fx:id="expand" onAction="#expandSearchView" text="Expand" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <ToolBar visible="false" HBox.hgrow="ALWAYS" />
+                        <Button onAction="#searchAddressString" text="Search" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                    </HBox>
+                    <VBox fx:id="getDestinationBox" managed="false" visible="false">
+                        <Text text="Destination:" />
+                        <TextArea fx:id="destinationPoint" minHeight="25" prefHeight="25" promptText="Choose a destination..." wrapText="true" />
+                        <HBox alignment="BASELINE_CENTER" style="-fx-padding: 10 5 5 5">
+                            <Button fx:id="collapse" onAction="#expandSearchView" text="Collapse" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <ToolBar visible="false" HBox.hgrow="ALWAYS" />
+                            <Button onAction="#searchAddressString" text="Search" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                        </HBox>
+                    </VBox>
+                </VBox>
+            <StackPane.margin>
+               <Insets top="30.0" />
+            </StackPane.margin>
+            </AnchorPane>
+            <VBox fx:id="zoomBox" alignment="TOP_RIGHT" maxHeight="10" maxWidth="20" style="-fx-padding: 30 15 0 0;">
+                <Text fx:id="zoomText" text="zoomText" />
+            </VBox>
+        </StackPane>
+    </root>
+</Scene>

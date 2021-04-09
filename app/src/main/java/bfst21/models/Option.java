@@ -1,0 +1,14 @@
+package bfst21.models;
+
+public enum Option {
+    LOAD_RELATIONS,
+    LOAD_TAGGED_WAYS,
+    USE_KD_TREE,
+    DISPLAY_WAYS,
+    DISPLAY_WATER,
+    DISPLAY_BUILDINGS,
+    DISPLAY_LAND_USE,
+    DISPLAY_ISLANDS,
+    DISPLAY_KD_TREE,
+    SAVE_OBJ_FILE
+}
