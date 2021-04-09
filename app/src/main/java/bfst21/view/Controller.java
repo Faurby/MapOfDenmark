@@ -17,9 +17,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javax.xml.stream.XMLStreamException;
+import java.io.File;
 import java.io.IOException;
 
 
@@ -118,7 +120,21 @@ public class Controller {
 
     @FXML
     public void loadDefault() throws XMLStreamException, IOException, ClassNotFoundException {
-        canvas.load();
+        canvas.load(true);
+        updateZoomBox();
+    }
+
+    @FXML
+    public void loadNewFile() throws IOException, XMLStreamException, ClassNotFoundException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Load new map segment");
+        File file = fileChooser.showOpenDialog(new Stage());
+        if(file != null) {
+            String filename = file.getAbsolutePath();
+            model.setFileName(filename);
+            canvas.load(false);
+            updateZoomBox();
+        }
     }
 
     @FXML

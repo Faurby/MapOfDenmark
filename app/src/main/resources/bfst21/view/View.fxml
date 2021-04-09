@@ -57,7 +57,7 @@
                 <MenuBar fx:id="menuBar" minWidth="${menuBarHBox.width}">
                     <Menu text="File">
                         <MenuItem text="Load default" onAction="#loadDefault"/>
-                        <MenuItem text="Load" />
+                        <MenuItem text="Load new file" onAction="#loadNewFile"/>
                         <MenuItem text="Save" />
                     </Menu>
                     <Menu text="View">

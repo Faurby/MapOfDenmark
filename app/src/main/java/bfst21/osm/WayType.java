@@ -7,6 +7,7 @@ public enum WayType {
     MOTORWAY,
     RESIDENTIAL,
     TERTIARY,
+    PRIMARY,
     WATER,
     WATERWAY
 }

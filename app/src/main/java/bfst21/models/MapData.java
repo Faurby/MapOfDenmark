@@ -87,6 +87,8 @@ public class MapData {
                 return getExtendedWays(wayType);
             case TERTIARY:
                 return getExtendedWays(wayType);
+            case PRIMARY:
+                return getExtendedWays(wayType);
             case RESIDENTIAL:
                 return getExtendedWays(wayType);
         }

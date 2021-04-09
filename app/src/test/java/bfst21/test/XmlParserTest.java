@@ -18,7 +18,7 @@ public class XmlParserTest {
     @BeforeEach
     void setUp() throws XMLStreamException, IOException, ClassNotFoundException {
         model = new Model("data/amager.zip", false);
-        model.load();
+        model.load(true);
     }
 
     @AfterEach

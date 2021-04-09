@@ -26,7 +26,7 @@ public class MapCanvas extends Canvas {
 
     private Model model;
 
-    private double zoomLevel = 1.0;
+    private double zoomLevel;
     private double zoomLevelMin = 50;
     private double zoomLevelMax = 50000.0;
     private double widthModifier = 1.0;
@@ -45,13 +45,14 @@ public class MapCanvas extends Canvas {
         this.config = new Config();
     }
 
-    public void load() throws XMLStreamException, IOException, ClassNotFoundException {
-        model.load();
+    public void load(boolean loadDefault) throws XMLStreamException, IOException, ClassNotFoundException {
+        model.load(loadDefault);
         trans = new Affine();
 
         pan(-model.getMapData().getMinx(), -model.getMapData().getMiny());
         double factor = getWidth() / (model.getMapData().getMaxx() - model.getMapData().getMinx());
 
+        zoomLevel = 1;
         zoomLevel *= factor;
         System.out.println("Zoom: "+zoomLevel+" factor: "+factor);
 
@@ -123,10 +124,12 @@ public class MapCanvas extends Canvas {
                 drawRoad(WayType.RESIDENTIAL, true);
                 drawRoad(WayType.MOTORWAY, true);
                 drawRoad(WayType.TERTIARY, true);
+                drawRoad(WayType.PRIMARY, true);
 
                 drawRoad(WayType.RESIDENTIAL, false);
                 drawRoad(WayType.MOTORWAY, false);
                 drawRoad(WayType.TERTIARY, false);
+                drawRoad(WayType.PRIMARY, false);
 
             }
             if (options.getBool(Option.DISPLAY_WATER)) {
