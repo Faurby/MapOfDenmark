@@ -1,5 +1,6 @@
 package bfst21.data;
 
+import bfst21.osm.TreeWay;
 import bfst21.osm.WayType;
 import bfst21.tree.KdTree;
 import bfst21.view.Drawable;
@@ -24,6 +25,7 @@ public class BinaryFileManager {
             (List<Drawable>) input.readObject(),
             (List<Way>) input.readObject(),
             (List<Way>) input.readObject(),
+            (List<TreeWay>) input.readObject(),
             (ElementLongIndex) input.readObject(),
             (KdTree) input.readObject(),
             input.readFloat(),
@@ -38,6 +40,7 @@ public class BinaryFileManager {
             output.writeObject(mapData.getShapes());
             output.writeObject(mapData.getWays(WayType.ISLAND));
             output.writeObject(mapData.getWays());
+            output.writeObject(mapData.getTreeWays());
             output.writeObject(mapData.getIdToRelation());
             output.writeObject(mapData.getKdTree());
             output.writeFloat(mapData.getMinx());

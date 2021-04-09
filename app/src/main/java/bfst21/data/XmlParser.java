@@ -5,7 +5,6 @@ import bfst21.models.Options;
 import bfst21.osm.*;
 import bfst21.view.Drawable;
 import bfst21.models.MapData;
-
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -38,6 +37,8 @@ public class XmlParser {
         Way way = null;
         Relation relation = null;
 
+        boolean useRtree = options.getBool(Option.USE_R_TREE);
+
         NodeLongIndex idToNode = new NodeLongIndex();
         WayLongIndex idToWay = new WayLongIndex();
         ElementLongIndex idToRelation = new ElementLongIndex();
@@ -45,6 +46,7 @@ public class XmlParser {
         List<Drawable> shapes = new ArrayList<>();
 
         List<Way> ways = new ArrayList<>();
+        List<TreeWay> treeWays = new ArrayList<>();
         List<Way> coastlines = new ArrayList<>();
         List<Way> islands;
 
@@ -72,7 +74,11 @@ public class XmlParser {
 
                         case "way":
                             long wayID = Long.parseLong(reader.getAttributeValue(null, "id"));
-                            way = new Way(wayID);
+                            if (useRtree) {
+                                way = new TreeWay(wayID);
+                            } else {
+                                way = new Way(wayID);
+                            }
                             isCoastline = false;
                             break;
 
@@ -135,7 +141,11 @@ public class XmlParser {
                                 coastlines.add(way);
 
                             } else if (way.getTags() != null && options.getBool(Option.LOAD_TAGGED_WAYS)) {
-                                ways.add(way);
+                                if (useRtree) {
+                                    treeWays.add((TreeWay) way);
+                                } else {
+                                    ways.add(way);
+                                }
                             }
                             break;
 
@@ -149,7 +159,19 @@ public class XmlParser {
             }
         }
         islands = mergeCoastLines(coastlines);
-        return new MapData(shapes, islands, ways, idToRelation, null, minx, maxx, miny, maxy);
+
+        return new MapData(
+            shapes,
+            islands,
+            ways,
+            treeWays,
+            idToRelation,
+            null,
+            minx,
+            maxx,
+            miny,
+            maxy
+        );
     }
 
     private List<Way> mergeCoastLines(List<Way> coastlines) {

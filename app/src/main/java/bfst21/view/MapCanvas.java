@@ -30,10 +30,6 @@ public class MapCanvas extends Canvas {
     private double zoomLevelMax = 50000.0;
     private double widthModifier = 1.0;
 
-    private long averageRepaintTime = 0L;
-    private long totalRepaintTime = 0L;
-    private long totalRepaints = 0L;
-
     private final Options options = Options.getInstance();
     private final GraphicsContext gc = getGraphicsContext2D();
 
@@ -112,6 +108,16 @@ public class MapCanvas extends Canvas {
                     gc.lineTo(p1.getX(), p1.getY());
                     gc.stroke();
                 }
+            } else if (options.getBool(Option.USE_R_TREE)) {
+                double x1 = trans.getTx() / Math.sqrt(trans.determinant());
+                double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
+                double x2 = getWidth() - x1;
+                double y2 = getHeight() - y1;
+
+                Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
+                Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
+
+                model.getMapData().search(p1.getX(), p1.getY(), p2.getX(), p2.getY());
             }
 
             adjustWidthModifier();
@@ -146,12 +152,7 @@ public class MapCanvas extends Canvas {
         gc.restore();
 
         time += System.nanoTime();
-        System.out.println("Repaint time: " + time / 1_000_000 + " (Average: " + averageRepaintTime / 1_000_000 + ")");
-
-        totalRepaintTime += time;
-        totalRepaints++;
-
-        averageRepaintTime = totalRepaintTime / totalRepaints;
+        System.out.println("Repaint time: " + time / 1_000_000);
     }
 
     public void drawBoundingBox(BoundingBox boundingBox, Color color, double size) {

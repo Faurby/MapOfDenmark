@@ -4,6 +4,7 @@ public enum Option {
     LOAD_RELATIONS,
     LOAD_TAGGED_WAYS,
     USE_KD_TREE,
+    USE_R_TREE,
     DISPLAY_WAYS,
     DISPLAY_WATER,
     DISPLAY_BUILDINGS,

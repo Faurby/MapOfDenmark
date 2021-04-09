@@ -1,13 +1,17 @@
 package bfst21.models;
 
+import bfst21.osm.TreeWay;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdTree;
 import bfst21.osm.ElementLongIndex;
 import bfst21.osm.Way;
 import bfst21.osm.WayType;
 import bfst21.view.Drawable;
-
+import com.github.davidmoten.rtree2.Entry;
+import com.github.davidmoten.rtree2.RTree;
+import com.github.davidmoten.rtree2.geometry.Geometries;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -16,11 +20,14 @@ public class MapData {
     private final List<Drawable> shapes;
     private final List<Way> islands;
     private final List<Way> ways;
+    private final List<TreeWay> treeWays;
     private final ElementLongIndex idToRelation;
-    private final KdTree kdTree;
+    private KdTree kdTree;
+    private RTree<Integer, TreeWay> rTree;
 
     //TODO: Maybe this should be reconsidered. This list could end up containing all elements
     private List<Way> searchList;
+    private List<Way> rTreeSearchList;
 
     private final float minx, miny, maxx, maxy;
 
@@ -30,6 +37,7 @@ public class MapData {
             List<Drawable> shapes,
             List<Way> islands,
             List<Way> ways,
+            List<TreeWay> treeWays,
             ElementLongIndex idToRelation,
             KdTree kdTree,
             float minx,
@@ -40,17 +48,26 @@ public class MapData {
         this.shapes = shapes;
         this.islands = islands;
         this.ways = ways;
+        this.treeWays = treeWays;
         this.idToRelation = idToRelation;
         this.minx = minx;
         this.miny = miny;
         this.maxx = maxx;
         this.maxy = maxy;
 
-        if (kdTree != null) {
-            this.kdTree = kdTree;
-        } else {
-            this.kdTree = new KdTree();
-            this.kdTree.build(ways);
+        if (options.getBool(Option.USE_KD_TREE)) {
+            if (kdTree != null) {
+                this.kdTree = kdTree;
+            } else {
+                this.kdTree = new KdTree();
+                this.kdTree.build(ways);
+            }
+        } else if (options.getBool(Option.USE_R_TREE)) {
+            this.rTree = RTree.star().maxChildren(6).create();
+
+            for (TreeWay way : treeWays) {
+                rTree = rTree.add(0, way);
+            }
         }
     }
 
@@ -61,8 +78,25 @@ public class MapData {
     private List<Way> getList() {
         if (options.getBool(Option.USE_KD_TREE)) {
             return searchList;
+
+        } else if (options.getBool(Option.USE_R_TREE)) {
+            return rTreeSearchList;
         }
         return ways;
+    }
+
+    public void search(double x1, double y1, double x2, double y2) {
+        Iterable<Entry<Integer, TreeWay>> results =
+            rTree.search(Geometries.rectangle(x1, y1, x2, y2));
+
+        Iterator<Entry<Integer, TreeWay>> rTreeIterator = results.iterator();
+
+        rTreeSearchList = new ArrayList<>();
+
+        while (rTreeIterator.hasNext()) {
+            TreeWay way = rTreeIterator.next().geometry();
+            rTreeSearchList.add(way);
+        }
     }
 
     public void rangeSearch(BoundingBox boundingBox) {
@@ -191,5 +225,9 @@ public class MapData {
 
     public float getMaxy() {
         return maxy;
+    }
+
+    public List<TreeWay> getTreeWays() {
+        return treeWays;
     }
 }
