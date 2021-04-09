@@ -334,16 +334,16 @@ public class MapCanvas extends Canvas {
     }
 
     public void adjustWidthModifier() {
-        if (zoomLevel < 5 * 3000) {
+        if (zoomLevel < 15000) {
             widthModifier = 1;
 
-        } else if (zoomLevel < 15 * 3000) {
+        } else if (zoomLevel < 45000) {
             widthModifier = 0.75;
 
-        } else if (zoomLevel < 35 * 3000) {
+        } else if (zoomLevel < 35 * 105000) {
             widthModifier = 0.50;
 
-        } else if (zoomLevel < 80 * 3000) {
+        } else if (zoomLevel < 240000) {
             widthModifier = 0.25;
         }
     }
