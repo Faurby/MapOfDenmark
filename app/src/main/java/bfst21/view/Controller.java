@@ -83,7 +83,13 @@ public class Controller {
 
     @FXML
     private void onScroll(ScrollEvent e) {
-        double factor = Math.pow(1.01, e.getDeltaY());
+        double deltaY = 0;
+        if (e.getDeltaY() > 0) {
+            deltaY = 32;
+        } else {
+            deltaY = -32;
+        }
+        double factor = Math.pow(1.01, deltaY);
         canvas.preZoom(factor, new Point2D(e.getX(), e.getY()));
         updateZoomBox();
     }

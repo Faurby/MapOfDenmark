@@ -123,6 +123,7 @@ public class MapCanvas extends Canvas {
                 drawRoad(WayType.RESIDENTIAL, true);
                 drawRoad(WayType.MOTORWAY, true);
                 drawRoad(WayType.TERTIARY, true);
+
                 drawRoad(WayType.RESIDENTIAL, false);
                 drawRoad(WayType.MOTORWAY, false);
                 drawRoad(WayType.TERTIARY, false);
@@ -231,9 +232,6 @@ public class MapCanvas extends Canvas {
 
         if (zoomLevelNext < zoomLevelMax && zoomLevelNext > zoomLevelMin) {
             zoomLevel = zoomLevelNext;
-            zoom(factor, center);
-        } else if (zoomLevelNext > zoomLevelMax && zoomLevel != zoomLevelMax) {
-            zoomLevel = zoomLevelMax;
             zoom(factor, center);
         }
     }
