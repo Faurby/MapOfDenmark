@@ -128,7 +128,6 @@ public class Controller {
         lastMouse = new Point2D(e.getX(), e.getY());
     }
 
-    //TODO: Bug test more, check if Progress is the sinner!
     @FXML
     public void loadDefault() {
         Task<Void> task = new Task<>() {
