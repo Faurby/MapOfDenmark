@@ -1,11 +1,8 @@
 package bfst21.models;
 
-import bfst21.osm.TreeWay;
+import bfst21.osm.*;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdTree;
-import bfst21.osm.ElementLongIndex;
-import bfst21.osm.Way;
-import bfst21.osm.WayType;
 import bfst21.view.Drawable;
 import com.github.davidmoten.rtree2.Entry;
 import com.github.davidmoten.rtree2.RTree;
@@ -229,5 +226,28 @@ public class MapData {
 
     public List<TreeWay> getTreeWays() {
         return treeWays;
+    }
+
+    //Distance between 2 nodes (lat, lon) by Haversine formula
+    public double getDistance(Node node1, Node node2){
+        //Radius of Earth
+        int R = 6371;
+
+        float lat1 = node1.getRealY();
+        float lon1 = node1.getX();
+        float lat2 = node2.getRealY();
+        float lon2 = node2.getX();
+
+        double rLatDistance = Math.toRadians(lat2-lat1);
+        double rLonDistance = Math.toRadians(lon2-lon1);
+
+        double a = (Math.sin(rLatDistance / 2) * Math.sin(rLatDistance / 2)) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                Math.sin(rLonDistance / 2) * Math.sin(rLonDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double distance = R * c;
+
+        return distance;
     }
 }

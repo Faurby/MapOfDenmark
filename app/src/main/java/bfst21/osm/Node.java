@@ -20,4 +20,9 @@ public class Node implements Serializable {
     public float getY() {
         return y;
     }
+
+    public float getRealY() {
+        return -y * 0.56f;
+    }
+
 }
