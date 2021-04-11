@@ -71,6 +71,7 @@ public class Controller {
         this.model = model;
         canvas.init(model);
         stackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
+        progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
         updateZoomBox();
 
         scene.setOnKeyPressed(event -> {
