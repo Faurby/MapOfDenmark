@@ -7,6 +7,7 @@ import bfst21.view.Drawable;
 import bfst21.models.MapData;
 import bfst21.osm.ElementLongIndex;
 import bfst21.osm.Way;
+
 import java.io.*;
 import java.util.List;
 

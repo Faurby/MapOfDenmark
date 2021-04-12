@@ -5,6 +5,7 @@ import bfst21.models.Options;
 import bfst21.osm.*;
 import bfst21.view.Drawable;
 import bfst21.models.MapData;
+
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -14,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
+
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
@@ -161,16 +163,16 @@ public class XmlParser {
         islands = mergeCoastLines(coastlines);
 
         return new MapData(
-            shapes,
-            islands,
-            ways,
-            treeWays,
-            idToRelation,
-            null,
-            minx,
-            maxx,
-            miny,
-            maxy
+                shapes,
+                islands,
+                ways,
+                treeWays,
+                idToRelation,
+                null,
+                minx,
+                maxx,
+                miny,
+                maxy
         );
     }
 

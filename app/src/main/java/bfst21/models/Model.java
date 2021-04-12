@@ -19,11 +19,12 @@ import javax.xml.stream.XMLStreamException;
 
 public class Model implements Iterable<Drawable> {
 
-    private List<Runnable> observers = new ArrayList<>();
-    private MapData mapData;
-    private String defaultFileName;
-    private String fileName;
+    private final List<Runnable> observers = new ArrayList<>();
+    private final String defaultFileName;
     private final boolean jarFile;
+
+    private MapData mapData;
+    private String fileName;
 
     public Model(String defaultFileName, boolean jarFile) {
         this.defaultFileName = defaultFileName;
@@ -35,7 +36,7 @@ public class Model implements Iterable<Drawable> {
     }
 
     public void load(boolean loadDefault) throws XMLStreamException, IOException, ClassNotFoundException {
-        if (loadDefault == true) {
+        if (loadDefault) {
             load(defaultFileName);
         } else {
             load(fileName);

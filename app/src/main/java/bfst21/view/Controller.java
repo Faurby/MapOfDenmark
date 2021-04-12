@@ -19,8 +19,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 import java.io.File;
 import java.io.IOException;
+
 
 public class Controller {
 
@@ -67,23 +69,19 @@ public class Controller {
     public void init(Model model) throws IOException {
         this.model = model;
         canvas.init(model);
-        stackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
+        StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
         progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
         updateZoomBox();
 
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.D && event.isControlDown()) {
-                if (debugOptions.isVisible()) {
-                    debugOptions.setVisible(false);
-                } else {
-                    debugOptions.setVisible(true);
-                }
+                debugOptions.setVisible(!debugOptions.isVisible());
             }
         });
     }
 
     public void onWindowResize(Stage stage) {
-        stackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
+        StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
         searchAddressVbox.setMaxWidth(stage.getWidth() * 0.25);
         System.out.println("StackPane width: " + stackPane.getWidth());
         System.out.println("StackPane height: " + stackPane.getHeight());
@@ -92,7 +90,7 @@ public class Controller {
 
     @FXML
     private void onScroll(ScrollEvent e) {
-        double deltaY = 0;
+        double deltaY;
         if (e.getDeltaY() > 0) {
             deltaY = 32;
         } else {
@@ -136,11 +134,9 @@ public class Controller {
                 return null;
             }
         };
-        task.setOnSucceeded(e -> {
-            loadingText.setVisible(false);
-        });
-        Thread thread2 = new Thread(task);
-        thread2.start();
+        task.setOnSucceeded(e -> loadingText.setVisible(false));
+        Thread thread = new Thread(task);
+        thread.start();
     }
 
     @FXML
@@ -162,11 +158,9 @@ public class Controller {
                     return null;
                 }
             };
-            task.setOnSucceeded(e -> {
-                loadingText.setVisible(false);
-            });
-            Thread thread2 = new Thread(task);
-            thread2.start();
+            task.setOnSucceeded(e -> loadingText.setVisible(false));
+            Thread thread = new Thread(task);
+            thread.start();
         }
     }
 
@@ -258,14 +252,13 @@ public class Controller {
     public void transportationButtonPushed(ActionEvent actionEvent) {
         TransportationOptions transOptions = new TransportationOptions();
 
-        if(actionEvent.getSource().toString().contains("WALK")){
+        if (actionEvent.getSource().toString().contains("WALK")) {
             transOptions.chooseType(TransportationOption.WALK);
-        } else if (actionEvent.getSource().toString().contains("BIKE")){
+        } else if (actionEvent.getSource().toString().contains("BIKE")) {
             transOptions.chooseType(TransportationOption.BIKE);
         } else {
             transOptions.chooseType(TransportationOption.CAR);
         }
-
         System.out.println(transOptions.returntype().toString());
     }
 }
