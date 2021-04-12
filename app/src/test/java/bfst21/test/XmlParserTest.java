@@ -3,6 +3,7 @@ package bfst21.test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import bfst21.models.Model;
+import bfst21.osm.Node;
 import bfst21.osm.WayType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,5 +38,13 @@ public class XmlParserTest {
     public void getRelationsSize_correctAmount() {
         int actual = model.getMapData().getIdToRelation().getElements().size();
         assertEquals(1725, actual);
+    }
+
+    @Test
+    public void getCorrectDistanceBetween2Nodes() {
+        Node node1 = new Node(55.6571112f, 12.6224313f);
+        Node node2 = new Node(55.6573865f, 12.6238016f);
+        double distance = model.getMapData().getDistance(node1, node2);
+        assertEquals(0.09125, distance, 0.0001);
     }
 }

@@ -22,6 +22,7 @@ public class App extends Application {
         }
         Model model = new Model(defaultFileName, jarFile);
         new View(model, primaryStage);
+
     }
 
     public static void main(String[] args) {
