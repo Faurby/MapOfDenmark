@@ -87,7 +87,6 @@ public class MapData {
             rTree.search(Geometries.rectangle(x1, y1, x2, y2));
 
         Iterator<Entry<Integer, TreeWay>> rTreeIterator = results.iterator();
-
         rTreeSearchList = new ArrayList<>();
 
         while (rTreeIterator.hasNext()) {
@@ -131,7 +130,7 @@ public class MapData {
 
         for (Way way : getList()) {
             if (way.getValue("highway") != null) {
-                if (way.getValue("highway").contains(wayType.toString().toLowerCase())) {
+                if (way.getValue("highway").contains(wayType.toString())) {
                     list.add(way);
                 }
             }
@@ -144,7 +143,7 @@ public class MapData {
 
         for (Way way : getList()) {
             if (way.getValue("natural") != null) {
-                if (way.getValue("natural").contains("water")) {
+                if (way.getValue("natural").contains("WATER")) {
                     list.add(way);
                 }
             }
@@ -179,16 +178,15 @@ public class MapData {
 
         for (Way way : getList()) {
             if (way.getValue("landuse") != null) {
-                if (way.getValue("landuse").equalsIgnoreCase("grass") ||
-                        way.getValue("landuse").equalsIgnoreCase("meadow") ||
-                        way.getValue("landuse").equalsIgnoreCase("orchard") ||
-                        way.getValue("landuse").equalsIgnoreCase("allotments")) {
+                if (way.getValue("landuse").equalsIgnoreCase("GRASS") ||
+                    way.getValue("landuse").equalsIgnoreCase("MEADOW") ||
+                    way.getValue("landuse").equalsIgnoreCase("ORCHARD") ||
+                    way.getValue("landuse").equalsIgnoreCase("ALLOTMENTS")) {
 
                     list.add(way);
                 }
             } else if (way.getValue("leisure") != null) {
-                if (way.getValue("leisure").equalsIgnoreCase("park")) {
-
+                if (way.getValue("leisure").equalsIgnoreCase("PARK")) {
                     list.add(way);
                 }
             }

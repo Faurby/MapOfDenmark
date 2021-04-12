@@ -121,7 +121,7 @@ public class XmlParser {
                                 if (key.equals("natural") && value.equals("coastline")) {
                                     isCoastline = true;
                                 } else if (options.getBool(Option.LOAD_TAGGED_WAYS)) {
-                                    way.addTag(key, value);
+                                    way.addTag(key, value.toUpperCase());
                                 }
                             }
                             break;
