@@ -26,9 +26,9 @@ public class TransportationOptions {
     }
 
     public TransportationOption returntype() {
-        if (transOptions.get(TransportationOption.WALK) == true) {
+        if (transOptions.get(TransportationOption.WALK)) {
             return TransportationOption.WALK;
-        } else if (transOptions.get(TransportationOption.BIKE) == true) {
+        } else if (transOptions.get(TransportationOption.BIKE)) {
             return TransportationOption.BIKE;
         } else {
             return TransportationOption.CAR;

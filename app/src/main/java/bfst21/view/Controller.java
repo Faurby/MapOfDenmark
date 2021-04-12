@@ -265,5 +265,7 @@ public class Controller {
         } else {
             transOptions.chooseType(TransportationOption.CAR);
         }
+
+        System.out.println(transOptions.returntype().toString());
     }
 }
