@@ -1,9 +1,7 @@
 package bfst21.view;
 
 import bfst21.address.Address;
-import bfst21.models.Option;
-import bfst21.models.Options;
-import bfst21.models.Model;
+import bfst21.models.*;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -71,7 +69,6 @@ public class Controller {
         this.model = model;
         canvas.init(model);
         stackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
-        progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
         updateZoomBox();
 
         scene.setOnKeyPressed(event -> {
@@ -255,6 +252,18 @@ public class Controller {
                 canvas.repaint();
                 break;
             }
+        }
+    }
+
+    public void transportationButtonPushed(ActionEvent actionEvent) {
+        TransportationOptions transOptions = new TransportationOptions();
+
+        if(actionEvent.getSource().toString().contains("WALK")){
+            transOptions.chooseType(TransportationOption.WALK);
+        } else if (actionEvent.getSource().toString().contains("BIKE")){
+            transOptions.chooseType(TransportationOption.BIKE);
+        } else {
+            transOptions.chooseType(TransportationOption.CAR);
         }
     }
 }
