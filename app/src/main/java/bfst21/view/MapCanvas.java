@@ -134,10 +134,12 @@ public class MapCanvas extends Canvas {
             }
 
             if (options.getBool(Option.DISPLAY_WAYS)) {
-                drawRoad(WayType.RESIDENTIAL, true);
-                drawRoad(WayType.MOTORWAY, true);
-                drawRoad(WayType.TERTIARY, true);
-                drawRoad(WayType.PRIMARY, true);
+                if (options.getBool(Option.DISPLAY_OUTLINES)) {
+                    drawRoad(WayType.RESIDENTIAL, true);
+                    drawRoad(WayType.MOTORWAY, true);
+                    drawRoad(WayType.TERTIARY, true);
+                    drawRoad(WayType.PRIMARY, true);
+                }
 
                 drawRoad(WayType.RESIDENTIAL, false);
                 drawRoad(WayType.MOTORWAY, false);
@@ -156,7 +158,7 @@ public class MapCanvas extends Canvas {
         gc.restore();
 
         time += System.nanoTime();
-        System.out.println("Repaint time: "+time/1_000_000+" (Average: "+averageRepaintTime/1_000_000+" Total repaints: "+totalRepaints+")");
+        System.out.println("Repaint time: "+time/1_000_000+" (Average: "+averageRepaintTime/1_000_000+" total repaints: "+totalRepaints+")");
 
         totalRepaintTime += time;
         totalRepaints++;
