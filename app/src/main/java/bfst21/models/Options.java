@@ -2,6 +2,7 @@ package bfst21.models;
 
 import java.util.HashMap;
 
+
 public class Options {
 
     private final HashMap<Option, Boolean> options = new HashMap<>();

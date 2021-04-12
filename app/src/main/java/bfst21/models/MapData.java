@@ -7,6 +7,7 @@ import bfst21.view.Drawable;
 import com.github.davidmoten.rtree2.Entry;
 import com.github.davidmoten.rtree2.RTree;
 import com.github.davidmoten.rtree2.geometry.Geometries;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -114,11 +115,8 @@ public class MapData {
             case BUILDING:
                 return getBuildings();
             case MOTORWAY:
-                return getExtendedWays(wayType);
             case TERTIARY:
-                return getExtendedWays(wayType);
             case PRIMARY:
-                return getExtendedWays(wayType);
             case RESIDENTIAL:
                 return getExtendedWays(wayType);
         }
@@ -227,7 +225,7 @@ public class MapData {
     }
 
     //Distance between 2 nodes (lat, lon) by Haversine formula
-    public double getDistance(Node node1, Node node2){
+    public double getDistance(Node node1, Node node2) {
         //Radius of Earth
         int R = 6371;
 
@@ -236,16 +234,15 @@ public class MapData {
         float lat2 = node2.getRealY();
         float lon2 = node2.getX();
 
-        double rLatDistance = Math.toRadians(lat2-lat1);
-        double rLonDistance = Math.toRadians(lon2-lon1);
+        double rLatDistance = Math.toRadians(lat2 - lat1);
+        double rLonDistance = Math.toRadians(lon2 - lon1);
 
         double a = (Math.sin(rLatDistance / 2) * Math.sin(rLatDistance / 2)) +
                 Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                Math.sin(rLonDistance / 2) * Math.sin(rLonDistance / 2);
+                        Math.sin(rLonDistance / 2) * Math.sin(rLonDistance / 2);
 
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        double distance = R * c;
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        return distance;
+        return R * c;
     }
 }
