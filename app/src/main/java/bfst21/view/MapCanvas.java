@@ -1,6 +1,5 @@
 package bfst21.view;
 
-import bfst21.models.Config;
 import bfst21.models.Option;
 import bfst21.models.Options;
 import bfst21.tree.BoundingBox;
@@ -39,13 +38,11 @@ public class MapCanvas extends Canvas {
 
     private int depth = 0;
 
-    private Config config;
     private ColorMode colorMode = ColorMode.STANDARD;
     private Affine trans = new Affine();
 
     public void init(Model model) throws IOException {
         this.model = model;
-        this.config = new Config();
     }
 
     public void load(boolean loadDefault) throws XMLStreamException, IOException, ClassNotFoundException {
@@ -67,7 +64,7 @@ public class MapCanvas extends Canvas {
 
         gc.save();
         gc.setTransform(new Affine());
-        gc.setFill(getColor(WayType.WATER));
+        gc.setFill(WayType.WATER.getColor());
         gc.fillRect(0, 0, getWidth(), getHeight());
         gc.setTransform(trans);
         gc.setLineCap(StrokeLineCap.ROUND);
@@ -267,7 +264,7 @@ public class MapCanvas extends Canvas {
     }
 
     public void drawLine(WayType wayType) {
-        if (zoomLevel >= getDrawAtZoom(wayType)) {
+        if (zoomLevel >= wayType.getZoomLevelRequired()) {
             gc.setStroke(getColor(wayType));
             gc.setLineWidth(1 / Math.sqrt(trans.determinant()));
             for (Way line : model.getMapData().getWays(wayType)) {
@@ -277,7 +274,7 @@ public class MapCanvas extends Canvas {
     }
 
     public void paintFill(WayType wayType) {
-        if (zoomLevel >= getDrawAtZoom(wayType)) {
+        if (zoomLevel >= wayType.getZoomLevelRequired()) {
             gc.setFill(getColor(wayType));
             for (Way line : model.getMapData().getWays(wayType)) {
                 line.fill(gc, zoomLevel);
@@ -286,10 +283,10 @@ public class MapCanvas extends Canvas {
     }
 
     public void drawRoad(WayType wayType, boolean outline) {
-        if (zoomLevel >= getDrawAtZoom(wayType)) {
-            double size = getSize(wayType) * widthModifier;
+        if (zoomLevel >= wayType.getZoomLevelRequired()) {
+            double size = wayType.getDrawSize() * widthModifier;
 
-            gc.setStroke(getColor(wayType, outline));
+            gc.setStroke(getColor(wayType));
             if (!outline) {
                 size *= 0.75;
             }
@@ -300,48 +297,17 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    public Color getColor(WayType wayType) {
+        if (colorMode == ColorMode.COLOR_BLIND) {
+            return wayType.getColorBlind();
+        } else if (colorMode == ColorMode.BLACK_WHITE) {
+            return wayType.getBlackWhite();
+        }
+        return wayType.getColor();
+    }
+
     public void setColorMode(ColorMode colorMode) {
         this.colorMode = colorMode;
-    }
-
-    public Color getColor(WayType type) {
-        return getColor(type, false);
-    }
-
-    public Color getColor(WayType type, boolean outline) {
-        String path = "colors." + type.toString().toLowerCase() + "." + colorMode.toString().toLowerCase();
-        if (outline) {
-            path = "colors." + type.toString().toLowerCase() + ".outline." + colorMode.toString().toLowerCase();
-        }
-        try {
-            Color color = Color.valueOf("#" + config.getProp(path));
-            if (color != null) {
-                return color;
-            }
-        } catch (IllegalArgumentException ex) {
-            System.out.println("Invalid color code at " + path);
-        }
-        return Color.RED;
-    }
-
-    public double getDrawAtZoom(WayType type) {
-        String path = "zoom." + type.toString().toLowerCase();
-        try {
-            return Double.parseDouble(config.getProp(path));
-        } catch (IllegalArgumentException ex) {
-            System.out.println("Invalid draw zoom level at " + path);
-        }
-        return 0;
-    }
-
-    public double getSize(WayType type) {
-        String path = "size." + type.toString().toLowerCase();
-        try {
-            return Double.parseDouble(config.getProp(path));
-        } catch (IllegalArgumentException ex) {
-            System.out.println("Invalid size value at " + path);
-        }
-        return 0;
     }
 
     public void adjustWidthModifier() {
