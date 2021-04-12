@@ -19,7 +19,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
 
@@ -69,6 +68,7 @@ public class Controller {
         this.model = model;
         canvas.init(model);
         stackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
+        progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
         updateZoomBox();
 
         scene.setOnKeyPressed(event -> {
