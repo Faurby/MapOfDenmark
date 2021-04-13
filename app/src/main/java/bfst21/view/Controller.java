@@ -8,9 +8,11 @@ import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
@@ -60,6 +62,10 @@ public class Controller {
     private VBox loadingText;
     @FXML
     private ProgressBar progressBar;
+    @FXML
+    private Button expandButton;
+    @FXML
+    private Button collapseButton;
 
     public void updateZoomBox() {
         zoomPercent.setText("Zoom percent: " + canvas.getZoomPercent());
@@ -210,7 +216,7 @@ public class Controller {
 
     @FXML
     public void expandSearchView(ActionEvent actionEvent) {
-        if (actionEvent.toString().contains("expand")) {
+        if (actionEvent.toString().contains("expandButton")) {
             if (startingPoint.getText() != null) {
                 destinationPoint.setText(startingPoint.getText());
                 startingPoint.setText("");
@@ -219,9 +225,11 @@ public class Controller {
             getDestinationBox.setManaged(true);
             startingPointText.setVisible(true);
             startingPointText.setManaged(true);
-            startingPoint.setPromptText("Choose a starting point...");
+            startingPoint.setPromptText("From:");
             expandAndSearchButtons.setVisible(false);
             expandAndSearchButtons.setManaged(false);
+            //To avoid any TextArea being activated
+            getDestinationBox.requestFocus();
         } else {
             if (!destinationPoint.getText().equals("") && startingPoint.getText().equals("")) {
                 startingPoint.setText(destinationPoint.getText());
@@ -234,6 +242,12 @@ public class Controller {
             expandAndSearchButtons.setVisible(true);
             expandAndSearchButtons.setManaged(true);
         }
+    }
+
+    public void switchText(ActionEvent event){
+        String s = startingPoint.getText();
+        startingPoint.setText(destinationPoint.getText());
+        destinationPoint.setText(s);
     }
 
     public void onCheckDebug(ActionEvent actionEvent) {
@@ -260,5 +274,22 @@ public class Controller {
             transOptions.chooseType(TransportationOption.CAR);
         }
         System.out.println(transOptions.returnType().toString());
+    }
+
+    public void tabCheck(KeyEvent event){
+        if (event.getCode() == KeyCode.TAB) {
+            if (event.getSource().toString().contains("startingPoint")){
+                startingPoint.setText(startingPoint.getText().trim());
+                if (getDestinationBox.isVisible()) {
+                    destinationPoint.requestFocus();
+                } else {
+                    expandButton.requestFocus();
+                }
+            } else if (event.getSource().toString().contains("destinationPoint")) {
+                destinationPoint.setText(destinationPoint.getText().trim());
+                startingPoint.setText(startingPoint.getText().trim());
+                collapseButton.requestFocus();
+            }
+        }
     }
 }
