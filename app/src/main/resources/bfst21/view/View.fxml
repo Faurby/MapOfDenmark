@@ -21,6 +21,7 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.Pane?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst21.view.Controller"
@@ -69,23 +70,27 @@
                     <padding><Insets bottom="5" left="10" right="10" top="5" /></padding>
                     <Text style="-fx-font-size: 15" text="Search" />
                     <Text fx:id="startingPointText" managed="false" text="Starting point:" visible="false" />
-                    <TextArea fx:id="startingPoint" minHeight="20" prefHeight="25" promptText="Choose an address..." wrapText="true" />
+                    <TextArea fx:id="startingPoint" minHeight="20" prefHeight="25" promptText="Choose an address..." wrapText="true" onKeyPressed="#tabCheck" />
                     <HBox fx:id="expandAndSearchButtons" alignment="BASELINE_CENTER" prefWidth="198.0" style="-fx-padding: 10 5 5 5">
-                        <Button fx:id="expand" onAction="#expandSearchView" text="Expand" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Button fx:id="expandButton" onAction="#expandSearchView" text="Expand" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                         <ToolBar visible="false" HBox.hgrow="ALWAYS" />
-                        <Button onAction="#searchAddressString" text="Search" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                        <Button fx:id="searchButton" onAction="#searchAddressString" text="Search" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                     </HBox>
                     <VBox fx:id="getDestinationBox" managed="false" visible="false">
-                        <Text text="Destination:" />
-                        <TextArea fx:id="destinationPoint" minHeight="25" prefHeight="25" promptText="Choose a destination..." wrapText="true" />
+                        <GridPane prefHeight="30" >
+                            <Pane GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS" visible="false"/>
+                            <Pane GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" visible="false"/>
+                            <Text GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.rowSpan="1" text="Destination:" />
+                            <Button GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.rowSpan="3" maxHeight="20" maxWidth="40" text="Switch" style="-fx-font-size: 9" onAction="#switchText"/>
+                        </GridPane>
+                        <TextArea fx:id="destinationPoint" minHeight="25" prefHeight="25" promptText="To:" wrapText="true" onKeyPressed="#tabCheck"/>
 
                         <HBox style="-fx-padding: 10 10 10 10 ; -fx-border-insets: 0 0 0 0 ; -fx-alignment: CENTER">
                             <Button fx:id="CAR" onAction="#transportationButtonPushed" style="-fx-background-color: DARKGREY">
                                 <graphic>
-                                    <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" >
-                                       <image>
-                                            <Image url="/carPic.png"/>
-                                       </image>
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true"
+                                               preserveRatio="true">
+                                        <Image url="/carPic.png"/>
                                     </ImageView>
                                 </graphic>
                             </Button>
@@ -96,7 +101,7 @@
                         </HBox>
 
                         <HBox alignment="BASELINE_CENTER" style="-fx-padding: 10 5 5 5">
-                            <Button fx:id="collapse" onAction="#expandSearchView" text="Collapse" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <Button fx:id="collapseButton" onAction="#expandSearchView" text="Collapse" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                             <ToolBar visible="false" HBox.hgrow="ALWAYS" />
                             <Button onAction="#searchAddressString" text="Search" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                         </HBox>
