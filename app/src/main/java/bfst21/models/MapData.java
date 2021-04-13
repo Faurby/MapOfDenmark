@@ -18,10 +18,9 @@ public class MapData {
     private final List<Drawable> shapes;
     private final List<Way> islands;
     private final List<Way> ways;
-    private final List<TreeWay> treeWays;
     private final ElementLongIndex idToRelation;
     private KdTree kdTree;
-    private RTree<Integer, TreeWay> rTree;
+    private RTree<Integer, Way> rTree;
 
     //TODO: Maybe this should be reconsidered. This list could end up containing all elements
     private List<Way> searchList;
@@ -35,7 +34,6 @@ public class MapData {
             List<Drawable> shapes,
             List<Way> islands,
             List<Way> ways,
-            List<TreeWay> treeWays,
             ElementLongIndex idToRelation,
             KdTree kdTree,
             float minx,
@@ -46,7 +44,6 @@ public class MapData {
         this.shapes = shapes;
         this.islands = islands;
         this.ways = ways;
-        this.treeWays = treeWays;
         this.idToRelation = idToRelation;
         this.minx = minx;
         this.miny = miny;
@@ -63,7 +60,7 @@ public class MapData {
         } else if (options.getBool(Option.USE_R_TREE)) {
             this.rTree = RTree.star().maxChildren(6).create();
 
-            for (TreeWay way : treeWays) {
+            for (Way way : ways) {
                 rTree = rTree.add(0, way);
             }
         }
@@ -84,14 +81,14 @@ public class MapData {
     }
 
     public void search(double x1, double y1, double x2, double y2) {
-        Iterable<Entry<Integer, TreeWay>> results =
+        Iterable<Entry<Integer, Way>> results =
             rTree.search(Geometries.rectangle(x1, y1, x2, y2));
 
-        Iterator<Entry<Integer, TreeWay>> rTreeIterator = results.iterator();
+        Iterator<Entry<Integer, Way>> rTreeIterator = results.iterator();
         rTreeSearchList = new ArrayList<>();
 
         while (rTreeIterator.hasNext()) {
-            TreeWay way = rTreeIterator.next().geometry();
+            Way way = rTreeIterator.next().geometry();
             rTreeSearchList.add(way);
         }
     }
@@ -218,9 +215,5 @@ public class MapData {
 
     public float getMaxy() {
         return maxy;
-    }
-
-    public List<TreeWay> getTreeWays() {
-        return treeWays;
     }
 }

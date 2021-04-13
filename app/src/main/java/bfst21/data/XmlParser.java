@@ -39,8 +39,6 @@ public class XmlParser {
         Way way = null;
         Relation relation = null;
 
-        boolean useRtree = options.getBool(Option.USE_R_TREE);
-
         NodeLongIndex idToNode = new NodeLongIndex();
         WayLongIndex idToWay = new WayLongIndex();
         ElementLongIndex idToRelation = new ElementLongIndex();
@@ -48,7 +46,6 @@ public class XmlParser {
         List<Drawable> shapes = new ArrayList<>();
 
         List<Way> ways = new ArrayList<>();
-        List<TreeWay> treeWays = new ArrayList<>();
         List<Way> coastlines = new ArrayList<>();
         List<Way> islands;
 
@@ -76,11 +73,7 @@ public class XmlParser {
 
                         case "way":
                             long wayID = Long.parseLong(reader.getAttributeValue(null, "id"));
-                            if (useRtree) {
-                                way = new TreeWay(wayID);
-                            } else {
-                                way = new Way(wayID);
-                            }
+                            way = new Way(wayID);
                             isCoastline = false;
                             break;
 
@@ -143,11 +136,7 @@ public class XmlParser {
                                 coastlines.add(way);
 
                             } else if (way.getTags() != null && options.getBool(Option.LOAD_TAGGED_WAYS)) {
-                                if (useRtree) {
-                                    treeWays.add((TreeWay) way);
-                                } else {
-                                    ways.add(way);
-                                }
+                                ways.add(way);
                             }
                             break;
 
@@ -166,7 +155,6 @@ public class XmlParser {
                 shapes,
                 islands,
                 ways,
-                treeWays,
                 idToRelation,
                 null,
                 minx,
