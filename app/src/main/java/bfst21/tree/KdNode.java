@@ -1,7 +1,6 @@
 package bfst21.tree;
 
 import bfst21.osm.Way;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -9,8 +8,7 @@ import java.util.List;
 public class KdNode implements Serializable {
 
     private static final long serialVersionUID = 8198499209216068048L;
-    private KdNode rightChild;
-    private KdNode leftChild;
+    private KdNode rightChild, leftChild;
 
     private final float minX, maxX, minY, maxY;
 

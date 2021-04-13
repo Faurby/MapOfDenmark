@@ -4,11 +4,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import bfst21.tree.BoundingBox;
 import bfst21.view.Drawable;
+import com.github.davidmoten.rtree2.geometry.Geometries;
+import com.github.davidmoten.rtree2.geometry.Geometry;
+import com.github.davidmoten.rtree2.geometry.Rectangle;
+import com.github.davidmoten.rtree2.internal.Line2D;
+import com.github.davidmoten.rtree2.internal.RectangleUtil;
 import javafx.scene.canvas.GraphicsContext;
 
 
-public class Way extends Element implements Drawable, Serializable {
+public class Way extends Element implements Geometry, Drawable, Serializable {
 
     private static final long serialVersionUID = 3139576893143362100L;
     protected List<Node> nodes = new ArrayList<>();
@@ -47,12 +54,8 @@ public class Way extends Element implements Drawable, Serializable {
         }
     }
 
-    public float getX() {
-        return nodes.get(nodes.size() / 2).getX();
-    }
-
-    public float getY() {
-        return nodes.get(nodes.size() / 2).getY();
+    public BoundingBox getBoundingBox() {
+        return new BoundingBox(minX, maxX, minY, maxY);
     }
 
     private void createTags() {
@@ -173,5 +176,57 @@ public class Way extends Element implements Drawable, Serializable {
 
     public float getMaxY() {
         return maxY;
+    }
+
+    @Override
+    public double distance(Rectangle r) {
+        if (r.contains(minX, minY) || r.contains(maxX, maxY)) {
+            return 0;
+        } else {
+            double d1 = distance(r.x1(), r.y1(), r.x1(), r.y2());
+            if (d1 == 0) {
+                return 0;
+            }
+            double d2 = distance(r.x1(), r.y2(), r.x2(), r.y2());
+            if (d2 == 0) {
+                return 0;
+            }
+            double d3 = distance(r.x2(), r.y2(), r.x2(), r.y1());
+            double d4 = distance(r.x2(), r.y1(), r.x1(), r.y1());
+            return Math.min(d1, Math.min(d2, Math.min(d3, d4)));
+        }
+    }
+
+    private double distance(double x1, double y1, double x2, double y2) {
+        Line2D line = new Line2D(x1, y1, x2, y2);
+        double d1 = line.ptSegDist(this.minX, this.minY);
+        double d2 = line.ptSegDist(this.maxX, this.maxY);
+        Line2D line2 = new Line2D(this.minX, this.minY, this.maxX, this.maxY);
+        double d3 = line2.ptSegDist(x1, y1);
+        if (d3 == 0) {
+            return 0;
+        }
+        double d4 = line2.ptSegDist(x2, y2);
+        if (d4 == 0) {
+            return 0;
+        } else {
+            return Math.min(d1, Math.min(d2, Math.min(d3, d4)));
+        }
+    }
+
+    @Override
+    public Rectangle mbr() {
+        return Geometries.rectangle(minX, minY, maxX, maxY);
+    }
+
+    @Override
+    public boolean intersects(Rectangle r) {
+        return RectangleUtil.rectangleIntersectsLine(r.x1(), r.y1(), r.x2() - r.x1(),
+                r.y2() - r.y1(), minX, minY, maxX, maxY);
+    }
+
+    @Override
+    public boolean isDoublePrecision() {
+        return false;
     }
 }

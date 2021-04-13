@@ -43,41 +43,40 @@ public class KdTree implements Serializable {
                     }
                 }
             }
-            boolean checkRight = true;
-            boolean checkLeft = true;
+            boolean checkRight = false;
+            boolean checkLeft = false;
 
             if (depth % 2 == 0) {
-                float kMaxX = kdNode.getMaxX();
-                float kMinX = kdNode.getMinX();
+                float nodeMaxX = kdNode.getMaxX();
+                float nodeMinX = kdNode.getMinX();
                 float maxX = boundingBox.getMaxX();
                 float minX = boundingBox.getMinX();
 
-                //TODO: This might be wrong
-                if (kMaxX >= maxX) { //View bounding box is to the left of the split
+                if (nodeMaxX >= maxX) { //View bounding box is to the left of the split
                     checkLeft = true;
-                } else if (kMinX <= minX) { //View bounding box is to the right of the split
+                } else if (nodeMinX <= minX) { //View bounding box is to the right of the split
                     checkRight = true;
-                } else if ((maxX >= kMinX && minX <= kMinX) // View bounding box intersects kMinX
-                        || (maxX >= kMaxX && minX <= kMaxX) // View bounding box intersects kMaxX
-                        || (minX >= kMinX && maxX <= kMaxX) // View bounding box is between kMinX and kMaxX
-                        || (minX <= kMinX && maxX >= kMaxX)) { // View bounding box intersects both kMinX and kMaxX
+                } else if ((maxX >= nodeMinX && minX <= nodeMinX) // View bounding box intersects kMinX
+                        || (maxX >= nodeMaxX && minX <= nodeMaxX) // View bounding box intersects kMaxX
+                        || (minX >= nodeMinX && maxX <= nodeMaxX) // View bounding box is between kMinX and kMaxX
+                        || (minX <= nodeMinX && maxX >= nodeMaxX)) { // View bounding box intersects both kMinX and kMaxX
                     checkRight = true;
                     checkLeft = true;
                 }
             } else {
-                float kMaxY = kdNode.getMaxY();
-                float kMinY = kdNode.getMinY();
+                float nodeMaxY = kdNode.getMaxY();
+                float nodeMinY = kdNode.getMinY();
                 float maxY = boundingBox.getMaxY();
                 float minY = boundingBox.getMinY();
 
-                if (kMaxY >= maxY) { //View bounding box is to the left of the split
+                if (nodeMaxY >= maxY) { //View bounding box is to the left of the split
                     checkLeft = true;
-                } else if (kMinY <= minY) { //View bounding box is to the right of the split
+                } else if (nodeMinY <= minY) { //View bounding box is to the right of the split
                     checkRight = true;
-                } else if ((maxY >= kMinY && minY <= kMinY) // View bounding box intersects kMinY
-                        || (maxY >= kMaxY && minY <= kMaxY) // View bounding box intersects kMaxY
-                        || (minY >= kMinY && maxY <= kMaxY) // View bounding box is between kMinY and kMaxY
-                        || (minY <= kMinY && maxY >= kMaxY)) { // View bounding box intersects both kMinY and kMaxY
+                } else if ((maxY >= nodeMinY && minY <= nodeMinY) // View bounding box intersects kMinY
+                        || (maxY >= nodeMaxY && minY <= nodeMaxY) // View bounding box intersects kMaxY
+                        || (minY >= nodeMinY && maxY <= nodeMaxY) // View bounding box is between kMinY and kMaxY
+                        || (minY <= nodeMinY && maxY >= nodeMaxY)) { // View bounding box intersects both kMinY and kMaxY
                     checkRight = true;
                     checkLeft = true;
                 }
@@ -110,7 +109,6 @@ public class KdTree implements Serializable {
 
             root = new KdNode(minX, maxX, Float.MIN_VALUE, Float.MAX_VALUE);
 
-            //Do we need to sort again before splitting?
             List<Way> leftList = new ArrayList<>(wayList.subList(0, median));
             List<Way> rightList = new ArrayList<>(wayList.subList(median, wayList.size()));
 
@@ -119,28 +117,6 @@ public class KdTree implements Serializable {
             addChild(root, rightList, true);
         }
     }
-
-//    public void displayTree(KdNode node, boolean right) {
-//        if (node != null) {
-//            float x = node.getX();
-//            float y = node.getY();
-//
-//            int elements = 0;
-//            if (node.getList() != null) {
-//                elements = node.getList().size();
-//            }
-//
-//            System.out.println(depth + " - (" + x + "," + y + ") Right: " + right + " elements: " + elements);
-//            System.out.println("-----------------------");
-//
-//            depth++;
-//            displayTree(node.getRightChild(), true);
-//            depth--;
-//            depth++;
-//            displayTree(node.getLeftChild(), false);
-//            depth--;
-//        }
-//    }
 
     public void addChild(KdNode currentElement, List<Way> list, boolean right) {
 
