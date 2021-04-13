@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import bfst21.tree.BoundingBox;
 import bfst21.view.Drawable;
 import com.github.davidmoten.rtree2.geometry.Geometries;
 import com.github.davidmoten.rtree2.geometry.Geometry;
@@ -50,6 +52,10 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
                 maxY = nY;
             }
         }
+    }
+
+    public BoundingBox getBoundingBox() {
+        return new BoundingBox(minX, maxX, minY, maxY);
     }
 
     private void createTags() {
