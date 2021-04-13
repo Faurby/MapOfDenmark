@@ -52,16 +52,11 @@ public class KdTree implements Serializable {
                 float maxX = boundingBox.getMaxX();
                 float minX = boundingBox.getMinX();
 
-                if (nodeMaxX >= maxX) { //View bounding box is to the left of the split
+                if (nodeMaxX >= minX) {
                     checkLeft = true;
-                } else if (nodeMinX <= minX) { //View bounding box is to the right of the split
+                }
+                if (nodeMinX <= maxX) {
                     checkRight = true;
-                } else if ((maxX >= nodeMinX && minX <= nodeMinX) // View bounding box intersects kMinX
-                        || (maxX >= nodeMaxX && minX <= nodeMaxX) // View bounding box intersects kMaxX
-                        || (minX >= nodeMinX && maxX <= nodeMaxX) // View bounding box is between kMinX and kMaxX
-                        || (minX <= nodeMinX && maxX >= nodeMaxX)) { // View bounding box intersects both kMinX and kMaxX
-                    checkRight = true;
-                    checkLeft = true;
                 }
             } else {
                 float nodeMaxY = kdNode.getMaxY();
@@ -69,16 +64,11 @@ public class KdTree implements Serializable {
                 float maxY = boundingBox.getMaxY();
                 float minY = boundingBox.getMinY();
 
-                if (nodeMaxY >= maxY) { //View bounding box is to the left of the split
+                if (nodeMaxY >= minY) {
                     checkLeft = true;
-                } else if (nodeMinY <= minY) { //View bounding box is to the right of the split
+                }
+                if (nodeMinY <= maxY) {
                     checkRight = true;
-                } else if ((maxY >= nodeMinY && minY <= nodeMinY) // View bounding box intersects kMinY
-                        || (maxY >= nodeMaxY && minY <= nodeMaxY) // View bounding box intersects kMaxY
-                        || (minY >= nodeMinY && maxY <= nodeMaxY) // View bounding box is between kMinY and kMaxY
-                        || (minY <= nodeMinY && maxY >= nodeMaxY)) { // View bounding box intersects both kMinY and kMaxY
-                    checkRight = true;
-                    checkLeft = true;
                 }
             }
             if (checkRight) {
