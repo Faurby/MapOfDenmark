@@ -2,6 +2,7 @@ package bfst21.models;
 
 import java.util.HashMap;
 
+
 public class TransportationOptions {
 
     private final HashMap<TransportationOption, Boolean> transOptions = new HashMap<>();
@@ -12,20 +13,20 @@ public class TransportationOptions {
         transOptions.put(TransportationOption.WALK, false);
     }
 
-    public void chooseType(TransportationOption transOp){
-        transOptions.put(transOp,true);
-        if (transOp != TransportationOption.CAR){
+    public void chooseType(TransportationOption transOp) {
+        transOptions.put(transOp, true);
+        if (transOp != TransportationOption.CAR) {
             transOptions.put(TransportationOption.CAR, false);
         }
-        if (transOp != TransportationOption.BIKE){
+        if (transOp != TransportationOption.BIKE) {
             transOptions.put(TransportationOption.BIKE, false);
         }
-        if (transOp != TransportationOption.WALK){
+        if (transOp != TransportationOption.WALK) {
             transOptions.put(TransportationOption.WALK, false);
         }
     }
 
-    public TransportationOption returntype() {
+    public TransportationOption returnType() {
         if (transOptions.get(TransportationOption.WALK)) {
             return TransportationOption.WALK;
         } else if (transOptions.get(TransportationOption.BIKE)) {

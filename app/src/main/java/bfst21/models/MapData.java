@@ -7,6 +7,7 @@ import bfst21.view.Drawable;
 import com.github.davidmoten.rtree2.Entry;
 import com.github.davidmoten.rtree2.RTree;
 import com.github.davidmoten.rtree2.geometry.Geometries;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -114,11 +115,8 @@ public class MapData {
             case BUILDING:
                 return getBuildings();
             case MOTORWAY:
-                return getExtendedWays(wayType);
             case TERTIARY:
-                return getExtendedWays(wayType);
             case PRIMARY:
-                return getExtendedWays(wayType);
             case RESIDENTIAL:
                 return getExtendedWays(wayType);
         }
@@ -178,15 +176,15 @@ public class MapData {
 
         for (Way way : getList()) {
             if (way.getValue("landuse") != null) {
-                if (way.getValue("landuse").equalsIgnoreCase("GRASS") ||
-                    way.getValue("landuse").equalsIgnoreCase("MEADOW") ||
-                    way.getValue("landuse").equalsIgnoreCase("ORCHARD") ||
-                    way.getValue("landuse").equalsIgnoreCase("ALLOTMENTS")) {
+                if (way.getValue("landuse").equals("GRASS") ||
+                    way.getValue("landuse").equals("MEADOW") ||
+                    way.getValue("landuse").equals("ORCHARD") ||
+                    way.getValue("landuse").equals("ALLOTMENTS")) {
 
                     list.add(way);
                 }
             } else if (way.getValue("leisure") != null) {
-                if (way.getValue("leisure").equalsIgnoreCase("PARK")) {
+                if (way.getValue("leisure").equals("PARK")) {
                     list.add(way);
                 }
             }
@@ -227,25 +225,24 @@ public class MapData {
     }
 
     //Distance between 2 nodes (lat, lon) by Haversine formula
-    public double getDistance(Node node1, Node node2){
-        //Radius of Earth
-        int R = 6371;
+    public double getDistance(Node node1, Node node2) {
+
+        int R = 6371; //Radius of Earth
 
         float lat1 = node1.getRealY();
         float lon1 = node1.getX();
         float lat2 = node2.getRealY();
         float lon2 = node2.getX();
 
-        double rLatDistance = Math.toRadians(lat2-lat1);
-        double rLonDistance = Math.toRadians(lon2-lon1);
+        double rLatDistance = Math.toRadians(lat2 - lat1);
+        double rLonDistance = Math.toRadians(lon2 - lon1);
 
         double a = (Math.sin(rLatDistance / 2) * Math.sin(rLatDistance / 2)) +
                 Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                Math.sin(rLonDistance / 2) * Math.sin(rLonDistance / 2);
+                        Math.sin(rLonDistance / 2) * Math.sin(rLonDistance / 2);
 
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        double distance = R * c;
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        return distance;
+        return R * c;
     }
 }

@@ -24,9 +24,9 @@ public class MapCanvas extends Canvas {
 
     private Model model;
 
+    private final double zoomLevelMin = 50;
+    private final double zoomLevelMax = 50000.0;
     private double zoomLevel;
-    private double zoomLevelMin = 50;
-    private double zoomLevelMax = 50000.0;
     private double widthModifier = 1.0;
 
     private long averageRepaintTime = 0L;
@@ -41,7 +41,7 @@ public class MapCanvas extends Canvas {
     private ColorMode colorMode = ColorMode.STANDARD;
     private Affine trans = new Affine();
 
-    public void init(Model model) throws IOException {
+    public void init(Model model) {
         this.model = model;
     }
 
@@ -64,7 +64,7 @@ public class MapCanvas extends Canvas {
 
         gc.save();
         gc.setTransform(new Affine());
-        gc.setFill(WayType.WATER.getColor());
+        gc.setFill(getColor(WayType.WATER));
         gc.fillRect(0, 0, getWidth(), getHeight());
         gc.setTransform(trans);
         gc.setLineCap(StrokeLineCap.ROUND);

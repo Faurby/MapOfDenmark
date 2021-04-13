@@ -55,7 +55,6 @@
                     <CheckBox text="Display buildings" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display land use" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display islands" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-                    <CheckBox text="Display outlines" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Save OBJ file" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                 </VBox>
             </VBox>
@@ -132,7 +131,6 @@
                     </Menu>
                 </MenuBar>
             </HBox>
-
 
         </StackPane>
     </root>
