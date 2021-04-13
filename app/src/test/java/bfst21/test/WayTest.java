@@ -10,12 +10,12 @@ import bfst21.osm.Way;
 public class WayTest {
     @Test
     public void testCircleMerge() {
-        Node n1 = new Node(1,1);
-        Node n2 = new Node(2,1);
-        Node n3 = new Node(3,1);
-        Node n4 = new Node(4,1);
-        Node n5 = new Node(5,1);
-        Node n6 = new Node(6,1);
+        Node n1 = new Node(1, 1);
+        Node n2 = new Node(1, 2);
+        Node n3 = new Node(1, 3);
+        Node n4 = new Node(1, 4);
+        Node n5 = new Node(1, 5);
+        Node n6 = new Node(1, 6);
         Way w1 = new Way(1);
             w1.add(n1);
             w1.add(n2);
@@ -35,9 +35,9 @@ public class WayTest {
 
     @Test
     public void testNullWayMerge() {
-        Node n1 = new Node(1,1);
-        Node n2 = new Node(2,1);
-        Node n3 = new Node(3,1);
+        Node n1 = new Node(1, 1);
+        Node n2 = new Node(1, 2);
+        Node n3 = new Node(1, 3);
         Way w1 = new Way(1);
             w1.add(n1);
             w1.add(n2);

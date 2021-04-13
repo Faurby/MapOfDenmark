@@ -42,9 +42,9 @@ public class XmlParserTest {
 
     @Test
     public void getCorrectDistanceBetween2Nodes() {
-        Node node1 = new Node(55.6571112f, 12.6224313f);
-        Node node2 = new Node(55.6573865f, 12.6238016f);
-        double distance = model.getMapData().getDistance(node1, node2);
+        Node node1 = new Node(12.6224313f, 55.6571112f);
+        Node node2 = new Node(12.6238016f, 55.6573865f);
+        double distance = node1.distTo(node2);
         assertEquals(0.09125, distance, 0.0001);
     }
 }

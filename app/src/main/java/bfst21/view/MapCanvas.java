@@ -29,14 +29,14 @@ public class MapCanvas extends Canvas {
     private double zoomLevel;
     private double widthModifier = 1.0;
 
-    private long averageRepaintTime = 0L;
-    private long totalRepaintTime = 0L;
-    private long totalRepaints = 0L;
+    private long averageRepaintTime;
+    private long totalRepaintTime;
+    private long totalRepaints;
 
     private final Options options = Options.getInstance();
     private final GraphicsContext gc = getGraphicsContext2D();
 
-    private int depth = 0;
+    private int depth;
 
     private ColorMode colorMode = ColorMode.STANDARD;
     private Affine trans = new Affine();

@@ -8,7 +8,7 @@ public class Node implements Serializable {
     private static final long serialVersionUID = -343957913094540189L;
     private final float x, y;
 
-    public Node(float lat, float lon) {
+    public Node(float lon, float lat) {
         this.x = lon;
         this.y = -lat / 0.56f;
     }
