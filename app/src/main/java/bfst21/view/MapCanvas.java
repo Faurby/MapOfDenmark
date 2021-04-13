@@ -155,23 +155,6 @@ public class MapCanvas extends Canvas {
         averageRepaintTime = totalRepaintTime / totalRepaints;
     }
 
-    public void drawBoundingBox(BoundingBox boundingBox, Color color, double size) {
-        float bMaxX = boundingBox.getMaxX();
-        float bMaxY = boundingBox.getMaxY();
-        float bMinX = boundingBox.getMinX();
-        float bMinY = boundingBox.getMinY();
-
-        gc.setStroke(color);
-        gc.setLineWidth(size);
-        gc.beginPath();
-        gc.moveTo(bMinX, bMinY);
-        gc.lineTo(bMaxX, bMinY);
-        gc.lineTo(bMaxX, bMaxY);
-        gc.lineTo(bMinX, bMaxY);
-        gc.lineTo(bMinX, bMinY);
-        gc.stroke();
-    }
-
     public void drawKdTree(KdNode kdNode,
                            float maxX,
                            float maxY,
