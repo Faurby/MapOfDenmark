@@ -12,13 +12,15 @@ public class KdNode implements Serializable {
     private KdNode rightChild;
     private KdNode leftChild;
 
-    private final float x, y;
+    private final float minX, maxX, minY, maxY;
 
     private List<Way> list;
 
-    public KdNode(float x, float y) {
-        this.x = x;
-        this.y = y;
+    public KdNode(float minX, float maxX, float minY, float maxY) {
+        this.minX = minX;
+        this.maxX = maxX;
+        this.minY = minY;
+        this.maxY = maxY;
     }
 
     public List<Way> getList() {
@@ -45,11 +47,19 @@ public class KdNode implements Serializable {
         return leftChild;
     }
 
-    public float getX() {
-        return x;
+    public float getMinX() {
+        return minX;
     }
 
-    public float getY() {
-        return y;
+    public float getMaxX() {
+        return maxX;
+    }
+
+    public float getMinY() {
+        return minY;
+    }
+
+    public float getMaxY() {
+        return maxY;
     }
 }

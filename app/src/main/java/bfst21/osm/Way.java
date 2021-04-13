@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import bfst21.tree.BoundingBox;
 import bfst21.view.Drawable;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -16,36 +15,32 @@ public class Way extends Element implements Drawable, Serializable {
 
     private HashMap<String, String> tags;
 
+    private float minX, maxX, minY, maxY;
+
     public Way(long id) {
         super(id);
     }
 
-    public BoundingBox getBoundingBox() {
+    protected void updateBoundingBox(Node node) {
+        if (nodes.size() == 1) {
+            minX = node.getX();
+            maxX = node.getX();
+            minY = node.getY();
+            maxY = node.getY();
 
-        float maxX = nodes.get(0).getX();
-        float maxY = nodes.get(0).getY();
-        float minX = nodes.get(0).getX();
-        float minY = nodes.get(0).getY();
+        } else {
+            float nX = node.getX();
+            float nY = node.getY();
 
-        for (Node node : nodes) {
-
-            float x = node.getX();
-            float y = node.getY();
-
-            if (x > maxX) {
-                maxX = x;
+            if (nX < minX && nY < minY) {
+                minX = nX;
+                minY = nY;
             }
-            if (y > maxY) {
-                maxY = y;
-            }
-            if (x < minX) {
-                minX = x;
-            }
-            if (y < minY) {
-                minY = y;
+            if (nX > maxX && nY > maxY) {
+                maxX = nX;
+                maxY = nY;
             }
         }
-        return new BoundingBox(maxX, maxY, minX, minY);
     }
 
     public float getX() {
@@ -87,6 +82,7 @@ public class Way extends Element implements Drawable, Serializable {
 
     public void add(Node node) {
         nodes.add(node);
+        updateBoundingBox(node);
     }
 
     @Override
@@ -157,5 +153,21 @@ public class Way extends Element implements Drawable, Serializable {
         } else {
             return nodes.equals(other.nodes);
         }
+    }
+
+    public float getMinX() {
+        return minX;
+    }
+
+    public float getMaxX() {
+        return maxX;
+    }
+
+    public float getMinY() {
+        return minY;
+    }
+
+    public float getMaxY() {
+        return maxY;
     }
 }

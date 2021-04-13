@@ -82,10 +82,15 @@ public class MapCanvas extends Canvas {
                 double x2 = getWidth() - x1;
                 double y2 = getHeight() - y1;
 
+                x1 -= 300;
+                y1 -= 300;
+                x2 += 300;
+                y2 += 300;
+
                 Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
                 Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
 
-                BoundingBox boundingBox = new BoundingBox((float) p2.getX(), (float) p2.getY(), (float) p1.getX(), (float) p1.getY());
+                BoundingBox boundingBox = new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
                 model.getMapData().rangeSearch(boundingBox);
 
                 if (options.getBool(Option.DISPLAY_KD_TREE)) {
@@ -164,8 +169,10 @@ public class MapCanvas extends Canvas {
 
         if (kdNode != null) {
 
-            float x = kdNode.getX();
-            float y = kdNode.getY();
+            float kMinX = kdNode.getMinX();
+            float kMaxX = kdNode.getMaxX();
+            float kMinY = kdNode.getMinY();
+            float kMaxY = kdNode.getMaxY();
 
             gc.setStroke(Color.PURPLE);
             if (depth == 0) {
@@ -182,31 +189,30 @@ public class MapCanvas extends Canvas {
             lineWidth *= 0.8D;
 
             if (depth % 2 == 0) {
-                gc.moveTo(x, maxY);
-                gc.lineTo(x, minY);
+                gc.moveTo(kMinX, maxY);
+                gc.lineTo(kMinX, minY);
+                gc.stroke();
+                gc.moveTo(kMaxX, maxY);
+                gc.lineTo(kMaxX, minY);
                 gc.stroke();
 
                 depth++;
-                drawKdTree(kdNode.getLeftChild(), x, maxY, minX, minY, lineWidth);
-                drawKdTree(kdNode.getRightChild(), maxX, maxY, x, minY, lineWidth);
+                drawKdTree(kdNode.getLeftChild(), kMaxX, maxY, minX, minY, lineWidth);
+                drawKdTree(kdNode.getRightChild(), maxX, maxY, kMinX, minY, lineWidth);
 
             } else {
-                gc.moveTo(maxX, y);
-                gc.lineTo(minX, y);
+                gc.moveTo(maxX, kMinY);
+                gc.lineTo(minX, kMinY);
+                gc.stroke();
+                gc.moveTo(maxX, kMaxY);
+                gc.lineTo(minX, kMaxY);
                 gc.stroke();
 
                 depth++;
-                drawKdTree(kdNode.getLeftChild(), maxX, y, minX, minY, lineWidth);
-                drawKdTree(kdNode.getRightChild(), maxX, maxY, minX, y, lineWidth);
+                drawKdTree(kdNode.getLeftChild(), maxX, kMaxY, minX, minY, lineWidth);
+                drawKdTree(kdNode.getRightChild(), maxX, maxY, minX, kMinY, lineWidth);
             }
             depth--;
-
-            gc.setStroke(Color.GREENYELLOW);
-            gc.setLineWidth(lineWidth * 3);
-            gc.beginPath();
-            gc.moveTo(kdNode.getX(), kdNode.getY());
-            gc.lineTo(kdNode.getX() + 0.00001, kdNode.getY() + 0.00001);
-            gc.stroke();
         }
     }
 

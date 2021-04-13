@@ -59,7 +59,7 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 tasks.withType(JavaExec) {
-    jvmArgs = ['-Xms1000m', '-Xmx2500m']
+    jvmArgs = ['-Xms1000m', '-Xmx3000m']
 }
 
 run {

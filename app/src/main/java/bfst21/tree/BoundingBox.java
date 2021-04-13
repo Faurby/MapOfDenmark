@@ -10,18 +10,14 @@ public class BoundingBox implements Drawable {
 
     private final float maxX, maxY, minX, minY;
 
-    public BoundingBox(float maxX, float maxY, float minX, float minY) {
+    public BoundingBox(float minX, float maxX, float minY, float maxY) {
         this.maxX = maxX;
         this.maxY = maxY;
         this.minX = minX;
         this.minY = minY;
     }
 
-    public boolean intersects(BoundingBox boundingBox) {
-        float otherMaxX = boundingBox.getMaxX();
-        float otherMaxY = boundingBox.getMaxY();
-        float otherMinX = boundingBox.getMinX();
-        float otherMinY = boundingBox.getMinY();
+    public boolean intersects(float otherMaxX, float otherMaxY, float otherMinX, float otherMinY) {
 
         //return (minX < otherMaxX) && (otherMinX < maxX) && (minY < otherMaxY) && (minY < otherMinY && otherMinY < maxY);
         //return minX < boundingBox.maxX && maxX > boundingBox.minX && minY < boundingBox.maxY && maxY > boundingBox.minY;
@@ -30,7 +26,7 @@ public class BoundingBox implements Drawable {
         if (otherMinX >= minX && otherMaxX <= maxX && otherMinY >= minY && otherMaxY <= maxY) {
             return true;
 
-            //Check if this box is inside other box
+        //Check if this box is inside other box
         } else if (otherMinX <= minX && otherMaxX >= maxX && otherMinY <= minY && otherMaxY >= maxY) {
             return true;
 
@@ -52,20 +48,29 @@ public class BoundingBox implements Drawable {
         return false;
     }
 
-    public boolean contains(KdNode kdNode) {
-        float maxX = getMaxX();
-        float maxY = getMaxY();
-        float minX = getMinX();
-        float minY = getMinY();
+    public boolean intersects(BoundingBox boundingBox) {
+        float otherMaxX = boundingBox.getMaxX();
+        float otherMaxY = boundingBox.getMaxY();
+        float otherMinX = boundingBox.getMinX();
+        float otherMinY = boundingBox.getMinY();
 
-        float nodeX = kdNode.getX();
-        float nodeY = kdNode.getY();
-
-        if (maxX >= nodeX && minX <= nodeX) {
-            return maxY >= nodeY && minY <= nodeY;
-        }
-        return false;
+        return intersects(otherMaxX, otherMaxY, otherMinX, otherMinY);
     }
+
+//    public boolean contains(KdNode kdNode) {
+//        float maxX = getMaxX();
+//        float maxY = getMaxY();
+//        float minX = getMinX();
+//        float minY = getMinY();
+//
+//        float nodeX = kdNode.getX();
+//        float nodeY = kdNode.getY();
+//
+//        if (maxX >= nodeX && minX <= nodeX) {
+//            return maxY >= nodeY && minY <= nodeY;
+//        }
+//        return false;
+//    }
 
     public float getMaxX() {
         return maxX;
