@@ -27,28 +27,28 @@ public enum WayType {
         Color.rgb(211,211,211)
     ),
     MOTORWAY(
-        0.0004f,
+        0.0003f,
         500.0f,
         Color.rgb(248,197,81),
         Color.rgb(248,198,81),
         Color.rgb(169,169,169)
     ),
     RESIDENTIAL(
-        0.0002f,
+        0.00015f,
         10000.0f,
         Color.rgb(255,255,255),
         Color.rgb(255,255,255),
         Color.rgb(255,255,255)
     ),
     TERTIARY(
-        0.0004f,
+        0.0003f,
         3000.0f,
         Color.rgb(255,255,255),
         Color.rgb(255,255,255),
         Color.rgb(255,255,255)
     ),
     PRIMARY(
-        0.0004f,
+        0.0003f,
         1500.0f,
         Color.rgb(236,148,164),
         Color.rgb(255,140,0),
