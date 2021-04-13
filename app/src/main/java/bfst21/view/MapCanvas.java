@@ -82,38 +82,18 @@ public class MapCanvas extends Canvas {
                 double x2 = getWidth() - x1;
                 double y2 = getHeight() - y1;
 
-                x1 -= 300;
-                y1 -= 300;
-                x2 += 300;
-                y2 += 300;
+                x1 -= 50;
+                y1 -= 50;
+                x2 += 50;
+                y2 += 50;
 
                 Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
                 Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
 
                 BoundingBox boundingBox = new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
                 model.getMapData().rangeSearch(boundingBox);
+                boundingBox.draw(gc, 0);
 
-                if (options.getBool(Option.DISPLAY_KD_TREE)) {
-                    depth = 0;
-
-                    float maxX = model.getMapData().getMaxx();
-                    float maxY = model.getMapData().getMaxy();
-                    float minX = model.getMapData().getMinx();
-                    float minY = model.getMapData().getMiny();
-
-                    KdTree kdTree = model.getMapData().getKdTree();
-                    drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
-
-                    gc.setStroke(Color.RED);
-                    gc.setLineWidth(0.001);
-                    gc.beginPath();
-                    gc.moveTo(p1.getX(), p1.getY());
-                    gc.lineTo(p2.getX(), p1.getY());
-                    gc.lineTo(p2.getX(), p2.getY());
-                    gc.lineTo(p1.getX(), p2.getY());
-                    gc.lineTo(p1.getX(), p1.getY());
-                    gc.stroke();
-                }
             } else if (options.getBool(Option.USE_R_TREE)) {
                 double x1 = trans.getTx() / Math.sqrt(trans.determinant());
                 double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
@@ -147,6 +127,19 @@ public class MapCanvas extends Canvas {
             if (options.getBool(Option.DISPLAY_BUILDINGS)) {
                 paintFill(WayType.BUILDING);
                 drawLine(WayType.BUILDING);
+            }
+            if (options.getBool(Option.USE_KD_TREE)) {
+                if (options.getBool(Option.DISPLAY_KD_TREE)) {
+                    depth = 0;
+
+                    float maxX = model.getMapData().getMaxx();
+                    float maxY = model.getMapData().getMaxy();
+                    float minX = model.getMapData().getMinx();
+                    float minY = model.getMapData().getMiny();
+
+                    KdTree kdTree = model.getMapData().getKdTree();
+                    drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
+                }
             }
         }
         gc.restore();
@@ -257,8 +250,8 @@ public class MapCanvas extends Canvas {
     public void paintFill(WayType wayType) {
         if (zoomLevel >= wayType.getZoomLevelRequired()) {
             gc.setFill(getColor(wayType));
-            for (Way line : model.getMapData().getWays(wayType)) {
-                line.fill(gc, zoomLevel);
+            for (Way way : model.getMapData().getWays(wayType)) {
+                way.fill(gc, zoomLevel);
             }
         }
     }

@@ -32,12 +32,16 @@ public class Way extends Element implements Drawable, Serializable {
             float nX = node.getX();
             float nY = node.getY();
 
-            if (nX < minX && nY < minY) {
+            if (nX < minX) {
                 minX = nX;
+            }
+            if (nY < minY) {
                 minY = nY;
             }
-            if (nX > maxX && nY > maxY) {
+            if (nX > maxX) {
                 maxX = nX;
+            }
+            if (nY > maxY) {
                 maxY = nY;
             }
         }

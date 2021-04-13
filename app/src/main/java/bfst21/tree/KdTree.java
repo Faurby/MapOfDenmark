@@ -32,6 +32,7 @@ public class KdTree implements Serializable {
 
             if (kdNode.getList() != null) {
                 for (Way way : kdNode.getList()) {
+
                     float minX = way.getMinX();
                     float maxX = way.getMaxX();
                     float minY = way.getMinY();
