@@ -1,7 +1,12 @@
 package bfst21.tree;
 
 
-public class BoundingBox {
+import bfst21.view.Drawable;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
+
+public class BoundingBox implements Drawable {
 
     private final float maxX, maxY, minX, minY;
 
@@ -76,5 +81,22 @@ public class BoundingBox {
 
     public float getMinY() {
         return minY;
+    }
+
+    @Override
+    public void trace(GraphicsContext gc, double zoomLevel) {
+        float bMaxX = getMaxX();
+        float bMaxY = getMaxY();
+        float bMinX = getMinX();
+        float bMinY = getMinY();
+
+        gc.setStroke(Color.PURPLE);
+        gc.setLineWidth(0.0001);
+        
+        gc.moveTo(bMinX, bMinY);
+        gc.lineTo(bMaxX, bMinY);
+        gc.lineTo(bMaxX, bMaxY);
+        gc.lineTo(bMinX, bMaxY);
+        gc.lineTo(bMinX, bMinY);
     }
 }
