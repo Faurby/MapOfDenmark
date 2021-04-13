@@ -80,11 +80,11 @@
                         <TextArea fx:id="destinationPoint" minHeight="25" prefHeight="25" promptText="Choose a destination..." wrapText="true" />
 
                         <HBox style="-fx-padding: 10 10 10 10 ; -fx-border-insets: 0 0 0 0 ; -fx-alignment: CENTER">
-                            <Button fx:id="CAR" onAction="#transportationButtonPushed">
+                            <Button fx:id="CAR" onAction="#transportationButtonPushed" style="-fx-background-color: DARKGREY">
                                 <graphic>
                                     <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" >
                                        <image>
-                                            <Image url="@carPic.png"/>
+                                            <Image url="/carPic.png"/>
                                        </image>
                                     </ImageView>
                                 </graphic>
