@@ -176,15 +176,15 @@ public class MapData {
 
         for (Way way : getList()) {
             if (way.getValue("landuse") != null) {
-                if (way.getValue("landuse").equalsIgnoreCase("GRASS") ||
-                    way.getValue("landuse").equalsIgnoreCase("MEADOW") ||
-                    way.getValue("landuse").equalsIgnoreCase("ORCHARD") ||
-                    way.getValue("landuse").equalsIgnoreCase("ALLOTMENTS")) {
+                if (way.getValue("landuse").equals("GRASS") ||
+                    way.getValue("landuse").equals("MEADOW") ||
+                    way.getValue("landuse").equals("ORCHARD") ||
+                    way.getValue("landuse").equals("ALLOTMENTS")) {
 
                     list.add(way);
                 }
             } else if (way.getValue("leisure") != null) {
-                if (way.getValue("leisure").equalsIgnoreCase("PARK")) {
+                if (way.getValue("leisure").equals("PARK")) {
                     list.add(way);
                 }
             }
