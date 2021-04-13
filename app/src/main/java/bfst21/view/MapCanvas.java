@@ -131,21 +131,13 @@ public class MapCanvas extends Canvas {
             }
 
             if (options.getBool(Option.DISPLAY_WAYS)) {
-                if (options.getBool(Option.DISPLAY_OUTLINES)) {
-                    drawRoad(WayType.RESIDENTIAL, true);
-                    drawRoad(WayType.MOTORWAY, true);
-                    drawRoad(WayType.TERTIARY, true);
-                    drawRoad(WayType.PRIMARY, true);
-                }
-
-                drawRoad(WayType.RESIDENTIAL, false);
-                drawRoad(WayType.MOTORWAY, false);
-                drawRoad(WayType.TERTIARY, false);
-                drawRoad(WayType.PRIMARY, false);
-
+                drawRoad(WayType.RESIDENTIAL);
+                drawRoad(WayType.MOTORWAY);
+                drawRoad(WayType.TERTIARY);
+                drawRoad(WayType.PRIMARY);
             }
             if (options.getBool(Option.DISPLAY_WATER)) {
-                drawRoad(WayType.WATERWAY, false);
+                drawRoad(WayType.WATERWAY);
             }
             if (options.getBool(Option.DISPLAY_BUILDINGS)) {
                 paintFill(WayType.BUILDING);
@@ -282,14 +274,11 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void drawRoad(WayType wayType, boolean outline) {
+    public void drawRoad(WayType wayType) {
         if (zoomLevel >= wayType.getZoomLevelRequired()) {
             double size = wayType.getDrawSize() * widthModifier;
 
             gc.setStroke(getColor(wayType));
-            if (!outline) {
-                size *= 0.75;
-            }
             gc.setLineWidth(size);
             for (Way line : model.getMapData().getWays(wayType)) {
                 line.draw(gc, zoomLevel);
