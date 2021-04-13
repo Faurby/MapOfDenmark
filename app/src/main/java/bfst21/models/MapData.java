@@ -226,8 +226,8 @@ public class MapData {
 
     //Distance between 2 nodes (lat, lon) by Haversine formula
     public double getDistance(Node node1, Node node2) {
-        //Radius of Earth
-        int R = 6371;
+
+        int R = 6371; //Radius of Earth
 
         float lat1 = node1.getRealY();
         float lon1 = node1.getX();
