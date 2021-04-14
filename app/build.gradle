@@ -47,6 +47,10 @@ dependencies {
 
     // RTree
     implementation 'com.github.davidmoten:rtree2:0.9-RC1'
+
+    // Woodstox parser
+    implementation 'com.fasterxml.woodstox:woodstox-core:6.2.5'
+
 }
 
 application {
@@ -59,7 +63,7 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 tasks.withType(JavaExec) {
-    jvmArgs = ['-Xms1000m', '-Xmx3000m']
+    jvmArgs = ['-Xms1000m', '-Xmx6000m']
 }
 
 run {
