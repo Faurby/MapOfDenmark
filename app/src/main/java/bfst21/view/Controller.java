@@ -106,19 +106,16 @@ public class Controller {
 
     @FXML
     public void onMouseReleased(MouseEvent e) {
-//        Task<Void> task = new Task<>() {
-//            @Override
-//            protected Void call() throws Exception {
-//                canvas.doRangeSearch();
-//                canvas.repaint();
-//                return null;
-//            }
-//        };
-//        Thread thread = new Thread(task);
-//        thread.start();
-
-        canvas.doRangeSearch();
-        canvas.repaint();
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                canvas.doRangeSearch();
+                return null;
+            }
+        };
+        task.setOnSucceeded(ex -> canvas.repaint());
+        Thread thread = new Thread(task);
+        thread.start();
     }
 
     @FXML

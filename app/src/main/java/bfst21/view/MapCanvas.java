@@ -8,6 +8,7 @@ import bfst21.tree.KdTree;
 import bfst21.osm.Way;
 import bfst21.osm.WayType;
 import bfst21.models.Model;
+import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -30,8 +31,11 @@ public class MapCanvas extends Canvas {
     private double widthModifier = 1.0;
 
     private long averageRepaintTime;
+    private long last10AverageRepaintTime;
     private long totalRepaintTime;
     private long totalRepaints;
+    private long last10RepaintTime;
+    private long last10Repaints;
 
     private final Options options = Options.getInstance();
     private final GraphicsContext gc = getGraphicsContext2D();
@@ -41,13 +45,14 @@ public class MapCanvas extends Canvas {
     private ColorMode colorMode = ColorMode.STANDARD;
     private Affine trans = new Affine();
 
-    private boolean initialRangeSearch = false;
+    private boolean initialRangeSearch;
 
     public void init(Model model) {
         this.model = model;
     }
 
     public void load(boolean loadDefault) throws XMLStreamException, IOException, ClassNotFoundException {
+        initialRangeSearch = false;
         model.load(loadDefault);
         trans = new Affine();
 
@@ -58,8 +63,7 @@ public class MapCanvas extends Canvas {
         zoomLevel *= factor;
         System.out.println("Zoom: " + zoomLevel + " factor: " + factor);
 
-        zoom(factor, new Point2D(0, 0));
-        doRangeSearch();
+        initialZoom(factor, new Point2D(0, 0));
     }
 
     void repaint() {
@@ -132,10 +136,21 @@ public class MapCanvas extends Canvas {
         gc.restore();
 
         time += System.nanoTime();
-        System.out.println("Repaint time: "+time/1_000_000+" (Average: "+averageRepaintTime/1_000_000+" total repaints: "+totalRepaints+")");
+        //System.out.println("Repaint time: "+time/1_000_000+" (Average: "+averageRepaintTime/1_000_000+" total repaints: "+totalRepaints+")");
 
         totalRepaintTime += time;
+        last10RepaintTime += time;
         totalRepaints++;
+        last10Repaints++;
+
+        if (totalRepaints % 10 == 0){
+            last10AverageRepaintTime = last10RepaintTime / last10Repaints;
+            System.out.println("Repaint time: "+ time/1_000_000 + " (Average last ten repaints: " + last10AverageRepaintTime/1_000_000 + " total repaints: " + totalRepaints + ")");
+
+            last10RepaintTime = 0;
+            last10Repaints = 0;
+
+        }
 
         averageRepaintTime = totalRepaintTime / totalRepaints;
     }
@@ -158,7 +173,7 @@ public class MapCanvas extends Canvas {
 
                 BoundingBox boundingBox = new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
                 model.getMapData().rangeSearch(boundingBox);
-                boundingBox.draw(gc, 0);
+                //boundingBox.draw(gc, 0);
             }
         }
     }
@@ -234,10 +249,25 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    public void initialZoom(double factor, Point2D center){
+        trans.prependScale(factor, factor, center);
+        repaint();
+    }
+
     public void zoom(double factor, Point2D center) {
         trans.prependScale(factor, factor, center);
-        doRangeSearch();
         repaint();
+
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                doRangeSearch();
+                return null;
+            }
+        };
+        task.setOnSucceeded(e -> repaint());
+        Thread thread = new Thread(task);
+        thread.start();
     }
 
     public Point2D mouseToModelCoords(Point2D point) {
