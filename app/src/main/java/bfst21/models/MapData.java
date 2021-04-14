@@ -82,7 +82,7 @@ public class MapData {
 
     public void search(double x1, double y1, double x2, double y2) {
         Iterable<Entry<Integer, Way>> results =
-            rTree.search(Geometries.rectangle(x1, y1, x2, y2));
+                rTree.search(Geometries.rectangle(x1, y1, x2, y2));
 
         Iterator<Entry<Integer, Way>> rTreeIterator = results.iterator();
         rTreeSearchList = new ArrayList<>();
@@ -174,9 +174,9 @@ public class MapData {
         for (Way way : getList()) {
             if (way.getValue("landuse") != null) {
                 if (way.getValue("landuse").equals("GRASS") ||
-                    way.getValue("landuse").equals("MEADOW") ||
-                    way.getValue("landuse").equals("ORCHARD") ||
-                    way.getValue("landuse").equals("ALLOTMENTS")) {
+                        way.getValue("landuse").equals("MEADOW") ||
+                        way.getValue("landuse").equals("ORCHARD") ||
+                        way.getValue("landuse").equals("ALLOTMENTS")) {
 
                     list.add(way);
                 }

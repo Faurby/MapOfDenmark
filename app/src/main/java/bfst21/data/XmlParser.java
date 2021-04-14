@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.util.*;
 
 import com.ctc.wstx.osgi.InputFactoryProviderImpl;
-import com.ctc.wstx.stax.WstxInputFactory;
 import org.codehaus.stax2.XMLInputFactory2;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -37,21 +36,23 @@ public class XmlParser {
         Options options = Options.getInstance();
 
         boolean oldReader = false;
-        boolean speedReader= true;
+        boolean speedReader = true;
         boolean memoryReader = false;
         XMLStreamReader reader = null;
 
         if (oldReader) {
-             reader = XMLInputFactory
+            reader = XMLInputFactory
                     .newInstance()
                     .createXMLStreamReader(new BufferedInputStream(input));
-        } else if (speedReader){
+
+        } else if (speedReader) {
             InputFactoryProviderImpl iprovider = new InputFactoryProviderImpl();
 
             XMLInputFactory2 xmlif = iprovider.createInputFactory();
             xmlif.configureForSpeed();
 
             reader = xmlif.createXMLStreamReader(new BufferedInputStream(input));
+
         } else if (memoryReader) {
             InputFactoryProviderImpl iprovider = new InputFactoryProviderImpl();
 
@@ -60,8 +61,6 @@ public class XmlParser {
 
             reader = xmlif.createXMLStreamReader(new BufferedInputStream(input));
         }
-
-
         Way way = null;
         Relation relation = null;
 

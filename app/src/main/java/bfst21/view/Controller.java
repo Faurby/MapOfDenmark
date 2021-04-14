@@ -20,14 +20,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.IOException;
 
 
 public class Controller {
-
-    private Model model;
-    private Point2D lastMouse;
-    private final Options options = Options.getInstance();
 
     @FXML
     private MapCanvas canvas;
@@ -64,12 +59,16 @@ public class Controller {
     @FXML
     private Button collapseButton;
 
+    private Model model;
+    private Point2D lastMouse;
+    private final Options options = Options.getInstance();
+
     public void updateZoomBox() {
         zoomPercent.setText("Zoom percent: " + canvas.getZoomPercent());
         zoomText.setText("Zoom level: " + canvas.getZoomLevel());
     }
 
-    public void init(Model model) throws IOException {
+    public void init(Model model) {
         this.model = model;
         canvas.init(model);
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
@@ -105,17 +104,8 @@ public class Controller {
     }
 
     @FXML
-    public void onMouseReleased(MouseEvent e) {
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() throws Exception {
-                canvas.doRangeSearch();
-                return null;
-            }
-        };
-        task.setOnSucceeded(ex -> canvas.repaint());
-        Thread thread = new Thread(task);
-        thread.start();
+    public void onMouseReleased() {
+        canvas.runRangeSearchTask();
     }
 
     @FXML
@@ -255,7 +245,7 @@ public class Controller {
         }
     }
 
-    public void switchText(ActionEvent event){
+    public void switchText() {
         String s = startingPoint.getText();
         startingPoint.setText(destinationPoint.getText());
         destinationPoint.setText(s);
@@ -287,9 +277,9 @@ public class Controller {
         System.out.println(transOptions.returnType().toString());
     }
 
-    public void tabCheck(KeyEvent event){
+    public void tabCheck(KeyEvent event) {
         if (event.getCode() == KeyCode.TAB) {
-            if (event.getSource().toString().contains("startingPoint")){
+            if (event.getSource().toString().contains("startingPoint")) {
                 startingPoint.setText(startingPoint.getText().trim());
                 if (getDestinationBox.isVisible()) {
                     destinationPoint.requestFocus();
@@ -303,6 +293,4 @@ public class Controller {
             }
         }
     }
-
-
 }
