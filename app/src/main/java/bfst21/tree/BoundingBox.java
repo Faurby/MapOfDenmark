@@ -57,21 +57,6 @@ public class BoundingBox implements Drawable {
         return intersects(otherMaxX, otherMaxY, otherMinX, otherMinY);
     }
 
-//    public boolean contains(KdNode kdNode) {
-//        float maxX = getMaxX();
-//        float maxY = getMaxY();
-//        float minX = getMinX();
-//        float minY = getMinY();
-//
-//        float nodeX = kdNode.getX();
-//        float nodeY = kdNode.getY();
-//
-//        if (maxX >= nodeX && minX <= nodeX) {
-//            return maxY >= nodeY && minY <= nodeY;
-//        }
-//        return false;
-//    }
-
     public float getMaxX() {
         return maxX;
     }
