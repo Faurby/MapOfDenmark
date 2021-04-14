@@ -11,10 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -105,6 +102,23 @@ public class Controller {
         double factor = Math.pow(1.01, deltaY);
         canvas.preZoom(factor, new Point2D(e.getX(), e.getY()));
         updateZoomBox();
+    }
+
+    @FXML
+    public void onMouseReleased(MouseEvent e) {
+//        Task<Void> task = new Task<>() {
+//            @Override
+//            protected Void call() throws Exception {
+//                canvas.doRangeSearch();
+//                canvas.repaint();
+//                return null;
+//            }
+//        };
+//        Thread thread = new Thread(task);
+//        thread.start();
+
+        canvas.doRangeSearch();
+        canvas.repaint();
     }
 
     @FXML
@@ -292,4 +306,6 @@ public class Controller {
             }
         }
     }
+
+
 }

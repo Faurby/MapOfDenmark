@@ -41,6 +41,8 @@ public class MapCanvas extends Canvas {
     private ColorMode colorMode = ColorMode.STANDARD;
     private Affine trans = new Affine();
 
+    private boolean initialRangeSearch = false;
+
     public void init(Model model) {
         this.model = model;
     }
@@ -57,6 +59,7 @@ public class MapCanvas extends Canvas {
         System.out.println("Zoom: " + zoomLevel + " factor: " + factor);
 
         zoom(factor, new Point2D(0, 0));
+        doRangeSearch();
     }
 
     void repaint() {
@@ -74,25 +77,9 @@ public class MapCanvas extends Canvas {
 
             if (options.getBool(Option.DISPLAY_ISLANDS)) {
                 paintFill(WayType.ISLAND);
-            }
-
-            if (options.getBool(Option.USE_KD_TREE)) {
-                double x1 = trans.getTx() / Math.sqrt(trans.determinant());
-                double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
-                double x2 = getWidth() - x1;
-                double y2 = getHeight() - y1;
-
-                x1 -= 50;
-                y1 -= 50;
-                x2 += 50;
-                y2 += 50;
-
-                Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
-                Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
-
-                BoundingBox boundingBox = new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
-                model.getMapData().rangeSearch(boundingBox);
-                boundingBox.draw(gc, 0);
+            } if (options.getBool(Option.USE_KD_TREE) && !initialRangeSearch) {
+                doRangeSearch();
+                initialRangeSearch = true;
 
             } else if (options.getBool(Option.USE_R_TREE)) {
                 double x1 = trans.getTx() / Math.sqrt(trans.determinant());
@@ -152,6 +139,30 @@ public class MapCanvas extends Canvas {
 
         averageRepaintTime = totalRepaintTime / totalRepaints;
     }
+
+    public void doRangeSearch() {
+        if (model.getMapData() != null) {
+            if (options.getBool(Option.USE_KD_TREE)) {
+                double x1 = trans.getTx() / Math.sqrt(trans.determinant());
+                double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
+                double x2 = getWidth() - x1;
+                double y2 = getHeight() - y1;
+
+                x1 -= 50;
+                y1 -= 50;
+                x2 += 50;
+                y2 += 50;
+
+                Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
+                Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
+
+                BoundingBox boundingBox = new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
+                model.getMapData().rangeSearch(boundingBox);
+                boundingBox.draw(gc, 0);
+            }
+        }
+    }
+
 
     public void drawKdTree(KdNode kdNode,
                            float maxX,
@@ -225,6 +236,7 @@ public class MapCanvas extends Canvas {
 
     public void zoom(double factor, Point2D center) {
         trans.prependScale(factor, factor, center);
+        doRangeSearch();
         repaint();
     }
 
