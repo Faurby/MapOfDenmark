@@ -8,21 +8,19 @@ import com.github.davidmoten.rtree2.Entry;
 import com.github.davidmoten.rtree2.RTree;
 import com.github.davidmoten.rtree2.geometry.Geometries;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 
 public class MapData {
 
+    private final List<UserNode> userNodes = new ArrayList<>();
     private final List<Drawable> shapes;
     private final List<Way> islands;
     private final List<Way> ways;
-    private final ElementLongIndex idToRelation;
+    private final List<Relation> relations;
     private KdTree kdTree;
     private RTree<Integer, Way> rTree;
 
-    //TODO: Maybe this should be reconsidered. This list could end up containing all elements
     private List<Way> searchList;
     private List<Way> rTreeSearchList;
 
@@ -34,7 +32,7 @@ public class MapData {
             List<Drawable> shapes,
             List<Way> islands,
             List<Way> ways,
-            ElementLongIndex idToRelation,
+            List<Relation> relations,
             KdTree kdTree,
             float minx,
             float maxx,
@@ -44,7 +42,7 @@ public class MapData {
         this.shapes = shapes;
         this.islands = islands;
         this.ways = ways;
-        this.idToRelation = idToRelation;
+        this.relations = relations;
         this.minx = minx;
         this.miny = miny;
         this.maxx = maxx;
@@ -82,7 +80,7 @@ public class MapData {
 
     public void search(double x1, double y1, double x2, double y2) {
         Iterable<Entry<Integer, Way>> results =
-            rTree.search(Geometries.rectangle(x1, y1, x2, y2));
+                rTree.search(Geometries.rectangle(x1, y1, x2, y2));
 
         Iterator<Entry<Integer, Way>> rTreeIterator = results.iterator();
         rTreeSearchList = new ArrayList<>();
@@ -100,93 +98,36 @@ public class MapData {
     public List<Way> getWays(WayType wayType) {
         List<Way> list = new ArrayList<>();
 
-        switch (wayType) {
-            case ISLAND:
-                return islands;
-            case WATER:
-                return getWater();
-            case WATERWAY:
-                return getWaterWays();
-            case LANDUSE:
-                return getLandUse();
-            case BUILDING:
-                return getBuildings();
-            case MOTORWAY:
-            case TERTIARY:
-            case PRIMARY:
-            case RESIDENTIAL:
-                return getExtendedWays(wayType);
+        if (wayType == WayType.ISLAND) {
+            return islands;
         }
-        return list;
-    }
-
-    private List<Way> getExtendedWays(WayType wayType) {
-        List<Way> list = new ArrayList<>();
-
         for (Way way : getList()) {
-            if (way.getValue("highway") != null) {
-                if (way.getValue("highway").contains(wayType.toString())) {
-                    list.add(way);
-                }
-            }
-        }
-        return list;
-    }
-
-    private List<Way> getWater() {
-        List<Way> list = new ArrayList<>();
-
-        for (Way way : getList()) {
-            if (way.getValue("natural") != null) {
-                if (way.getValue("natural").contains("WATER")) {
-                    list.add(way);
-                }
-            }
-        }
-        return list;
-    }
-
-    private List<Way> getBuildings() {
-        List<Way> list = new ArrayList<>();
-
-        for (Way way : getList()) {
-            if (way.getValue("building") != null) {
+            if (way.getType() == wayType) {
                 list.add(way);
             }
         }
         return list;
     }
 
-    private List<Way> getWaterWays() {
-        List<Way> list = new ArrayList<>();
+    public List<Way> getFillWays(WayType wayType, double zoomLevel) {
+        if (wayType != WayType.ISLAND) {
+            List<Way> list = new ArrayList<>();
 
-        for (Way way : getList()) {
-            if (way.getValue("waterway") != null) {
-                list.add(way);
-            }
-        }
-        return list;
-    }
-
-    private List<Way> getLandUse() {
-        List<Way> list = new ArrayList<>();
-
-        for (Way way : getList()) {
-            if (way.getValue("landuse") != null) {
-                if (way.getValue("landuse").equals("GRASS") ||
-                    way.getValue("landuse").equals("MEADOW") ||
-                    way.getValue("landuse").equals("ORCHARD") ||
-                    way.getValue("landuse").equals("ALLOTMENTS")) {
-
-                    list.add(way);
-                }
-            } else if (way.getValue("leisure") != null) {
-                if (way.getValue("leisure").equals("PARK")) {
-                    list.add(way);
+            for (Way way : getList()) {
+                if (way.getType() == wayType) {
+                    if (way.getArea() >= 500_000 || zoomLevel >= 9000) {
+                        list.add(way);
+                    } else if (way.getArea() >= 100_000 && zoomLevel >= 2000) {
+                        list.add(way);
+                    }  else if (way.getArea() >= 70_000 && zoomLevel >= 5000) {
+                        list.add(way);
+                    }
                 }
             }
+            return list;
+        } else {
+            return islands;
         }
-        return list;
     }
 
     public List<Drawable> getShapes() {
@@ -197,8 +138,8 @@ public class MapData {
         return ways;
     }
 
-    public ElementLongIndex getIdToRelation() {
-        return idToRelation;
+    public List<Relation> getRelations() {
+        return relations;
     }
 
     public float getMinx() {
@@ -215,5 +156,13 @@ public class MapData {
 
     public float getMaxy() {
         return maxy;
+    }
+
+    public List<UserNode> getUserNodes() {
+        return userNodes;
+    }
+
+    public void addUserNode(UserNode userNode) {
+        userNodes.add(userNode);
     }
 }

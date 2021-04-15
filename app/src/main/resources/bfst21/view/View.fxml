@@ -22,6 +22,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.TextField?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst21.view.Controller"
@@ -33,6 +34,7 @@
                        width="${stackPane.width}"
                        onMouseDragged="#onMouseDragged"
                        onMousePressed="#onMousePressed"
+                       onMouseReleased="#onMouseReleased"
                        onScroll="#onScroll"
             >
             </MapCanvas>
@@ -106,6 +108,14 @@
                             <Button onAction="#searchAddressString" text="Search" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                         </HBox>
                     </VBox>
+                    <VBox alignment="CENTER">
+                        <Button text="Add Point of Interest"
+                                fx:id="pointOfInterestButton"
+                                onAction="#userNodeButtonClicked"
+                                maxWidth="145"
+                                prefWidth="145"
+                        />
+                    </VBox>
                 </VBox>
                 <StackPane.margin>
                     <Insets top="30.0" />
@@ -136,7 +146,37 @@
                     </Menu>
                 </MenuBar>
             </HBox>
-
+            <VBox fx:id="userNodeVBox"
+                  visible="false"
+                  maxWidth="150"
+                  prefWidth="150"
+                  maxHeight="85"
+                  prefHeight="85"
+                  alignment="CENTER"
+                  style="-fx-border-color: red; -fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;"
+                  spacing="4">
+                <Text text="New Point of Interest"/>
+                <TextField fx:id="userNodeTextField"
+                           onKeyPressed="#userNodeTextFieldKeyPressed"
+                           promptText="Write a description"
+                           text="Description..."
+                           maxWidth="130"
+                           prefWidth="130"
+                />
+                <HBox maxWidth="130" alignment="BASELINE_CENTER">
+                    <Button text="Cancel"
+                            onAction="#userNodeCancelClicked"
+                            maxWidth="90"
+                            prefWidth="90"
+                    />
+                    <ToolBar visible="false" HBox.hgrow="ALWAYS" />
+                    <Button text="Save"
+                            onAction="#userNodeSaveClicked"
+                            maxWidth="90"
+                            prefWidth="90"
+                    />
+                </HBox>
+            </VBox>
         </StackPane>
     </root>
 </Scene>

@@ -67,6 +67,34 @@ public enum WayType {
         Color.rgb(160,196,252),
         Color.rgb(0,126,170),
         Color.rgb(0, 0,0)
+    ),
+    ROAD(
+        0.0003f,
+        50000.0f,
+        Color.rgb(255,255,255),
+        Color.rgb(255,255,255),
+        Color.rgb(255,255,255)
+    ),
+    FOOTWAY(
+        0.0003f,
+        50000.0f,
+        Color.rgb(255,255,255),
+        Color.rgb(255,255,255),
+        Color.rgb(255,255,255)
+    ),
+    CYCLEWAY(
+        0.0003f,
+        50000.0f,
+        Color.rgb(255,255,255),
+        Color.rgb(255,255,255),
+        Color.rgb(255,255,255)
+    ),
+    UNKNOWN(
+        0.002f,
+        500.0f,
+        Color.rgb(255, 0, 0),
+        Color.rgb(255, 0, 0),
+        Color.rgb(255, 0, 0)
     );
 
     private final Color color, colorBlind, blackWhite;

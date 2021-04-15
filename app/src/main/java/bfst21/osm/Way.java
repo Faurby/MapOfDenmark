@@ -2,7 +2,6 @@ package bfst21.osm;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import bfst21.tree.BoundingBox;
@@ -18,9 +17,11 @@ import javafx.scene.canvas.GraphicsContext;
 public class Way extends Element implements Geometry, Drawable, Serializable {
 
     private static final long serialVersionUID = 3139576893143362100L;
-    protected List<Node> nodes = new ArrayList<>();
+    private List<Node> nodes = new ArrayList<>();
 
-    private HashMap<String, String> tags;
+    private WayType wayType;
+    private int maxSpeed;
+    private String role;
 
     private float minX, maxX, minY, maxY;
 
@@ -58,27 +59,6 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         return new BoundingBox(minX, maxX, minY, maxY);
     }
 
-    private void createTags() {
-        if (tags == null) {
-            tags = new HashMap<>();
-        }
-    }
-
-    public void addTag(String key, String value) {
-        createTags();
-        tags.put(key, value);
-    }
-
-    public String getValue(String key) {
-        createTags();
-        return tags.get(key);
-    }
-
-    public HashMap<String, String> getTags() {
-        createTags();
-        return tags;
-    }
-
     public Node first() {
         return nodes.get(0);
     }
@@ -108,7 +88,7 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         } else if (zoomLevel <= 2400) {
             inc = 2;
         }
-        for (int i = 0; i < nodes.size(); i += inc) {
+        for (int i = 1; i < nodes.size(); i += inc) {
             if (i <= nodes.size() - 2) {
                 Node node = nodes.get(i);
                 gc.lineTo(node.getX(), node.getY());
@@ -178,6 +158,37 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         return maxY;
     }
 
+    public void setMaxSpeed(int maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
+    public WayType getType() {
+        return wayType;
+    }
+
+    public void setType(WayType wayType) {
+        this.wayType = wayType;
+    }
+
+    public boolean isDrivable() {
+        return wayType == WayType.PRIMARY ||
+                wayType == WayType.MOTORWAY ||
+                wayType == WayType.RESIDENTIAL ||
+                wayType == WayType.TERTIARY;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public List<Node> getNodes() {
+        return nodes;
+    }
+
     @Override
     public double distance(Rectangle r) {
         if (r.contains(minX, minY) || r.contains(maxX, maxY)) {
@@ -212,6 +223,13 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         } else {
             return Math.min(d1, Math.min(d2, Math.min(d3, d4)));
         }
+    }
+
+    public double getArea() {
+        double xLength = maxX - minX;
+        double yLength = maxY - minY;
+        double area = xLength * yLength;
+        return area * Math.pow(10, 9);
     }
 
     @Override

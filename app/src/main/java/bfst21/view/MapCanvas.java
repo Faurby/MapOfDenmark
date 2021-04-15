@@ -2,20 +2,25 @@ package bfst21.view;
 
 import bfst21.models.Option;
 import bfst21.models.Options;
+import bfst21.osm.Relation;
+import bfst21.osm.UserNode;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
 import bfst21.tree.KdTree;
 import bfst21.osm.Way;
 import bfst21.osm.WayType;
 import bfst21.models.Model;
+import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.FillRule;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
+
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 
@@ -25,27 +30,30 @@ public class MapCanvas extends Canvas {
     private Model model;
 
     private final double zoomLevelMin = 50;
-    private final double zoomLevelMax = 50000.0;
+    private final double zoomLevelMax = 100_000.0;
     private double zoomLevel;
     private double widthModifier = 1.0;
 
-    private long averageRepaintTime;
-    private long totalRepaintTime;
     private long totalRepaints;
+    private long totalLastRepaintTime;
 
     private final Options options = Options.getInstance();
     private final GraphicsContext gc = getGraphicsContext2D();
 
     private int depth;
+    private Task<Void> rangeSearchTask;
 
     private ColorMode colorMode = ColorMode.STANDARD;
     private Affine trans = new Affine();
+
+    private boolean initialRangeSearch;
 
     public void init(Model model) {
         this.model = model;
     }
 
     public void load(boolean loadDefault) throws XMLStreamException, IOException, ClassNotFoundException {
+        initialRangeSearch = false;
         model.load(loadDefault);
         trans = new Affine();
 
@@ -56,7 +64,7 @@ public class MapCanvas extends Canvas {
         zoomLevel *= factor;
         System.out.println("Zoom: " + zoomLevel + " factor: " + factor);
 
-        zoom(factor, new Point2D(0, 0));
+        initialZoom(factor, new Point2D(0, 0));
     }
 
     void repaint() {
@@ -75,37 +83,18 @@ public class MapCanvas extends Canvas {
             if (options.getBool(Option.DISPLAY_ISLANDS)) {
                 paintFill(WayType.ISLAND);
             }
+            drawRoad(WayType.CYCLEWAY);
+            drawRoad(WayType.FOOTWAY);
+            drawRoad(WayType.ROAD);
 
-            if (options.getBool(Option.USE_KD_TREE)) {
-                double x1 = trans.getTx() / Math.sqrt(trans.determinant());
-                double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
-                double x2 = getWidth() - x1;
-                double y2 = getHeight() - y1;
+            if (!initialRangeSearch) {
+                if (options.getBool(Option.USE_KD_TREE)) {
+                    doRangeSearch();
 
-                x1 -= 50;
-                y1 -= 50;
-                x2 += 50;
-                y2 += 50;
-
-                Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
-                Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
-
-                BoundingBox boundingBox = new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
-                model.getMapData().rangeSearch(boundingBox);
-                boundingBox.draw(gc, 0);
-
-            } else if (options.getBool(Option.USE_R_TREE)) {
-                double x1 = trans.getTx() / Math.sqrt(trans.determinant());
-                double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
-                double x2 = getWidth() - x1;
-                double y2 = getHeight() - y1;
-
-                Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
-                Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
-
-                model.getMapData().search(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+                } else if (options.getBool(Option.USE_R_TREE)) {
+                    doRangeSearch();
+                }
             }
-
             adjustWidthModifier();
 
             if (options.getBool(Option.DISPLAY_LAND_USE)) {
@@ -141,16 +130,67 @@ public class MapCanvas extends Canvas {
                     drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
                 }
             }
+            drawUserNodes();
+            drawRelations();
+            drawLine(WayType.UNKNOWN);
         }
         gc.restore();
 
         time += System.nanoTime();
-        System.out.println("Repaint time: "+time/1_000_000+" (Average: "+averageRepaintTime/1_000_000+" total repaints: "+totalRepaints+")");
 
-        totalRepaintTime += time;
+        totalLastRepaintTime += time;
         totalRepaints++;
 
-        averageRepaintTime = totalRepaintTime / totalRepaints;
+        if (totalRepaints % 10 == 0) {
+            long last10AverageRepaintTime = totalLastRepaintTime / 10;
+            System.out.println("Repaint time: " + time / 1_000_000 + " (Average last ten repaints: " + last10AverageRepaintTime / 1_000_000 + " total repaints: " + totalRepaints + ")");
+
+            totalLastRepaintTime = 0;
+        }
+    }
+
+    public void doRangeSearch() {
+        initialRangeSearch = true;
+
+        if (model.getMapData() != null) {
+            if (options.getBool(Option.USE_KD_TREE)) {
+                double x1 = trans.getTx() / Math.sqrt(trans.determinant());
+                double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
+                double x2 = getWidth() - x1;
+                double y2 = getHeight() - y1;
+
+                x1 -= 50;
+                y1 -= 50;
+                x2 += 50;
+                y2 += 50;
+
+                Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
+                Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
+
+                BoundingBox boundingBox = new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
+                model.getMapData().rangeSearch(boundingBox);
+
+            } else if (options.getBool(Option.USE_R_TREE)) {
+                double x1 = trans.getTx() / Math.sqrt(trans.determinant());
+                double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
+                double x2 = getWidth() - x1;
+                double y2 = getHeight() - y1;
+
+                Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
+                Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
+
+                model.getMapData().search(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+            }
+        }
+    }
+
+    private void drawUserNodes() {
+        gc.setStroke(Color.RED);
+        gc.setLineWidth(0.002 * widthModifier);
+
+        for (UserNode userNode : model.getMapData().getUserNodes()) {
+            userNode.draw(gc, 0);
+        }
     }
 
     public void drawKdTree(KdNode kdNode,
@@ -223,9 +263,34 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    public void initialZoom(double factor, Point2D center) {
+        trans.prependScale(factor, factor, center);
+        repaint();
+    }
+
     public void zoom(double factor, Point2D center) {
         trans.prependScale(factor, factor, center);
         repaint();
+        runRangeSearchTask();
+    }
+
+    public void runRangeSearchTask() {
+        if (rangeSearchTask != null) {
+            if (rangeSearchTask.isRunning()) {
+                rangeSearchTask.cancel();
+            }
+        }
+        rangeSearchTask = new Task<>() {
+            @Override
+            protected Void call() {
+                doRangeSearch();
+                return null;
+            }
+        };
+        rangeSearchTask.setOnSucceeded(e -> repaint());
+        rangeSearchTask.setOnFailed(e -> System.out.println("Failed to complete range search"));
+        Thread thread = new Thread(rangeSearchTask);
+        thread.start();
     }
 
     public Point2D mouseToModelCoords(Point2D point) {
@@ -234,6 +299,19 @@ public class MapCanvas extends Canvas {
         } catch (NonInvertibleTransformException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public void drawRelations() {
+        gc.setFillRule(FillRule.EVEN_ODD);
+        for (Relation rel : model.getMapData().getRelations()) {
+            if (rel.getType() != null) {
+                WayType wayType = rel.getType();
+                if (zoomLevel >= wayType.getZoomLevelRequired()) {
+                    gc.setFill(wayType.getColor());
+                    rel.fill(gc, zoomLevel);
+                }
+            }
         }
     }
 
@@ -250,11 +328,8 @@ public class MapCanvas extends Canvas {
     public void paintFill(WayType wayType) {
         if (zoomLevel >= wayType.getZoomLevelRequired()) {
             gc.setFill(getColor(wayType));
-            for (Way way : model.getMapData().getWays(wayType)) {
+            for (Way way : model.getMapData().getFillWays(wayType, zoomLevel)) {
                 way.fill(gc, zoomLevel);
-                if (way.getID() == 4248461L) {
-                    way.getBoundingBox().draw(gc, 0);
-                }
             }
         }
     }
@@ -285,16 +360,16 @@ public class MapCanvas extends Canvas {
     }
 
     public void adjustWidthModifier() {
-        if (zoomLevel < 15000) {
-            widthModifier = 1;
+        if (zoomLevel < 500) {
+            widthModifier = 1.0D;
 
-        } else if (zoomLevel < 45000) {
+        } else if (zoomLevel < 2000) {
             widthModifier = 0.75;
 
-        } else if (zoomLevel < 35 * 105000) {
+        } else if (zoomLevel < 6000) {
             widthModifier = 0.50;
 
-        } else if (zoomLevel < 240000) {
+        } else if (zoomLevel < 22000) {
             widthModifier = 0.25;
         }
     }

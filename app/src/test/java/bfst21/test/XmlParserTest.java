@@ -36,7 +36,7 @@ public class XmlParserTest {
 
     @Test
     public void getRelationsSize_correctAmount() {
-        int actual = model.getMapData().getIdToRelation().getElements().size();
+        int actual = model.getMapData().getRelations().size();
         assertEquals(1725, actual);
     }
 
