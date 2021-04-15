@@ -349,9 +349,9 @@ public class Controller {
     }
 
     private void saveUserNode() {
-        float userNode1 = (float) canvas.mouseToModelCoords(lastMouse).getX();
-        float userNode2 = (float) canvas.mouseToModelCoords(lastMouse).getY();
-        model.getMapData().addUserNode(new UserNode(-1 * (userNode2 * 0.56f), userNode1, userNodeTextField.getText()));
+        float mouseX = (float) canvas.mouseToModelCoords(lastMouse).getX();
+        float mouseY = (float) canvas.mouseToModelCoords(lastMouse).getY();
+        model.getMapData().addUserNode(new UserNode(mouseX, -(mouseY * 0.56f), userNodeTextField.getText()));
         scene.setCursor(Cursor.DEFAULT);
         userNodeToggle = false;
         userNodeVBox.setVisible(false);
