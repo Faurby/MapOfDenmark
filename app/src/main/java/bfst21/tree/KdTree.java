@@ -97,10 +97,20 @@ public class KdTree implements Serializable {
             medianWay = wayList.get(median);
             float minX = medianWay.getMinX();
 
-            root = new KdNode(minX, maxX, Float.MIN_VALUE, Float.MAX_VALUE);
-
             List<Way> leftList = new ArrayList<>(wayList.subList(0, median));
             List<Way> rightList = new ArrayList<>(wayList.subList(median, wayList.size()));
+
+            leftList.sort(Comparator.comparingDouble(Way::getMaxX));
+            float checkMaxX = leftList.get(leftList.size() - 1).getMaxX();
+            if (checkMaxX > maxX) {
+                maxX = checkMaxX;
+            }
+            float checkMinX = rightList.get(0).getMinX();
+            if (checkMinX < minX) {
+                minX = checkMinX;
+            }
+
+            root = new KdNode(minX, maxX, Float.MIN_VALUE, Float.MAX_VALUE);
 
             depth++;
             addChild(root, leftList, false);
@@ -142,6 +152,31 @@ public class KdTree implements Serializable {
                     maxX = Float.MAX_VALUE;
                 }
 
+                List<Way> leftList = new ArrayList<>(list.subList(0, median));
+                List<Way> rightList = new ArrayList<>(list.subList(median, list.size()));
+
+                if (sortX) {
+                    leftList.sort(Comparator.comparingDouble(Way::getMaxX));
+                    float checkMaxX = leftList.get(leftList.size() - 1).getMaxX();
+                    if (checkMaxX > maxX) {
+                        maxX = checkMaxX;
+                    }
+                    float checkMinX = rightList.get(0).getMinX();
+                    if (checkMinX < minX) {
+                        minX = checkMinX;
+                    }
+                } else {
+                    leftList.sort(Comparator.comparingDouble(Way::getMaxY));
+                    float checkMaxY = leftList.get(leftList.size() - 1).getMaxY();
+                    if (checkMaxY > maxY) {
+                        maxY = checkMaxY;
+                    }
+                    float checkMinY = rightList.get(0).getMinY();
+                    if (checkMinY < minY) {
+                        minY = checkMinY;
+                    }
+                }
+
                 KdNode medianNode = new KdNode(minX, maxX, minY, maxY);
                 if (right) {
                     currentElement.setRightChild(medianNode);
@@ -152,9 +187,6 @@ public class KdTree implements Serializable {
                     medianNode.setList(list);
 
                 } else {
-                    List<Way> leftList = new ArrayList<>(list.subList(0, median));
-                    List<Way> rightList = new ArrayList<>(list.subList(median, list.size()));
-
                     depth++;
                     addChild(medianNode, leftList, false);
                     addChild(medianNode, rightList, true);
