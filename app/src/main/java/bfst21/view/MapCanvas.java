@@ -2,6 +2,7 @@ package bfst21.view;
 
 import bfst21.models.Option;
 import bfst21.models.Options;
+import bfst21.osm.UserNode;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
 import bfst21.tree.KdTree;
@@ -123,6 +124,7 @@ public class MapCanvas extends Canvas {
                     drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
                 }
             }
+            drawUserNodes();
         }
         gc.restore();
 
@@ -174,6 +176,14 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    private void drawUserNodes() {
+        gc.setStroke(Color.RED);
+        gc.setLineWidth(0.002 * widthModifier);
+
+        for (UserNode userNode : model.getMapData().getUserNodes()) {
+            userNode.draw(gc, 0);
+        }
+    }
 
     public void drawKdTree(KdNode kdNode,
                            float maxX,
@@ -328,16 +338,16 @@ public class MapCanvas extends Canvas {
     }
 
     public void adjustWidthModifier() {
-        if (zoomLevel < 15000) {
-            widthModifier = 1;
+        if (zoomLevel < 500) {
+            widthModifier = 1.0D;
 
-        } else if (zoomLevel < 45000) {
+        } else if (zoomLevel < 2000) {
             widthModifier = 0.75;
 
-        } else if (zoomLevel < 35 * 105000) {
+        } else if (zoomLevel < 6000) {
             widthModifier = 0.50;
 
-        } else if (zoomLevel < 240000) {
+        } else if (zoomLevel < 22000) {
             widthModifier = 0.25;
         }
     }
