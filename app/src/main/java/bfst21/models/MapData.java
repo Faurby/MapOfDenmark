@@ -8,9 +8,7 @@ import com.github.davidmoten.rtree2.Entry;
 import com.github.davidmoten.rtree2.RTree;
 import com.github.davidmoten.rtree2.geometry.Geometries;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 
 public class MapData {
@@ -109,6 +107,23 @@ public class MapData {
             }
         }
         return list;
+    }
+
+    public List<Way> getFillWays(WayType wayType, double zoomLevel) {
+        if (wayType != WayType.ISLAND) {
+            List<Way> list = new ArrayList<>();
+
+            for (Way way : getList()) {
+                if (way.getType() == wayType) {
+                    if (way.getArea() >= 10_000 || zoomLevel >= 5000) {
+                        list.add(way);
+                    }
+                }
+            }
+            return list;
+        } else {
+            return islands;
+        }
     }
 
     public List<Drawable> getShapes() {
