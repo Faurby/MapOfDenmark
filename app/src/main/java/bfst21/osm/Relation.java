@@ -11,13 +11,13 @@ public class Relation extends Element implements Serializable {
 
     private final List<Node> nodes;
     private final List<Way> ways;
-    private final List<Long> relationIDs;
+    private final List<Relation> relations;
 
     public Relation(long id) {
         super(id);
         nodes = new ArrayList<>();
         ways = new ArrayList<>();
-        relationIDs = new ArrayList<>();
+        relations = new ArrayList<>();
     }
 
     public List<Node> getNodes() {
@@ -28,8 +28,8 @@ public class Relation extends Element implements Serializable {
         return ways;
     }
 
-    public List<Long> getRelations() {
-        return relationIDs;
+    public List<Relation> getRelations() {
+        return relations;
     }
 
     public void addMember(Node node) {
@@ -40,7 +40,7 @@ public class Relation extends Element implements Serializable {
         ways.add(way);
     }
 
-    public void addMember(Long relationID) {
-        relationIDs.add(relationID);
+    public void addMember(Relation relation) {
+        relations.add(relation);
     }
 }

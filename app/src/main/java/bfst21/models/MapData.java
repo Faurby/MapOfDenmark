@@ -18,7 +18,7 @@ public class MapData {
     private final List<Drawable> shapes;
     private final List<Way> islands;
     private final List<Way> ways;
-    private final ElementLongIndex idToRelation;
+    private final List<Relation> relations;
     private KdTree kdTree;
     private RTree<Integer, Way> rTree;
 
@@ -34,7 +34,7 @@ public class MapData {
             List<Drawable> shapes,
             List<Way> islands,
             List<Way> ways,
-            ElementLongIndex idToRelation,
+            List<Relation> relations,
             KdTree kdTree,
             float minx,
             float maxx,
@@ -44,7 +44,7 @@ public class MapData {
         this.shapes = shapes;
         this.islands = islands;
         this.ways = ways;
-        this.idToRelation = idToRelation;
+        this.relations = relations;
         this.minx = minx;
         this.miny = miny;
         this.maxx = maxx;
@@ -119,8 +119,8 @@ public class MapData {
         return ways;
     }
 
-    public ElementLongIndex getIdToRelation() {
-        return idToRelation;
+    public List<Relation> getRelations() {
+        return relations;
     }
 
     public float getMinx() {

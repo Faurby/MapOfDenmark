@@ -65,10 +65,10 @@ public class XmlParser {
 
         NodeLongIndex idToNode = new NodeLongIndex();
         WayLongIndex idToWay = new WayLongIndex();
-        ElementLongIndex idToRelation = new ElementLongIndex();
+        RelationLongIndex idToRelation = new RelationLongIndex();
 
         List<Drawable> shapes = new ArrayList<>();
-
+        List<Relation> relations = new ArrayList<>();
         List<Way> ways = new ArrayList<>();
         List<Way> coastlines = new ArrayList<>();
         List<Way> islands;
@@ -124,9 +124,9 @@ public class XmlParser {
                                             relation.addMember(memWay);
                                         }
                                     } else if (type.equalsIgnoreCase("relation")) {
-                                        Relation memRelation = (Relation) idToRelation.get(Long.parseLong(memRef));
+                                        Relation memRelation = idToRelation.get(Long.parseLong(memRef));
                                         if (memRelation != null) {
-                                            relation.addMember(memRelation.getID());
+                                            relation.addMember(memRelation);
                                         }
                                     }
                                 }
@@ -176,9 +176,9 @@ public class XmlParser {
                                         break;
                                     case "landuse":
                                         if (value.equals("grass") ||
-                                                value.equals("meadow") ||
-                                                value.equals("orchard") ||
-                                                value.equals("allotments")) {
+                                            value.equals("meadow") ||
+                                            value.equals("orchard") ||
+                                            value.equals("allotments")) {
                                             way.setType(WayType.LANDUSE);
                                         }
                                         break;
@@ -225,6 +225,7 @@ public class XmlParser {
 
                         case "relation":
                             if (options.getBool(Option.LOAD_RELATIONS)) {
+                                relations.add(relation);
                                 idToRelation.put(relation);
                             }
                             break;
@@ -248,7 +249,7 @@ public class XmlParser {
                 shapes,
                 islands,
                 ways,
-                idToRelation,
+                relations,
                 null,
                 minX,
                 maxX,
