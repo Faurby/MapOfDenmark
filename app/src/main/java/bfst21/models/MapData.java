@@ -103,7 +103,7 @@ public class MapData {
             return islands;
         }
         for (Way way : getList()) {
-            if (way.getWayType() == wayType) {
+            if (way.getType() == wayType) {
                 list.add(way);
             }
         }

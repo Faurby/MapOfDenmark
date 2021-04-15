@@ -252,9 +252,6 @@ public class MapCanvas extends Canvas {
             gc.setFill(getColor(wayType));
             for (Way way : model.getMapData().getWays(wayType)) {
                 way.fill(gc, zoomLevel);
-                if (way.getID() == 4248461L) {
-                    way.getBoundingBox().draw(gc, 0);
-                }
             }
         }
     }

@@ -2,7 +2,6 @@ package bfst21.osm;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import bfst21.tree.BoundingBox;
@@ -162,11 +161,11 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         this.maxSpeed = maxSpeed;
     }
 
-    public WayType getWayType() {
+    public WayType getType() {
         return wayType;
     }
 
-    public void setWayType(WayType wayType) {
+    public void setType(WayType wayType) {
         this.wayType = wayType;
     }
 
