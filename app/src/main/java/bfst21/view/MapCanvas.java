@@ -306,7 +306,7 @@ public class MapCanvas extends Canvas {
     public void paintFill(WayType wayType) {
         if (zoomLevel >= wayType.getZoomLevelRequired()) {
             gc.setFill(getColor(wayType));
-            for (Way way : model.getMapData().getWays(wayType)) {
+            for (Way way : model.getMapData().getFillWays(wayType, zoomLevel)) {
                 way.fill(gc, zoomLevel);
             }
         }

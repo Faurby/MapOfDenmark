@@ -212,6 +212,13 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         }
     }
 
+    public double getArea() {
+        double xLength = maxX - minX;
+        double yLength = maxY - minY;
+        double area = xLength * yLength;
+        return area * Math.pow(10, 9);
+    }
+
     @Override
     public Rectangle mbr() {
         return Geometries.rectangle(minX, minY, maxX, maxY);

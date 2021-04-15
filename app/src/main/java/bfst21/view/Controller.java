@@ -160,6 +160,7 @@ public class Controller {
             }
         };
         task.setOnSucceeded(e -> loadingText.setVisible(false));
+        task.setOnFailed(ex -> task.getException().printStackTrace());
         Thread thread = new Thread(task);
         thread.start();
     }
