@@ -15,6 +15,7 @@ import java.util.List;
 
 public class MapData {
 
+    private final List<UserNode> userNodes = new ArrayList<>();
     private final List<Drawable> shapes;
     private final List<Way> islands;
     private final List<Way> ways;
@@ -24,7 +25,6 @@ public class MapData {
 
     private List<Way> searchList;
     private List<Way> rTreeSearchList;
-    private List<UserNode> userNodes = new ArrayList<>();
 
     private final float minx, miny, maxx, maxy;
 

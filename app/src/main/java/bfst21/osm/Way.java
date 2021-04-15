@@ -21,6 +21,7 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
 
     private WayType wayType;
     private int maxSpeed;
+    private String role;
 
     private float minX, maxX, minY, maxY;
 
@@ -174,6 +175,14 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
                 wayType == WayType.MOTORWAY ||
                 wayType == WayType.RESIDENTIAL ||
                 wayType == WayType.TERTIARY;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getRole() {
+        return role;
     }
 
     @Override

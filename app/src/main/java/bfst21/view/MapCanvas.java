@@ -2,6 +2,7 @@ package bfst21.view;
 
 import bfst21.models.Option;
 import bfst21.models.Options;
+import bfst21.osm.Relation;
 import bfst21.osm.UserNode;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
@@ -28,7 +29,7 @@ public class MapCanvas extends Canvas {
     private Model model;
 
     private final double zoomLevelMin = 50;
-    private final double zoomLevelMax = 50000.0;
+    private final double zoomLevelMax = 100_000.0;
     private double zoomLevel;
     private double widthModifier = 1.0;
 
@@ -81,6 +82,10 @@ public class MapCanvas extends Canvas {
             if (options.getBool(Option.DISPLAY_ISLANDS)) {
                 paintFill(WayType.ISLAND);
             }
+            drawLine(WayType.CYCLEWAY);
+            drawLine(WayType.FOOTWAY);
+            drawLine(WayType.ROAD);
+
             if (!initialRangeSearch) {
                 if (options.getBool(Option.USE_KD_TREE)) {
                     doRangeSearch();
@@ -125,6 +130,20 @@ public class MapCanvas extends Canvas {
                 }
             }
             drawUserNodes();
+            drawLine(WayType.UNKNOWN);
+
+//            gc.setStroke(Color.BLUEVIOLET);
+//            gc.setLineWidth(0.0002 * widthModifier);
+//            for (Relation rel : model.getMapData().getRelations()) {
+//                for (Way way : rel.getWays()) {
+//                    String role = way.getRole();
+//                    if (role != null) {
+//                        if (role.equals("outer") || role.equals("inner")) {
+//                            way.draw(gc, zoomLevel);
+//                        }
+//                    }
+//                }
+//            }
         }
         gc.restore();
 
@@ -280,6 +299,7 @@ public class MapCanvas extends Canvas {
             }
         };
         rangeSearchTask.setOnSucceeded(e -> repaint());
+        rangeSearchTask.setOnFailed(e -> System.out.println("Failed to complete range search"));
         Thread thread = new Thread(rangeSearchTask);
         thread.start();
     }

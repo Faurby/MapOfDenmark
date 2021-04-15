@@ -123,6 +123,10 @@ public class XmlParser {
                                     } else if (type.equalsIgnoreCase("way")) {
                                         Way memWay = idToWay.get(Long.parseLong(memRef));
                                         if (memWay != null) {
+                                            String role = reader.getAttributeValue(null, "role");
+                                            if (role != null && !role.isEmpty()) {
+                                                memWay.setRole(role);
+                                            }
                                             relation.addMember(memWay);
                                         }
                                     } else if (type.equalsIgnoreCase("relation")) {
@@ -163,6 +167,7 @@ public class XmlParser {
                                     case "highway":
                                         switch (value) {
                                             case "motorway":
+                                            case "motorway_link":
                                                 way.setType(WayType.MOTORWAY);
                                                 break;
                                             case "primary":
@@ -170,6 +175,21 @@ public class XmlParser {
                                                 break;
                                             case "residential":
                                                 way.setType(WayType.RESIDENTIAL);
+                                                break;
+                                            case "footway":
+                                            case "footpath":
+                                            case "path":
+                                            case "pedestrian":
+                                                way.setType(WayType.FOOTWAY);
+                                                break;
+                                            case "cycleway":
+                                            case "track":
+                                                way.setType(WayType.CYCLEWAY);
+                                                break;
+                                            case "road":
+                                            case "service":
+                                            case "trunk":
+                                                way.setType(WayType.ROAD);
                                                 break;
                                             case "tertiary":
                                             case "secondary":

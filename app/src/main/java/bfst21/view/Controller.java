@@ -160,6 +160,7 @@ public class Controller {
             }
         };
         task.setOnSucceeded(e -> loadingText.setVisible(false));
+        task.setOnFailed(e -> System.out.println("Failed to load default file"));
         Thread thread = new Thread(task);
         thread.start();
     }
@@ -184,6 +185,7 @@ public class Controller {
                 }
             };
             task.setOnSucceeded(e -> loadingText.setVisible(false));
+            task.setOnFailed(e -> System.out.println("Failed to load file"));
             Thread thread = new Thread(task);
             thread.start();
         }
