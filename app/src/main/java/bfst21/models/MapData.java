@@ -115,7 +115,11 @@ public class MapData {
 
             for (Way way : getList()) {
                 if (way.getType() == wayType) {
-                    if (way.getArea() >= 10_000 || zoomLevel >= 5000) {
+                    if (way.getArea() >= 500_000 || zoomLevel >= 9000) {
+                        list.add(way);
+                    } else if (way.getArea() >= 100_000 && zoomLevel >= 2000) {
+                        list.add(way);
+                    }  else if (way.getArea() >= 70_000 && zoomLevel >= 5000) {
                         list.add(way);
                     }
                 }
