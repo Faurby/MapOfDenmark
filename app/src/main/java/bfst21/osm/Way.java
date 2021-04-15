@@ -20,7 +20,8 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
     private static final long serialVersionUID = 3139576893143362100L;
     protected List<Node> nodes = new ArrayList<>();
 
-    private HashMap<String, String> tags;
+    private WayType wayType;
+    private int maxSpeed;
 
     private float minX, maxX, minY, maxY;
 
@@ -56,27 +57,6 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
 
     public BoundingBox getBoundingBox() {
         return new BoundingBox(minX, maxX, minY, maxY);
-    }
-
-    private void createTags() {
-        if (tags == null) {
-            tags = new HashMap<>();
-        }
-    }
-
-    public void addTag(String key, String value) {
-        createTags();
-        tags.put(key, value);
-    }
-
-    public String getValue(String key) {
-        createTags();
-        return tags.get(key);
-    }
-
-    public HashMap<String, String> getTags() {
-        createTags();
-        return tags;
     }
 
     public Node first() {
@@ -176,6 +156,18 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
 
     public float getMaxY() {
         return maxY;
+    }
+
+    public void setMaxSpeed(int maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
+    public WayType getWayType() {
+        return wayType;
+    }
+
+    public void setWayType(WayType wayType) {
+        this.wayType = wayType;
     }
 
     @Override

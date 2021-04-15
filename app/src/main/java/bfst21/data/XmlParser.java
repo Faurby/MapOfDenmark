@@ -26,8 +26,6 @@ public class XmlParser {
         return loadOSM(new FileInputStream(fileName));
     }
 
-    //TODO: Consider using a stack for parent elements
-    // You can then peek to see what type of parent it has
     public MapData loadOSM(InputStream input) throws XMLStreamException, FactoryConfigurationError {
 
         Options options = Options.getInstance();
@@ -38,6 +36,7 @@ public class XmlParser {
 
         Way way = null;
         Relation relation = null;
+        OsmAddress osmAddress = new OsmAddress();
 
         NodeLongIndex idToNode = new NodeLongIndex();
         WayLongIndex idToWay = new WayLongIndex();
@@ -49,7 +48,8 @@ public class XmlParser {
         List<Way> coastlines = new ArrayList<>();
         List<Way> islands;
 
-        float minx = 0, miny = 0, maxx = 0, maxy = 0;
+        int maxSpeed;
+        float minX = 0, minY = 0, maxX = 0, maxY = 0;
         boolean isCoastline = false;
 
         while (reader.hasNext()) {
@@ -57,10 +57,10 @@ public class XmlParser {
                 case START_ELEMENT:
                     switch (reader.getLocalName()) {
                         case "bounds":
-                            minx = Float.parseFloat(reader.getAttributeValue(null, "minlon"));
-                            maxx = Float.parseFloat(reader.getAttributeValue(null, "maxlon"));
-                            maxy = Float.parseFloat(reader.getAttributeValue(null, "minlat")) / -0.56f;
-                            miny = Float.parseFloat(reader.getAttributeValue(null, "maxlat")) / -0.56f;
+                            minX = Float.parseFloat(reader.getAttributeValue(null, "minlon"));
+                            maxX = Float.parseFloat(reader.getAttributeValue(null, "maxlon"));
+                            maxY = Float.parseFloat(reader.getAttributeValue(null, "minlat")) / -0.56f;
+                            minY = Float.parseFloat(reader.getAttributeValue(null, "maxlat")) / -0.56f;
                             break;
 
                         case "node":
@@ -112,11 +112,72 @@ public class XmlParser {
                         case "tag":
                             String key = reader.getAttributeValue(null, "k");
                             String value = reader.getAttributeValue(null, "v");
+
                             if (way != null) {
-                                if (key.equals("natural") && value.equals("coastline")) {
-                                    isCoastline = true;
-                                } else if (options.getBool(Option.LOAD_TAGGED_WAYS)) {
-                                    way.addTag(key, value.toUpperCase());
+                                switch(key) {
+                                    case "building":
+                                        way.setWayType(WayType.BUILDING);
+                                        break;
+                                    case "city":
+                                        //Set address city
+                                        break;
+                                    case "highway":
+                                        switch (value) {
+                                            case "motorway":
+                                                way.setWayType(WayType.MOTORWAY);
+                                                break;
+                                            case "primary":
+                                                way.setWayType(WayType.PRIMARY);
+                                                break;
+                                            case "residential":
+                                                way.setWayType(WayType.RESIDENTIAL);
+                                                break;
+                                            case "tertiary":
+                                                way.setWayType(WayType.TERTIARY);
+                                                break;
+                                        }
+                                        break;
+                                    case "housenumber":
+                                        //Set address housenumber
+                                        break;
+                                    case "landuse":
+                                        if (value.equals("grass") ||
+                                            value.equals("meadow") ||
+                                            value.equals("orchard") ||
+                                            value.equals("allotments")) {
+                                            way.setWayType(WayType.LANDUSE);
+                                        }
+                                        break;
+                                    case "leisure":
+                                        if (value.equals("park")) {
+                                            way.setWayType(WayType.LANDUSE);
+                                        }
+                                        break;
+                                    case "maxspeed":
+                                        way.setMaxSpeed(Integer.parseInt(value));
+                                        break;
+                                    case "name":
+                                        //Set address name
+                                        break;
+                                    case "natural":
+                                        switch (value) {
+                                            case "coastline":
+                                                isCoastline = true;
+                                                break;
+                                            case "water":
+                                                way.setWayType(WayType.WATER);
+                                                break;
+                                        }
+                                        break;
+                                    case "postcode":
+                                        //Set address postcode
+                                        break;
+                                    case "street":
+                                        //Set address street
+                                        break;
+                                    case "waterway":
+                                        way.setWayType(WayType.WATERWAY);
+                                        break;
                                 }
                             }
                             break;
@@ -135,7 +196,7 @@ public class XmlParser {
                             if (isCoastline) {
                                 coastlines.add(way);
 
-                            } else if (way.getTags() != null && options.getBool(Option.LOAD_TAGGED_WAYS)) {
+                            } else {
                                 ways.add(way);
                             }
                             break;
@@ -157,10 +218,10 @@ public class XmlParser {
                 ways,
                 idToRelation,
                 null,
-                minx,
-                maxx,
-                miny,
-                maxy
+                minX,
+                maxX,
+                minY,
+                maxY
         );
     }
 

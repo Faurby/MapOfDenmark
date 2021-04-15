@@ -22,7 +22,6 @@ public class MapData {
     private KdTree kdTree;
     private RTree<Integer, Way> rTree;
 
-    //TODO: Maybe this should be reconsidered. This list could end up containing all elements
     private List<Way> searchList;
     private List<Way> rTreeSearchList;
 
@@ -100,90 +99,12 @@ public class MapData {
     public List<Way> getWays(WayType wayType) {
         List<Way> list = new ArrayList<>();
 
-        switch (wayType) {
-            case ISLAND:
-                return islands;
-            case WATER:
-                return getWater();
-            case WATERWAY:
-                return getWaterWays();
-            case LANDUSE:
-                return getLandUse();
-            case BUILDING:
-                return getBuildings();
-            case MOTORWAY:
-            case TERTIARY:
-            case PRIMARY:
-            case RESIDENTIAL:
-                return getExtendedWays(wayType);
+        if (wayType == WayType.ISLAND) {
+            return islands;
         }
-        return list;
-    }
-
-    private List<Way> getExtendedWays(WayType wayType) {
-        List<Way> list = new ArrayList<>();
-
         for (Way way : getList()) {
-            if (way.getValue("highway") != null) {
-                if (way.getValue("highway").contains(wayType.toString())) {
-                    list.add(way);
-                }
-            }
-        }
-        return list;
-    }
-
-    private List<Way> getWater() {
-        List<Way> list = new ArrayList<>();
-
-        for (Way way : getList()) {
-            if (way.getValue("natural") != null) {
-                if (way.getValue("natural").contains("WATER")) {
-                    list.add(way);
-                }
-            }
-        }
-        return list;
-    }
-
-    private List<Way> getBuildings() {
-        List<Way> list = new ArrayList<>();
-
-        for (Way way : getList()) {
-            if (way.getValue("building") != null) {
+            if (way.getWayType() == wayType) {
                 list.add(way);
-            }
-        }
-        return list;
-    }
-
-    private List<Way> getWaterWays() {
-        List<Way> list = new ArrayList<>();
-
-        for (Way way : getList()) {
-            if (way.getValue("waterway") != null) {
-                list.add(way);
-            }
-        }
-        return list;
-    }
-
-    private List<Way> getLandUse() {
-        List<Way> list = new ArrayList<>();
-
-        for (Way way : getList()) {
-            if (way.getValue("landuse") != null) {
-                if (way.getValue("landuse").equals("GRASS") ||
-                    way.getValue("landuse").equals("MEADOW") ||
-                    way.getValue("landuse").equals("ORCHARD") ||
-                    way.getValue("landuse").equals("ALLOTMENTS")) {
-
-                    list.add(way);
-                }
-            } else if (way.getValue("leisure") != null) {
-                if (way.getValue("leisure").equals("PARK")) {
-                    list.add(way);
-                }
             }
         }
         return list;

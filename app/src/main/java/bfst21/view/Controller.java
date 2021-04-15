@@ -244,7 +244,7 @@ public class Controller {
         }
     }
 
-    public void switchText(ActionEvent event){
+    public void switchText(){
         String s = startingPoint.getText();
         startingPoint.setText(destinationPoint.getText());
         destinationPoint.setText(s);
