@@ -85,8 +85,6 @@ public class Controller {
     public void onWindowResize(Stage stage) {
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
         searchAddressVbox.setMaxWidth(stage.getWidth() * 0.25);
-        System.out.println("StackPane width: " + stackPane.getWidth());
-        System.out.println("StackPane height: " + stackPane.getHeight());
         canvas.repaint();
     }
 

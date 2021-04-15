@@ -169,6 +169,13 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         this.wayType = wayType;
     }
 
+    public boolean isDrivable() {
+        return wayType == WayType.PRIMARY ||
+                wayType == WayType.MOTORWAY ||
+                wayType == WayType.RESIDENTIAL ||
+                wayType == WayType.TERTIARY;
+    }
+
     @Override
     public double distance(Rectangle r) {
         if (r.contains(minX, minY) || r.contains(maxX, maxY)) {
