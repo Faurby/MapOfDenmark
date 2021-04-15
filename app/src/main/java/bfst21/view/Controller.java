@@ -4,6 +4,7 @@ import bfst21.address.Address;
 import bfst21.exceptions.MapDataNotLoadedException;
 import bfst21.models.*;
 import bfst21.osm.UserNode;
+import bfst21.osm.WayType;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -99,7 +100,9 @@ public class Controller {
     public void onWindowResize(Stage stage) {
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
         searchAddressVbox.setMaxWidth(stage.getWidth() * 0.25);
+        stage.getHeight(); //spørg mig ikke hvorfor det virker, men det gør det
         canvas.repaint();
+
     }
 
     @FXML
@@ -134,12 +137,13 @@ public class Controller {
         if (e.isPrimaryButtonDown()) {
             canvas.pan(dx, dy);
 
-        } else {
+            //TODO slet gamle kode-rester?
+        }/* else {
             Point2D from = canvas.mouseToModelCoords(lastMouse);
             Point2D to = canvas.mouseToModelCoords(new Point2D(e.getX(), e.getY()));
             model.add(new Line(from, to));
             canvas.repaint();
-        }
+        }*/
         onMousePressed(e);
     }
 

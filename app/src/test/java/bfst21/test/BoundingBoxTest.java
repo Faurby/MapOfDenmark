@@ -19,7 +19,7 @@ public class BoundingBoxTest {
     }
 
     @Test
-    public void testBoxNotIntersecting() {
+    public void testBoxesNotIntersecting() {
         BoundingBox bb1 = new BoundingBox(2, 3, 2, 3);
         BoundingBox bb2 = new BoundingBox(10, 20, 10, 20);
 
