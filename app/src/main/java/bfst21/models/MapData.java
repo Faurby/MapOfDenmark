@@ -80,7 +80,7 @@ public class MapData {
 
     public void search(double x1, double y1, double x2, double y2) {
         Iterable<Entry<Integer, Way>> results =
-            rTree.search(Geometries.rectangle(x1, y1, x2, y2));
+                rTree.search(Geometries.rectangle(x1, y1, x2, y2));
 
         Iterator<Entry<Integer, Way>> rTreeIterator = results.iterator();
         rTreeSearchList = new ArrayList<>();

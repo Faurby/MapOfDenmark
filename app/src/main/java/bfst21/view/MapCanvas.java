@@ -15,6 +15,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.FillRule;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Affine;
@@ -130,20 +131,8 @@ public class MapCanvas extends Canvas {
                 }
             }
             drawUserNodes();
+            drawRelations();
             drawLine(WayType.UNKNOWN);
-
-//            gc.setStroke(Color.BLUEVIOLET);
-//            gc.setLineWidth(0.0002 * widthModifier);
-//            for (Relation rel : model.getMapData().getRelations()) {
-//                for (Way way : rel.getWays()) {
-//                    String role = way.getRole();
-//                    if (role != null) {
-//                        if (role.equals("outer") || role.equals("inner")) {
-//                            way.draw(gc, zoomLevel);
-//                        }
-//                    }
-//                }
-//            }
         }
         gc.restore();
 
@@ -310,6 +299,19 @@ public class MapCanvas extends Canvas {
         } catch (NonInvertibleTransformException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public void drawRelations() {
+        gc.setFillRule(FillRule.EVEN_ODD);
+        for (Relation rel : model.getMapData().getRelations()) {
+            if (rel.getType() != null) {
+                WayType wayType = rel.getType();
+                if (zoomLevel >= wayType.getZoomLevelRequired()) {
+                    gc.setFill(wayType.getColor());
+                    rel.fill(gc, zoomLevel);
+                }
+            }
         }
     }
 

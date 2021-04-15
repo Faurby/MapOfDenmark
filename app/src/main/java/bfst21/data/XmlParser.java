@@ -62,6 +62,7 @@ public class XmlParser {
         Way way = null;
         Relation relation = null;
         OsmAddress osmAddress = new OsmAddress();
+        WayType wayType = null;
 
         NodeLongIndex idToNode = new NodeLongIndex();
         WayLongIndex idToWay = new WayLongIndex();
@@ -72,8 +73,6 @@ public class XmlParser {
         List<Way> ways = new ArrayList<>();
         List<Way> coastlines = new ArrayList<>();
         List<Way> islands;
-
-        Set<String> maxspeedSet = new HashSet<>();
 
         float minX = 0, minY = 0, maxX = 0, maxY = 0;
         boolean isCoastline = false;
@@ -143,7 +142,7 @@ public class XmlParser {
                             String key = reader.getAttributeValue(null, "k");
                             String value = reader.getAttributeValue(null, "v");
 
-                            if (way != null || key.contains("addr:")) {
+                            if (way != null || relation != null || key.contains("addr:")) {
                                 switch (key) {
                                     case "addr:city":
                                         osmAddress = new OsmAddress();
@@ -162,38 +161,38 @@ public class XmlParser {
                                         osmAddress.setStreet(value);
                                         break;
                                     case "building":
-                                        way.setType(WayType.BUILDING);
+                                        wayType = WayType.BUILDING;
                                         break;
                                     case "highway":
                                         switch (value) {
                                             case "motorway":
                                             case "motorway_link":
-                                                way.setType(WayType.MOTORWAY);
+                                                wayType = WayType.MOTORWAY;
                                                 break;
                                             case "primary":
-                                                way.setType(WayType.PRIMARY);
+                                                wayType = WayType.PRIMARY;
                                                 break;
                                             case "residential":
-                                                way.setType(WayType.RESIDENTIAL);
+                                                wayType = WayType.RESIDENTIAL;
                                                 break;
                                             case "footway":
                                             case "footpath":
                                             case "path":
                                             case "pedestrian":
-                                                way.setType(WayType.FOOTWAY);
+                                                wayType = WayType.FOOTWAY;
                                                 break;
                                             case "cycleway":
                                             case "track":
-                                                way.setType(WayType.CYCLEWAY);
+                                                wayType = WayType.CYCLEWAY;
                                                 break;
                                             case "road":
                                             case "service":
                                             case "trunk":
-                                                way.setType(WayType.ROAD);
+                                                wayType = WayType.ROAD;
                                                 break;
                                             case "tertiary":
                                             case "secondary":
-                                                way.setType(WayType.TERTIARY);
+                                                wayType = WayType.TERTIARY;
                                                 break;
                                         }
                                         break;
@@ -202,12 +201,12 @@ public class XmlParser {
                                             value.equals("meadow") ||
                                             value.equals("orchard") ||
                                             value.equals("allotments")) {
-                                            way.setType(WayType.LANDUSE);
+                                            wayType = WayType.LANDUSE;
                                         }
                                         break;
                                     case "leisure":
                                         if (value.equals("park")) {
-                                            way.setType(WayType.LANDUSE);
+                                            wayType = WayType.LANDUSE;
                                         }
                                         break;
                                     case "maxspeed":
@@ -216,7 +215,6 @@ public class XmlParser {
                                                 way.setMaxSpeed(Integer.parseInt(value));
                                             } catch (NumberFormatException ex) {
                                             }
-
                                         }
                                         break;
                                     case "natural":
@@ -225,13 +223,19 @@ public class XmlParser {
                                                 isCoastline = true;
                                                 break;
                                             case "water":
-                                                way.setType(WayType.WATER);
+                                                wayType = WayType.WATER;
                                                 break;
                                         }
                                         break;
                                     case "waterway":
-                                        way.setType(WayType.WATERWAY);
+                                        wayType = WayType.WATERWAY;
                                         break;
+                                }
+                            } else if (relation != null) {
+                                if (key.equals("type")) {
+                                    if (value.equals("multipolygon")) {
+                                        relation.setMultipolygon(true);
+                                    }
                                 }
                             }
                             break;
@@ -254,8 +258,13 @@ public class XmlParser {
 
                         case "relation":
                             if (options.getBool(Option.LOAD_RELATIONS)) {
+                                if (wayType != null) {
+                                    relation.setType(wayType);
+                                    wayType = null;
+                                }
                                 relations.add(relation);
                                 idToRelation.put(relation);
+                                relation = null;
                             }
                             break;
 
@@ -265,7 +274,12 @@ public class XmlParser {
                                 coastlines.add(way);
 
                             } else {
+                                if (wayType != null) {
+                                    way.setType(wayType);
+                                    wayType = null;
+                                }
                                 ways.add(way);
+                                way = null;
                             }
                             break;
                     }
