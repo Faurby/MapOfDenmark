@@ -1,16 +1,22 @@
 package bfst21.view;
 
 import bfst21.address.Address;
+import bfst21.exceptions.MapDataNotLoadedException;
 import bfst21.models.*;
+import bfst21.osm.UserNode;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -20,6 +26,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.Objects;
 
 
 public class Controller {
@@ -58,6 +65,13 @@ public class Controller {
     private Button expandButton;
     @FXML
     private Button collapseButton;
+    @FXML
+    private VBox userNodeVBox;
+    @FXML
+    private TextField userNodeTextField;
+
+    private boolean userNodeToggle = false;
+    ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
 
     private Model model;
     private Point2D lastMouse;
@@ -106,6 +120,12 @@ public class Controller {
     @FXML
     public void onMouseReleased() {
         canvas.runRangeSearchTask();
+
+        if (userNodeToggle) {
+            userNodeVBox.setVisible(true);
+            userNodeTextField.requestFocus();
+            scene.setCursor(Cursor.DEFAULT);
+        }
     }
 
     @FXML
@@ -292,5 +312,49 @@ public class Controller {
                 collapseButton.requestFocus();
             }
         }
+    }
+
+    @FXML
+    public void userNodeButtonClicked() throws MapDataNotLoadedException {
+        if (model.getMapData() == null) {
+            throw new MapDataNotLoadedException("No MapData has been loaded. MapData is null.");
+        }
+        if (userNodeToggle) {
+            userNodeToggle = false;
+            scene.setCursor(Cursor.DEFAULT);
+        } else {
+            userNodeToggle = true;
+            scene.setCursor(userNodeCursorImage);
+        }
+    }
+
+    @FXML
+    public void userNodeTextFieldKeyPressed(KeyEvent keyEvent) {
+        if (keyEvent.getCode().getName().equals("Enter")) {
+            saveUserNode();
+        } else if (keyEvent.getCode().getName().equals("Esc")) {
+            userNodeVBox.setVisible(false);
+        }
+    }
+
+    @FXML
+    public void userNodeCancelClicked() {
+        userNodeVBox.setVisible(false);
+        scene.setCursor(userNodeCursorImage);
+    }
+
+    @FXML
+    public void userNodeSaveClicked() {
+        saveUserNode();
+    }
+
+    private void saveUserNode() {
+        float userNode1 = (float) canvas.mouseToModelCoords(lastMouse).getX();
+        float userNode2 = (float) canvas.mouseToModelCoords(lastMouse).getY();
+        model.getMapData().addUserNode(new UserNode(-1 * (userNode2 * 0.56f), userNode1, userNodeTextField.getText()));
+        scene.setCursor(Cursor.DEFAULT);
+        userNodeToggle = false;
+        userNodeVBox.setVisible(false);
+        canvas.repaint();
     }
 }

@@ -2,6 +2,7 @@ package bfst21.view;
 
 import bfst21.models.Option;
 import bfst21.models.Options;
+import bfst21.osm.UserNode;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
 import bfst21.tree.KdTree;
@@ -123,6 +124,7 @@ public class MapCanvas extends Canvas {
                     drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
                 }
             }
+            drawUserNodes();
         }
         gc.restore();
 
@@ -174,6 +176,11 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    private void drawUserNodes() {
+        for (UserNode userNode : model.getMapData().getUserNodes()) {
+            userNode.draw(gc, 0);
+        }
+    }
 
     public void drawKdTree(KdNode kdNode,
                            float maxX,

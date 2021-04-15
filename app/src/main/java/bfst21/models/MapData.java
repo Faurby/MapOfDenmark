@@ -24,6 +24,7 @@ public class MapData {
 
     private List<Way> searchList;
     private List<Way> rTreeSearchList;
+    private List<UserNode> userNodes = new ArrayList<>();
 
     private final float minx, miny, maxx, maxy;
 
@@ -136,5 +137,13 @@ public class MapData {
 
     public float getMaxy() {
         return maxy;
+    }
+
+    public List<UserNode> getUserNodes() {
+        return userNodes;
+    }
+
+    public void addUserNode(UserNode userNode) {
+        userNodes.add(userNode);
     }
 }
