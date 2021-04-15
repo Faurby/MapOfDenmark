@@ -260,7 +260,6 @@ public class MapCanvas extends Canvas {
         if (rangeSearchTask != null) {
             if (rangeSearchTask.isRunning()) {
                 rangeSearchTask.cancel();
-                System.out.println("cancel rangeSearchTask");
             }
         }
         rangeSearchTask = new Task<>() {
@@ -270,13 +269,9 @@ public class MapCanvas extends Canvas {
                 return null;
             }
         };
-        rangeSearchTask.setOnSucceeded(e -> {
-            repaint();
-            System.out.println("done rangeSearchTask");
-        });
+        rangeSearchTask.setOnSucceeded(e -> repaint());
         Thread thread = new Thread(rangeSearchTask);
         thread.start();
-        System.out.println("start rangeSearchTask");
     }
 
     public Point2D mouseToModelCoords(Point2D point) {
