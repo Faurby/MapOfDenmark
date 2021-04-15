@@ -73,6 +73,8 @@ public class XmlParser {
         List<Way> coastlines = new ArrayList<>();
         List<Way> islands;
 
+        Set<String> maxspeedSet = new HashSet<>();
+
         float minX = 0, minY = 0, maxX = 0, maxY = 0;
         boolean isCoastline = false;
 
@@ -170,6 +172,7 @@ public class XmlParser {
                                                 way.setType(WayType.RESIDENTIAL);
                                                 break;
                                             case "tertiary":
+                                            case "secondary":
                                                 way.setType(WayType.TERTIARY);
                                                 break;
                                         }
@@ -188,7 +191,13 @@ public class XmlParser {
                                         }
                                         break;
                                     case "maxspeed":
-                                        way.setMaxSpeed(Integer.parseInt(value));
+                                        if (way.isDrivable()) {
+                                            try {
+                                                way.setMaxSpeed(Integer.parseInt(value));
+                                            } catch (NumberFormatException ex) {
+                                            }
+
+                                        }
                                         break;
                                     case "natural":
                                         switch (value) {
@@ -218,9 +227,9 @@ public class XmlParser {
                     switch (reader.getLocalName()) {
 
                         case "node":
-                            if (osmAddress.getCity() != null) {
-                                //Found address
-                            }
+//                            if (osmAddress.getCity() != null) {
+//                                //Found address
+//                            }
                             break;
 
                         case "relation":
