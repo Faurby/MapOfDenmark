@@ -216,7 +216,6 @@ public class XmlParser {
                                                 way.setMaxSpeed(Integer.parseInt(value));
                                             } catch (NumberFormatException ex) {
                                             }
-
                                         }
                                         break;
                                     case "natural":

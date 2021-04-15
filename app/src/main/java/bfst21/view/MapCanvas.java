@@ -15,6 +15,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.FillRule;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Affine;
@@ -82,9 +83,9 @@ public class MapCanvas extends Canvas {
             if (options.getBool(Option.DISPLAY_ISLANDS)) {
                 paintFill(WayType.ISLAND);
             }
-            drawLine(WayType.CYCLEWAY);
-            drawLine(WayType.FOOTWAY);
-            drawLine(WayType.ROAD);
+            drawRoad(WayType.CYCLEWAY);
+            drawRoad(WayType.FOOTWAY);
+            drawRoad(WayType.ROAD);
 
             if (!initialRangeSearch) {
                 if (options.getBool(Option.USE_KD_TREE)) {
@@ -130,7 +131,7 @@ public class MapCanvas extends Canvas {
                 }
             }
             drawUserNodes();
-            drawLine(WayType.UNKNOWN);
+            //drawRoad(WayType.UNKNOWN);
 
 //            gc.setStroke(Color.BLUEVIOLET);
 //            gc.setLineWidth(0.0002 * widthModifier);

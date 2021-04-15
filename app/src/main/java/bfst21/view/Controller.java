@@ -178,7 +178,6 @@ public class Controller {
                 @Override
                 protected Void call() throws Exception {
                     loadingText.setVisible(true);
-                    System.out.println(Thread.currentThread().getName());
                     canvas.load(false);
                     updateZoomBox();
                     return null;
