@@ -8,6 +8,7 @@ import bfst21.tree.KdTree;
 import bfst21.osm.Way;
 import bfst21.osm.WayType;
 import bfst21.models.Model;
+import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -16,6 +17,7 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
+
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 
@@ -29,23 +31,26 @@ public class MapCanvas extends Canvas {
     private double zoomLevel;
     private double widthModifier = 1.0;
 
-    private long averageRepaintTime;
-    private long totalRepaintTime;
     private long totalRepaints;
+    private long totalLastRepaintTime;
 
     private final Options options = Options.getInstance();
     private final GraphicsContext gc = getGraphicsContext2D();
 
     private int depth;
+    private Task<Void> rangeSearchTask;
 
     private ColorMode colorMode = ColorMode.STANDARD;
     private Affine trans = new Affine();
+
+    private boolean initialRangeSearch;
 
     public void init(Model model) {
         this.model = model;
     }
 
     public void load(boolean loadDefault) throws XMLStreamException, IOException, ClassNotFoundException {
+        initialRangeSearch = false;
         model.load(loadDefault);
         trans = new Affine();
 
@@ -56,7 +61,7 @@ public class MapCanvas extends Canvas {
         zoomLevel *= factor;
         System.out.println("Zoom: " + zoomLevel + " factor: " + factor);
 
-        zoom(factor, new Point2D(0, 0));
+        initialZoom(factor, new Point2D(0, 0));
     }
 
     void repaint() {
@@ -75,37 +80,14 @@ public class MapCanvas extends Canvas {
             if (options.getBool(Option.DISPLAY_ISLANDS)) {
                 paintFill(WayType.ISLAND);
             }
+            if (!initialRangeSearch) {
+                if (options.getBool(Option.USE_KD_TREE)) {
+                    doRangeSearch();
 
-            if (options.getBool(Option.USE_KD_TREE)) {
-                double x1 = trans.getTx() / Math.sqrt(trans.determinant());
-                double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
-                double x2 = getWidth() - x1;
-                double y2 = getHeight() - y1;
-
-                x1 -= 50;
-                y1 -= 50;
-                x2 += 50;
-                y2 += 50;
-
-                Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
-                Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
-
-                BoundingBox boundingBox = new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
-                model.getMapData().rangeSearch(boundingBox);
-                boundingBox.draw(gc, 0);
-
-            } else if (options.getBool(Option.USE_R_TREE)) {
-                double x1 = trans.getTx() / Math.sqrt(trans.determinant());
-                double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
-                double x2 = getWidth() - x1;
-                double y2 = getHeight() - y1;
-
-                Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
-                Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
-
-                model.getMapData().search(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+                } else if (options.getBool(Option.USE_R_TREE)) {
+                    doRangeSearch();
+                }
             }
-
             adjustWidthModifier();
 
             if (options.getBool(Option.DISPLAY_LAND_USE)) {
@@ -145,13 +127,53 @@ public class MapCanvas extends Canvas {
         gc.restore();
 
         time += System.nanoTime();
-        System.out.println("Repaint time: "+time/1_000_000+" (Average: "+averageRepaintTime/1_000_000+" total repaints: "+totalRepaints+")");
 
-        totalRepaintTime += time;
+        totalLastRepaintTime += time;
         totalRepaints++;
 
-        averageRepaintTime = totalRepaintTime / totalRepaints;
+        if (totalRepaints % 10 == 0) {
+            long last10AverageRepaintTime = totalLastRepaintTime / 10;
+            System.out.println("Repaint time: " + time / 1_000_000 + " (Average last ten repaints: " + last10AverageRepaintTime / 1_000_000 + " total repaints: " + totalRepaints + ")");
+
+            totalLastRepaintTime = 0;
+        }
     }
+
+    public void doRangeSearch() {
+        initialRangeSearch = true;
+
+        if (model.getMapData() != null) {
+            if (options.getBool(Option.USE_KD_TREE)) {
+                double x1 = trans.getTx() / Math.sqrt(trans.determinant());
+                double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
+                double x2 = getWidth() - x1;
+                double y2 = getHeight() - y1;
+
+                x1 -= 50;
+                y1 -= 50;
+                x2 += 50;
+                y2 += 50;
+
+                Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
+                Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
+
+                BoundingBox boundingBox = new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
+                model.getMapData().rangeSearch(boundingBox);
+
+            } else if (options.getBool(Option.USE_R_TREE)) {
+                double x1 = trans.getTx() / Math.sqrt(trans.determinant());
+                double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
+                double x2 = getWidth() - x1;
+                double y2 = getHeight() - y1;
+
+                Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
+                Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
+
+                model.getMapData().search(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+            }
+        }
+    }
+
 
     public void drawKdTree(KdNode kdNode,
                            float maxX,
@@ -223,9 +245,38 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    public void initialZoom(double factor, Point2D center) {
+        trans.prependScale(factor, factor, center);
+        repaint();
+    }
+
     public void zoom(double factor, Point2D center) {
         trans.prependScale(factor, factor, center);
         repaint();
+        runRangeSearchTask();
+    }
+
+    public void runRangeSearchTask() {
+        if (rangeSearchTask != null) {
+            if (rangeSearchTask.isRunning()) {
+                rangeSearchTask.cancel();
+                System.out.println("cancel rangeSearchTask");
+            }
+        }
+        rangeSearchTask = new Task<>() {
+            @Override
+            protected Void call() {
+                doRangeSearch();
+                return null;
+            }
+        };
+        rangeSearchTask.setOnSucceeded(e -> {
+            repaint();
+            System.out.println("done rangeSearchTask");
+        });
+        Thread thread = new Thread(rangeSearchTask);
+        thread.start();
+        System.out.println("start rangeSearchTask");
     }
 
     public Point2D mouseToModelCoords(Point2D point) {

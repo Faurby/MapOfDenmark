@@ -33,6 +33,7 @@
                        width="${stackPane.width}"
                        onMouseDragged="#onMouseDragged"
                        onMousePressed="#onMousePressed"
+                       onMouseReleased="#onMouseReleased"
                        onScroll="#onScroll"
             >
             </MapCanvas>
