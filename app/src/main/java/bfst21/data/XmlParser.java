@@ -255,9 +255,9 @@ public class XmlParser {
                     switch (reader.getLocalName()) {
 
                         case "node":
-//                            if (osmAddress.getCity() != null) {
-//                                //Found address
-//                            }
+                            if (osmAddress.getCity() != null) {
+//                                System.out.println("Found: "+osmAddress.getCity());
+                            }
                             break;
 
                         case "relation":

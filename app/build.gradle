@@ -51,6 +51,8 @@ dependencies {
     // Woodstox parser
     implementation 'com.fasterxml.woodstox:woodstox-core:6.2.5'
 
+    // Algs4
+    implementation 'edu.princeton.cs:algs4:1.0.4'
 }
 
 application {
@@ -62,8 +64,18 @@ tasks.named('test') {
     // Use junit platform for unit tests.
     useJUnitPlatform()
 }
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+tasks.withType(Test) {
+    systemProperty "file.encoding", "UTF-8"
+}
 tasks.withType(JavaExec) {
-    jvmArgs = ['-Xms1000m', '-Xmx6000m']
+    jvmArgs = ['-Xms1000m', '-Xmx3000m']
 }
 
 run {
