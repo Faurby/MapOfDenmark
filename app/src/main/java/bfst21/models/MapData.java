@@ -56,6 +56,8 @@ public class MapData {
         for (Way way : ways) {
             if (way.getType() != null) {
                 if (way.canNavigate()) {
+                    double maxSpeed = way.getMaxSpeed();
+
                     int size = way.getNodes().size();
                     for (int i = 0; i < (size -1); i++) {
                         Node first = way.getNodes().get(i);
@@ -64,7 +66,7 @@ public class MapData {
                         Vertex from = directedGraph.getVertex(first.getX(), first.getY());
                         Vertex to = directedGraph.getVertex(last.getX(), last.getY());
 
-                        directedGraph.addEdge(from, to);
+                        directedGraph.addEdge(from, to, maxSpeed);
                     }
                 }
             }

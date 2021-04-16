@@ -26,8 +26,7 @@ public class DirectedGraph {
         return new Vertex(x, y);
     }
 
-    public void addEdge(Vertex from, Vertex to) {
-        double maxSpeed = 55;
+    public void addEdge(Vertex from, Vertex to, double maxSpeed) {
         Edge edge = new Edge(from, to, maxSpeed);
         from.addEdge(edge);
         to.addEdge(edge);
