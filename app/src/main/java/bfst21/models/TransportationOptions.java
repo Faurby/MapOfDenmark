@@ -8,7 +8,7 @@ public class TransportationOptions {
     private final HashMap<TransportationOption, Boolean> transOptions = new HashMap<>();
 
     public TransportationOptions() {
-        transOptions.put(TransportationOption.CAR, false);
+        transOptions.put(TransportationOption.CAR, true);
         transOptions.put(TransportationOption.BIKE, false);
         transOptions.put(TransportationOption.WALK, false);
     }
