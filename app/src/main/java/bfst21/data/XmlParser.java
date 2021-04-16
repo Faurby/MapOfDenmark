@@ -210,10 +210,14 @@ public class XmlParser {
                                         }
                                         break;
                                     case "maxspeed":
-                                        if (way.isDrivable()) {
-                                            try {
-                                                way.setMaxSpeed(Integer.parseInt(value));
-                                            } catch (NumberFormatException ex) {
+                                        if (way != null) {
+                                            if (way.getType() != null) {
+                                                if (way.isDrivable()) {
+                                                    try {
+                                                        way.setMaxSpeed(Integer.parseInt(value));
+                                                    } catch (NumberFormatException ex) {
+                                                    }
+                                                }
                                             }
                                         }
                                         break;
