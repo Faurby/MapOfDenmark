@@ -22,11 +22,13 @@ import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javax.xml.stream.XMLStreamException;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
@@ -72,6 +74,12 @@ public class Controller {
     private VBox userNodeVBox;
     @FXML
     private TextField userNodeTextField;
+    @FXML
+    private Button switchButton;
+    @FXML
+    private Button searchButton;
+    @FXML
+    private Button searchButtonExpanded;
 
     private boolean userNodeToggle = false;
     ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
@@ -293,21 +301,31 @@ public class Controller {
             transOptions.chooseType(TransportationOption.CAR);
         }
         System.out.println(transOptions.returnType().toString());
+
     }
 
-    public void tabCheck(KeyEvent event) {
+    public void tabEnterCheck(KeyEvent event) {
         if (event.getCode() == KeyCode.TAB) {
             if (event.getSource().toString().contains("startingPoint")) {
                 startingPoint.setText(startingPoint.getText().trim());
-                if (getDestinationBox.isVisible()) {
-                    destinationPoint.requestFocus();
-                } else {
+                if (!getDestinationBox.isVisible()) {
                     expandButton.requestFocus();
+                } else {
+                    switchButton.requestFocus();
                 }
             } else if (event.getSource().toString().contains("destinationPoint")) {
                 destinationPoint.setText(destinationPoint.getText().trim());
                 startingPoint.setText(startingPoint.getText().trim());
                 collapseButton.requestFocus();
+            }
+        } else if (event.getCode() == KeyCode.ENTER) {
+            startingPoint.setText(startingPoint.getText().trim());
+            destinationPoint.setText(destinationPoint.getText().trim());
+            searchAddressString();
+            if (getDestinationBox.isVisible()) {
+                searchButtonExpanded.requestFocus();
+            } else {
+                searchButton.requestFocus();
             }
         }
     }

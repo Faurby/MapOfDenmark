@@ -17,7 +17,7 @@ import javafx.scene.canvas.GraphicsContext;
 public class Way extends Element implements Geometry, Drawable, Serializable {
 
     private static final long serialVersionUID = 3139576893143362100L;
-    private List<Node> nodes = new ArrayList<>();
+    private final List<Node> nodes = new ArrayList<>();
 
     private WayType wayType;
     private int maxSpeed;
@@ -160,6 +160,10 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
 
     public void setMaxSpeed(int maxSpeed) {
         this.maxSpeed = maxSpeed;
+    }
+
+    public int getMaxSpeed() {
+        return maxSpeed;
     }
 
     public WayType getType() {

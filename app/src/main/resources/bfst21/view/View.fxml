@@ -73,7 +73,7 @@
                     <padding><Insets bottom="5" left="10" right="10" top="5" /></padding>
                     <Text style="-fx-font-size: 15" text="Search" />
                     <Text fx:id="startingPointText" managed="false" text="Starting point:" visible="false" />
-                    <TextArea fx:id="startingPoint" minHeight="20" prefHeight="25" promptText="Choose an address..." wrapText="true" onKeyPressed="#tabCheck" />
+                    <TextArea fx:id="startingPoint" minHeight="20" prefHeight="25" promptText="Choose an address..." wrapText="true" onKeyPressed="#tabEnterCheck" />
                     <HBox fx:id="expandAndSearchButtons" alignment="BASELINE_CENTER" prefWidth="198.0" style="-fx-padding: 10 5 5 5">
                         <Button fx:id="expandButton" onAction="#expandSearchView" text="Expand" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                         <ToolBar visible="false" HBox.hgrow="ALWAYS" />
@@ -84,18 +84,19 @@
                             <Pane GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS" visible="false"/>
                             <Pane GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" visible="false"/>
                             <Text GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.rowSpan="1" text="Destination:" />
-                            <Button GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.rowSpan="3" maxHeight="20" maxWidth="40" text="Switch" style="-fx-font-size: 9" onAction="#switchText"/>
-                        </GridPane>
-                        <TextArea fx:id="destinationPoint" minHeight="25" prefHeight="25" promptText="To:" wrapText="true" onKeyPressed="#tabCheck"/>
-
-                        <HBox style="-fx-padding: 10 10 10 10 ; -fx-border-insets: 0 0 0 0 ; -fx-alignment: CENTER">
-                            <Button fx:id="CAR" onAction="#transportationButtonPushed" style="-fx-background-color: DARKGREY">
+                            <Button fx:id="switchButton" maxHeight="20" maxWidth="40" onAction="#switchText"
+                                    GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.rowSpan="3">
                                 <graphic>
-                                    <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="/carPic.png"/>
+                                    <ImageView fitHeight="20.0" fitWidth="40.0" preserveRatio="true" style="-fx-background-color: TRANSPARENT">
+                                        <Image url="/arrowPic.png" />
                                     </ImageView>
                                 </graphic>
+                            </Button>
+                        </GridPane>
+                        <TextArea fx:id="destinationPoint" minHeight="25" prefHeight="25" promptText="To:" wrapText="true" onKeyPressed="#tabEnterCheck"/>
+
+                        <HBox style="-fx-padding: 10 10 10 10 ; -fx-border-insets: 0 0 0 0 ; -fx-alignment: CENTER">
+                            <Button fx:id="CAR" minHeight="40" minWidth="40" onAction="#transportationButtonPushed" style="-fx-background-image: url(carPic.png) ; -fx-background-size: 40">
                             </Button>
                             <Button fx:id="BIKE" minHeight="40" minWidth="40" onAction="#transportationButtonPushed" style="-fx-background-image: url(bikePic.png) ; -fx-background-size: 40">
                             </Button>
@@ -106,7 +107,7 @@
                         <HBox alignment="BASELINE_CENTER" style="-fx-padding: 10 5 5 5">
                             <Button fx:id="collapseButton" onAction="#expandSearchView" text="Collapse" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                             <ToolBar visible="false" HBox.hgrow="ALWAYS" />
-                            <Button onAction="#searchAddressString" text="Search" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                            <Button fx:id="searchButtonExpanded" onAction="#searchAddressString" text="Search" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                         </HBox>
                     </VBox>
                     <VBox alignment="CENTER">
