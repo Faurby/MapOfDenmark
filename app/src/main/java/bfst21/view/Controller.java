@@ -4,6 +4,7 @@ import bfst21.address.Address;
 import bfst21.exceptions.MapDataNotLoadedException;
 import bfst21.models.*;
 import bfst21.osm.UserNode;
+import bfst21.osm.WayType;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,7 +26,9 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import javax.xml.stream.XMLStreamException;
 import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
 
@@ -99,6 +102,7 @@ public class Controller {
     public void onWindowResize(Stage stage) {
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
         searchAddressVbox.setMaxWidth(stage.getWidth() * 0.25);
+        stage.getHeight();
         canvas.repaint();
     }
 
@@ -133,12 +137,6 @@ public class Controller {
 
         if (e.isPrimaryButtonDown()) {
             canvas.pan(dx, dy);
-
-        } else {
-            Point2D from = canvas.mouseToModelCoords(lastMouse);
-            Point2D to = canvas.mouseToModelCoords(new Point2D(e.getX(), e.getY()));
-            model.add(new Line(from, to));
-            canvas.repaint();
         }
         onMousePressed(e);
     }

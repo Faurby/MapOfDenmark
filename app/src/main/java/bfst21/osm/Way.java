@@ -171,6 +171,7 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
     }
 
     public boolean isDrivable() {
+        
         return wayType == WayType.PRIMARY ||
                 wayType == WayType.MOTORWAY ||
                 wayType == WayType.RESIDENTIAL ||

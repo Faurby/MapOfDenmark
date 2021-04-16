@@ -19,7 +19,7 @@ public class BoundingBoxTest {
     }
 
     @Test
-    public void testBoxNotIntersecting() {
+    public void testBoxesNotIntersecting() {
         BoundingBox bb1 = new BoundingBox(2, 3, 2, 3);
         BoundingBox bb2 = new BoundingBox(10, 20, 10, 20);
 
@@ -99,7 +99,7 @@ public class BoundingBoxTest {
 
     @Test
     public void testIntersectOnlyOneSharedEdge(){
-        //Doesn't matter much whether these return true or false, as long as we're consistent
+        //Doesn't matter much whether these return true or false, as long as it's consistent
         BoundingBox bb = new BoundingBox(2, 4, 2, 4);
         BoundingBox bbShareX1 = new BoundingBox(4, 6, 2, 4);
         BoundingBox bbShareX2 = new BoundingBox(1, 2, 3, 5);
