@@ -51,18 +51,23 @@ public class MapData {
         this.maxx = maxx;
         this.maxy = maxy;
 
-        ways = ways.subList(0, 30);
-
-        directedGraph = new DirectedGraph(30);
+        directedGraph = new DirectedGraph(ways.size());
 
         for (Way way : ways) {
-            Node first = way.getNodes().get(0);
-            Node last = way.getNodes().get(way.getNodes().size() - 1);
+            if (way.getType() != null) {
+                if (way.canNavigate()) {
+                    int size = way.getNodes().size();
+                    for (int i = 0; i < (size -1); i++) {
+                        Node first = way.getNodes().get(i);
+                        Node last = way.getNodes().get(i + 1);
 
-            Vertex from = directedGraph.getVertex(first.getX(), first.getY());
-            Vertex to = directedGraph.getVertex(last.getX(), last.getY());
+                        Vertex from = directedGraph.getVertex(first.getX(), first.getY());
+                        Vertex to = directedGraph.getVertex(last.getX(), last.getY());
 
-            directedGraph.addEdge(from, to);
+                        directedGraph.addEdge(from, to);
+                    }
+                }
+            }
         }
 
         if (options.getBool(Option.USE_KD_TREE)) {

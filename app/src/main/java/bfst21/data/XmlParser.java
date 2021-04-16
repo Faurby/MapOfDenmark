@@ -7,7 +7,6 @@ import bfst21.view.Drawable;
 import bfst21.models.MapData;
 
 import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.BufferedInputStream;
@@ -33,32 +32,13 @@ public class XmlParser {
 
         Options options = Options.getInstance();
 
-        boolean oldReader = false;
-        boolean speedReader = true;
-        boolean memoryReader = false;
-        XMLStreamReader reader = null;
+        InputFactoryProviderImpl iprovider = new InputFactoryProviderImpl();
 
-        if (oldReader) {
-            reader = XMLInputFactory
-                    .newInstance()
-                    .createXMLStreamReader(new BufferedInputStream(input));
+        XMLInputFactory2 xmlif = iprovider.createInputFactory();
+        xmlif.configureForSpeed();
 
-        } else if (speedReader) {
-            InputFactoryProviderImpl iprovider = new InputFactoryProviderImpl();
+        XMLStreamReader reader = xmlif.createXMLStreamReader(new BufferedInputStream(input));
 
-            XMLInputFactory2 xmlif = iprovider.createInputFactory();
-            xmlif.configureForSpeed();
-
-            reader = xmlif.createXMLStreamReader(new BufferedInputStream(input));
-
-        } else if (memoryReader) {
-            InputFactoryProviderImpl iprovider = new InputFactoryProviderImpl();
-
-            XMLInputFactory2 xmlif = iprovider.createInputFactory();
-            xmlif.configureForLowMemUsage();
-
-            reader = xmlif.createXMLStreamReader(new BufferedInputStream(input));
-        }
         Way way = null;
         Relation relation = null;
         OsmAddress osmAddress = new OsmAddress();
@@ -187,8 +167,10 @@ public class XmlParser {
                                                 break;
                                             case "road":
                                             case "service":
-                                            case "trunk":
                                                 wayType = WayType.ROAD;
+                                                break;
+                                            case "trunk":
+                                                wayType = WayType.TRUNK;
                                                 break;
                                             case "tertiary":
                                             case "secondary":
@@ -212,7 +194,7 @@ public class XmlParser {
                                     case "maxspeed":
                                         if (way != null) {
                                             if (way.getType() != null) {
-                                                if (way.isDrivable()) {
+                                                if (way.canDrive()) {
                                                     try {
                                                         way.setMaxSpeed(Integer.parseInt(value));
                                                     } catch (NumberFormatException ex) {

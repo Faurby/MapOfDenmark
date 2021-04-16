@@ -124,7 +124,7 @@
             </AnchorPane>
             <VBox fx:id="loadingText" minHeight="100" minWidth="100" visible="false"
                   style="-fx-background-color: WHITE; -fx-padding: 20;" alignment="CENTER">
-                <Text text="Loading..." style="-fx-font-size: 24;"></Text>
+                <Text text="Loading" style="-fx-font-size: 24;"></Text>
                 <ProgressBar fx:id="progressBar" style="-fx-padding: 20;" minWidth="200"></ProgressBar>
             </VBox>
             <HBox fx:id="menuBarHBox" maxHeight="25" minHeight="25" minWidth="${scene.width}" StackPane.alignment="TOP_LEFT">

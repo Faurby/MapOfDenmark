@@ -89,27 +89,19 @@ public class KdTree implements Serializable {
 
         if (wayList.size() > 0) {
             wayList.sort(Comparator.comparingDouble(Way::getMaxX));
-            int median = wayList.size() / 2;
+            int middle = wayList.size() / 2;
 
-            Way medianWay = wayList.get(median);
-            float maxX = medianWay.getMaxX();
-            wayList.sort(Comparator.comparingDouble(Way::getMinX));
-            medianWay = wayList.get(median);
-            float minX = medianWay.getMinX();
+            List<Way> leftList = new ArrayList<>(wayList.subList(0, middle));
+            List<Way> rightList = new ArrayList<>(wayList.subList(middle, wayList.size()));
 
-            List<Way> leftList = new ArrayList<>(wayList.subList(0, median));
-            List<Way> rightList = new ArrayList<>(wayList.subList(median, wayList.size()));
+            float maxX = leftList.get(middle - 1).getMaxX();
+            float minX = Float.MAX_VALUE;
 
-            leftList.sort(Comparator.comparingDouble(Way::getMaxX));
-            float checkMaxX = leftList.get(leftList.size() - 1).getMaxX();
-            if (checkMaxX > maxX) {
-                maxX = checkMaxX;
+            for (Way way : rightList) {
+                if (way.getMinX() < minX) {
+                    minX = way.getMinX();
+                }
             }
-            float checkMinX = rightList.get(0).getMinX();
-            if (checkMinX < minX) {
-                minX = checkMinX;
-            }
-
             root = new KdNode(minX, maxX, Float.MIN_VALUE, Float.MAX_VALUE);
 
             depth++;
@@ -130,50 +122,29 @@ public class KdTree implements Serializable {
                 } else {
                     list.sort(Comparator.comparingDouble(Way::getMaxY));
                 }
-                int median = list.size() / 2;
-                Way medianWay = list.get(median);
-                float maxX = medianWay.getMaxX();
-                float maxY = medianWay.getMaxY();
+                int middle = list.size() / 2;
+
+                List<Way> leftList = new ArrayList<>(list.subList(0, middle));
+                List<Way> rightList = new ArrayList<>(list.subList(middle, list.size()));
+
+                float maxX = Float.MIN_VALUE;
+                float maxY = Float.MIN_VALUE;
+                float minX = Float.MAX_VALUE;
+                float minY = Float.MAX_VALUE;
 
                 if (sortX) {
-                    list.sort(Comparator.comparingDouble(Way::getMinX));
-                } else {
-                    list.sort(Comparator.comparingDouble(Way::getMinY));
-                }
-                medianWay = list.get(median);
-                float minX = medianWay.getMinX();
-                float minY = medianWay.getMinY();
-
-                if (sortX) {
-                    minY = Float.MIN_VALUE;
-                    maxY = Float.MAX_VALUE;
-                } else {
-                    minX = Float.MIN_VALUE;
-                    maxX = Float.MAX_VALUE;
-                }
-
-                List<Way> leftList = new ArrayList<>(list.subList(0, median));
-                List<Way> rightList = new ArrayList<>(list.subList(median, list.size()));
-
-                if (sortX) {
-                    leftList.sort(Comparator.comparingDouble(Way::getMaxX));
-                    float checkMaxX = leftList.get(leftList.size() - 1).getMaxX();
-                    if (checkMaxX > maxX) {
-                        maxX = checkMaxX;
-                    }
-                    float checkMinX = rightList.get(0).getMinX();
-                    if (checkMinX < minX) {
-                        minX = checkMinX;
+                    maxX = leftList.get(middle - 1).getMaxX();
+                    for (Way way : rightList) {
+                        if (way.getMinX() < minX) {
+                            minX = way.getMinX();
+                        }
                     }
                 } else {
-                    leftList.sort(Comparator.comparingDouble(Way::getMaxY));
-                    float checkMaxY = leftList.get(leftList.size() - 1).getMaxY();
-                    if (checkMaxY > maxY) {
-                        maxY = checkMaxY;
-                    }
-                    float checkMinY = rightList.get(0).getMinY();
-                    if (checkMinY < minY) {
-                        minY = checkMinY;
+                    maxY = leftList.get(middle - 1).getMaxY();
+                    for (Way way : rightList) {
+                        if (way.getMinY() < minY) {
+                            minY = way.getMinY();
+                        }
                     }
                 }
 

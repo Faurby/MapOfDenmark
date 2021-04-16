@@ -11,6 +11,7 @@ public class Vertex {
     public Vertex(float x, float y) {
         this.x = x;
         this.y = y;
+        this.edges = new Bag<>();
     }
 
     public void addEdge(Edge edge) {

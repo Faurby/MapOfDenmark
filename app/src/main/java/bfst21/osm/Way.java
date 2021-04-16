@@ -170,12 +170,38 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         this.wayType = wayType;
     }
 
-    public boolean isDrivable() {
-        
+    public boolean canNavigate() {
+        return wayType == WayType.PRIMARY ||
+                wayType == WayType.MOTORWAY ||
+                wayType == WayType.TRUNK ||
+                wayType == WayType.TERTIARY ||
+                wayType == WayType.CYCLEWAY ||
+                wayType == WayType.RESIDENTIAL ||
+                wayType == WayType.ROAD ||
+                wayType == WayType.FOOTWAY;
+    }
+
+    public boolean canDrive() {
         return wayType == WayType.PRIMARY ||
                 wayType == WayType.MOTORWAY ||
                 wayType == WayType.RESIDENTIAL ||
-                wayType == WayType.TERTIARY;
+                wayType == WayType.TERTIARY ||
+                wayType == WayType.TRUNK;
+    }
+
+    public boolean canBike() {
+        return wayType == WayType.TERTIARY ||
+                wayType == WayType.CYCLEWAY ||
+                wayType == WayType.ROAD ||
+                wayType == WayType.RESIDENTIAL;
+    }
+
+    public boolean canWalk() {
+        return wayType == WayType.TERTIARY ||
+                wayType == WayType.CYCLEWAY ||
+                wayType == WayType.RESIDENTIAL ||
+                wayType == WayType.ROAD ||
+                wayType == WayType.FOOTWAY;
     }
 
     public void setRole(String role) {
