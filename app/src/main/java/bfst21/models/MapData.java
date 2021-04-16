@@ -1,6 +1,8 @@
 package bfst21.models;
 
 import bfst21.osm.*;
+import bfst21.pathfinding.DirectedGraph;
+import bfst21.pathfinding.Vertex;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdTree;
 import bfst21.view.Drawable;
@@ -18,6 +20,7 @@ public class MapData {
     private final List<Way> islands;
     private final List<Way> ways;
     private final List<Relation> relations;
+    private final DirectedGraph directedGraph;
     private KdTree kdTree;
     private RTree<Integer, Way> rTree;
 
@@ -48,6 +51,20 @@ public class MapData {
         this.maxx = maxx;
         this.maxy = maxy;
 
+        ways = ways.subList(0, 30);
+
+        directedGraph = new DirectedGraph(30);
+
+        for (Way way : ways) {
+            Node first = way.getNodes().get(0);
+            Node last = way.getNodes().get(way.getNodes().size() - 1);
+
+            Vertex from = directedGraph.getVertex(first.getX(), first.getY());
+            Vertex to = directedGraph.getVertex(last.getX(), last.getY());
+
+            directedGraph.addEdge(from, to);
+        }
+
         if (options.getBool(Option.USE_KD_TREE)) {
             if (kdTree != null) {
                 this.kdTree = kdTree;
@@ -62,6 +79,10 @@ public class MapData {
                 rTree = rTree.add(0, way);
             }
         }
+    }
+
+    public DirectedGraph getDirectedGraph() {
+        return directedGraph;
     }
 
     public KdTree getKdTree() {

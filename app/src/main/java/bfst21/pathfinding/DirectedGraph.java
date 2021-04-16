@@ -21,7 +21,7 @@ public class DirectedGraph {
                 return vertex;
             }
         }
-        return null;
+        return new Vertex(x, y);
     }
 
     public void addEdge(Vertex from, Vertex to) {
@@ -40,5 +40,13 @@ public class DirectedGraph {
 
     public int getVertexAmount() {
         return vertexAmount;
+    }
+
+    public Bag<Edge> getEdges() {
+        return edges;
+    }
+
+    public Bag<Vertex> getVertices() {
+        return vertices;
     }
 }

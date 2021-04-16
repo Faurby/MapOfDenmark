@@ -1,12 +1,16 @@
 package bfst21.pathfinding;
 
-public class Edge {
+import bfst21.view.Drawable;
+import javafx.scene.canvas.GraphicsContext;
 
-    private Vertex from;
-    private Vertex to;
+
+public class Edge implements Drawable {
+
+    private final double distance;
+    private final Vertex from;
+    private final Vertex to;
     private double weight;
     private double maxSpeed;
-    private double distance;
 
     public Edge(Vertex from, Vertex to, double maxSpeed) {
         this.distance = from.distTo(to);
@@ -32,5 +36,11 @@ public class Edge {
 
     public double getDistance() {
         return distance;
+    }
+
+    @Override
+    public void trace(GraphicsContext gc, double zoomLevel) {
+        gc.moveTo(from.getX(), from.getY());
+        gc.lineTo(to.getX(), to.getY());
     }
 }
