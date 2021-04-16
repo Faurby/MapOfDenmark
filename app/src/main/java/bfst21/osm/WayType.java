@@ -68,6 +68,13 @@ public enum WayType {
         Color.rgb(0,126,170),
         Color.rgb(0, 0,0)
     ),
+    TRUNK(
+        0.0003f,
+        50000.0f,
+        Color.rgb(255,255,255),
+        Color.rgb(255,255,255),
+        Color.rgb(255,255,255)
+    ),
     ROAD(
         0.0003f,
         50000.0f,

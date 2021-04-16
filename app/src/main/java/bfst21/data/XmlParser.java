@@ -7,7 +7,6 @@ import bfst21.view.Drawable;
 import bfst21.models.MapData;
 
 import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.BufferedInputStream;
@@ -168,8 +167,10 @@ public class XmlParser {
                                                 break;
                                             case "road":
                                             case "service":
-                                            case "trunk":
                                                 wayType = WayType.ROAD;
+                                                break;
+                                            case "trunk":
+                                                wayType = WayType.TRUNK;
                                                 break;
                                             case "tertiary":
                                             case "secondary":
@@ -193,7 +194,7 @@ public class XmlParser {
                                     case "maxspeed":
                                         if (way != null) {
                                             if (way.getType() != null) {
-                                                if (way.isDrivable()) {
+                                                if (way.canDrive()) {
                                                     try {
                                                         way.setMaxSpeed(Integer.parseInt(value));
                                                     } catch (NumberFormatException ex) {

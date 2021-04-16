@@ -5,14 +5,16 @@ import edu.princeton.cs.algs4.Bag;
 
 public class DirectedGraph {
 
+    private final Bag<Edge> edges;
+    private final Bag<Vertex> vertices;
     private final int vertexAmount;
     private int edgeAmount;
-    private Bag<Edge> edges;
-    private Bag<Vertex> vertices;
 
     public DirectedGraph(int vertexAmount) {
         this.vertexAmount = vertexAmount;
         this.edgeAmount = 0;
+        this.edges = new Bag<>();
+        this.vertices = new Bag<>();
     }
 
     public Vertex getVertex(float x, float y) {
