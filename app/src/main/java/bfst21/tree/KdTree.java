@@ -148,19 +148,19 @@ public class KdTree implements Serializable {
                     }
                 }
 
-                KdNode medianNode = new KdNode(minX, maxX, minY, maxY);
+                KdNode middleNode = new KdNode(minX, maxX, minY, maxY);
                 if (right) {
-                    currentElement.setRightChild(medianNode);
+                    currentElement.setRightChild(middleNode);
                 } else {
-                    currentElement.setLeftChild(medianNode);
+                    currentElement.setLeftChild(middleNode);
                 }
                 if (list.size() <= 3) {
-                    medianNode.setList(list);
+                    middleNode.setList(list);
 
                 } else {
                     depth++;
-                    addChild(medianNode, leftList, false);
-                    addChild(medianNode, rightList, true);
+                    addChild(middleNode, leftList, false);
+                    addChild(middleNode, rightList, true);
                     depth--;
                 }
             }

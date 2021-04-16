@@ -274,6 +274,8 @@ public class XmlParser {
         }
         islands = mergeCoastLines(coastlines);
 
+
+
         return new MapData(
                 shapes,
                 islands,

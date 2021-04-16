@@ -17,13 +17,22 @@ public class DirectedGraph {
         this.vertices = new Bag<>();
     }
 
-    public Vertex getVertex(float x, float y) {
+    public Vertex getVertex(float x, float y, int id) {
         for (Vertex vertex : vertices) {
             if (vertex.getX() == x && vertex.getY() == y) {
                 return vertex;
             }
         }
-        return new Vertex(x, y);
+        return new Vertex(x, y, id);
+    }
+
+    public Vertex getVertex(int id) {
+        for (Vertex vertex : vertices) {
+            if (vertex.getID() == id) {
+                return vertex;
+            }
+        }
+        return null;
     }
 
     public void addEdge(Vertex from, Vertex to, double maxSpeed) {

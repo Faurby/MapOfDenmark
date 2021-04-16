@@ -53,6 +53,7 @@ public class MapData {
 
         directedGraph = new DirectedGraph(ways.size());
 
+        int idCount = 0;
         for (Way way : ways) {
             if (way.getType() != null) {
                 if (way.canNavigate()) {
@@ -63,10 +64,11 @@ public class MapData {
                         Node first = way.getNodes().get(i);
                         Node last = way.getNodes().get(i + 1);
 
-                        Vertex from = directedGraph.getVertex(first.getX(), first.getY());
-                        Vertex to = directedGraph.getVertex(last.getX(), last.getY());
+                        Vertex from = directedGraph.getVertex(first.getX(), first.getY(), idCount);
+                        Vertex to = directedGraph.getVertex(last.getX(), last.getY(), idCount);
 
                         directedGraph.addEdge(from, to, maxSpeed);
+                        idCount++;
                     }
                 }
             }

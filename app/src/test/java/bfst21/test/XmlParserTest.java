@@ -43,8 +43,8 @@ public class XmlParserTest {
 
     @Test
     public void getCorrectDistanceBetween2Nodes() {
-        Vertex vertex1 = new Vertex(12.6224313f, 55.6571112f);
-        Vertex vertex2 = new Vertex(12.6238016f, 55.6573865f);
+        Vertex vertex1 = new Vertex(12.6224313f, 55.6571112f, 1);
+        Vertex vertex2 = new Vertex(12.6238016f, 55.6573865f, 2);
         double distance = vertex1.distTo(vertex2);
         assertEquals(0.09125, distance, 0.0001);
     }
