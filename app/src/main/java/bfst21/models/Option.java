@@ -11,5 +11,6 @@ public enum Option {
     DISPLAY_LAND_USE,
     DISPLAY_ISLANDS,
     DISPLAY_KD_TREE,
+    DISPLAY_GRAPH,
     SAVE_OBJ_FILE
 }

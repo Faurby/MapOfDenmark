@@ -12,6 +12,7 @@ public class Options {
     private Options() {
         options.put(Option.DISPLAY_KD_TREE, false);
         options.put(Option.USE_R_TREE, false);
+        options.put(Option.DISPLAY_GRAPH, false);
     }
 
     //Returns the current value for a specific option
