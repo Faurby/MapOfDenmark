@@ -187,12 +187,12 @@ public class MapCanvas extends Canvas {
     }
 
     private void drawGraph() {
-        gc.setStroke(Color.DARKSLATEBLUE);
-        gc.setLineWidth(0.002 * widthModifier);
-
-        for (Edge edge : model.getMapData().getDirectedGraph().getEdges()) {
-            edge.draw(gc, zoomLevel);
-        }
+//        gc.setStroke(Color.DARKSLATEBLUE);
+//        gc.setLineWidth(0.002 * widthModifier);
+//
+//        for (Edge edge : model.getMapData().getDirectedGraph().getEdges()) {
+//            edge.draw(gc, zoomLevel);
+//        }
     }
 
     private void drawUserNodes() {

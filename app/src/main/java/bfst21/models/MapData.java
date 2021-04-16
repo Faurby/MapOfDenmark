@@ -20,7 +20,7 @@ public class MapData {
     private final List<Way> islands;
     private final List<Way> ways;
     private final List<Relation> relations;
-    private final DirectedGraph directedGraph;
+//    private final DirectedGraph directedGraph;
     private KdTree kdTree;
     private RTree<Integer, Way> rTree;
 
@@ -51,19 +51,19 @@ public class MapData {
         this.maxx = maxx;
         this.maxy = maxy;
 
-        ways = ways.subList(0, 30);
-
-        directedGraph = new DirectedGraph(30);
-
-        for (Way way : ways) {
-            Node first = way.getNodes().get(0);
-            Node last = way.getNodes().get(way.getNodes().size() - 1);
-
-            Vertex from = directedGraph.getVertex(first.getX(), first.getY());
-            Vertex to = directedGraph.getVertex(last.getX(), last.getY());
-
-            directedGraph.addEdge(from, to);
-        }
+//        ways = ways.subList(0, 30);
+//
+//        directedGraph = new DirectedGraph(30);
+//
+//        for (Way way : ways) {
+//            Node first = way.getNodes().get(0);
+//            Node last = way.getNodes().get(way.getNodes().size() - 1);
+//
+//            Vertex from = directedGraph.getVertex(first.getX(), first.getY());
+//            Vertex to = directedGraph.getVertex(last.getX(), last.getY());
+//
+//            directedGraph.addEdge(from, to);
+//        }
 
         if (options.getBool(Option.USE_KD_TREE)) {
             if (kdTree != null) {
@@ -81,9 +81,9 @@ public class MapData {
         }
     }
 
-    public DirectedGraph getDirectedGraph() {
-        return directedGraph;
-    }
+//    public DirectedGraph getDirectedGraph() {
+//        return directedGraph;
+//    }
 
     public KdTree getKdTree() {
         return kdTree;
