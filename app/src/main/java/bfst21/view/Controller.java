@@ -100,9 +100,8 @@ public class Controller {
     public void onWindowResize(Stage stage) {
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
         searchAddressVbox.setMaxWidth(stage.getWidth() * 0.25);
-        stage.getHeight(); //spørg mig ikke hvorfor det virker, men det gør det
+        stage.getHeight();
         canvas.repaint();
-
     }
 
     @FXML
@@ -136,14 +135,7 @@ public class Controller {
 
         if (e.isPrimaryButtonDown()) {
             canvas.pan(dx, dy);
-
-            //TODO slet gamle kode-rester?
-        }/* else {
-            Point2D from = canvas.mouseToModelCoords(lastMouse);
-            Point2D to = canvas.mouseToModelCoords(new Point2D(e.getX(), e.getY()));
-            model.add(new Line(from, to));
-            canvas.repaint();
-        }*/
+        }
         onMousePressed(e);
     }
 
