@@ -83,18 +83,18 @@ public enum WayType {
         Color.rgb(255,255,255)
     ),
     FOOTWAY(
-        0.0003f,
+        0.0001f,
         50000.0f,
-        Color.rgb(255,255,255),
-        Color.rgb(255,255,255),
-        Color.rgb(255,255,255)
+        Color.rgb(252, 132, 116),
+        Color.rgb(252, 132, 116),
+        Color.rgb(252, 132, 116)
     ),
     CYCLEWAY(
-        0.0003f,
+        0.0001f,
         50000.0f,
-        Color.rgb(255,255,255),
-        Color.rgb(255,255,255),
-        Color.rgb(255,255,255)
+        Color.rgb(33,33,250),
+        Color.rgb(33,33,250),
+        Color.rgb(33,33,250)
     ),
     UNKNOWN(
         0.002f,

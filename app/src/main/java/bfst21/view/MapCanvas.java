@@ -84,9 +84,7 @@ public class MapCanvas extends Canvas {
             if (options.getBool(Option.DISPLAY_ISLANDS)) {
                 paintFill(WayType.ISLAND);
             }
-            drawRoad(WayType.CYCLEWAY);
-            drawRoad(WayType.FOOTWAY);
-            drawRoad(WayType.ROAD);
+
 
             if (!initialRangeSearch) {
                 if (options.getBool(Option.USE_KD_TREE)) {
@@ -131,10 +129,19 @@ public class MapCanvas extends Canvas {
                     drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
                 }
             }
+            gc.setLineDashes(0.0001);
+            drawRoad(WayType.CYCLEWAY);
+            drawRoad(WayType.FOOTWAY);
+            gc.setLineDashes(0);
+            drawRoad(WayType.ROAD);
+
+            if (options.getBool(Option.DISPLAY_GRAPH)) {
+                drawGraph();
+            }
             drawUserNodes();
             drawRelations();
             drawLine(WayType.UNKNOWN);
-            drawGraph();
+
         }
         gc.restore();
 
