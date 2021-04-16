@@ -55,7 +55,7 @@ public class Controller {
     @FXML
     private TextArea destinationPoint;
     @FXML
-    private VBox getDestinationBox;
+    private VBox DestinationBox;
     @FXML
     private HBox expandAndSearchButtons;
     @FXML
@@ -80,6 +80,8 @@ public class Controller {
     private Button searchButton;
     @FXML
     private Button searchButtonExpanded;
+    @FXML
+    private HBox transportationBox;
 
     private boolean userNodeToggle = false;
     ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
@@ -110,6 +112,7 @@ public class Controller {
     public void onWindowResize(Stage stage) {
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
         searchAddressVbox.setMaxWidth(stage.getWidth() * 0.25);
+        transportationBox.setPrefWidth(searchAddressVbox.getWidth() * 0.9);
         stage.getHeight();
         canvas.repaint();
     }
@@ -248,21 +251,21 @@ public class Controller {
                 destinationPoint.setText(startingPoint.getText());
                 startingPoint.setText("");
             }
-            getDestinationBox.setVisible(true);
-            getDestinationBox.setManaged(true);
+            DestinationBox.setVisible(true);
+            DestinationBox.setManaged(true);
             startingPointText.setVisible(true);
             startingPointText.setManaged(true);
             startingPoint.setPromptText("From:");
             expandAndSearchButtons.setVisible(false);
             expandAndSearchButtons.setManaged(false);
             //To avoid any TextArea being activated
-            getDestinationBox.requestFocus();
+            DestinationBox.requestFocus();
         } else {
             if (!destinationPoint.getText().equals("") && startingPoint.getText().equals("")) {
                 startingPoint.setText(destinationPoint.getText());
             }
-            getDestinationBox.setVisible(false);
-            getDestinationBox.setManaged(false);
+            DestinationBox.setVisible(false);
+            DestinationBox.setManaged(false);
             startingPointText.setVisible(false);
             startingPointText.setManaged(false);
             startingPoint.setPromptText("Choose an address...");
@@ -308,7 +311,7 @@ public class Controller {
         if (event.getCode() == KeyCode.TAB) {
             if (event.getSource().toString().contains("startingPoint")) {
                 startingPoint.setText(startingPoint.getText().trim());
-                if (!getDestinationBox.isVisible()) {
+                if (!DestinationBox.isVisible()) {
                     expandButton.requestFocus();
                 } else {
                     switchButton.requestFocus();
@@ -322,7 +325,7 @@ public class Controller {
             startingPoint.setText(startingPoint.getText().trim());
             destinationPoint.setText(destinationPoint.getText().trim());
             searchAddressString();
-            if (getDestinationBox.isVisible()) {
+            if (DestinationBox.isVisible()) {
                 searchButtonExpanded.requestFocus();
             } else {
                 searchButton.requestFocus();

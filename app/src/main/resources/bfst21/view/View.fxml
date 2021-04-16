@@ -78,7 +78,7 @@
                         <ToolBar visible="false" HBox.hgrow="ALWAYS" />
                         <Button fx:id="searchButton" onAction="#searchAddressString" text="Search" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                     </HBox>
-                    <VBox fx:id="getDestinationBox" managed="false" visible="false">
+                    <VBox fx:id="DestinationBox" managed="false" visible="false">
                         <GridPane prefHeight="30" >
                             <Pane GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS" visible="false"/>
                             <Pane GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" visible="false"/>
@@ -94,12 +94,27 @@
                         </GridPane>
                         <TextArea fx:id="destinationPoint" minHeight="25" prefHeight="25" promptText="To:" wrapText="true" onKeyPressed="#tabEnterCheck"/>
 
-                        <HBox style="-fx-padding: 10 10 10 10 ; -fx-border-insets: 0 0 0 0 ; -fx-alignment: CENTER">
-                            <Button fx:id="CAR" minHeight="40" minWidth="40" onAction="#transportationButtonPushed" style="-fx-background-image: url(carPic.png) ; -fx-background-size: 40">
+                        <HBox fx:id="transportationBox" style="-fx-padding: 10 10 10 10 ; -fx-border-insets: 0 0 0 0 ; -fx-alignment: CENTER">
+                            <Button fx:id="CAR" minHeight="40" minWidth="65" onAction="#transportationButtonPushed">
+                                <graphic>
+                                    <ImageView fitHeight="32.0" preserveRatio="true" style="-fx-background-color: TRANSPARENT">
+                                        <Image url="/carPic.png" />
+                                    </ImageView>
+                                </graphic>
                             </Button>
-                            <Button fx:id="BIKE" minHeight="40" minWidth="40" onAction="#transportationButtonPushed" style="-fx-background-image: url(bikePic.png) ; -fx-background-size: 40">
+                            <Button fx:id="BIKE" minHeight="40" minWidth="65" onAction="#transportationButtonPushed">
+                                <graphic>
+                                    <ImageView fitHeight="32.0" preserveRatio="true" style="-fx-background-color: TRANSPARENT">
+                                        <Image url="/bikePic.png" />
+                                    </ImageView>
+                                </graphic>
                             </Button>
-                            <Button fx:id="WALK" minHeight="40" minWidth="40" onAction="#transportationButtonPushed" style="-fx-background-image: url(walkPic.png) ; -fx-background-size: 25 ">
+                            <Button fx:id="WALK" minHeight="40" minWidth="65" onAction="#transportationButtonPushed">
+                                <graphic>
+                                    <ImageView fitHeight="32.0" preserveRatio="true" style="-fx-background-color: TRANSPARENT">
+                                        <Image url="/walkPic.png" />
+                                    </ImageView>
+                                </graphic>
                             </Button>
                         </HBox>
 
