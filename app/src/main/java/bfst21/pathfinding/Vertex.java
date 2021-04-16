@@ -5,7 +5,7 @@ import edu.princeton.cs.algs4.Bag;
 
 public class Vertex {
 
-    private float x, y;
+    private final float x, y;
     private Bag<Edge> edges;
 
     public Vertex(float x, float y) {

@@ -4,6 +4,7 @@ import bfst21.models.Option;
 import bfst21.models.Options;
 import bfst21.osm.Relation;
 import bfst21.osm.UserNode;
+import bfst21.pathfinding.Edge;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
 import bfst21.tree.KdTree;
@@ -133,6 +134,7 @@ public class MapCanvas extends Canvas {
             drawUserNodes();
             drawRelations();
             drawLine(WayType.UNKNOWN);
+            drawGraph();
         }
         gc.restore();
 
@@ -181,6 +183,15 @@ public class MapCanvas extends Canvas {
 
                 model.getMapData().search(p1.getX(), p1.getY(), p2.getX(), p2.getY());
             }
+        }
+    }
+
+    private void drawGraph() {
+        gc.setStroke(Color.DARKSLATEBLUE);
+        gc.setLineWidth(0.002 * widthModifier);
+
+        for (Edge edge : model.getMapData().getDirectedGraph().getEdges()) {
+            edge.draw(gc, zoomLevel);
         }
     }
 
