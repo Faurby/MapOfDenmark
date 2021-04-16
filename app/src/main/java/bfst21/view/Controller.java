@@ -4,6 +4,7 @@ import bfst21.address.Address;
 import bfst21.exceptions.MapDataNotLoadedException;
 import bfst21.models.*;
 import bfst21.osm.UserNode;
+import bfst21.osm.WayType;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -101,6 +102,7 @@ public class Controller {
     public void onWindowResize(Stage stage) {
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
         searchAddressVbox.setMaxWidth(stage.getWidth() * 0.25);
+        stage.getHeight();
         canvas.repaint();
     }
 
@@ -135,12 +137,6 @@ public class Controller {
 
         if (e.isPrimaryButtonDown()) {
             canvas.pan(dx, dy);
-
-        } else {
-            Point2D from = canvas.mouseToModelCoords(lastMouse);
-            Point2D to = canvas.mouseToModelCoords(new Point2D(e.getX(), e.getY()));
-            model.add(new Line(from, to));
-            canvas.repaint();
         }
         onMousePressed(e);
     }
@@ -151,9 +147,21 @@ public class Controller {
     }
 
     @FXML
-    public void loadDefault() throws XMLStreamException, IOException, ClassNotFoundException {
-        canvas.load(true);
-        updateZoomBox();
+    public void loadDefault() {
+
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                loadingText.setVisible(true);
+                canvas.load(true);
+                updateZoomBox();
+                return null;
+            }
+        };
+        task.setOnSucceeded(e -> loadingText.setVisible(false));
+        task.setOnFailed(e -> task.getException().printStackTrace());
+        Thread thread = new Thread(task);
+        thread.start();
     }
 
     @FXML
@@ -175,7 +183,7 @@ public class Controller {
                 }
             };
             task.setOnSucceeded(e -> loadingText.setVisible(false));
-            task.setOnFailed(e -> System.out.println("Failed to load file"));
+            task.setOnFailed(e -> task.getException().printStackTrace());
             Thread thread = new Thread(task);
             thread.start();
         }
