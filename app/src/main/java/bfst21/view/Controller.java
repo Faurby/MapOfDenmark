@@ -26,9 +26,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import javax.xml.stream.XMLStreamException;
 import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 
 
@@ -104,6 +102,7 @@ public class Controller {
         searchAddressVbox.setMaxWidth(stage.getWidth() * 0.25);
         stage.getHeight();
         canvas.repaint();
+
     }
 
     @FXML
@@ -147,9 +146,20 @@ public class Controller {
     }
 
     @FXML
-    public void loadDefault() throws XMLStreamException, IOException, ClassNotFoundException {
-        canvas.load(true);
-        updateZoomBox();
+    public void loadDefault() {
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                loadingText.setVisible(true);
+                canvas.load(true);
+                updateZoomBox();
+                return null;
+            }
+        };
+        task.setOnSucceeded(e -> loadingText.setVisible(false));
+        task.setOnFailed(e -> System.out.println("Failed to load default file"));
+        Thread thread = new Thread(task);
+        thread.start();
     }
 
     @FXML
