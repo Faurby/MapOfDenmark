@@ -72,6 +72,8 @@ public class Controller {
     private VBox userNodeVBox;
     @FXML
     private TextField userNodeTextField;
+    @FXML
+    private Button switchButton;
 
     private boolean userNodeToggle = false;
     ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
@@ -299,10 +301,10 @@ public class Controller {
         if (event.getCode() == KeyCode.TAB) {
             if (event.getSource().toString().contains("startingPoint")) {
                 startingPoint.setText(startingPoint.getText().trim());
-                if (getDestinationBox.isVisible()) {
-                    destinationPoint.requestFocus();
-                } else {
+                if (!getDestinationBox.isVisible()) {
                     expandButton.requestFocus();
+                } else {
+                    switchButton.requestFocus();
                 }
             } else if (event.getSource().toString().contains("destinationPoint")) {
                 destinationPoint.setText(destinationPoint.getText().trim());
