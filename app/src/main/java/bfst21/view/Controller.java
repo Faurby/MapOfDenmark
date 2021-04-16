@@ -150,6 +150,7 @@ public class Controller {
 
     @FXML
     public void loadDefault() {
+
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() throws Exception {
@@ -160,7 +161,7 @@ public class Controller {
             }
         };
         task.setOnSucceeded(e -> loadingText.setVisible(false));
-        task.setOnFailed(e -> System.out.println("Failed to load default file"));
+        task.setOnFailed(e -> task.getException().printStackTrace());
         Thread thread = new Thread(task);
         thread.start();
     }
@@ -184,7 +185,7 @@ public class Controller {
                 }
             };
             task.setOnSucceeded(e -> loadingText.setVisible(false));
-            task.setOnFailed(e -> System.out.println("Failed to load file"));
+            task.setOnFailed(e -> task.getException().printStackTrace());
             Thread thread = new Thread(task);
             thread.start();
         }

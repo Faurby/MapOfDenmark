@@ -288,7 +288,7 @@ public class MapCanvas extends Canvas {
             }
         };
         rangeSearchTask.setOnSucceeded(e -> repaint());
-        rangeSearchTask.setOnFailed(e -> System.out.println("Failed to complete range search"));
+        rangeSearchTask.setOnFailed(e -> rangeSearchTask.getException().printStackTrace());
         Thread thread = new Thread(rangeSearchTask);
         thread.start();
     }
