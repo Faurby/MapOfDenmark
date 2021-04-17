@@ -9,6 +9,7 @@ public enum ElementType {
     ISLAND(
             1f,
             0.0f,
+            0.0D,
             Color.rgb(223, 222, 222),
             Color.rgb(151, 151, 151),
             Color.rgb(211, 211, 211)
@@ -16,6 +17,7 @@ public enum ElementType {
     WATER(
             1f,
             500.0f,
+            0.0D,
             Color.rgb(160, 196, 252),
             Color.rgb(0, 126, 170),
             Color.rgb(0, 0, 0)
@@ -23,6 +25,7 @@ public enum ElementType {
     WATERWAY(
             0.0002f,
             10000.0f,
+            0.0D,
             Color.rgb(160, 196, 252),
             Color.rgb(0, 126, 170),
             Color.rgb(0, 0, 0)
@@ -30,6 +33,7 @@ public enum ElementType {
     LANDUSE(
             1f,
             500.0f,
+            0.0D,
             Color.rgb(172, 220, 180),
             Color.rgb(69, 80, 7),
             Color.rgb(211, 211, 211)
@@ -37,6 +41,7 @@ public enum ElementType {
     CYCLEWAY(
             0.0001f,
             50000.0f,
+            0.0001D,
             Color.rgb(33, 33, 250),
             Color.rgb(33, 33, 250),
             Color.rgb(33, 33, 250)
@@ -44,6 +49,7 @@ public enum ElementType {
     FOOTWAY(
             0.0001f,
             50000.0f,
+            0.0001D,
             Color.rgb(252, 132, 116),
             Color.rgb(252, 132, 116),
             Color.rgb(252, 132, 116)
@@ -51,6 +57,7 @@ public enum ElementType {
     ROAD(
             0.0003f,
             50000.0f,
+            0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255)
@@ -58,6 +65,7 @@ public enum ElementType {
     RESIDENTIAL(
             0.00015f,
             10000.0f,
+            0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255)
@@ -65,6 +73,7 @@ public enum ElementType {
     TRUNK(
             0.0003f,
             50000.0f,
+            0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255)
@@ -72,6 +81,7 @@ public enum ElementType {
     MOTORWAY(
             0.0003f,
             500.0f,
+            0.0D,
             Color.rgb(248, 197, 81),
             Color.rgb(248, 198, 81),
             Color.rgb(169, 169, 169)
@@ -79,6 +89,7 @@ public enum ElementType {
     TERTIARY(
             0.0003f,
             3000.0f,
+            0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255)
@@ -86,6 +97,7 @@ public enum ElementType {
     PRIMARY(
             0.0003f,
             1500.0f,
+            0.0D,
             Color.rgb(236, 148, 164),
             Color.rgb(255, 140, 0),
             Color.rgb(255, 255, 255)
@@ -93,6 +105,7 @@ public enum ElementType {
     BUILDING(
             1f,
             40000.0f,
+            0.0D,
             Color.rgb(197, 185, 175),
             Color.rgb(51, 51, 51),
             Color.rgb(169, 169, 169)
@@ -100,6 +113,7 @@ public enum ElementType {
     UNKNOWN(
             0.002f,
             500.0f,
+            0.0D,
             Color.rgb(255, 0, 0),
             Color.rgb(255, 0, 0),
             Color.rgb(255, 0, 0)
@@ -107,13 +121,33 @@ public enum ElementType {
 
     private final Color color, colorBlind, blackWhite;
     private final float drawSize, zoomLevelRequired;
+    private final double lineDashes;
 
-    ElementType(float drawSize, float zoomLevelRequired, Color color, Color colorBlind, Color blackWhite) {
+    ElementType(float drawSize, float zoomLevelRequired, double lineDashes, Color color, Color colorBlind, Color blackWhite) {
         this.color = color;
         this.colorBlind = colorBlind;
         this.blackWhite = blackWhite;
         this.drawSize = drawSize;
+        this.lineDashes = lineDashes;
         this.zoomLevelRequired = zoomLevelRequired;
+    }
+
+
+    /**
+     * Determine if this ElementType should be using the fill drawing method
+     */
+    public boolean doFillDraw() {
+        if (this == ElementType.BUILDING ||
+            this == ElementType.ISLAND ||
+            this == ElementType.LANDUSE ||
+            this == ElementType.WATER) {
+            return true;
+        }
+        return false;
+    }
+
+    public double getLineDashes() {
+        return lineDashes;
     }
 
     public Color getColor() {

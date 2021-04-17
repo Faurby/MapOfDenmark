@@ -82,10 +82,6 @@ public class MapCanvas extends Canvas {
 
         if (model.getMapData() != null) {
 
-            if (options.getBool(Option.DISPLAY_ISLANDS)) {
-                paintFill(ElementType.ISLAND);
-            }
-
             if (!initialRangeSearch) {
                 if (options.getBool(Option.USE_KD_TREE)) {
                     doRangeSearch();
@@ -96,30 +92,21 @@ public class MapCanvas extends Canvas {
             }
             adjustWidthModifier();
 
-            if (options.getBool(Option.DISPLAY_WATER)) {
-                paintFill(ElementType.WATER);
-                drawRoad(ElementType.WATERWAY);
+            drawUserNodes();
+            drawRelations();
+
+            //Draw every elementType if option is enabled
+            for (ElementType elementType : ElementType.values()) {
+                try {
+                    if (options.getBool(Option.valueOf("DISPLAY_"+elementType.toString()))) {
+                        drawOrFill(elementType);
+                    }
+                } catch (IllegalArgumentException ex) {
+                    System.out.println("Failed to draw "+elementType);
+                    System.out.println("There is no DISPLAY_"+elementType+" in the Option class!");
+                }
             }
 
-            if (options.getBool(Option.DISPLAY_LAND_USE)) {
-                paintFill(ElementType.LANDUSE);
-            }
-
-            gc.setLineDashes(0.0001);
-            drawRoad(ElementType.CYCLEWAY);
-            drawRoad(ElementType.FOOTWAY);
-            gc.setLineDashes(0);
-            drawRoad(ElementType.ROAD);
-
-            if (options.getBool(Option.DISPLAY_WAYS)) {
-                drawRoad(ElementType.RESIDENTIAL);
-                drawRoad(ElementType.MOTORWAY);
-                drawRoad(ElementType.TERTIARY);
-                drawRoad(ElementType.PRIMARY);
-            }
-            if (options.getBool(Option.DISPLAY_BUILDINGS)) {
-                paintFill(ElementType.BUILDING);
-            }
             if (options.getBool(Option.USE_KD_TREE)) {
                 if (options.getBool(Option.DISPLAY_KD_TREE)) {
                     depth = 0;
@@ -137,14 +124,9 @@ public class MapCanvas extends Canvas {
                     }
                 }
             }
-
-            drawUserNodes();
-            drawRelations();
             if (options.getBool(Option.DISPLAY_GRAPH)) {
                 drawGraph();
             }
-            drawRoad(ElementType.UNKNOWN);
-
         }
         gc.restore();
 
@@ -356,24 +338,24 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void paintFill(ElementType elementType) {
+    public void drawOrFill(ElementType elementType) {
         if (zoomLevel >= elementType.getZoomLevelRequired()) {
-            gc.setFill(getColor(elementType));
-            //for (Way way : model.getMapData().getFillWays(elementType, zoomLevel)) {
-            for (Way way : model.getMapData().getWays(elementType)) {
-                way.fill(gc, zoomLevel);
-            }
-        }
-    }
+            gc.setLineDashes(elementType.getLineDashes());
 
-    public void drawRoad(ElementType elementType) {
-        if (zoomLevel >= elementType.getZoomLevelRequired()) {
-            double size = elementType.getDrawSize() * widthModifier;
+            if (elementType.doFillDraw()) {
+                gc.setFill(getColor(elementType));
+                //for (Way way : model.getMapData().getFillWays(elementType, zoomLevel)) {
+                for (Way way : model.getMapData().getWays(elementType)) {
+                    way.fill(gc, zoomLevel);
+                }
+            } else {
+                double size = elementType.getDrawSize() * widthModifier;
 
-            gc.setStroke(getColor(elementType));
-            gc.setLineWidth(size);
-            for (Way line : model.getMapData().getWays(elementType)) {
-                line.draw(gc, zoomLevel);
+                gc.setStroke(getColor(elementType));
+                gc.setLineWidth(size);
+                for (Way line : model.getMapData().getWays(elementType)) {
+                    line.draw(gc, zoomLevel);
+                }
             }
         }
     }
