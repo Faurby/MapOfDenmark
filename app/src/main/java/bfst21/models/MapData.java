@@ -149,28 +149,52 @@ public class MapData {
      * @param elementType specific ElementType.
      * @return list of Ways with the specific ElementType.
      */
-    public List<Way> getWays(ElementType elementType) {
+    public List<Way> getWays(ElementType elementType, double zoomLevel) {
         if (elementType == ElementType.ISLAND) {
             return islands;
 
         } else if (options.getBool(Option.USE_KD_TREE)) {
-            return searchMap.get(elementType);
+            List<Way> wayList = searchMap.get(elementType);
+            return handleWayList(elementType, zoomLevel, wayList);
 
         } else if (options.getBool(Option.USE_R_TREE)) {
-            return rTreeSearchMap.get(elementType);
+            List<Way> wayList = rTreeSearchMap.get(elementType);
+            return handleWayList(elementType, zoomLevel, wayList);
         }
-        List<Way> list = new ArrayList<>();
+        List<Way> wayList = new ArrayList<>();
         for (Way way : wayLongIndex.getElements()) {
             ElementType type = way.getType();
             if (type != null) {
                 for (ElementType emType : ElementType.values()) {
                     if (type == emType) {
-                        list.add(way);
+                        wayList.add(way);
                     }
                 }
             }
         }
-        return list;
+        return handleWayList(elementType, zoomLevel, wayList);
+    }
+
+    //TODO: This method is not good for performance.
+    // Maybe the trees should handle it somehow?
+    // Maybe we should build more trees depending on the size of a Way
+    public List<Way> handleWayList(ElementType elementType, double zoomLevel, List<Way> preWayList) {
+        if (elementType.doFillDraw()) {
+            List<Way> newWayList = new ArrayList<>();
+            for (Way way : preWayList) {
+
+                float area = way.getArea();
+                if (area >= 500_000.0f || zoomLevel >= 9000.0D) {
+                    newWayList.add(way);
+                } else if (area >= 100_000.0f && zoomLevel >= 2000.0D) {
+                    newWayList.add(way);
+                } else if (area >= 70_000.0f && zoomLevel >= 5000.0D) {
+                    newWayList.add(way);
+                }
+            }
+            return newWayList;
+        }
+        return preWayList;
     }
 
     /**
@@ -210,28 +234,6 @@ public class MapData {
             }
         }
     }
-
-//    public List<Way> getFillWays(ElementType elementType, double zoomLevel) {
-//        if (elementType != ElementType.ISLAND) {
-//            List<Way> list = new ArrayList<>();
-//
-//            for (Way way : getList()) {
-//                if (way.getType() == elementType) {
-//                    float area = way.getArea();
-//                    if (area >= 500_000 || zoomLevel >= 9000) {
-//                        list.add(way);
-//                    } else if (area >= 100_000 && zoomLevel >= 2000) {
-//                        list.add(way);
-//                    }  else if (area >= 70_000 && zoomLevel >= 5000) {
-//                        list.add(way);
-//                    }
-//                }
-//            }
-//            return list;
-//        } else {
-//            return islands;
-//        }
-//    }
 
     public WayLongIndex getWayLongIndex() {
         return wayLongIndex;

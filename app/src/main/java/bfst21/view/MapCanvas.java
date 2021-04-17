@@ -371,7 +371,7 @@ public class MapCanvas extends Canvas {
             if (elementType.doFillDraw()) {
                 gc.setFill(getColor(elementType));
                 //for (Way way : model.getMapData().getFillWays(elementType, zoomLevel)) {
-                for (Way way : model.getMapData().getWays(elementType)) {
+                for (Way way : model.getMapData().getWays(elementType, zoomLevel)) {
                     way.fill(gc, zoomLevel);
                 }
             } else {
@@ -379,7 +379,7 @@ public class MapCanvas extends Canvas {
 
                 gc.setStroke(getColor(elementType));
                 gc.setLineWidth(size);
-                for (Way line : model.getMapData().getWays(elementType)) {
+                for (Way line : model.getMapData().getWays(elementType, zoomLevel)) {
                     line.draw(gc, zoomLevel);
                 }
             }

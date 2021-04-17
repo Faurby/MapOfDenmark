@@ -3,7 +3,6 @@ package bfst21.data;
 import bfst21.models.Option;
 import bfst21.models.Options;
 import bfst21.osm.*;
-import bfst21.view.Drawable;
 import bfst21.models.MapData;
 
 import javax.xml.stream.FactoryConfigurationError;
@@ -48,7 +47,6 @@ public class XmlParser {
         WayLongIndex wayLongIndex = new WayLongIndex();
         RelationLongIndex relationLongIndex = new RelationLongIndex();
 
-        List<Drawable> shapes = new ArrayList<>();
         List<Relation> relations = new ArrayList<>();
         List<Way> coastlines = new ArrayList<>();
         List<Way> islands;
@@ -179,9 +177,9 @@ public class XmlParser {
                                         break;
                                     case "landuse":
                                         if (value.equals("grass") ||
-                                                value.equals("meadow") ||
-                                                value.equals("orchard") ||
-                                                value.equals("allotments")) {
+                                            value.equals("meadow") ||
+                                            value.equals("orchard") ||
+                                            value.equals("allotments")) {
                                             elementType = ElementType.LANDUSE;
                                         }
                                         break;
@@ -196,7 +194,7 @@ public class XmlParser {
                                                 if (way.canDrive()) {
                                                     try {
                                                         way.setMaxSpeed(Integer.parseInt(value));
-                                                    } catch (NumberFormatException ex) {
+                                                    } catch (NumberFormatException ignored) {
                                                     }
                                                 }
                                             }

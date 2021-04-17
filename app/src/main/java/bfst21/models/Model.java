@@ -37,7 +37,7 @@ public class Model {
 
     public void load(String fileName) throws IOException, XMLStreamException, FactoryConfigurationError, ClassNotFoundException {
 
-        System.out.println("Model loading "+fileName+"...");
+        System.out.println("Model loading file: "+fileName);
         long time = -System.nanoTime();
         Options options = Options.getInstance();
 

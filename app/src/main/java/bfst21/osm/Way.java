@@ -22,8 +22,9 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
     private ElementType elementType;
     private String role;
     private int maxSpeed;
-    private float area;
     private boolean isDrawn;
+
+    private float area = -1.0f;
 
     private float minX, maxX, minY, maxY;
 
@@ -32,12 +33,12 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
     }
 
     public float getArea() {
-        if (area != 0) {
+        if (area != -1.0f) {
             return area;
         }
         float xLength = maxX - minX;
         float yLength = maxY - minY;
-        area = (float) (xLength * yLength * Math.pow(10, 9));
+        area = (float) (xLength * yLength * Math.pow(10.0D, 9.0D));
 
         return area;
     }
