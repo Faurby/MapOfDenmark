@@ -35,7 +35,7 @@ public class BinaryFileManager {
     public void saveOBJ(String fileName, MapData mapData) throws IOException {
         try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)))) {
             output.writeObject(mapData.getShapes());
-            output.writeObject(mapData.getWays(WayType.ISLAND));
+            output.writeObject(mapData.getWays(ElementType.ISLAND));
             output.writeObject(mapData.getWays());
             output.writeObject(mapData.getRelations());
             output.writeObject(mapData.getKdTree());

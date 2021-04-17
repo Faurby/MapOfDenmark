@@ -9,7 +9,7 @@ import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
 import bfst21.tree.KdTree;
 import bfst21.osm.Way;
-import bfst21.osm.WayType;
+import bfst21.osm.ElementType;
 import bfst21.models.Model;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
@@ -74,7 +74,7 @@ public class MapCanvas extends Canvas {
 
         gc.save();
         gc.setTransform(new Affine());
-        gc.setFill(getColor(WayType.WATER));
+        gc.setFill(getColor(ElementType.WATER));
         gc.fillRect(0, 0, getWidth(), getHeight());
         gc.setTransform(trans);
         gc.setLineCap(StrokeLineCap.ROUND);
@@ -83,9 +83,8 @@ public class MapCanvas extends Canvas {
         if (model.getMapData() != null) {
 
             if (options.getBool(Option.DISPLAY_ISLANDS)) {
-                paintFill(WayType.ISLAND);
+                paintFill(ElementType.ISLAND);
             }
-
 
             if (!initialRangeSearch) {
                 if (options.getBool(Option.USE_KD_TREE)) {
@@ -97,25 +96,30 @@ public class MapCanvas extends Canvas {
             }
             adjustWidthModifier();
 
-            if (options.getBool(Option.DISPLAY_LAND_USE)) {
-                paintFill(WayType.LANDUSE);
-            }
             if (options.getBool(Option.DISPLAY_WATER)) {
-                paintFill(WayType.WATER);
+                paintFill(ElementType.WATER);
+                drawRoad(ElementType.WATERWAY);
             }
 
-            if (options.getBool(Option.DISPLAY_WAYS)) {
-                drawRoad(WayType.RESIDENTIAL);
-                drawRoad(WayType.MOTORWAY);
-                drawRoad(WayType.TERTIARY);
-                drawRoad(WayType.PRIMARY);
+            if (options.getBool(Option.DISPLAY_LAND_USE)) {
+                paintFill(ElementType.LANDUSE);
             }
-            if (options.getBool(Option.DISPLAY_WATER)) {
-                drawRoad(WayType.WATERWAY);
+
+            gc.setLineDashes(0.0001);
+            drawRoad(ElementType.CYCLEWAY);
+            drawRoad(ElementType.FOOTWAY);
+            gc.setLineDashes(0);
+            drawRoad(ElementType.ROAD);
+
+            if (options.getBool(Option.DISPLAY_WAYS)) {
+                drawRoad(ElementType.RESIDENTIAL);
+                drawRoad(ElementType.MOTORWAY);
+                drawRoad(ElementType.TERTIARY);
+                drawRoad(ElementType.PRIMARY);
             }
             if (options.getBool(Option.DISPLAY_BUILDINGS)) {
-                paintFill(WayType.BUILDING);
-                drawLine(WayType.BUILDING);
+                paintFill(ElementType.BUILDING);
+                drawLine(ElementType.BUILDING);
             }
             if (options.getBool(Option.USE_KD_TREE)) {
                 if (options.getBool(Option.DISPLAY_KD_TREE)) {
@@ -130,18 +134,13 @@ public class MapCanvas extends Canvas {
                     drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
                 }
             }
-            gc.setLineDashes(0.0001);
-            drawRoad(WayType.CYCLEWAY);
-            drawRoad(WayType.FOOTWAY);
-            gc.setLineDashes(0);
-            drawRoad(WayType.ROAD);
 
+            drawUserNodes();
+            drawRelations();
             if (options.getBool(Option.DISPLAY_GRAPH)) {
                 drawGraph();
             }
-            drawUserNodes();
-            drawRelations();
-            drawLine(WayType.UNKNOWN);
+            drawLine(ElementType.UNKNOWN);
 
         }
         gc.restore();
@@ -325,53 +324,53 @@ public class MapCanvas extends Canvas {
         gc.setFillRule(FillRule.EVEN_ODD);
         for (Relation rel : model.getMapData().getRelations()) {
             if (rel.getType() != null) {
-                WayType wayType = rel.getType();
-                if (zoomLevel >= wayType.getZoomLevelRequired()) {
-                    gc.setFill(wayType.getColor());
+                ElementType elementType = rel.getType();
+                if (zoomLevel >= elementType.getZoomLevelRequired()) {
+                    gc.setFill(elementType.getColor());
                     rel.fill(gc, zoomLevel);
                 }
             }
         }
     }
 
-    public void drawLine(WayType wayType) {
-        if (zoomLevel >= wayType.getZoomLevelRequired()) {
-            gc.setStroke(getColor(wayType));
+    public void drawLine(ElementType elementType) {
+        if (zoomLevel >= elementType.getZoomLevelRequired()) {
+            gc.setStroke(getColor(elementType));
             gc.setLineWidth(1 / Math.sqrt(trans.determinant()));
-            for (Way line : model.getMapData().getWays(wayType)) {
+            for (Way line : model.getMapData().getWays(elementType)) {
                 line.draw(gc, zoomLevel);
             }
         }
     }
 
-    public void paintFill(WayType wayType) {
-        if (zoomLevel >= wayType.getZoomLevelRequired()) {
-            gc.setFill(getColor(wayType));
-            for (Way way : model.getMapData().getFillWays(wayType, zoomLevel)) {
+    public void paintFill(ElementType elementType) {
+        if (zoomLevel >= elementType.getZoomLevelRequired()) {
+            gc.setFill(getColor(elementType));
+            for (Way way : model.getMapData().getFillWays(elementType, zoomLevel)) {
                 way.fill(gc, zoomLevel);
             }
         }
     }
 
-    public void drawRoad(WayType wayType) {
-        if (zoomLevel >= wayType.getZoomLevelRequired()) {
-            double size = wayType.getDrawSize() * widthModifier;
+    public void drawRoad(ElementType elementType) {
+        if (zoomLevel >= elementType.getZoomLevelRequired()) {
+            double size = elementType.getDrawSize() * widthModifier;
 
-            gc.setStroke(getColor(wayType));
+            gc.setStroke(getColor(elementType));
             gc.setLineWidth(size);
-            for (Way line : model.getMapData().getWays(wayType)) {
+            for (Way line : model.getMapData().getWays(elementType)) {
                 line.draw(gc, zoomLevel);
             }
         }
     }
 
-    public Color getColor(WayType wayType) {
+    public Color getColor(ElementType elementType) {
         if (colorMode == ColorMode.COLOR_BLIND) {
-            return wayType.getColorBlind();
+            return elementType.getColorBlind();
         } else if (colorMode == ColorMode.BLACK_WHITE) {
-            return wayType.getBlackWhite();
+            return elementType.getBlackWhite();
         }
-        return wayType.getColor();
+        return elementType.getColor();
     }
 
     public void setColorMode(ColorMode colorMode) {

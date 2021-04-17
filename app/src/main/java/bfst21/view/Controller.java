@@ -4,7 +4,6 @@ import bfst21.address.Address;
 import bfst21.exceptions.MapDataNotLoadedException;
 import bfst21.models.*;
 import bfst21.osm.UserNode;
-import bfst21.osm.WayType;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,15 +21,11 @@ import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import javax.xml.stream.XMLStreamException;
-import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 
 

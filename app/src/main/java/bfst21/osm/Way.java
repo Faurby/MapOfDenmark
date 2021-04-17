@@ -19,7 +19,7 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
     private static final long serialVersionUID = 3139576893143362100L;
     private final List<Node> nodes = new ArrayList<>();
 
-    private WayType wayType;
+    private ElementType elementType;
     private String role;
     private int maxSpeed;
     private float area;
@@ -167,46 +167,46 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         return maxSpeed;
     }
 
-    public WayType getType() {
-        return wayType;
+    public ElementType getType() {
+        return elementType;
     }
 
-    public void setType(WayType wayType) {
-        this.wayType = wayType;
+    public void setType(ElementType elementType) {
+        this.elementType = elementType;
     }
 
     public boolean canNavigate() {
-        return wayType == WayType.PRIMARY ||
-                wayType == WayType.MOTORWAY ||
-                wayType == WayType.TRUNK ||
-                wayType == WayType.TERTIARY ||
-                wayType == WayType.CYCLEWAY ||
-                wayType == WayType.RESIDENTIAL ||
-                wayType == WayType.ROAD ||
-                wayType == WayType.FOOTWAY;
+        return elementType == ElementType.PRIMARY ||
+                elementType == ElementType.MOTORWAY ||
+                elementType == ElementType.TRUNK ||
+                elementType == ElementType.TERTIARY ||
+                elementType == ElementType.CYCLEWAY ||
+                elementType == ElementType.RESIDENTIAL ||
+                elementType == ElementType.ROAD ||
+                elementType == ElementType.FOOTWAY;
     }
 
     public boolean canDrive() {
-        return wayType == WayType.PRIMARY ||
-                wayType == WayType.MOTORWAY ||
-                wayType == WayType.RESIDENTIAL ||
-                wayType == WayType.TERTIARY ||
-                wayType == WayType.TRUNK;
+        return elementType == ElementType.PRIMARY ||
+                elementType == ElementType.MOTORWAY ||
+                elementType == ElementType.RESIDENTIAL ||
+                elementType == ElementType.TERTIARY ||
+                elementType == ElementType.TRUNK;
     }
 
     public boolean canBike() {
-        return wayType == WayType.TERTIARY ||
-                wayType == WayType.CYCLEWAY ||
-                wayType == WayType.ROAD ||
-                wayType == WayType.RESIDENTIAL;
+        return elementType == ElementType.TERTIARY ||
+                elementType == ElementType.CYCLEWAY ||
+                elementType == ElementType.ROAD ||
+                elementType == ElementType.RESIDENTIAL;
     }
 
     public boolean canWalk() {
-        return wayType == WayType.TERTIARY ||
-                wayType == WayType.CYCLEWAY ||
-                wayType == WayType.RESIDENTIAL ||
-                wayType == WayType.ROAD ||
-                wayType == WayType.FOOTWAY;
+        return elementType == ElementType.TERTIARY ||
+                elementType == ElementType.CYCLEWAY ||
+                elementType == ElementType.RESIDENTIAL ||
+                elementType == ElementType.ROAD ||
+                elementType == ElementType.FOOTWAY;
     }
 
     public void setRole(String role) {

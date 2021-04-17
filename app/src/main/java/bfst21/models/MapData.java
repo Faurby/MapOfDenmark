@@ -125,26 +125,26 @@ public class MapData {
         searchList = kdTree.preRangeSearch(boundingBox);
     }
 
-    public List<Way> getWays(WayType wayType) {
+    public List<Way> getWays(ElementType elementType) {
         List<Way> list = new ArrayList<>();
 
-        if (wayType == WayType.ISLAND) {
+        if (elementType == ElementType.ISLAND) {
             return islands;
         }
         for (Way way : getList()) {
-            if (way.getType() == wayType) {
+            if (way.getType() == elementType) {
                 list.add(way);
             }
         }
         return list;
     }
 
-    public List<Way> getFillWays(WayType wayType, double zoomLevel) {
-        if (wayType != WayType.ISLAND) {
+    public List<Way> getFillWays(ElementType elementType, double zoomLevel) {
+        if (elementType != ElementType.ISLAND) {
             List<Way> list = new ArrayList<>();
 
             for (Way way : getList()) {
-                if (way.getType() == wayType) {
+                if (way.getType() == elementType) {
                     float area = way.getArea();
                     if (area >= 500_000 || zoomLevel >= 9000) {
                         list.add(way);

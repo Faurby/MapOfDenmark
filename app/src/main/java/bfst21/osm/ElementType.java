@@ -3,7 +3,7 @@ package bfst21.osm;
 import javafx.scene.paint.Color;
 
 
-public enum WayType {
+public enum ElementType {
 
     BUILDING(
         1f,
@@ -107,7 +107,7 @@ public enum WayType {
     private final Color color, colorBlind, blackWhite;
     private final float drawSize, zoomLevelRequired;
 
-    WayType(float drawSize, float zoomLevelRequired, Color color, Color colorBlind, Color blackWhite) {
+    ElementType(float drawSize, float zoomLevelRequired, Color color, Color colorBlind, Color blackWhite) {
         this.color = color;
         this.colorBlind = colorBlind;
         this.blackWhite = blackWhite;

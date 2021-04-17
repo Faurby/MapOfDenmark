@@ -42,7 +42,7 @@ public class XmlParser {
         Way way = null;
         Relation relation = null;
         OsmAddress osmAddress = new OsmAddress();
-        WayType wayType = null;
+        ElementType elementType = null;
 
         NodeLongIndex idToNode = new NodeLongIndex();
         WayLongIndex idToWay = new WayLongIndex();
@@ -141,40 +141,40 @@ public class XmlParser {
                                         osmAddress.setStreet(value);
                                         break;
                                     case "building":
-                                        wayType = WayType.BUILDING;
+                                        elementType = ElementType.BUILDING;
                                         break;
                                     case "highway":
                                         switch (value) {
                                             case "motorway":
                                             case "motorway_link":
-                                                wayType = WayType.MOTORWAY;
+                                                elementType = ElementType.MOTORWAY;
                                                 break;
                                             case "primary":
-                                                wayType = WayType.PRIMARY;
+                                                elementType = ElementType.PRIMARY;
                                                 break;
                                             case "residential":
-                                                wayType = WayType.RESIDENTIAL;
+                                                elementType = ElementType.RESIDENTIAL;
                                                 break;
                                             case "footway":
                                             case "footpath":
                                             case "path":
                                             case "pedestrian":
-                                                wayType = WayType.FOOTWAY;
+                                                elementType = ElementType.FOOTWAY;
                                                 break;
                                             case "cycleway":
                                             case "track":
-                                                wayType = WayType.CYCLEWAY;
+                                                elementType = ElementType.CYCLEWAY;
                                                 break;
                                             case "road":
                                             case "service":
-                                                wayType = WayType.ROAD;
+                                                elementType = ElementType.ROAD;
                                                 break;
                                             case "trunk":
-                                                wayType = WayType.TRUNK;
+                                                elementType = ElementType.TRUNK;
                                                 break;
                                             case "tertiary":
                                             case "secondary":
-                                                wayType = WayType.TERTIARY;
+                                                elementType = ElementType.TERTIARY;
                                                 break;
                                         }
                                         break;
@@ -183,12 +183,12 @@ public class XmlParser {
                                             value.equals("meadow") ||
                                             value.equals("orchard") ||
                                             value.equals("allotments")) {
-                                            wayType = WayType.LANDUSE;
+                                            elementType = ElementType.LANDUSE;
                                         }
                                         break;
                                     case "leisure":
                                         if (value.equals("park")) {
-                                            wayType = WayType.LANDUSE;
+                                            elementType = ElementType.LANDUSE;
                                         }
                                         break;
                                     case "maxspeed":
@@ -209,12 +209,12 @@ public class XmlParser {
                                                 isCoastline = true;
                                                 break;
                                             case "water":
-                                                wayType = WayType.WATER;
+                                                elementType = ElementType.WATER;
                                                 break;
                                         }
                                         break;
                                     case "waterway":
-                                        wayType = WayType.WATERWAY;
+                                        elementType = ElementType.WATERWAY;
                                         break;
                                 }
                             } else if (relation != null) {
@@ -244,9 +244,9 @@ public class XmlParser {
 
                         case "relation":
                             if (options.getBool(Option.LOAD_RELATIONS)) {
-                                if (wayType != null) {
-                                    relation.setType(wayType);
-                                    wayType = null;
+                                if (elementType != null) {
+                                    relation.setType(elementType);
+                                    elementType = null;
                                 }
                                 relations.add(relation);
                                 idToRelation.put(relation);
@@ -260,9 +260,9 @@ public class XmlParser {
                                 coastlines.add(way);
 
                             } else {
-                                if (wayType != null) {
-                                    way.setType(wayType);
-                                    wayType = null;
+                                if (elementType != null) {
+                                    way.setType(elementType);
+                                    elementType = null;
                                 }
                                 ways.add(way);
                                 way = null;

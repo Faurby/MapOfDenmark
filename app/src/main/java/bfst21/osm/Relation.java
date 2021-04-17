@@ -15,7 +15,7 @@ public class Relation extends Element implements Serializable, Drawable {
     private final List<Node> nodes;
     private final List<Way> ways;
     private final List<Relation> relations;
-    private WayType wayType;
+    private ElementType elementType;
     private boolean multipolygon;
 
     public Relation(long id) {
@@ -57,12 +57,12 @@ public class Relation extends Element implements Serializable, Drawable {
         relations.add(relation);
     }
 
-    public void setType(WayType wayType) {
-        this.wayType = wayType;
+    public void setType(ElementType elementType) {
+        this.elementType = elementType;
     }
 
-    public WayType getType() {
-        return wayType;
+    public ElementType getType() {
+        return elementType;
     }
 
     @Override
