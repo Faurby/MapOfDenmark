@@ -69,7 +69,7 @@ public class MapCanvas extends Canvas {
         initialZoom(factor, new Point2D(0, 0));
     }
 
-    void repaint() {
+    public void repaint() {
         long time = -System.nanoTime();
 
         gc.save();
@@ -82,7 +82,8 @@ public class MapCanvas extends Canvas {
 
         if (model.getMapData() != null) {
 
-            if (!initialRangeSearch) {
+            //Initial range search to ensure that
+            if (!initialRangeSearch && zoomLevel != 0.0D) {
                 if (options.getBool(Option.USE_KD_TREE)) {
                     doRangeSearch();
 
@@ -90,9 +91,13 @@ public class MapCanvas extends Canvas {
                     doRangeSearch();
                 }
             }
+            //Adjust width modifier used to properly size Ways at the current zoom level
             adjustWidthModifier();
 
+            //Draw point of interests created by the user
             drawUserNodes();
+
+            //Draw relations
             drawRelations();
 
             //Draw every elementType if option is enabled
@@ -107,6 +112,7 @@ public class MapCanvas extends Canvas {
                 }
             }
 
+            //Display the kd-tree if option is enabled
             if (options.getBool(Option.USE_KD_TREE)) {
                 if (options.getBool(Option.DISPLAY_KD_TREE)) {
                     depth = 0;
@@ -124,14 +130,15 @@ public class MapCanvas extends Canvas {
                     }
                 }
             }
+            //Display the directed graph for path finding if option is enabled
             if (options.getBool(Option.DISPLAY_GRAPH)) {
                 drawGraph();
             }
         }
         gc.restore();
 
+        //Calculate average repaint time
         time += System.nanoTime();
-
         totalLastRepaintTime += time;
         totalRepaints++;
 
@@ -407,7 +414,11 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public String getZoomLevel() {
+    public double getZoomLevel() {
+        return zoomLevel;
+    }
+
+    public String getZoomLevelText() {
         String value = "" + zoomLevel;
         if (value.length() > 8) {
             return value.substring(0, 8);

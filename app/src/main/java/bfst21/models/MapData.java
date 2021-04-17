@@ -54,8 +54,6 @@ public class MapData {
         this.maxy = maxy;
         this.wayLongIndex = wayLongIndex;
 
-        directedGraph = new DirectedGraph(wayLongIndex.getElements().size());
-
         //Initialize ArrayLists for the search maps
         for (ElementType elementType : ElementType.values()) {
             searchMap.put(elementType, new ArrayList<>());
@@ -63,6 +61,10 @@ public class MapData {
         }
 
         //Create directed graph for path finding
+        directedGraph = new DirectedGraph(wayLongIndex.getElements().size());
+
+        System.out.println("Building directed graph for path finding...");
+
         int idCount = 0;
         for (Way way : wayLongIndex.getElements()) {
             if (way.getType() != null) {
@@ -165,14 +167,14 @@ public class MapData {
                         rTreeMap.get(elementType).search(Geometries.rectangle(x1, y1, x2, y2));
 
                 Iterator<Entry<Integer, Way>> rTreeIterator = results.iterator();
-                List<Way> rTreeSearchList = new ArrayList<>();
+                List<Way> wayList = new ArrayList<>();
 
                 while (rTreeIterator.hasNext()) {
                     Way way = rTreeIterator.next().geometry();
-                    rTreeSearchList.add(way);
+                    wayList.add(way);
                 }
-                rTreeSearchMap.put(elementType, rTreeSearchList);
-            }
+                rTreeSearchMap.put(elementType, wayList);
+           }
         }
     }
 
@@ -184,7 +186,8 @@ public class MapData {
         for (ElementType elementType : ElementType.values()) {
             if (zoomLevel >= elementType.getZoomLevelRequired()) {
                 if (kdTreeMap.containsKey(elementType)) {
-                    searchMap.put(elementType, kdTreeMap.get(elementType).preRangeSearch(boundingBox));
+                    List<Way> wayList = kdTreeMap.get(elementType).preRangeSearch(boundingBox);
+                    searchMap.put(elementType, wayList);
                 }
             }
         }

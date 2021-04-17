@@ -4,6 +4,7 @@ import bfst21.address.Address;
 import bfst21.exceptions.MapDataNotLoadedException;
 import bfst21.models.*;
 import bfst21.osm.UserNode;
+import bfst21.osm.Way;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -48,6 +49,8 @@ public class Controller {
     @FXML
     private Text repaintTime;
     @FXML
+    private Text nodeSkipAmount;
+    @FXML
     private TextArea startingPoint;
     @FXML
     private TextArea destinationPoint;
@@ -87,8 +90,13 @@ public class Controller {
 
     public void updateZoomBox() {
         zoomPercent.setText("Zoom percent: " + canvas.getZoomPercent());
-        zoomText.setText("Zoom level: " + canvas.getZoomLevel());
+        zoomText.setText("Zoom level: " + canvas.getZoomLevelText());
         updateAverageRepaintTime();
+        updateNodeSkipAmount();
+    }
+
+    public void updateNodeSkipAmount() {
+        nodeSkipAmount.setText("Node skip: "+ Way.getNodeSkipAmount(canvas.getZoomLevel()));
     }
 
     public void updateAverageRepaintTime() {

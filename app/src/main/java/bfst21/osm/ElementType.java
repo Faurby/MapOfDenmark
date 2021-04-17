@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
 public enum ElementType {
 
     //It is very important that each ElementType is declared in the correct drawing order
+    //For example, we do not want to draw BUILDING below ISLAND
     ISLAND(
             1f,
             0.0f,
@@ -132,18 +133,14 @@ public enum ElementType {
         this.zoomLevelRequired = zoomLevelRequired;
     }
 
-
     /**
      * Determine if this ElementType should be using the fill drawing method
      */
     public boolean doFillDraw() {
-        if (this == ElementType.BUILDING ||
-            this == ElementType.ISLAND ||
-            this == ElementType.LANDUSE ||
-            this == ElementType.WATER) {
-            return true;
-        }
-        return false;
+        return this == ElementType.BUILDING ||
+                this == ElementType.ISLAND ||
+                this == ElementType.LANDUSE ||
+                this == ElementType.WATER;
     }
 
     public double getLineDashes() {

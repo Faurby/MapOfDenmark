@@ -5,7 +5,6 @@ import bfst21.data.XmlParser;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.logging.Logger;
 import java.util.zip.ZipInputStream;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
@@ -37,6 +36,8 @@ public class Model {
     }
 
     public void load(String fileName) throws IOException, XMLStreamException, FactoryConfigurationError, ClassNotFoundException {
+
+        System.out.println("Model loading "+fileName+"...");
         long time = -System.nanoTime();
         Options options = Options.getInstance();
 
@@ -56,7 +57,7 @@ public class Model {
             mapData = binaryFileManager.loadOBJ(fileName, jarFile);
         }
         time += System.nanoTime();
-        Logger.getGlobal().info(String.format("Load time: %dms", time / 1000000));
+        System.out.println("Model load time: "+time / 1_000_000+"ms");
     }
 
     private void loadZIP(String filename) throws IOException, XMLStreamException, FactoryConfigurationError {

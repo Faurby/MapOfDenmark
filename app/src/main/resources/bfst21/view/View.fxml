@@ -42,6 +42,7 @@
                 <Text text="zoomPercent" fx:id="zoomPercent"/>
                 <Text text="zoomText" fx:id="zoomText"/>
                 <Text text="repaintTime" fx:id="repaintTime"/>
+                <Text text="nodeSkipAmount" fx:id="nodeSkipAmount"/>
                 <VBox fx:id="debugOptions"
                       minWidth="150"
                       style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B;">

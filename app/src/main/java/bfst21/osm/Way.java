@@ -31,6 +31,17 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         super(id);
     }
 
+    public float getArea() {
+        if (area != 0) {
+            return area;
+        }
+        float xLength = maxX - minX;
+        float yLength = maxY - minY;
+        area = (float) (xLength * yLength * Math.pow(10, 9));
+
+        return area;
+    }
+
     protected void updateBoundingBox(Node node) {
         if (nodes.size() == 1) {
             minX = node.getX();
@@ -57,18 +68,6 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         }
     }
 
-    public BoundingBox getBoundingBox() {
-        return new BoundingBox(minX, maxX, minY, maxY);
-    }
-
-    public Node first() {
-        return nodes.get(0);
-    }
-
-    public Node last() {
-        return nodes.get(nodes.size() - 1);
-    }
-
     public void add(Node node) {
         nodes.add(node);
         updateBoundingBox(node);
@@ -78,19 +77,8 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
     public void trace(GraphicsContext gc, double zoomLevel) {
         gc.moveTo(nodes.get(0).getX(), nodes.get(0).getY());
 
-        int inc = 1;
-        if (zoomLevel <= 750) {
-            inc = 10;
-        } else if (zoomLevel <= 1050) {
-            inc = 8;
-        } else if (zoomLevel <= 1350) {
-            inc = 6;
-        } else if (zoomLevel <= 1800) {
-            inc = 4;
-        } else if (zoomLevel <= 2400) {
-            inc = 2;
-        }
-        for (int i = 1; i < nodes.size(); i += inc) {
+        int nodeSkipAmount = getNodeSkipAmount(zoomLevel);
+        for (int i = 1; i < nodes.size(); i += nodeSkipAmount) {
             if (i <= nodes.size() - 2) {
                 Node node = nodes.get(i);
                 gc.lineTo(node.getX(), node.getY());
@@ -101,8 +89,27 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         isDrawn = true;
     }
 
-    public boolean isDrawn() {
-        return isDrawn;
+    public static int getNodeSkipAmount(double zoomLevel) {
+        if (zoomLevel <= 100) {
+            return 10;
+        } else if (zoomLevel <= 140) {
+            return 9;
+        } else if (zoomLevel <= 190) {
+            return 8;
+        } else if (zoomLevel <= 270) {
+            return 7;
+        } else if (zoomLevel <= 350) {
+            return 6;
+        } else if (zoomLevel <= 500) {
+            return 5;
+        } else if (zoomLevel <= 700) {
+            return 4;
+        } else if (zoomLevel <= 950) {
+            return 3;
+        } else if (zoomLevel <= 1350) {
+            return 2;
+        }
+        return 1;
     }
 
     public static Way merge(Way first, Way second) {
@@ -227,6 +234,22 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         return nodes;
     }
 
+    public BoundingBox getBoundingBox() {
+        return new BoundingBox(minX, maxX, minY, maxY);
+    }
+
+    public Node first() {
+        return nodes.get(0);
+    }
+
+    public Node last() {
+        return nodes.get(nodes.size() - 1);
+    }
+
+    public boolean isDrawn() {
+        return isDrawn;
+    }
+
     @Override
     public double distance(Rectangle r) {
         if (r.contains(minX, minY) || r.contains(maxX, maxY)) {
@@ -261,17 +284,6 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         } else {
             return Math.min(d1, Math.min(d2, Math.min(d3, d4)));
         }
-    }
-
-    public float getArea() {
-        if (area != 0) {
-            return area;
-        }
-        float xLength = maxX - minX;
-        float yLength = maxY - minY;
-        area = (float) (xLength * yLength * Math.pow(10, 9));
-
-        return area;
     }
 
     @Override
