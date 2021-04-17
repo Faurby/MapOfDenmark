@@ -41,6 +41,7 @@
             <VBox fx:id="debugBox" maxWidth="40" maxHeight="20" style="-fx-padding: 30">
                 <Text text="zoomPercent" fx:id="zoomPercent"/>
                 <Text text="zoomText" fx:id="zoomText"/>
+                <Text text="repaintTime" fx:id="repaintTime"/>
                 <VBox fx:id="debugOptions"
                       minWidth="150"
                       style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B;">

@@ -20,8 +20,9 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
     private final List<Node> nodes = new ArrayList<>();
 
     private WayType wayType;
-    private int maxSpeed;
     private String role;
+    private int maxSpeed;
+    private float area;
 
     private float minX, maxX, minY, maxY;
 
@@ -256,11 +257,15 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         }
     }
 
-    public double getArea() {
-        double xLength = maxX - minX;
-        double yLength = maxY - minY;
-        double area = xLength * yLength;
-        return area * Math.pow(10, 9);
+    public float getArea() {
+        if (area != 0) {
+            return area;
+        }
+        float xLength = maxX - minX;
+        float yLength = maxY - minY;
+        area = (float) (xLength * yLength * Math.pow(10, 9));
+
+        return area;
     }
 
     @Override

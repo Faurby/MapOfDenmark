@@ -145,11 +145,12 @@ public class MapData {
 
             for (Way way : getList()) {
                 if (way.getType() == wayType) {
-                    if (way.getArea() >= 500_000 || zoomLevel >= 9000) {
+                    float area = way.getArea();
+                    if (area >= 500_000 || zoomLevel >= 9000) {
                         list.add(way);
-                    } else if (way.getArea() >= 100_000 && zoomLevel >= 2000) {
+                    } else if (area >= 100_000 && zoomLevel >= 2000) {
                         list.add(way);
-                    }  else if (way.getArea() >= 70_000 && zoomLevel >= 5000) {
+                    }  else if (area >= 70_000 && zoomLevel >= 5000) {
                         list.add(way);
                     }
                 }

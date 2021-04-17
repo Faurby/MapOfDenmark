@@ -51,6 +51,8 @@ public class Controller {
     @FXML
     private Text zoomPercent;
     @FXML
+    private Text repaintTime;
+    @FXML
     private TextArea startingPoint;
     @FXML
     private TextArea destinationPoint;
@@ -91,6 +93,11 @@ public class Controller {
     public void updateZoomBox() {
         zoomPercent.setText("Zoom percent: " + canvas.getZoomPercent());
         zoomText.setText("Zoom level: " + canvas.getZoomLevel());
+        updateAverageRepaintTime();
+    }
+
+    public void updateAverageRepaintTime() {
+        repaintTime.setText("Repaint time: " + canvas.getAverageRepaintTime());
     }
 
     public void init(Model model) {
@@ -152,6 +159,7 @@ public class Controller {
     @FXML
     private void onMousePressed(MouseEvent e) {
         lastMouse = new Point2D(e.getX(), e.getY());
+        updateAverageRepaintTime();
     }
 
     @FXML

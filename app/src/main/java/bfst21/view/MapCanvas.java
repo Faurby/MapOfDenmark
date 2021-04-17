@@ -37,6 +37,7 @@ public class MapCanvas extends Canvas {
 
     private long totalRepaints;
     private long totalLastRepaintTime;
+    private long lastTenAverageRepaintTime;
 
     private final Options options = Options.getInstance();
     private final GraphicsContext gc = getGraphicsContext2D();
@@ -151,8 +152,8 @@ public class MapCanvas extends Canvas {
         totalRepaints++;
 
         if (totalRepaints % 10 == 0) {
-            long last10AverageRepaintTime = totalLastRepaintTime / 10;
-            System.out.println("Repaint time: " + time / 1_000_000 + " (Average last ten repaints: " + last10AverageRepaintTime / 1_000_000 + " total repaints: " + totalRepaints + ")");
+            lastTenAverageRepaintTime = totalLastRepaintTime / 10_000_000;
+            System.out.println("Repaint time: " + time / 1_000_000 + " (Average last ten repaints: " + lastTenAverageRepaintTime + " total repaints: " + totalRepaints + ")");
 
             totalLastRepaintTime = 0;
         }
@@ -390,6 +391,10 @@ public class MapCanvas extends Canvas {
         } else if (zoomLevel < 22000) {
             widthModifier = 0.25;
         }
+    }
+
+    public String getAverageRepaintTime() {
+        return lastTenAverageRepaintTime + "ms";
     }
 
     public String getZoomPercent() {
