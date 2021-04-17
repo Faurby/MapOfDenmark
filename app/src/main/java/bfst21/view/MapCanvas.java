@@ -30,14 +30,11 @@ public class MapCanvas extends Canvas {
 
     private Model model;
 
-    private final double zoomLevelMin = 50;
-    private final double zoomLevelMax = 100_000.0;
+    private final double zoomLevelMin = 50.0D, zoomLevelMax = 100_000.0D;
     private double zoomLevel;
-    private double widthModifier = 1.0;
+    private double widthModifier = 1.0D;
 
-    private long totalRepaints;
-    private long totalLastRepaintTime;
-    private long lastTenAverageRepaintTime;
+    private long totalRepaints, totalLastRepaintTime, lastTenAverageRepaintTime;
 
     private final Options options = Options.getInstance();
     private final GraphicsContext gc = getGraphicsContext2D();
@@ -48,56 +45,52 @@ public class MapCanvas extends Canvas {
     private ColorMode colorMode = ColorMode.STANDARD;
     private Affine trans = new Affine();
 
-    private boolean initialRangeSearch;
-
+    /**
+     * Initializes MapCanvas with the given Model.
+     */
     public void init(Model model) {
         this.model = model;
     }
 
-    public void load(boolean loadDefault) throws XMLStreamException, IOException, ClassNotFoundException {
-        initialRangeSearch = false;
-        model.load(loadDefault);
+    /**
+     * Loads selected file in Model.
+     * Pans the MapCanvas based on the bounds for the loaded map.
+     * Fits the MapCanvas to the screen.
+     * @param loadDefaultFile determines if the default or selected file should be loaded.
+     */
+    public void load(boolean loadDefaultFile) throws XMLStreamException, IOException, ClassNotFoundException {
+        model.load(loadDefaultFile);
         trans = new Affine();
 
-        pan(-model.getMapData().getMinx(), -model.getMapData().getMiny());
-        double factor = getWidth() / (model.getMapData().getMaxx() - model.getMapData().getMinx());
+        pan(-model.getMapData().getMinX(), -model.getMapData().getMinY());
 
         zoomLevel = 1.0D;
-        zoomLevel *= factor;
-        System.out.println("Zoom: " + zoomLevel + " factor: " + factor);
+        double zoomFactor = getWidth() / (model.getMapData().getMaxX() - model.getMapData().getMinX());
 
-        initialZoom(factor, new Point2D(0, 0));
+        zoom(zoomFactor, new Point2D(0, 0));
     }
 
+    /**
+     * Repaints the MapCanvas.
+     * Draws Ways for every ElementType to display at the current zoom level.
+     * Draws every multipolygon relation.
+     * Draws point of interests added by the user.
+     */
     public void repaint() {
         long time = -System.nanoTime();
 
         gc.save();
         gc.setTransform(new Affine());
         gc.setFill(getColor(ElementType.WATER));
-        gc.fillRect(0, 0, getWidth(), getHeight());
+        gc.fillRect(0, 0, getWidth(), getHeight()); //Fill the screen with WATER
         gc.setTransform(trans);
         gc.setLineCap(StrokeLineCap.ROUND);
         gc.setLineJoin(StrokeLineJoin.ROUND);
 
         if (model.getMapData() != null) {
 
-            //Initial range search to ensure that
-            if (!initialRangeSearch && zoomLevel != 0.0D) {
-                if (options.getBool(Option.USE_KD_TREE)) {
-                    doRangeSearch();
-
-                } else if (options.getBool(Option.USE_R_TREE)) {
-                    doRangeSearch();
-                }
-            }
-            //Adjust width modifier used to properly size Ways at the current zoom level
             adjustWidthModifier();
-
-            //Draw point of interests created by the user
             drawUserNodes();
-
-            //Draw relations
             drawRelations();
 
             //Draw every elementType if option is enabled
@@ -117,10 +110,10 @@ public class MapCanvas extends Canvas {
                 if (options.getBool(Option.DISPLAY_KD_TREE)) {
                     depth = 0;
 
-                    float maxX = model.getMapData().getMaxx();
-                    float maxY = model.getMapData().getMaxy();
-                    float minX = model.getMapData().getMinx();
-                    float minY = model.getMapData().getMiny();
+                    float maxX = model.getMapData().getMaxX();
+                    float maxY = model.getMapData().getMaxY();
+                    float minX = model.getMapData().getMinX();
+                    float minY = model.getMapData().getMinY();
 
                     for (ElementType elementType : ElementType.values()) {
                         if (zoomLevel >= elementType.getZoomLevelRequired()) {
@@ -130,10 +123,7 @@ public class MapCanvas extends Canvas {
                     }
                 }
             }
-            //Display the directed graph for path finding if option is enabled
-            if (options.getBool(Option.DISPLAY_GRAPH)) {
-                drawGraph();
-            }
+            drawGraph();
         }
         gc.restore();
 
@@ -150,9 +140,10 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void doRangeSearch() {
-        initialRangeSearch = true;
-
+    /**
+     * Begins a range search for the specific tree if enabled.
+     */
+    public void rangeSearch() {
         if (model.getMapData() != null) {
             if (options.getBool(Option.USE_KD_TREE)) {
                 double x1 = trans.getTx() / Math.sqrt(trans.determinant());
@@ -185,15 +176,9 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    private void drawGraph() {
-        gc.setStroke(Color.DARKSLATEBLUE);
-        gc.setLineWidth(0.0002 * widthModifier);
-
-        for (Edge edge : model.getMapData().getDirectedGraph().getEdges()) {
-            edge.draw(gc, zoomLevel);
-        }
-    }
-
+    /**
+     * Draws every point of interest created by the user.
+     */
     private void drawUserNodes() {
         gc.setStroke(Color.RED);
         gc.setLineWidth(0.002 * widthModifier);
@@ -203,6 +188,23 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    /**
+     * Draws a visualization of the directed graph if option is enabled.
+     */
+    private void drawGraph() {
+        if (options.getBool(Option.DISPLAY_GRAPH)) {
+            gc.setStroke(Color.DARKSLATEBLUE);
+            gc.setLineWidth(0.0002 * widthModifier);
+
+            for (Edge edge : model.getMapData().getDirectedGraph().getEdges()) {
+                edge.draw(gc, zoomLevel);
+            }
+        }
+    }
+
+    /**
+     * Draws a visualization of the kd-tree if option is enabled.
+     */
     public void drawKdTree(KdNode kdNode,
                            float maxX,
                            float maxY,
@@ -259,31 +261,35 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    /**
+     * Pans and repaints the MapCanvas with the given delta x and y.
+     */
     public void pan(double dx, double dy) {
         trans.prependTranslation(dx, dy);
         repaint();
     }
 
-    public void preZoom(double factor, Point2D center) {
-        double zoomLevelNext = zoomLevel * factor;
+    /**
+     * Zooms and repaints the MapCanvas with the given zoom factor.
+     * Runs a range search task.
+     */
+    public void zoom(double zoomFactor, Point2D center) {
+        double zoomLevelNext = zoomLevel * zoomFactor;
 
         if (zoomLevelNext < zoomLevelMax && zoomLevelNext > zoomLevelMin) {
             zoomLevel = zoomLevelNext;
-            zoom(factor, center);
+            trans.prependScale(zoomFactor, zoomFactor, center);
+            repaint();
+
+            runRangeSearchTask();
         }
     }
 
-    public void initialZoom(double factor, Point2D center) {
-        trans.prependScale(factor, factor, center);
-        repaint();
-    }
-
-    public void zoom(double factor, Point2D center) {
-        trans.prependScale(factor, factor, center);
-        repaint();
-        runRangeSearchTask();
-    }
-
+    /**
+     * Starts a new range search task.
+     * Cancels the current range search task if it is running.
+     * Repaints the MapCanvas when the task is finished.
+     */
     public void runRangeSearchTask() {
         if (rangeSearchTask != null) {
             if (rangeSearchTask.isRunning()) {
@@ -293,7 +299,7 @@ public class MapCanvas extends Canvas {
         rangeSearchTask = new Task<>() {
             @Override
             protected Void call() {
-                doRangeSearch();
+                rangeSearch();
                 return null;
             }
         };
@@ -303,6 +309,10 @@ public class MapCanvas extends Canvas {
         thread.start();
     }
 
+    /**
+     * Converts "screen" coordinates for a Point2D to "map" coordinates.
+     * The new coordinates fit the values of OSM nodes.
+     */
     public Point2D mouseToModelCoords(Point2D point) {
         try {
             return trans.inverseTransform(point);
@@ -312,6 +322,11 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    /**
+     * Draw every multipolygon Relation to display at the current zoom level.
+     * Uses FillRule.EVEN_ODD to ensure that inner and
+     * outer Ways of the Relation are properly filled.
+     */
     public void drawRelations() {
 //        for (Relation rel : model.getMapData().getRelations()) {
 //            for (Way way : rel.getWays()) {
@@ -345,6 +360,10 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    /**
+     * Draws or fills every Way with the ElementType to display at the current zoom level.
+     * Retrieves values for colors, size and line dashes from the ElementType.
+     */
     public void drawOrFill(ElementType elementType) {
         if (zoomLevel >= elementType.getZoomLevelRequired()) {
             gc.setLineDashes(elementType.getLineDashes());
@@ -367,6 +386,9 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    /**
+     * @return Color for the specific ElementType depending on the current color mode.
+     */
     public Color getColor(ElementType elementType) {
         if (colorMode == ColorMode.COLOR_BLIND) {
             return elementType.getColorBlind();
@@ -380,6 +402,9 @@ public class MapCanvas extends Canvas {
         this.colorMode = colorMode;
     }
 
+    /**
+     * Adjust width modifier used to properly size Ways at the current zoom level
+     */
     public void adjustWidthModifier() {
         if (zoomLevel < 500) {
             widthModifier = 1.0D;
@@ -399,6 +424,10 @@ public class MapCanvas extends Canvas {
         return lastTenAverageRepaintTime + "ms";
     }
 
+    /**
+     * Calculate zoom level percentage using the zoom limits.
+     * @return zoom level percentage.
+     */
     public String getZoomPercent() {
         if (zoomLevel == 0) {
             return 100 + "%";

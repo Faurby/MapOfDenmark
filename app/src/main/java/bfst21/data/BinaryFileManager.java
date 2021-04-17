@@ -40,10 +40,10 @@ public class BinaryFileManager {
             output.writeObject(mapData.getRelations());
             output.writeObject(mapData.getKdTreeMap());
             output.writeObject(mapData.getrTreeSearchMap());
-            output.writeFloat(mapData.getMinx());
-            output.writeFloat(mapData.getMaxx());
-            output.writeFloat(mapData.getMiny());
-            output.writeFloat(mapData.getMaxy());
+            output.writeFloat(mapData.getMinX());
+            output.writeFloat(mapData.getMaxX());
+            output.writeFloat(mapData.getMinY());
+            output.writeFloat(mapData.getMaxY());
         }
     }
 }

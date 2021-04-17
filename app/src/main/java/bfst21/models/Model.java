@@ -27,8 +27,8 @@ public class Model {
         this.fileName = fileName;
     }
 
-    public void load(boolean loadDefault) throws XMLStreamException, IOException, ClassNotFoundException {
-        if (loadDefault) {
+    public void load(boolean loadDefaultFile) throws XMLStreamException, IOException, ClassNotFoundException {
+        if (loadDefaultFile) {
             load(defaultFileName);
         } else {
             load(fileName);
