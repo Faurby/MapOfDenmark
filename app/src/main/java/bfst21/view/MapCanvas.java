@@ -7,10 +7,10 @@ import bfst21.osm.UserNode;
 import bfst21.pathfinding.Edge;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
-import bfst21.tree.KdTree;
 import bfst21.osm.Way;
 import bfst21.osm.ElementType;
 import bfst21.models.Model;
+import bfst21.tree.KdTree;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -119,7 +119,6 @@ public class MapCanvas extends Canvas {
             }
             if (options.getBool(Option.DISPLAY_BUILDINGS)) {
                 paintFill(ElementType.BUILDING);
-                drawLine(ElementType.BUILDING);
             }
             if (options.getBool(Option.USE_KD_TREE)) {
                 if (options.getBool(Option.DISPLAY_KD_TREE)) {
@@ -130,8 +129,12 @@ public class MapCanvas extends Canvas {
                     float minX = model.getMapData().getMinx();
                     float minY = model.getMapData().getMiny();
 
-                    KdTree kdTree = model.getMapData().getKdTree();
-                    drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
+                    for (ElementType elementType : ElementType.values()) {
+                        if (zoomLevel >= elementType.getZoomLevelRequired()) {
+                            KdTree kdTree = model.getMapData().getKdTree(elementType);
+                            drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
+                        }
+                    }
                 }
             }
 
@@ -140,7 +143,7 @@ public class MapCanvas extends Canvas {
             if (options.getBool(Option.DISPLAY_GRAPH)) {
                 drawGraph();
             }
-            drawLine(ElementType.UNKNOWN);
+            drawRoad(ElementType.UNKNOWN);
 
         }
         gc.restore();
@@ -177,7 +180,7 @@ public class MapCanvas extends Canvas {
                 Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
 
                 BoundingBox boundingBox = new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
-                model.getMapData().rangeSearch(boundingBox);
+                model.getMapData().kdTreeRangeSearch(boundingBox, zoomLevel);
 
             } else if (options.getBool(Option.USE_R_TREE)) {
                 double x1 = trans.getTx() / Math.sqrt(trans.determinant());
@@ -188,7 +191,7 @@ public class MapCanvas extends Canvas {
                 Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
                 Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
 
-                model.getMapData().search(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+                model.getMapData().rTreeRangeSearch(p1.getX(), p1.getY(), p2.getX(), p2.getY(), zoomLevel);
             }
         }
     }
@@ -321,6 +324,26 @@ public class MapCanvas extends Canvas {
     }
 
     public void drawRelations() {
+//        for (Relation rel : model.getMapData().getRelations()) {
+//            for (Way way : rel.getWays()) {
+//                if (way.getType() != null) {
+//                    ElementType elementType = way.getType();
+//                    if (zoomLevel >= elementType.getZoomLevelRequired()) {
+//                        if (elementType == ElementType.BUILDING ||
+//                            elementType == ElementType.LANDUSE ||
+//                            elementType == ElementType.WATER) {
+//                            gc.setFill(elementType.getColor());
+//                            way.fill(gc, zoomLevel);
+//                        } else {
+//                            double size = elementType.getDrawSize() * widthModifier;
+//                            gc.setStroke(getColor(elementType));
+//                            gc.setLineWidth(size);
+//                            way.draw(gc, zoomLevel);
+//                        }
+//                    }
+//                }
+//            }
+//        }
         gc.setFillRule(FillRule.EVEN_ODD);
         for (Relation rel : model.getMapData().getRelations()) {
             if (rel.getType() != null) {
@@ -333,20 +356,11 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void drawLine(ElementType elementType) {
-        if (zoomLevel >= elementType.getZoomLevelRequired()) {
-            gc.setStroke(getColor(elementType));
-            gc.setLineWidth(1 / Math.sqrt(trans.determinant()));
-            for (Way line : model.getMapData().getWays(elementType)) {
-                line.draw(gc, zoomLevel);
-            }
-        }
-    }
-
     public void paintFill(ElementType elementType) {
         if (zoomLevel >= elementType.getZoomLevelRequired()) {
             gc.setFill(getColor(elementType));
-            for (Way way : model.getMapData().getFillWays(elementType, zoomLevel)) {
+            //for (Way way : model.getMapData().getFillWays(elementType, zoomLevel)) {
+            for (Way way : model.getMapData().getWays(elementType)) {
                 way.fill(gc, zoomLevel);
             }
         }

@@ -44,13 +44,12 @@ public class XmlParser {
         OsmAddress osmAddress = new OsmAddress();
         ElementType elementType = null;
 
-        NodeLongIndex idToNode = new NodeLongIndex();
-        WayLongIndex idToWay = new WayLongIndex();
-        RelationLongIndex idToRelation = new RelationLongIndex();
+        NodeLongIndex nodeLongIndex = new NodeLongIndex();
+        WayLongIndex wayLongIndex = new WayLongIndex();
+        RelationLongIndex relationLongIndex = new RelationLongIndex();
 
         List<Drawable> shapes = new ArrayList<>();
         List<Relation> relations = new ArrayList<>();
-        List<Way> ways = new ArrayList<>();
         List<Way> coastlines = new ArrayList<>();
         List<Way> islands;
 
@@ -73,7 +72,7 @@ public class XmlParser {
                             float lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
                             float lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
 
-                            idToNode.put(new NodeID(nodeID, new Node(lon, lat)));
+                            nodeLongIndex.put(new NodeID(nodeID, new Node(lon, lat)));
                             break;
 
                         case "way":
@@ -95,12 +94,12 @@ public class XmlParser {
                                 String memRef = reader.getAttributeValue(null, "ref");
                                 if (type != null) {
                                     if (type.equalsIgnoreCase("node")) {
-                                        Node memNode = idToNode.get(Long.parseLong(memRef));
+                                        Node memNode = nodeLongIndex.get(Long.parseLong(memRef));
                                         if (memNode != null) {
                                             relation.addMember(memNode);
                                         }
                                     } else if (type.equalsIgnoreCase("way")) {
-                                        Way memWay = idToWay.get(Long.parseLong(memRef));
+                                        Way memWay = wayLongIndex.get(Long.parseLong(memRef));
                                         if (memWay != null) {
                                             String role = reader.getAttributeValue(null, "role");
                                             if (role != null && !role.isEmpty()) {
@@ -109,7 +108,7 @@ public class XmlParser {
                                             relation.addMember(memWay);
                                         }
                                     } else if (type.equalsIgnoreCase("relation")) {
-                                        Relation memRelation = idToRelation.get(Long.parseLong(memRef));
+                                        Relation memRelation = relationLongIndex.get(Long.parseLong(memRef));
                                         if (memRelation != null) {
                                             relation.addMember(memRelation);
                                         }
@@ -180,9 +179,9 @@ public class XmlParser {
                                         break;
                                     case "landuse":
                                         if (value.equals("grass") ||
-                                            value.equals("meadow") ||
-                                            value.equals("orchard") ||
-                                            value.equals("allotments")) {
+                                                value.equals("meadow") ||
+                                                value.equals("orchard") ||
+                                                value.equals("allotments")) {
                                             elementType = ElementType.LANDUSE;
                                         }
                                         break;
@@ -228,7 +227,7 @@ public class XmlParser {
 
                         case "nd":
                             long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
-                            way.add(idToNode.get(ref));
+                            way.add(nodeLongIndex.get(ref));
                             break;
                     }
                     break;
@@ -249,13 +248,13 @@ public class XmlParser {
                                     elementType = null;
                                 }
                                 relations.add(relation);
-                                idToRelation.put(relation);
+                                relationLongIndex.put(relation);
                                 relation = null;
                             }
                             break;
 
                         case "way":
-                            idToWay.put(way);
+                            wayLongIndex.put(way);
                             if (isCoastline) {
                                 coastlines.add(way);
 
@@ -264,7 +263,6 @@ public class XmlParser {
                                     way.setType(elementType);
                                     elementType = null;
                                 }
-                                ways.add(way);
                                 way = null;
                             }
                             break;
@@ -274,13 +272,11 @@ public class XmlParser {
         }
         islands = mergeCoastLines(coastlines);
 
-
-
         return new MapData(
-                shapes,
                 islands,
-                ways,
+                wayLongIndex,
                 relations,
+                null,
                 null,
                 minX,
                 maxX,

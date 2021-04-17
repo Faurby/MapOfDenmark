@@ -23,6 +23,7 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
     private String role;
     private int maxSpeed;
     private float area;
+    private boolean isDrawn;
 
     private float minX, maxX, minY, maxY;
 
@@ -97,6 +98,11 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         }
         int last = nodes.size() - 1;
         gc.lineTo(nodes.get(last).getX(), nodes.get(last).getY());
+        isDrawn = true;
+    }
+
+    public boolean isDrawn() {
+        return isDrawn;
     }
 
     public static Way merge(Way first, Way second) {

@@ -2,24 +2,17 @@ package bfst21.models;
 
 import bfst21.data.BinaryFileManager;
 import bfst21.data.XmlParser;
-import bfst21.view.Drawable;
-import bfst21.view.Line;
+
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.logging.Logger;
 import java.util.zip.ZipInputStream;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
 
-public class Model implements Iterable<Drawable> {
+public class Model {
 
-    private final List<Runnable> observers = new ArrayList<>();
     private final String defaultFileName;
     private final boolean jarFile;
 
@@ -71,34 +64,6 @@ public class Model implements Iterable<Drawable> {
         zip.getNextEntry();
         XmlParser xmlParser = new XmlParser();
         mapData = xmlParser.loadOSM(zip);
-    }
-
-    public void save(String filename) throws FileNotFoundException {
-        try (PrintStream out = new PrintStream(filename)) {
-            for (Drawable line : mapData.getShapes()) {
-                out.println(line);
-            }
-        }
-    }
-
-    void addObserver(Runnable observer) {
-        observers.add(observer);
-    }
-
-    void notifyObservers() {
-        for (Runnable observer : observers) {
-            observer.run();
-        }
-    }
-
-    @Override
-    public Iterator<Drawable> iterator() {
-        return mapData.getShapes().iterator();
-    }
-
-    public void add(Line line) {
-        mapData.getShapes().add(line);
-        notifyObservers();
     }
 
     public MapData getMapData() {
