@@ -4,7 +4,6 @@ import bfst21.address.Address;
 import bfst21.exceptions.MapDataNotLoadedException;
 import bfst21.models.*;
 import bfst21.osm.UserNode;
-import bfst21.osm.WayType;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,8 +12,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -22,7 +21,6 @@ import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -81,7 +79,11 @@ public class Controller {
     @FXML
     private Button searchButtonExpanded;
     @FXML
-    private HBox transportationBox;
+    private ToggleButton CAR;
+    @FXML
+    private ToggleButton BIKE;
+    @FXML
+    private ToggleButton WALK;
 
     private boolean userNodeToggle = false;
     ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
@@ -112,7 +114,6 @@ public class Controller {
     public void onWindowResize(Stage stage) {
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
         searchAddressVbox.setMaxWidth(stage.getWidth() * 0.25);
-        transportationBox.setPrefWidth(searchAddressVbox.getWidth() * 0.9);
         stage.getHeight();
         canvas.repaint();
     }
@@ -298,10 +299,13 @@ public class Controller {
 
         if (actionEvent.getSource().toString().contains("WALK")) {
             transOptions.chooseType(TransportationOption.WALK);
+            WALK.setSelected(true);
         } else if (actionEvent.getSource().toString().contains("BIKE")) {
             transOptions.chooseType(TransportationOption.BIKE);
+            BIKE.setSelected(true);
         } else {
             transOptions.chooseType(TransportationOption.CAR);
+            CAR.setSelected(true);
         }
         System.out.println(transOptions.returnType().toString());
 

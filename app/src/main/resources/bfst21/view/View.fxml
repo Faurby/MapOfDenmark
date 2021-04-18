@@ -23,6 +23,8 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst21.view.Controller"
@@ -94,28 +96,37 @@
                         </GridPane>
                         <TextArea fx:id="destinationPoint" minHeight="25" prefHeight="25" promptText="To:" wrapText="true" onKeyPressed="#tabEnterCheck"/>
 
-                        <HBox fx:id="transportationBox" style="-fx-padding: 10 10 10 10 ; -fx-border-insets: 0 0 0 0 ; -fx-alignment: CENTER">
-                            <Button fx:id="CAR" minHeight="40" minWidth="65" onAction="#transportationButtonPushed">
+                        <HBox fx:id="transportationBox" style="-fx-padding: 10 0 0 0 ; -fx-alignment: CENTER " >
+                            <ToggleButton fx:id="CAR" minHeight="40" minWidth="35" prefWidth="120" onAction="#transportationButtonPushed" selected="true" style="-fx-border-color: LIGHTGREY">
                                 <graphic>
                                     <ImageView fitHeight="32.0" preserveRatio="true" style="-fx-background-color: TRANSPARENT">
                                         <Image url="/carPic.png" />
                                     </ImageView>
                                 </graphic>
-                            </Button>
-                            <Button fx:id="BIKE" minHeight="40" minWidth="65" onAction="#transportationButtonPushed">
+                                <toggleGroup>
+                                    <ToggleGroup fx:id="group"/>
+                                </toggleGroup>
+                            </ToggleButton>
+                            <ToggleButton fx:id="BIKE" minHeight="40" minWidth="35" prefWidth="120" onAction="#transportationButtonPushed" style="-fx-border-color: LIGHTGREY">
                                 <graphic>
                                     <ImageView fitHeight="32.0" preserveRatio="true" style="-fx-background-color: TRANSPARENT">
                                         <Image url="/bikePic.png" />
                                     </ImageView>
                                 </graphic>
-                            </Button>
-                            <Button fx:id="WALK" minHeight="40" minWidth="65" onAction="#transportationButtonPushed">
+                                <toggleGroup>
+                                    <fx:reference source="group"/>
+                                </toggleGroup>
+                            </ToggleButton>
+                            <ToggleButton fx:id="WALK" minHeight="40" minWidth="35" prefWidth="120" onAction="#transportationButtonPushed" style="-fx-border-color: LIGHTGREY">
                                 <graphic>
                                     <ImageView fitHeight="32.0" preserveRatio="true" style="-fx-background-color: TRANSPARENT">
                                         <Image url="/walkPic.png" />
                                     </ImageView>
                                 </graphic>
-                            </Button>
+                                <toggleGroup>
+                                    <fx:reference source="group"/>
+                                </toggleGroup>
+                            </ToggleButton>
                         </HBox>
 
                         <HBox alignment="BASELINE_CENTER" style="-fx-padding: 10 5 5 5">
