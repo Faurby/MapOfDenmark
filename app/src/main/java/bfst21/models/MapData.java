@@ -240,6 +240,20 @@ public class MapData {
     }
 
     /**
+     * @return list of Relations found by the range search with specific ElementType.
+     */
+    public List<Relation> getRelations(ElementType elementType) {
+        List<Relation> relationList = new ArrayList<>();
+
+        for (Relation relation : getRelations()) {
+            if (relation.getType() == elementType) {
+                relationList.add(relation);
+            }
+        }
+        return relationList;
+    }
+
+    /**
      * @return list of Relations found by the kd-tree or r-tree range search.
      */
     public List<Relation> getRelations() {

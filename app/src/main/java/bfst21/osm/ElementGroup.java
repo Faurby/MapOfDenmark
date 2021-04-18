@@ -63,4 +63,27 @@ public class ElementGroup implements Serializable {
     public ElementSize getSize() {
         return elementSize;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (elementSize.hashCode() - elementType.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ElementGroup other = (ElementGroup) obj;
+        return this.elementType == other.elementType && this.elementSize == other.elementSize;
+    }
 }
