@@ -65,17 +65,41 @@ public class MapData {
         this.maxX = maxX;
         this.maxY = maxY;
 
-        if (wayLongIndex != null) {
+        //We need to initially fill the search HashMaps with empty Lists.
+        //This is to avoid issues when accessing the search map before a range search.
+        for (ElementGroup elementGroup : ElementGroup.values()) {
+            kdTreeSearchMap.put(elementGroup, new ArrayList<>());
+            rTreeSearchMap.put(elementGroup, new ArrayList<>());
+        }
+
+        if (wayLongIndex != null && relationLongIndex != null) {
+            List<Relation> relationList = new ArrayList<>();
+
+            //Use relation to set Way type if no type is present.
+            //Otherwise add it to relationList.
+            for (Relation relation : relationLongIndex.getElements()) {
+                if (!relation.isMultipolygon()) {
+                    if (relation.getType() != null) {
+                        for (Way way : relation.getWays()) {
+                            if (way.getType() == null) {
+                                way.setType(relation.getType());
+                            }
+                        }
+                    }
+                } else {
+                    relationList.add(relation);
+                }
+            }
+
+            //Build the data structures if none is present.
             if (directedGraph == null) {
                 buildDirectedGraph(wayLongIndex.getElements());
             }
             if (kdTreeMap == null && rTreeMap == null) {
                 buildSearchTreesForWays(wayLongIndex.getElements());
             }
-        }
-        if (relationLongIndex != null) {
             if (kdTreeRelations == null && rTreeRelations == null) {
-                buildSearchTreesForRelations(relationLongIndex.getElements());
+                buildSearchTreesForRelations(relationList);
             }
         }
     }
@@ -120,6 +144,7 @@ public class MapData {
             if (kdTreeRelations == null) {
                 kdTreeRelations = new KdTree<>();
                 kdTreeRelations.build(relationList);
+                System.out.println("Built kd-tree for relations with depth: " + kdTreeRelations.getMaxDepth());
             }
         } else if (options.getBool(Option.USE_R_TREE)) {
             if (rTreeRelations == null) {
@@ -128,6 +153,7 @@ public class MapData {
                 for (Relation relation : relationList) {
                     rTreeRelations = rTreeRelations.add(0, relation);
                 }
+                System.out.println("Built r-tree for relations");
             }
         }
     }
@@ -141,11 +167,6 @@ public class MapData {
      * There is no need to build any trees if we loaded an .obj file.
      */
     public void buildSearchTreesForWays(List<Way> wayList) {
-
-        for (ElementGroup elementGroup : ElementGroup.values()) {
-            kdTreeSearchMap.put(elementGroup, new ArrayList<>());
-            rTreeSearchMap.put(elementGroup, new ArrayList<>());
-        }
 
         if (options.getBool(Option.USE_KD_TREE)) {
             if (kdTreeMap == null) {
@@ -161,7 +182,7 @@ public class MapData {
                         KdTree<Way> kdTree = new KdTree<>();
                         this.kdTreeMap.put(elementGroup, kdTree);
                         kdTree.build(innerWayList);
-                        System.out.println("Building kd-tree for " + elementGroup.toString() + " with depth: " + kdTree.getMaxDepth());
+                        System.out.println("Built kd-tree for " + elementGroup.toString() + " with depth: " + kdTree.getMaxDepth());
                     }
                 }
             }
@@ -173,7 +194,6 @@ public class MapData {
                 HashMap<ElementGroup, List<Way>> wayMap = getElementMap(wayList);
 
                 for (ElementGroup elementGroup : ElementGroup.values()) {
-                    System.out.println("Building r-tree for " + elementGroup.toString());
 
                     RTree<Integer, Way> rTree = RTree.star().maxChildren(6).create();
 
@@ -181,6 +201,7 @@ public class MapData {
                         rTree = rTree.add(0, way);
                     }
                     this.rTreeMap.put(elementGroup, rTree);
+                    System.out.println("Built r-tree for " + elementGroup.toString());
                 }
             }
         }

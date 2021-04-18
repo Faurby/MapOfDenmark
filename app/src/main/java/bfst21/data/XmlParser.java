@@ -176,9 +176,9 @@ public class XmlParser {
                                         break;
                                     case "landuse":
                                         if (value.equals("grass") ||
-                                            value.equals("meadow") ||
-                                            value.equals("orchard") ||
-                                            value.equals("allotments")) {
+                                                value.equals("meadow") ||
+                                                value.equals("orchard") ||
+                                                value.equals("allotments")) {
                                             elementType = ElementType.LANDUSE;
                                         }
                                         break;
@@ -212,12 +212,14 @@ public class XmlParser {
                                     case "waterway":
                                         elementType = ElementType.WATERWAY;
                                         break;
-                                }
-                            } else if (relation != null) {
-                                if (key.equals("type")) {
-                                    if (value.equals("multipolygon")) {
-                                        relation.setMultipolygon(true);
-                                    }
+
+                                    case "type":
+                                        if (relation != null) {
+                                            if (value.equals("multipolygon")) {
+                                                relation.setMultipolygon(true);
+                                            }
+                                        }
+                                        break;
                                 }
                             }
                             break;

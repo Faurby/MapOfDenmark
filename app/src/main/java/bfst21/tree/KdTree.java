@@ -86,7 +86,7 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
     public void build(List<T> elementList) {
         depth = 0;
 
-        if (elementList.size() > 0) {
+        if (elementList.size() > 3) {
             elementList.sort(Comparator.comparingDouble(T::getMaxX));
             int middle = elementList.size() / 2;
 
