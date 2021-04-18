@@ -1,17 +1,25 @@
 package bfst21.pathfinding;
 
-import edu.princeton.cs.algs4.Bag;
+import java.io.Serializable;
 
 
-public class Vertex {
+public class Vertex implements Serializable {
+
+    private static final long serialVersionUID = 3949086273175715882L;
 
     private final float x, y;
+    private final int id;
     private final Bag<Edge> edges;
 
-    public Vertex(float x, float y) {
+    public Vertex(float x, float y, int id) {
         this.x = x;
         this.y = y;
+        this.id = id;
         this.edges = new Bag<>();
+    }
+
+    public int getID() {
+        return id;
     }
 
     public void addEdge(Edge edge) {

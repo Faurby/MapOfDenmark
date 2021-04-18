@@ -1,9 +1,11 @@
 package bfst21.pathfinding;
 
-import edu.princeton.cs.algs4.Bag;
+import java.io.Serializable;
 
 
-public class DirectedGraph {
+public class DirectedGraph implements Serializable {
+
+    private static final long serialVersionUID = -2665514385590129687L;
 
     private final Bag<Edge> edges;
     private final Bag<Vertex> vertices;
@@ -17,13 +19,22 @@ public class DirectedGraph {
         this.vertices = new Bag<>();
     }
 
-    public Vertex getVertex(float x, float y) {
+    public Vertex getVertex(float x, float y, int id) {
         for (Vertex vertex : vertices) {
             if (vertex.getX() == x && vertex.getY() == y) {
                 return vertex;
             }
         }
-        return new Vertex(x, y);
+        return new Vertex(x, y, id);
+    }
+
+    public Vertex getVertex(int id) {
+        for (Vertex vertex : vertices) {
+            if (vertex.getID() == id) {
+                return vertex;
+            }
+        }
+        return null;
     }
 
     public void addEdge(Vertex from, Vertex to, double maxSpeed) {

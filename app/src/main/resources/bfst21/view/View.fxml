@@ -43,6 +43,8 @@
             <VBox fx:id="debugBox" maxWidth="40" maxHeight="20" style="-fx-padding: 30">
                 <Text text="zoomPercent" fx:id="zoomPercent"/>
                 <Text text="zoomText" fx:id="zoomText"/>
+                <Text text="repaintTime" fx:id="repaintTime"/>
+                <Text text="nodeSkipAmount" fx:id="nodeSkipAmount"/>
                 <VBox fx:id="debugOptions"
                       minWidth="150"
                       style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B;">
@@ -55,11 +57,22 @@
                     <CheckBox text="Use KD tree" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Use R tree" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display KD tree" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-                    <CheckBox text="Display ways" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display graph" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display relations" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display island" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display water" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-                    <CheckBox text="Display buildings" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-                    <CheckBox text="Display land use" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-                    <CheckBox text="Display islands" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display waterway" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display landuse" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display cycleway" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display footway" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display road" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display residential" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display trunk" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display motorway" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display tertiary" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display primary" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display building" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display unknown" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Save OBJ file" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                 </VBox>
             </VBox>

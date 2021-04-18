@@ -3,8 +3,12 @@ package bfst21.pathfinding;
 import bfst21.view.Drawable;
 import javafx.scene.canvas.GraphicsContext;
 
+import java.io.Serializable;
 
-public class Edge implements Drawable {
+
+public class Edge implements Drawable, Serializable {
+
+    private static final long serialVersionUID = -8885206149678561745L;
 
     private final double distance, maxSpeed, weight;
     private final Vertex from, to;

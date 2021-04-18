@@ -4,6 +4,7 @@ import bfst21.address.Address;
 import bfst21.exceptions.MapDataNotLoadedException;
 import bfst21.models.*;
 import bfst21.osm.UserNode;
+import bfst21.osm.Way;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,10 +26,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import javax.xml.stream.XMLStreamException;
-import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 
 
@@ -48,6 +46,10 @@ public class Controller {
     private Text zoomText;
     @FXML
     private Text zoomPercent;
+    @FXML
+    private Text repaintTime;
+    @FXML
+    private Text nodeSkipAmount;
     @FXML
     private TextArea startingPoint;
     @FXML
@@ -94,7 +96,17 @@ public class Controller {
 
     public void updateZoomBox() {
         zoomPercent.setText("Zoom percent: " + canvas.getZoomPercent());
-        zoomText.setText("Zoom level: " + canvas.getZoomLevel());
+        zoomText.setText("Zoom level: " + canvas.getZoomLevelText());
+        updateAverageRepaintTime();
+        updateNodeSkipAmount();
+    }
+
+    public void updateNodeSkipAmount() {
+        nodeSkipAmount.setText("Node skip: "+ Way.getNodeSkipAmount(canvas.getZoomLevel()));
+    }
+
+    public void updateAverageRepaintTime() {
+        repaintTime.setText("Repaint time: " + canvas.getAverageRepaintTime());
     }
 
     public void init(Model model) {
@@ -119,15 +131,19 @@ public class Controller {
     }
 
     @FXML
-    private void onScroll(ScrollEvent e) {
+    private void onScroll(ScrollEvent scrollEvent) {
         double deltaY;
-        if (e.getDeltaY() > 0) {
+
+        //Limit delta Y to avoid a rapid zoom update
+        if (scrollEvent.getDeltaY() > 0) {
             deltaY = 32;
         } else {
             deltaY = -32;
         }
         double factor = Math.pow(1.01, deltaY);
-        canvas.preZoom(factor, new Point2D(e.getX(), e.getY()));
+        Point2D point = new Point2D(scrollEvent.getX(), scrollEvent.getY());
+
+        canvas.zoom(factor, point, false);
         updateZoomBox();
     }
 
@@ -143,19 +159,20 @@ public class Controller {
     }
 
     @FXML
-    private void onMouseDragged(MouseEvent e) {
-        double dx = e.getX() - lastMouse.getX();
-        double dy = e.getY() - lastMouse.getY();
+    private void onMouseDragged(MouseEvent mouseEvent) {
+        double dx = mouseEvent.getX() - lastMouse.getX();
+        double dy = mouseEvent.getY() - lastMouse.getY();
 
-        if (e.isPrimaryButtonDown()) {
+        if (mouseEvent.isPrimaryButtonDown()) {
             canvas.pan(dx, dy);
         }
-        onMousePressed(e);
+        onMousePressed(mouseEvent);
     }
 
     @FXML
-    private void onMousePressed(MouseEvent e) {
-        lastMouse = new Point2D(e.getX(), e.getY());
+    private void onMousePressed(MouseEvent mouseEvent) {
+        lastMouse = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+        updateAverageRepaintTime();
     }
 
     @FXML
@@ -204,16 +221,12 @@ public class Controller {
     @FXML
     public void zoomButtonClicked(ActionEvent actionEvent) {
 
+        Point2D point = new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2);
         if (actionEvent.toString().contains("zoomIn")) {
-            canvas.preZoom(2.0, new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2));
+            canvas.zoom(2.0D, point, false);
         } else {
-            canvas.preZoom(0.50, new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2));
+            canvas.zoom(0.5D, point, false);
         }
-
-        //TODO her er begyndelsen på et fix af zoomIndikatoren oppe til højre når man bruger zoom knappen.
-        // PT er den ret scuffed. Jeg er ikke sikker på functionen af 'factor'.
-        double factor = 1;
-        canvas.preZoom(factor, new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2));
         updateZoomBox();
     }
 
@@ -311,21 +324,21 @@ public class Controller {
 
     }
 
-    public void tabEnterCheck(KeyEvent event) {
-        if (event.getCode() == KeyCode.TAB) {
-            if (event.getSource().toString().contains("startingPoint")) {
+    public void tabEnterCheck(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.TAB) {
+            if (keyEvent.getSource().toString().contains("startingPoint")) {
                 startingPoint.setText(startingPoint.getText().trim());
                 if (!DestinationBox.isVisible()) {
                     expandButton.requestFocus();
                 } else {
                     switchButton.requestFocus();
                 }
-            } else if (event.getSource().toString().contains("destinationPoint")) {
+            } else if (keyEvent.getSource().toString().contains("destinationPoint")) {
                 destinationPoint.setText(destinationPoint.getText().trim());
                 startingPoint.setText(startingPoint.getText().trim());
                 collapseButton.requestFocus();
             }
-        } else if (event.getCode() == KeyCode.ENTER) {
+        } else if (keyEvent.getCode() == KeyCode.ENTER) {
             startingPoint.setText(startingPoint.getText().trim());
             destinationPoint.setText(destinationPoint.getText().trim());
             searchAddressString();

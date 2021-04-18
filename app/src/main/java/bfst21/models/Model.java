@@ -2,24 +2,16 @@ package bfst21.models;
 
 import bfst21.data.BinaryFileManager;
 import bfst21.data.XmlParser;
-import bfst21.view.Drawable;
-import bfst21.view.Line;
+
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Logger;
 import java.util.zip.ZipInputStream;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
 
-public class Model implements Iterable<Drawable> {
+public class Model {
 
-    private final List<Runnable> observers = new ArrayList<>();
     private final String defaultFileName;
     private final boolean jarFile;
 
@@ -35,8 +27,8 @@ public class Model implements Iterable<Drawable> {
         this.fileName = fileName;
     }
 
-    public void load(boolean loadDefault) throws XMLStreamException, IOException, ClassNotFoundException {
-        if (loadDefault) {
+    public void load(boolean loadDefaultFile) throws XMLStreamException, IOException, ClassNotFoundException {
+        if (loadDefaultFile) {
             load(defaultFileName);
         } else {
             load(fileName);
@@ -44,6 +36,8 @@ public class Model implements Iterable<Drawable> {
     }
 
     public void load(String fileName) throws IOException, XMLStreamException, FactoryConfigurationError, ClassNotFoundException {
+
+        System.out.println("Model loading file: "+fileName);
         long time = -System.nanoTime();
         Options options = Options.getInstance();
 
@@ -63,7 +57,7 @@ public class Model implements Iterable<Drawable> {
             mapData = binaryFileManager.loadOBJ(fileName, jarFile);
         }
         time += System.nanoTime();
-        Logger.getGlobal().info(String.format("Load time: %dms", time / 1000000));
+        System.out.println("Model load time: "+time / 1_000_000+"ms");
     }
 
     private void loadZIP(String filename) throws IOException, XMLStreamException, FactoryConfigurationError {
@@ -71,34 +65,6 @@ public class Model implements Iterable<Drawable> {
         zip.getNextEntry();
         XmlParser xmlParser = new XmlParser();
         mapData = xmlParser.loadOSM(zip);
-    }
-
-    public void save(String filename) throws FileNotFoundException {
-        try (PrintStream out = new PrintStream(filename)) {
-            for (Drawable line : mapData.getShapes()) {
-                out.println(line);
-            }
-        }
-    }
-
-    void addObserver(Runnable observer) {
-        observers.add(observer);
-    }
-
-    void notifyObservers() {
-        for (Runnable observer : observers) {
-            observer.run();
-        }
-    }
-
-    @Override
-    public Iterator<Drawable> iterator() {
-        return mapData.getShapes().iterator();
-    }
-
-    public void add(Line line) {
-        mapData.getShapes().add(line);
-        notifyObservers();
     }
 
     public MapData getMapData() {
