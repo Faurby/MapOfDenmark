@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Relation extends Element implements Serializable, Drawable {
+public class Relation extends BoundingBoxElement implements Serializable, Drawable {
 
     private static final long serialVersionUID = 4549832550595113105L;
 

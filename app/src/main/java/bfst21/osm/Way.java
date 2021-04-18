@@ -14,7 +14,7 @@ import com.github.davidmoten.rtree2.internal.RectangleUtil;
 import javafx.scene.canvas.GraphicsContext;
 
 
-public class Way extends Element implements Geometry, Drawable, Serializable {
+public class Way extends BoundingBoxElement implements Geometry, Drawable, Serializable {
 
     private static final long serialVersionUID = 3139576893143362100L;
     private final List<Node> nodes = new ArrayList<>();
@@ -23,8 +23,6 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
     private String role;
     private int maxSpeed;
     private boolean isDrawn;
-
-    private float minX, maxX, minY, maxY;
 
     public Way(long id) {
         super(id);

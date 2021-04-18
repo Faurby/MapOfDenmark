@@ -22,9 +22,9 @@ public class BinaryFileManager {
         }
         return new MapData(
                 (List<Way>) input.readObject(),
-                (WayLongIndex) input.readObject(),
+                (ElementLongIndex<Way>) input.readObject(),
                 (List<Relation>) input.readObject(),
-                (HashMap<ElementGroup, KdTree>) input.readObject(),
+                (HashMap<ElementGroup, KdTree<Way>>) input.readObject(),
                 (HashMap<ElementGroup, RTree<Integer, Way>>) input.readObject(),
                 input.readFloat(),
                 input.readFloat(),

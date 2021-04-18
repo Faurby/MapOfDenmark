@@ -1,6 +1,6 @@
 package bfst21.tree;
 
-import bfst21.osm.Way;
+import bfst21.osm.BoundingBoxElement;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -8,39 +8,39 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class KdTree implements Serializable {
+public class KdTree<T extends BoundingBoxElement> implements Serializable {
 
     private static final long serialVersionUID = -7974247333826441763L;
-    private KdNode root;
+    private KdNode<T> root;
     private int depth = 0;
     private int maxDepth = 0;
 
-    public KdNode getRoot() {
+    public KdNode<T> getRoot() {
         return root;
     }
 
-    public List<Way> preRangeSearch(BoundingBox boundingBox) {
+    public List<T> preRangeSearch(BoundingBox boundingBox) {
         depth = 0;
 
-        List<Way> list = new ArrayList<>();
+        List<T> list = new ArrayList<>();
         rangeSearch(boundingBox, root, list);
 
         return list;
     }
 
-    public void rangeSearch(BoundingBox boundingBox, KdNode kdNode, List<Way> list) {
+    public void rangeSearch(BoundingBox boundingBox, KdNode<T> kdNode, List<T> list) {
         if (kdNode != null) {
 
             if (kdNode.getList() != null) {
-                for (Way way : kdNode.getList()) {
+                for (T element : kdNode.getList()) {
 
-                    float minX = way.getMinX();
-                    float maxX = way.getMaxX();
-                    float minY = way.getMinY();
-                    float maxY = way.getMaxY();
+                    float minX = element.getMinX();
+                    float maxX = element.getMaxX();
+                    float minY = element.getMinY();
+                    float maxY = element.getMaxY();
 
                     if (boundingBox.intersects(maxX, maxY, minX, minY)) {
-                        list.add(way);
+                        list.add(element);
                     }
                 }
             }
@@ -85,25 +85,25 @@ public class KdTree implements Serializable {
         }
     }
 
-    public void build(List<Way> wayList) {
+    public void build(List<T> elementList) {
         depth = 0;
 
-        if (wayList.size() > 0) {
-            wayList.sort(Comparator.comparingDouble(Way::getMaxX));
-            int middle = wayList.size() / 2;
+        if (elementList.size() > 0) {
+            elementList.sort(Comparator.comparingDouble(T::getMaxX));
+            int middle = elementList.size() / 2;
 
-            List<Way> leftList = new ArrayList<>(wayList.subList(0, middle));
-            List<Way> rightList = new ArrayList<>(wayList.subList(middle, wayList.size()));
+            List<T> leftList = new ArrayList<>(elementList.subList(0, middle));
+            List<T> rightList = new ArrayList<>(elementList.subList(middle, elementList.size()));
 
             float maxX = leftList.get(middle - 1).getMaxX();
             float minX = Float.MAX_VALUE;
 
-            for (Way way : rightList) {
-                if (way.getMinX() < minX) {
-                    minX = way.getMinX();
+            for (T element : rightList) {
+                if (element.getMinX() < minX) {
+                    minX = element.getMinX();
                 }
             }
-            root = new KdNode(minX, maxX, Float.MIN_VALUE, Float.MAX_VALUE);
+            root = new KdNode<>(minX, maxX, Float.MIN_VALUE, Float.MAX_VALUE);
 
             depth++;
             addChild(root, leftList, false);
@@ -111,7 +111,7 @@ public class KdTree implements Serializable {
         }
     }
 
-    public void addChild(KdNode currentElement, List<Way> list, boolean right) {
+    public void addChild(KdNode<T> currentElement, List<T> list, boolean right) {
 
         if (list != null) {
             if (list.size() > 0) {
@@ -123,9 +123,9 @@ public class KdTree implements Serializable {
                 boolean doCreateLeafNode = list.size() <= 3;
 
                 if (sortX) {
-                    list.sort(Comparator.comparingDouble(Way::getMaxX));
+                    list.sort(Comparator.comparingDouble(T::getMaxX));
                 } else {
-                    list.sort(Comparator.comparingDouble(Way::getMaxY));
+                    list.sort(Comparator.comparingDouble(T::getMaxY));
                 }
 
                 float maxX = Float.MIN_VALUE;
@@ -135,38 +135,38 @@ public class KdTree implements Serializable {
 
                 int middle = list.size() / 2;
 
-                List<Way> leftList = new ArrayList<>(list.subList(0, middle));
-                List<Way> rightList = new ArrayList<>(list.subList(middle, list.size()));
+                List<T> leftList = new ArrayList<>(list.subList(0, middle));
+                List<T> rightList = new ArrayList<>(list.subList(middle, list.size()));
 
                 if (!doCreateLeafNode) {
                     if (sortX) {
                         if (leftList.size() > 0) {
                             maxX = leftList.get(middle - 1).getMaxX();
                         }
-                        for (Way way : rightList) {
-                            if (way.getMinX() < minX) {
-                                minX = way.getMinX();
+                        for (T element : rightList) {
+                            if (element.getMinX() < minX) {
+                                minX = element.getMinX();
                             }
                         }
                     } else {
                         if (leftList.size() > 0) {
                             maxY = leftList.get(middle - 1).getMaxY();
                         }
-                        for (Way way : rightList) {
-                            if (way.getMinY() < minY) {
-                                minY = way.getMinY();
+                        for (T element : rightList) {
+                            if (element.getMinY() < minY) {
+                                minY = element.getMinY();
                             }
                         }
                     }
                 } else {
-                    Way middleWay = list.get(middle);
-                    minX = middleWay.getMinX();
-                    maxX = middleWay.getMaxX();
-                    minY = middleWay.getMinY();
-                    maxY = middleWay.getMaxY();
+                    T middleElement = list.get(middle);
+                    minX = middleElement.getMinX();
+                    maxX = middleElement.getMaxX();
+                    minY = middleElement.getMinY();
+                    maxY = middleElement.getMaxY();
                 }
 
-                KdNode middleNode = new KdNode(minX, maxX, minY, maxY);
+                KdNode<T> middleNode = new KdNode<>(minX, maxX, minY, maxY);
                 if (right) {
                     currentElement.setRightChild(middleNode);
                 } else {

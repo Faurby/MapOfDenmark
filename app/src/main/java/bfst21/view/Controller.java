@@ -137,7 +137,7 @@ public class Controller {
         double factor = Math.pow(1.01, deltaY);
         Point2D point = new Point2D(scrollEvent.getX(), scrollEvent.getY());
 
-        canvas.zoom(factor, point);
+        canvas.zoom(factor, point, false);
         updateZoomBox();
     }
 
@@ -217,9 +217,9 @@ public class Controller {
 
         Point2D point = new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2);
         if (actionEvent.toString().contains("zoomIn")) {
-            canvas.zoom(2.0D, point);
+            canvas.zoom(2.0D, point, false);
         } else {
-            canvas.zoom(0.5D, point);
+            canvas.zoom(0.5D, point, false);
         }
         updateZoomBox();
     }

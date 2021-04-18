@@ -64,7 +64,7 @@ public class MapCanvas extends Canvas {
         zoomLevel = 1.0D;
         double zoomFactor = getWidth() / (model.getMapData().getMaxX() - model.getMapData().getMinX());
 
-        zoom(zoomFactor, new Point2D(0, 0));
+        zoom(zoomFactor, new Point2D(0, 0), true);
     }
 
     /**
@@ -279,7 +279,7 @@ public class MapCanvas extends Canvas {
      * Zooms and repaints the MapCanvas with the given zoom factor.
      * Runs a range search task.
      */
-    public void zoom(double zoomFactor, Point2D center) {
+    public void zoom(double zoomFactor, Point2D center, boolean initialZoom) {
         double zoomLevelNext = zoomLevel * zoomFactor;
 
         if (zoomLevelNext < zoomLevelMax && zoomLevelNext > zoomLevelMin) {
@@ -287,7 +287,9 @@ public class MapCanvas extends Canvas {
             trans.prependScale(zoomFactor, zoomFactor, center);
             repaint();
 
-            runRangeSearchTask();
+            if (!initialZoom) {
+                runRangeSearchTask();
+            }
         }
     }
 

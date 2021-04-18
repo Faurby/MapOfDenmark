@@ -43,9 +43,9 @@ public class XmlParser {
         OsmAddress osmAddress = new OsmAddress();
         ElementType elementType = null;
 
-        NodeLongIndex nodeLongIndex = new NodeLongIndex();
-        WayLongIndex wayLongIndex = new WayLongIndex();
-        RelationLongIndex relationLongIndex = new RelationLongIndex();
+        ElementLongIndex<NodeID> nodeLongIndex = new ElementLongIndex<>();
+        ElementLongIndex<Way> wayLongIndex = new ElementLongIndex<>();
+        ElementLongIndex<Relation> relationLongIndex = new ElementLongIndex<>();
 
         List<Relation> relations = new ArrayList<>();
         List<Way> coastlines = new ArrayList<>();
@@ -92,9 +92,9 @@ public class XmlParser {
                                 String memRef = reader.getAttributeValue(null, "ref");
                                 if (type != null) {
                                     if (type.equalsIgnoreCase("node")) {
-                                        Node memNode = nodeLongIndex.get(Long.parseLong(memRef));
+                                        NodeID memNode = nodeLongIndex.get(Long.parseLong(memRef));
                                         if (memNode != null) {
-                                            relation.addMember(memNode);
+                                            relation.addMember(memNode.getNode());
                                         }
                                     } else if (type.equalsIgnoreCase("way")) {
                                         Way memWay = wayLongIndex.get(Long.parseLong(memRef));
@@ -225,7 +225,7 @@ public class XmlParser {
 
                         case "nd":
                             long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
-                            way.add(nodeLongIndex.get(ref));
+                            way.add(nodeLongIndex.get(ref).getNode());
                             break;
                     }
                     break;

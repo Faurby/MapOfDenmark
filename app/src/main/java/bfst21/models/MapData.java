@@ -16,7 +16,7 @@ public class MapData {
 
     private DirectedGraph directedGraph;
 
-    private HashMap<ElementGroup, KdTree> kdTreeMap;
+    private HashMap<ElementGroup, KdTree<Way>> kdTreeMap;
     private HashMap<ElementGroup, RTree<Integer, Way>> rTreeMap;
 
     private final HashMap<ElementGroup, List<Way>> searchMap = new HashMap<>();
@@ -25,7 +25,7 @@ public class MapData {
     private final List<UserNode> userNodes = new ArrayList<>();
     private final List<Way> islands;
     private final List<Relation> relations;
-    private final WayLongIndex wayLongIndex;
+    private final ElementLongIndex<Way> wayLongIndex;
 
     private final float minX, minY, maxX, maxY;
 
@@ -38,9 +38,9 @@ public class MapData {
      */
     public MapData(
             List<Way> islands,
-            WayLongIndex wayLongIndex,
+            ElementLongIndex<Way> wayLongIndex,
             List<Relation> relations,
-            HashMap<ElementGroup, KdTree> kdTreeMap,
+            HashMap<ElementGroup, KdTree<Way>> kdTreeMap,
             HashMap<ElementGroup, RTree<Integer, Way>> rTreeMap,
             float minX,
             float maxX,
@@ -60,7 +60,7 @@ public class MapData {
         if (kdTreeMap != null) {
             System.out.println("kd-tree map size: "+kdTreeMap.size());
             for (ElementGroup elementGroup : kdTreeMap.keySet()) {
-                KdTree kdTree = kdTreeMap.get(elementGroup);
+                KdTree<Way> kdTree = kdTreeMap.get(elementGroup);
                 System.out.println("Found kd-tree for "+elementGroup.toString()+" with depth: "+kdTree.getMaxDepth());
             }
         }
@@ -118,13 +118,13 @@ public class MapData {
                 kdTreeMap = new HashMap<>();
 
                 System.out.println("Building kd-trees...");
-                HashMap<ElementGroup, List<Way>> wayMap = wayLongIndex.getElementMap();
+                HashMap<ElementGroup, List<Way>> wayMap = getElementMap();
 
                 for (ElementGroup elementGroup : ElementGroup.values()) {
                     List<Way> wayList = wayMap.get(elementGroup);
 
                     if (wayList.size() > 0) {
-                        KdTree kdTree = new KdTree();
+                        KdTree<Way> kdTree = new KdTree<>();
                         this.kdTreeMap.put(elementGroup, kdTree);
                         kdTree.build(wayList);
                         System.out.println("Building kd-tree for "+elementGroup.toString()+" with depth: "+kdTree.getMaxDepth());
@@ -136,20 +136,52 @@ public class MapData {
                 rTreeMap = new HashMap<>();
 
                 System.out.println("Building r-trees...");
-                HashMap<ElementGroup, List<Way>> wayList = wayLongIndex.getElementMap();
+                HashMap<ElementGroup, List<Way>> wayMap = getElementMap();
 
                 for (ElementGroup elementGroup : ElementGroup.values()) {
                     System.out.println("Building r-tree for "+elementGroup.toString());
 
                     RTree<Integer, Way> rTree = RTree.star().maxChildren(6).create();
 
-                    for (Way way : wayList.get(elementGroup)) {
+                    for (Way way : wayMap.get(elementGroup)) {
                         rTree = rTree.add(0, way);
                     }
                     this.rTreeMap.put(elementGroup, rTree);
                 }
             }
         }
+    }
+
+    /**
+     * @return HashMap containing every ElementGroup and their list of Ways
+     * The lists are built using the elements from the wayLongIndex
+     */
+    public HashMap<ElementGroup, List<Way>> getElementMap() {
+        HashMap<ElementGroup, List<Way>> elementMap = new HashMap<>();
+
+        for (ElementGroup elementGroup : ElementGroup.values()) {
+            elementMap.put(elementGroup, new ArrayList<>());
+        }
+        for (Way way : wayLongIndex.getElements()) {
+
+            ElementType type = way.getType();
+            if (type != null) {
+
+                for (ElementGroup elementGroup : ElementGroup.values()) {
+                    if (elementGroup.getType() == type) {
+
+                        ElementSize size = way.getElementSize();
+                        if (elementGroup.getSize() == size) {
+
+                            List<Way> elementList = elementMap.get(elementGroup);
+                            elementList.add(way);
+                            elementMap.put(elementGroup, elementList);
+                        }
+                    }
+                }
+            }
+        }
+        return elementMap;
     }
 
     /**
@@ -222,7 +254,7 @@ public class MapData {
         }
     }
 
-    public WayLongIndex getWayLongIndex() {
+    public ElementLongIndex<Way> getWayLongIndex() {
         return wayLongIndex;
     }
 
@@ -230,7 +262,7 @@ public class MapData {
         return relations;
     }
 
-    public HashMap<ElementGroup, KdTree> getKdTreeMap() {
+    public HashMap<ElementGroup, KdTree<Way>> getKdTreeMap() {
         return kdTreeMap;
     }
 
@@ -242,7 +274,7 @@ public class MapData {
         return directedGraph;
     }
 
-    public KdTree getKdTree(ElementGroup elementGroup) {
+    public KdTree<Way> getKdTree(ElementGroup elementGroup) {
         return kdTreeMap.get(elementGroup);
     }
 
