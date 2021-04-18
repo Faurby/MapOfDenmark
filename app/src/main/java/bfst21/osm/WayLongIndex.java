@@ -13,23 +13,27 @@ public class WayLongIndex implements Serializable {
     private final List<Way> elements = new ArrayList<>();
     private boolean sorted = true;
 
-    public HashMap<ElementType, List<Way>> getElementMap() {
-        HashMap<ElementType, List<Way>> elementMap = new HashMap<>();
+    public HashMap<ElementGroup, List<Way>> getElementMap() {
+        HashMap<ElementGroup, List<Way>> elementMap = new HashMap<>();
 
-        for (ElementType elementType : ElementType.values()) {
-            elementMap.put(elementType, new ArrayList<>());
+        for (ElementGroup elementGroup : ElementGroup.values()) {
+            elementMap.put(elementGroup, new ArrayList<>());
         }
         for (Way element : elements) {
 
             ElementType type = element.getType();
             if (type != null) {
 
-                for (ElementType elementType : ElementType.values()) {
-                    if (type == elementType) {
+                for (ElementGroup elementGroup : ElementGroup.values()) {
+                    if (elementGroup.getType() == type) {
 
-                        List<Way> elementList = elementMap.get(elementType);
-                        elementList.add(element);
-                        elementMap.put(elementType, elementList);
+                        ElementSize size = element.getElementSize();
+                        if (elementGroup.getSize() == size) {
+
+                            List<Way> elementList = elementMap.get(elementGroup);
+                            elementList.add(element);
+                            elementMap.put(elementGroup, elementList);
+                        }
                     }
                 }
             }

@@ -55,7 +55,8 @@
                     <CheckBox text="Use KD tree" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Use R tree" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display KD tree" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-                    <CheckBox text="Display Graph" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display graph" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display relations" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display island" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display water" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display waterway" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>

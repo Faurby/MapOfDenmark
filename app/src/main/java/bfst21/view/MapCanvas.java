@@ -2,13 +2,10 @@ package bfst21.view;
 
 import bfst21.models.Option;
 import bfst21.models.Options;
-import bfst21.osm.Relation;
-import bfst21.osm.UserNode;
+import bfst21.osm.*;
 import bfst21.pathfinding.Edge;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
-import bfst21.osm.Way;
-import bfst21.osm.ElementType;
 import bfst21.models.Model;
 import bfst21.tree.KdTree;
 import javafx.concurrent.Task;
@@ -72,7 +69,7 @@ public class MapCanvas extends Canvas {
 
     /**
      * Repaints the MapCanvas.
-     * Draws Ways for every ElementType to display at the current zoom level.
+     * Draws Ways for every ElementGroup to display at the current zoom level.
      * Draws every multipolygon relation.
      * Draws point of interests added by the user.
      */
@@ -90,20 +87,23 @@ public class MapCanvas extends Canvas {
         if (model.getMapData() != null) {
 
             adjustWidthModifier();
-            drawUserNodes();
-            drawRelations();
 
-            //Draw every elementType if option is enabled
-            for (ElementType elementType : ElementType.values()) {
+            //Draw every elementGroup if option is enabled
+            for (ElementGroup elementGroup : ElementGroup.values()) {
+                ElementType elementType = elementGroup.getType();
                 try {
-                    if (options.getBool(Option.valueOf("DISPLAY_"+elementType.toString()))) {
-                        drawOrFill(elementType);
+                    if (elementType.isDisplayOptionEnabled()) {
+                        drawOrFill(elementGroup);
                     }
                 } catch (IllegalArgumentException ex) {
-                    System.out.println("Failed to draw "+elementType);
+                    System.out.println("Failed to draw "+elementGroup);
                     System.out.println("There is no DISPLAY_"+elementType+" in the Option class!");
                 }
             }
+            //TODO: Issue: Relations need to be drawn after certain elements but before certain roads
+            // For example it needs to be drawn after landuse and water but before roads
+            drawRelations();
+            drawUserNodes();
 
             //Display the kd-tree if option is enabled
             if (options.getBool(Option.USE_KD_TREE)) {
@@ -115,10 +115,16 @@ public class MapCanvas extends Canvas {
                     float minX = model.getMapData().getMinX();
                     float minY = model.getMapData().getMinY();
 
-                    for (ElementType elementType : ElementType.values()) {
-                        if (zoomLevel >= elementType.getZoomLevelRequired()) {
-                            KdTree kdTree = model.getMapData().getKdTree(elementType);
-                            drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
+                    for (ElementGroup elementGroup : ElementGroup.values()) {
+                        if (elementGroup.doShowElement(zoomLevel)) {
+
+                            if (elementGroup.getType().isDisplayOptionEnabled()) {
+
+                                KdTree kdTree = model.getMapData().getKdTree(elementGroup);
+                                if (kdTree != null) {
+                                    drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
+                                }
+                            }
                         }
                     }
                 }
@@ -348,30 +354,32 @@ public class MapCanvas extends Canvas {
 //                }
 //            }
 //        }
-        gc.setFillRule(FillRule.EVEN_ODD);
-        for (Relation rel : model.getMapData().getRelations()) {
-            if (rel.getType() != null) {
-                ElementType elementType = rel.getType();
-                if (zoomLevel >= elementType.getZoomLevelRequired()) {
-                    gc.setFill(elementType.getColor());
-                    rel.fill(gc, zoomLevel);
+        if (options.getBool(Option.DISPLAY_RELATIONS)) {
+            gc.setFillRule(FillRule.EVEN_ODD);
+            for (Relation rel : model.getMapData().getRelations()) {
+                if (rel.getType() != null) {
+                    ElementType elementType = rel.getType();
+                    if (zoomLevel >= elementType.getZoomLevelRequired()) {
+                        gc.setFill(elementType.getColor());
+                        rel.fill(gc, zoomLevel);
+                    }
                 }
             }
         }
     }
 
     /**
-     * Draws or fills every Way with the ElementType to display at the current zoom level.
+     * Draws or fills every Way with the ElementGroup to display at the current zoom level.
      * Retrieves values for colors, size and line dashes from the ElementType.
      */
-    public void drawOrFill(ElementType elementType) {
-        if (zoomLevel >= elementType.getZoomLevelRequired()) {
+    public void drawOrFill(ElementGroup elementGroup) {
+        if (elementGroup.doShowElement(zoomLevel)) {
+            ElementType elementType = elementGroup.getType();
             gc.setLineDashes(elementType.getLineDashes());
 
             if (elementType.doFillDraw()) {
                 gc.setFill(getColor(elementType));
-                //for (Way way : model.getMapData().getFillWays(elementType, zoomLevel)) {
-                for (Way way : model.getMapData().getWays(elementType, zoomLevel)) {
+                for (Way way : model.getMapData().getWays(elementGroup)) {
                     way.fill(gc, zoomLevel);
                 }
             } else {
@@ -379,7 +387,7 @@ public class MapCanvas extends Canvas {
 
                 gc.setStroke(getColor(elementType));
                 gc.setLineWidth(size);
-                for (Way line : model.getMapData().getWays(elementType, zoomLevel)) {
+                for (Way line : model.getMapData().getWays(elementGroup)) {
                     line.draw(gc, zoomLevel);
                 }
             }

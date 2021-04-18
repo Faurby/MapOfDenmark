@@ -16,11 +16,11 @@ public class MapData {
 
     private DirectedGraph directedGraph;
 
-    private HashMap<ElementType, KdTree> kdTreeMap;
-    private HashMap<ElementType, RTree<Integer, Way>> rTreeMap;
+    private HashMap<ElementGroup, KdTree> kdTreeMap;
+    private HashMap<ElementGroup, RTree<Integer, Way>> rTreeMap;
 
-    private final HashMap<ElementType, List<Way>> searchMap = new HashMap<>();
-    private final HashMap<ElementType, List<Way>> rTreeSearchMap = new HashMap<>();
+    private final HashMap<ElementGroup, List<Way>> searchMap = new HashMap<>();
+    private final HashMap<ElementGroup, List<Way>> rTreeSearchMap = new HashMap<>();
 
     private final List<UserNode> userNodes = new ArrayList<>();
     private final List<Way> islands;
@@ -40,8 +40,8 @@ public class MapData {
             List<Way> islands,
             WayLongIndex wayLongIndex,
             List<Relation> relations,
-            HashMap<ElementType, KdTree> kdTreeMap,
-            HashMap<ElementType, RTree<Integer, Way>> rTreeMap,
+            HashMap<ElementGroup, KdTree> kdTreeMap,
+            HashMap<ElementGroup, RTree<Integer, Way>> rTreeMap,
             float minX,
             float maxX,
             float minY,
@@ -56,6 +56,14 @@ public class MapData {
         this.minY = minY;
         this.maxX = maxX;
         this.maxY = maxY;
+
+        if (kdTreeMap != null) {
+            System.out.println("kd-tree map size: "+kdTreeMap.size());
+            for (ElementGroup elementGroup : kdTreeMap.keySet()) {
+                KdTree kdTree = kdTreeMap.get(elementGroup);
+                System.out.println("Found kd-tree for "+elementGroup.toString()+" with depth: "+kdTree.getMaxDepth());
+            }
+        }
 
         buildDirectedGraph();
         buildTrees();
@@ -93,16 +101,16 @@ public class MapData {
     /**
      * Builds a HashMap of kd-trees or r-trees if the option is enabled.
      * <p>
-     * A tree is built for every ElementType as we only need certain trees at a given zoom level.
+     * A tree is built for every ElementGroup as we only need certain trees at a given zoom level.
      * <p>
      * The trees are only built if no trees are given in the constructor of this class.
      * There is no need to build any trees if we loaded an .obj file.
      */
     public void buildTrees() {
 
-        for (ElementType elementType : ElementType.values()) {
-            searchMap.put(elementType, new ArrayList<>());
-            rTreeSearchMap.put(elementType, new ArrayList<>());
+        for (ElementGroup elementGroup : ElementGroup.values()) {
+            searchMap.put(elementGroup, new ArrayList<>());
+            rTreeSearchMap.put(elementGroup, new ArrayList<>());
         }
 
         if (options.getBool(Option.USE_KD_TREE)) {
@@ -110,16 +118,16 @@ public class MapData {
                 kdTreeMap = new HashMap<>();
 
                 System.out.println("Building kd-trees...");
-                HashMap<ElementType, List<Way>> wayMap = wayLongIndex.getElementMap();
-                for (ElementType elementType : ElementType.values()) {
-                    if (elementType != ElementType.ISLAND) {
+                HashMap<ElementGroup, List<Way>> wayMap = wayLongIndex.getElementMap();
 
-                        List<Way> wayList = wayMap.get(elementType);
-                        if (wayList.size() > 0) {
-                            KdTree kdTree = new KdTree();
-                            this.kdTreeMap.put(elementType, kdTree);
-                            kdTree.build(wayList);
-                        }
+                for (ElementGroup elementGroup : ElementGroup.values()) {
+                    List<Way> wayList = wayMap.get(elementGroup);
+
+                    if (wayList.size() > 0) {
+                        KdTree kdTree = new KdTree();
+                        this.kdTreeMap.put(elementGroup, kdTree);
+                        kdTree.build(wayList);
+                        System.out.println("Building kd-tree for "+elementGroup.toString()+" with depth: "+kdTree.getMaxDepth());
                     }
                 }
             }
@@ -128,38 +136,39 @@ public class MapData {
                 rTreeMap = new HashMap<>();
 
                 System.out.println("Building r-trees...");
-                HashMap<ElementType, List<Way>> wayList = wayLongIndex.getElementMap();
-                for (ElementType elementType : ElementType.values()) {
+                HashMap<ElementGroup, List<Way>> wayList = wayLongIndex.getElementMap();
+
+                for (ElementGroup elementGroup : ElementGroup.values()) {
+                    System.out.println("Building r-tree for "+elementGroup.toString());
+
                     RTree<Integer, Way> rTree = RTree.star().maxChildren(6).create();
 
-                    for (Way way : wayList.get(elementType)) {
+                    for (Way way : wayList.get(elementGroup)) {
                         rTree = rTree.add(0, way);
                     }
-                    this.rTreeMap.put(elementType, rTree);
+                    this.rTreeMap.put(elementGroup, rTree);
                 }
             }
         }
     }
 
     /**
-     * Returns a list of Ways with the specific ElementType.
+     * Returns a list of Ways with the specific ElementGroup.
      * List is retrieved from search map filled by the kd-tree or r-tree range search.
      * If no tree is enabled, it builds a list from WayLongIndex.
      *
-     * @param elementType specific ElementType.
-     * @return list of Ways with the specific ElementType.
+     * @param elementGroup specific ElementGroup.
+     * @return list of Ways with the specific ElementGroup.
      */
-    public List<Way> getWays(ElementType elementType, double zoomLevel) {
-        if (elementType == ElementType.ISLAND) {
+    public List<Way> getWays(ElementGroup elementGroup) {
+        if (elementGroup.getType() == ElementType.ISLAND) {
             return islands;
 
         } else if (options.getBool(Option.USE_KD_TREE)) {
-            List<Way> wayList = searchMap.get(elementType);
-            return handleWayList(elementType, zoomLevel, wayList);
+            return searchMap.get(elementGroup);
 
         } else if (options.getBool(Option.USE_R_TREE)) {
-            List<Way> wayList = rTreeSearchMap.get(elementType);
-            return handleWayList(elementType, zoomLevel, wayList);
+            return rTreeSearchMap.get(elementGroup);
         }
         List<Way> wayList = new ArrayList<>();
         for (Way way : wayLongIndex.getElements()) {
@@ -172,41 +181,19 @@ public class MapData {
                 }
             }
         }
-        return handleWayList(elementType, zoomLevel, wayList);
-    }
-
-    //TODO: This method is not good for performance.
-    // Maybe the trees should handle it somehow?
-    // Maybe we should build more trees depending on the size of a Way
-    public List<Way> handleWayList(ElementType elementType, double zoomLevel, List<Way> preWayList) {
-        if (elementType.doFillDraw()) {
-            List<Way> newWayList = new ArrayList<>();
-            for (Way way : preWayList) {
-
-                float area = way.getArea();
-                if (area >= 500_000.0f || zoomLevel >= 9000.0D) {
-                    newWayList.add(way);
-                } else if (area >= 100_000.0f && zoomLevel >= 2000.0D) {
-                    newWayList.add(way);
-                } else if (area >= 70_000.0f && zoomLevel >= 5000.0D) {
-                    newWayList.add(way);
-                }
-            }
-            return newWayList;
-        }
-        return preWayList;
+        return wayList;
     }
 
     /**
      * Starts a range search within the screens BoundingBox for all r-trees
-     * if the specific ElementType is enabled at the given zoomLevel.
+     * if the specific ElementGroup is enabled at the given zoomLevel.
      */
     public void rTreeRangeSearch(double x1, double y1, double x2, double y2, double zoomLevel) {
-        for (ElementType elementType : ElementType.values()) {
-            if (zoomLevel >= elementType.getZoomLevelRequired()) {
+        for (ElementGroup elementGroup : ElementGroup.values()) {
+            if (elementGroup.doShowElement(zoomLevel)) {
 
                 Iterable<Entry<Integer, Way>> results =
-                        rTreeMap.get(elementType).search(Geometries.rectangle(x1, y1, x2, y2));
+                        rTreeMap.get(elementGroup).search(Geometries.rectangle(x1, y1, x2, y2));
 
                 Iterator<Entry<Integer, Way>> rTreeIterator = results.iterator();
                 List<Way> wayList = new ArrayList<>();
@@ -215,21 +202,21 @@ public class MapData {
                     Way way = rTreeIterator.next().geometry();
                     wayList.add(way);
                 }
-                rTreeSearchMap.put(elementType, wayList);
+                rTreeSearchMap.put(elementGroup, wayList);
             }
         }
     }
 
     /**
      * Starts a range search within the screens BoundingBox for all kd-trees
-     * if the specific ElementType is enabled at the given zoomLevel.
+     * if the specific ElementGroup is enabled at the given zoomLevel.
      */
     public void kdTreeRangeSearch(BoundingBox boundingBox, double zoomLevel) {
-        for (ElementType elementType : ElementType.values()) {
-            if (zoomLevel >= elementType.getZoomLevelRequired()) {
-                if (kdTreeMap.containsKey(elementType)) {
-                    List<Way> wayList = kdTreeMap.get(elementType).preRangeSearch(boundingBox);
-                    searchMap.put(elementType, wayList);
+        for (ElementGroup elementGroup : ElementGroup.values()) {
+            if (elementGroup.doShowElement(zoomLevel)) {
+                if (kdTreeMap.containsKey(elementGroup)) {
+                    List<Way> wayList = kdTreeMap.get(elementGroup).preRangeSearch(boundingBox);
+                    searchMap.put(elementGroup, wayList);
                 }
             }
         }
@@ -243,20 +230,20 @@ public class MapData {
         return relations;
     }
 
-    public HashMap<ElementType, KdTree> getKdTreeMap() {
+    public HashMap<ElementGroup, KdTree> getKdTreeMap() {
         return kdTreeMap;
     }
 
-    public HashMap<ElementType, List<Way>> getrTreeSearchMap() {
-        return rTreeSearchMap;
+    public HashMap<ElementGroup, RTree<Integer, Way>> getRTreeMap() {
+        return rTreeMap;
     }
 
     public DirectedGraph getDirectedGraph() {
         return directedGraph;
     }
 
-    public KdTree getKdTree(ElementType elementType) {
-        return kdTreeMap.get(elementType);
+    public KdTree getKdTree(ElementGroup elementGroup) {
+        return kdTreeMap.get(elementGroup);
     }
 
     public float getMinX() {

@@ -24,8 +24,8 @@ public class BinaryFileManager {
                 (List<Way>) input.readObject(),
                 (WayLongIndex) input.readObject(),
                 (List<Relation>) input.readObject(),
-                (HashMap<ElementType, KdTree>) input.readObject(),
-                (HashMap<ElementType, RTree<Integer, Way>>) input.readObject(),
+                (HashMap<ElementGroup, KdTree>) input.readObject(),
+                (HashMap<ElementGroup, RTree<Integer, Way>>) input.readObject(),
                 input.readFloat(),
                 input.readFloat(),
                 input.readFloat(),
@@ -35,11 +35,11 @@ public class BinaryFileManager {
 
     public void saveOBJ(String fileName, MapData mapData) throws IOException {
         try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)))) {
-            output.writeObject(mapData.getWays(ElementType.ISLAND, 0.0D));
+            output.writeObject(mapData.getWays(ElementGroup.getElementGroup(ElementType.ISLAND, ElementSize.DEFAULT)));
             output.writeObject(mapData.getWayLongIndex());
             output.writeObject(mapData.getRelations());
             output.writeObject(mapData.getKdTreeMap());
-            output.writeObject(mapData.getrTreeSearchMap());
+            output.writeObject(mapData.getRTreeMap());
             output.writeFloat(mapData.getMinX());
             output.writeFloat(mapData.getMaxX());
             output.writeFloat(mapData.getMinY());

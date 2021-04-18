@@ -1,5 +1,7 @@
 package bfst21.osm;
 
+import bfst21.models.Option;
+import bfst21.models.Options;
 import javafx.scene.paint.Color;
 
 
@@ -13,6 +15,14 @@ public enum ElementType {
             0.0D,
             Color.rgb(223, 222, 222),
             Color.rgb(151, 151, 151),
+            Color.rgb(211, 211, 211)
+    ),
+    LANDUSE(
+            1f,
+            500.0f,
+            0.0D,
+            Color.rgb(172, 220, 180),
+            Color.rgb(69, 80, 7),
             Color.rgb(211, 211, 211)
     ),
     WATER(
@@ -30,14 +40,6 @@ public enum ElementType {
             Color.rgb(160, 196, 252),
             Color.rgb(0, 126, 170),
             Color.rgb(0, 0, 0)
-    ),
-    LANDUSE(
-            1f,
-            500.0f,
-            0.0D,
-            Color.rgb(172, 220, 180),
-            Color.rgb(69, 80, 7),
-            Color.rgb(211, 211, 211)
     ),
     CYCLEWAY(
             0.0001f,
@@ -134,13 +136,27 @@ public enum ElementType {
     }
 
     /**
-     * Determine if this ElementType should be using the fill drawing method
+     * Determine if this ElementType should be using the fill drawing method.
      */
     public boolean doFillDraw() {
         return this == ElementType.BUILDING ||
-                this == ElementType.ISLAND ||
+               this == ElementType.ISLAND ||
+               this == ElementType.LANDUSE ||
+               this == ElementType.WATER;
+    }
+
+    /**
+     * Determine if there should be created multiple trees for this ElementType.
+     * A tree will be created for each ElementSize with this ElementType.
+     */
+    public boolean hasMultipleSizes() {
+        return this == ElementType.BUILDING ||
                 this == ElementType.LANDUSE ||
                 this == ElementType.WATER;
+    }
+
+    public boolean isDisplayOptionEnabled() {
+        return Options.getInstance().getBool(Option.valueOf("DISPLAY_" + this));
     }
 
     public double getLineDashes() {
@@ -161,6 +177,10 @@ public enum ElementType {
 
     public float getDrawSize() {
         return drawSize;
+    }
+
+    public boolean doShowElement(double zoomLevel) {
+        return zoomLevel >= zoomLevelRequired;
     }
 
     public float getZoomLevelRequired() {

@@ -13,6 +13,7 @@ public class KdTree implements Serializable {
     private static final long serialVersionUID = -7974247333826441763L;
     private KdNode root;
     private int depth = 0;
+    private int maxDepth = 0;
 
     public KdNode getRoot() {
         return root;
@@ -115,37 +116,54 @@ public class KdTree implements Serializable {
         if (list != null) {
             if (list.size() > 0) {
 
+                if (depth > maxDepth) {
+                    maxDepth = depth;
+                }
                 boolean sortX = depth % 2 == 0;
+                boolean doCreateLeafNode = list.size() <= 3;
 
                 if (sortX) {
                     list.sort(Comparator.comparingDouble(Way::getMaxX));
                 } else {
                     list.sort(Comparator.comparingDouble(Way::getMaxY));
                 }
-                int middle = list.size() / 2;
-
-                List<Way> leftList = new ArrayList<>(list.subList(0, middle));
-                List<Way> rightList = new ArrayList<>(list.subList(middle, list.size()));
 
                 float maxX = Float.MIN_VALUE;
                 float maxY = Float.MIN_VALUE;
                 float minX = Float.MAX_VALUE;
                 float minY = Float.MAX_VALUE;
 
-                if (sortX) {
-                    maxX = leftList.get(middle - 1).getMaxX();
-                    for (Way way : rightList) {
-                        if (way.getMinX() < minX) {
-                            minX = way.getMinX();
+                int middle = list.size() / 2;
+
+                List<Way> leftList = new ArrayList<>(list.subList(0, middle));
+                List<Way> rightList = new ArrayList<>(list.subList(middle, list.size()));
+
+                if (!doCreateLeafNode) {
+                    if (sortX) {
+                        if (leftList.size() > 0) {
+                            maxX = leftList.get(middle - 1).getMaxX();
+                        }
+                        for (Way way : rightList) {
+                            if (way.getMinX() < minX) {
+                                minX = way.getMinX();
+                            }
+                        }
+                    } else {
+                        if (leftList.size() > 0) {
+                            maxY = leftList.get(middle - 1).getMaxY();
+                        }
+                        for (Way way : rightList) {
+                            if (way.getMinY() < minY) {
+                                minY = way.getMinY();
+                            }
                         }
                     }
                 } else {
-                    maxY = leftList.get(middle - 1).getMaxY();
-                    for (Way way : rightList) {
-                        if (way.getMinY() < minY) {
-                            minY = way.getMinY();
-                        }
-                    }
+                    Way middleWay = list.get(middle);
+                    minX = middleWay.getMinX();
+                    maxX = middleWay.getMaxX();
+                    minY = middleWay.getMinY();
+                    maxY = middleWay.getMaxY();
                 }
 
                 KdNode middleNode = new KdNode(minX, maxX, minY, maxY);
@@ -154,7 +172,7 @@ public class KdTree implements Serializable {
                 } else {
                     currentElement.setLeftChild(middleNode);
                 }
-                if (list.size() <= 3) {
+                if (doCreateLeafNode) {
                     middleNode.setList(list);
 
                 } else {
@@ -165,5 +183,9 @@ public class KdTree implements Serializable {
                 }
             }
         }
+    }
+
+    public int getMaxDepth() {
+        return maxDepth;
     }
 }

@@ -24,23 +24,20 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
     private int maxSpeed;
     private boolean isDrawn;
 
-    private float area = -1.0f;
-
     private float minX, maxX, minY, maxY;
 
     public Way(long id) {
         super(id);
     }
 
-    public float getArea() {
-        if (area != -1.0f) {
-            return area;
+    public ElementSize getElementSize() {
+        if (elementType.hasMultipleSizes()) {
+            double xLength = maxX - minX;
+            double yLength = maxY - minY;
+            double areaSize = (xLength * yLength * Math.pow(10.0D, 9.0D));
+            return ElementSize.getSize(areaSize);
         }
-        float xLength = maxX - minX;
-        float yLength = maxY - minY;
-        area = (float) (xLength * yLength * Math.pow(10.0D, 9.0D));
-
-        return area;
+        return ElementSize.DEFAULT;
     }
 
     protected void updateBoundingBox(Node node) {
