@@ -82,18 +82,19 @@ public class Relation extends BoundingBoxElement implements Geometry, Serializab
 
     @Override
     public void trace(GraphicsContext gc, double zoomLevel) {
+
         for (Way way : getWays()) {
             String role = way.getRole();
             if (role != null) {
+                List<Node> nodes = way.getNodes();
+
                 if (role.equals("outer")) {
-                    List<Node> nodes = way.getNodes();
                     gc.moveTo(nodes.get(0).getX(), nodes.get(0).getY());
 
                     for (int i = 1; i < nodes.size(); i++) {
                         gc.lineTo(nodes.get(i).getX(), nodes.get(i).getY());
                     }
                 } else if (role.equals("inner")) {
-                    List<Node> nodes = way.getNodes();
                     gc.moveTo(nodes.get(0).getX(), nodes.get(0).getY());
 
                     for (int i = 1; i < nodes.size(); i++) {

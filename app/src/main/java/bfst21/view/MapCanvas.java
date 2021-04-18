@@ -93,6 +93,13 @@ public class MapCanvas extends Canvas {
                 ElementType elementType = elementGroup.getType();
                 try {
                     if (elementType.isDisplayOptionEnabled()) {
+
+                        //TODO: This is a bit scuffed
+                        // but relations needs to be drawn in the correct order somehow...
+                        ElementSize elementSize = elementGroup.getSize();
+                        if (elementSize == ElementSize.DEFAULT || elementSize == ElementSize.SMALL) {
+                            drawRelations(elementType);
+                        }
                         drawOrFill(elementGroup);
                     }
                 } catch (IllegalArgumentException ex) {
@@ -100,9 +107,6 @@ public class MapCanvas extends Canvas {
                     System.out.println("There is no DISPLAY_"+elementType+" in the Option class!");
                 }
             }
-            //TODO: Issue: Relations need to be drawn after certain elements but before certain roads
-            // For example it needs to be drawn after landuse and water but before roads
-            drawRelations();
             drawUserNodes();
 
             //Display the kd-tree if option is enabled
@@ -151,17 +155,17 @@ public class MapCanvas extends Canvas {
      * Uses FillRule.EVEN_ODD to ensure that inner and
      * outer Ways of the Relation are properly filled.
      */
-    public void drawRelations() {
+    public void drawRelations(ElementType elementType) {
         if (options.getBool(Option.DISPLAY_RELATIONS)) {
-            gc.setFillRule(FillRule.EVEN_ODD);
-            for (Relation rel : model.getMapData().getRelations()) {
-                if (rel.getType() != null) {
-                    ElementType elementType = rel.getType();
-                    if (zoomLevel >= elementType.getZoomLevelRequired()) {
-                        gc.setFill(elementType.getColor());
-                        rel.fill(gc, zoomLevel);
-                    }
+            if (elementType.doShowElement(zoomLevel)) {
+
+                gc.setFillRule(FillRule.EVEN_ODD);
+
+                for (Relation rel : model.getMapData().getRelations(elementType)) {
+                    gc.setFill(elementType.getColor());
+                    rel.fill(gc, zoomLevel);
                 }
+                gc.setFillRule(FillRule.NON_ZERO);
             }
         }
     }

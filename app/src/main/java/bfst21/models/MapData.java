@@ -19,14 +19,14 @@ public class MapData {
     private HashMap<ElementGroup, KdTree<Way>> kdTreeMap;
     private HashMap<ElementGroup, RTree<Integer, Way>> rTreeMap;
 
-    private final HashMap<ElementGroup, List<Way>> kdTreeSearchMap = new HashMap<>();
-    private final HashMap<ElementGroup, List<Way>> rTreeSearchMap = new HashMap<>();
+    private final HashMap<ElementGroup, List<Way>> kdTreeSearchMap = new HashMap<>(),
+                                                   rTreeSearchMap = new HashMap<>();
 
     private KdTree<Relation> kdTreeRelations;
     private RTree<Integer, Relation> rTreeRelations;
 
-    private List<Relation> kdTreeRelationSearchList = new ArrayList<>();
-    private List<Relation> rTreeRelationSearchList = new ArrayList<>();
+    private List<Relation> kdTreeRelationSearchList = new ArrayList<>(),
+                           rTreeRelationSearchList = new ArrayList<>();
 
     private final List<UserNode> userNodes = new ArrayList<>();
     private final List<Way> islands;
@@ -100,6 +100,15 @@ public class MapData {
             }
             if (kdTreeRelations == null && rTreeRelations == null) {
                 buildSearchTreesForRelations(relationList);
+            }
+        }
+    }
+
+    //TODO: Figure out how to merge relations...
+    private void mergeRelations(List<Relation> relationList) {
+        for (Relation relation : relationList) {
+            for (Way way : relation.getWays()) {
+
             }
         }
     }

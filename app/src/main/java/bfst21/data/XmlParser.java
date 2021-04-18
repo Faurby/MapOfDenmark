@@ -292,7 +292,9 @@ public class XmlParser {
         for (Way coast : coastlines) {
             Way before = pieces.remove(coast.first());
             Way after = pieces.remove(coast.last());
-            if (before == after) after = null;
+            if (before == after) {
+                after = null;
+            }
             Way merged = Way.merge(before, coast, after);
             pieces.put(merged.first(), merged);
             pieces.put(merged.last(), merged);
