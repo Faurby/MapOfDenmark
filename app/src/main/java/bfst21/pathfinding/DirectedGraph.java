@@ -1,9 +1,11 @@
 package bfst21.pathfinding;
 
-import edu.princeton.cs.algs4.Bag;
+import java.io.Serializable;
 
 
-public class DirectedGraph {
+public class DirectedGraph implements Serializable {
+
+    private static final long serialVersionUID = -2665514385590129687L;
 
     private final Bag<Edge> edges;
     private final Bag<Vertex> vertices;

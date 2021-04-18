@@ -47,7 +47,6 @@ public class XmlParser {
         ElementLongIndex<Way> wayLongIndex = new ElementLongIndex<>();
         ElementLongIndex<Relation> relationLongIndex = new ElementLongIndex<>();
 
-        List<Relation> relations = new ArrayList<>();
         List<Way> coastlines = new ArrayList<>();
         List<Way> islands;
 
@@ -245,7 +244,6 @@ public class XmlParser {
                                     relation.setType(elementType);
                                     elementType = null;
                                 }
-                                relations.add(relation);
                                 relationLongIndex.put(relation);
                                 relation = null;
                             }
@@ -273,7 +271,10 @@ public class XmlParser {
         return new MapData(
                 islands,
                 wayLongIndex,
-                relations,
+                relationLongIndex,
+                null,
+                null,
+                null,
                 null,
                 null,
                 minX,

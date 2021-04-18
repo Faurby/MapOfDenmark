@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import bfst21.tree.BoundingBox;
+import bfst21.tree.BoundingBoxElement;
 import bfst21.view.Drawable;
 import com.github.davidmoten.rtree2.geometry.Geometries;
 import com.github.davidmoten.rtree2.geometry.Geometry;
@@ -38,35 +38,11 @@ public class Way extends BoundingBoxElement implements Geometry, Drawable, Seria
         return ElementSize.DEFAULT;
     }
 
-    protected void updateBoundingBox(Node node) {
-        if (nodes.size() == 1) {
-            minX = node.getX();
-            maxX = node.getX();
-            minY = node.getY();
-            maxY = node.getY();
-
-        } else {
-            float nX = node.getX();
-            float nY = node.getY();
-
-            if (nX < minX) {
-                minX = nX;
-            }
-            if (nY < minY) {
-                minY = nY;
-            }
-            if (nX > maxX) {
-                maxX = nX;
-            }
-            if (nY > maxY) {
-                maxY = nY;
-            }
-        }
-    }
-
     public void add(Node node) {
         nodes.add(node);
-        updateBoundingBox(node);
+
+        boolean initialNode = nodes.size() == 1;
+        updateBoundingBox(node, initialNode);
     }
 
     @Override
@@ -152,22 +128,6 @@ public class Way extends BoundingBoxElement implements Geometry, Drawable, Seria
         }
     }
 
-    public float getMinX() {
-        return minX;
-    }
-
-    public float getMaxX() {
-        return maxX;
-    }
-
-    public float getMinY() {
-        return minY;
-    }
-
-    public float getMaxY() {
-        return maxY;
-    }
-
     public void setMaxSpeed(int maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
@@ -228,10 +188,6 @@ public class Way extends BoundingBoxElement implements Geometry, Drawable, Seria
 
     public List<Node> getNodes() {
         return nodes;
-    }
-
-    public BoundingBox getBoundingBox() {
-        return new BoundingBox(minX, maxX, minY, maxY);
     }
 
     public Node first() {

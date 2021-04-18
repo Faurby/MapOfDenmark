@@ -1,7 +1,5 @@
 package bfst21.tree;
 
-import bfst21.osm.BoundingBoxElement;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
