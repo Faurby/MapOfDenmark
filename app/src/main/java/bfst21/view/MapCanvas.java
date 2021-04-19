@@ -131,9 +131,9 @@ public class MapCanvas extends Canvas {
                     drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
                 }
             }
-            drawUserNodes();
             drawRelations();
             drawLine(WayType.UNKNOWN);
+            drawUserNodes();
             drawGraph();
         }
         gc.restore();
@@ -197,7 +197,11 @@ public class MapCanvas extends Canvas {
 
     private void drawUserNodes() {
         gc.setStroke(Color.RED);
-        gc.setLineWidth(0.002 * widthModifier);
+        float parsed = getZoomPercentAsFloat();
+        gc.setLineWidth(0.0025 / (parsed / 100 * (parsed > 120 ? 2 : 1)));
+        //gc.setLineWidth(0.0025 * widthModifier);
+
+        gc.setStroke(Color.BLUE);
 
         for (UserNode userNode : model.getMapData().getUserNodes()) {
             userNode.draw(gc, 0);
@@ -398,6 +402,10 @@ public class MapCanvas extends Canvas {
 
             return (int) current + "%";
         }
+    }
+
+    public float getZoomPercentAsFloat() {
+        return Float.parseFloat(getZoomPercent().substring(0, getZoomPercent().length()-1));
     }
 
     public String getZoomLevel() {

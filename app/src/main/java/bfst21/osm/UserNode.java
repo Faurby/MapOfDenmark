@@ -6,11 +6,19 @@ import javafx.scene.canvas.GraphicsContext;
 
 public class UserNode extends Node implements Drawable {
 
-    private final String description;
+    private String description;
 
     public UserNode(float lat, float lon, String description) {
         super(lat, lon);
         this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void changeDescription(String newDesc) {
+        description = newDesc;
     }
 
     @Override

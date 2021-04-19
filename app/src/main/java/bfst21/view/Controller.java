@@ -3,6 +3,7 @@ package bfst21.view;
 import bfst21.address.Address;
 import bfst21.exceptions.MapDataNotLoadedException;
 import bfst21.models.*;
+import bfst21.osm.Node;
 import bfst21.osm.UserNode;
 import bfst21.osm.WayType;
 import javafx.concurrent.Task;
@@ -72,9 +73,18 @@ public class Controller {
     private VBox userNodeVBox;
     @FXML
     private TextField userNodeTextField;
+    @FXML
+    private VBox userNodeClickedVBox;
+    @FXML
+    private Text userNodeClickedText;
+    @FXML
+    private VBox userNodeNewDescriptionVBox;
+    @FXML
+    private TextField userNodeNewDescriptionTextField;
 
     private boolean userNodeToggle = false;
     ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
+    UserNode currentUserNode = null;
 
     private Model model;
     private Point2D lastMouse;
@@ -120,13 +130,26 @@ public class Controller {
     }
 
     @FXML
-    public void onMouseReleased() {
+    public void onMouseReleased(MouseEvent e) {
         canvas.runRangeSearchTask();
 
-        if (userNodeToggle) {
-            userNodeVBox.setVisible(true);
-            userNodeTextField.requestFocus();
-            scene.setCursor(Cursor.DEFAULT);
+        float mouseX = (float) canvas.mouseToModelCoords(lastMouse).getX();
+        float mouseY = (float) canvas.mouseToModelCoords(lastMouse).getY();
+        Node tempNodeAtMouseCoords = new Node(mouseX, -(mouseY * 0.56f));
+        UserNode closestNode = null;
+        if(!model.getMapData().getUserNodes().isEmpty()) {
+            for(UserNode userNode : model.getMapData().getUserNodes()) {
+                System.out.println("Distance to nearest UserNode: " + userNode.distance(tempNodeAtMouseCoords)); //TODO: remove this at some point
+                if(closestNode == null || tempNodeAtMouseCoords.distance(userNode) < tempNodeAtMouseCoords.distance(closestNode)) {
+                    closestNode = userNode;
+                }
+            }
+            if(tempNodeAtMouseCoords.distance(closestNode) < 0.025) {
+                System.out.println("close enough to trigger a click :))");  //TODO: remove this at some point
+                userNodeClickedVBox.setVisible(true);
+                userNodeClickedText.setText((closestNode.getDescription().equals("") ? "No description entered" : closestNode.getDescription()));
+                currentUserNode = closestNode;
+            }
         }
     }
 
@@ -144,6 +167,12 @@ public class Controller {
     @FXML
     private void onMousePressed(MouseEvent e) {
         lastMouse = new Point2D(e.getX(), e.getY());
+
+        if (userNodeToggle && e.isSecondaryButtonDown()) {
+            userNodeVBox.setVisible(true);
+            userNodeTextField.requestFocus();
+            scene.setCursor(Cursor.DEFAULT);
+        }
     }
 
     @FXML
@@ -354,5 +383,49 @@ public class Controller {
         userNodeToggle = false;
         userNodeVBox.setVisible(false);
         canvas.repaint();
+    }
+
+    @FXML
+    public void userNodeDeleteClicked(ActionEvent actionEvent) {
+        if(currentUserNode == null) throw new NullPointerException("currentUserNode is null");
+        else {
+            model.getMapData().getUserNodes().remove(currentUserNode);
+            currentUserNode = null;
+            userNodeClickedVBox.setVisible(false);
+            canvas.repaint();
+        }
+    }
+
+    @FXML
+    public void userNodeCloseClicked(ActionEvent actionEvent) {
+        userNodeClickedVBox.setVisible(false);
+        currentUserNode = null;
+    }
+
+    @FXML
+    public void userNodeChangeDescriptionClicked(ActionEvent actionEvent) {
+        userNodeNewDescriptionVBox.setVisible(true);
+        userNodeNewDescriptionTextField.requestFocus();
+    }
+
+    @FXML
+    public void userNodeNewDescTextFieldKeyPressed(KeyEvent keyEvent) {
+        if(keyEvent.getCode().getName().equals("Enter")) {
+            currentUserNode.changeDescription(userNodeNewDescriptionTextField.getText());
+            userNodeNewDescriptionVBox.setVisible(false);
+        } else if (keyEvent.getCode().getName().equals("Esc")) {
+            userNodeNewDescriptionVBox.setVisible(false);
+        }
+    }
+
+    @FXML
+    public void userNodeNewDescCancelClicked(ActionEvent actionEvent) {
+        userNodeNewDescriptionVBox.setVisible(false);
+    }
+
+    @FXML
+    public void userNodeNewDescSaveClicked(ActionEvent actionEvent) {
+        currentUserNode.changeDescription(userNodeNewDescriptionTextField.getText());
+        userNodeNewDescriptionVBox.setVisible(false);
     }
 }

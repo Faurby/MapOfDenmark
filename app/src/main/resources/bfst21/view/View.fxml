@@ -23,6 +23,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.chart.BubbleChart?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst21.view.Controller"
@@ -110,7 +111,6 @@
                     </VBox>
                     <VBox alignment="CENTER">
                         <Button text="Add Point of Interest"
-                                fx:id="pointOfInterestButton"
                                 onAction="#userNodeButtonClicked"
                                 maxWidth="145"
                                 prefWidth="145"
@@ -123,25 +123,25 @@
             </AnchorPane>
             <VBox fx:id="loadingText" minHeight="100" minWidth="100" visible="false"
                   style="-fx-background-color: WHITE; -fx-padding: 20;" alignment="CENTER">
-                <Text text="Loading..." style="-fx-font-size: 24;"></Text>
-                <ProgressBar fx:id="progressBar" style="-fx-padding: 20;" minWidth="200"></ProgressBar>
+                <Text text="Loading..." style="-fx-font-size: 24;"/>
+                <ProgressBar fx:id="progressBar" style="-fx-padding: 20;" minWidth="200"/>
             </VBox>
             <HBox fx:id="menuBarHBox" maxHeight="25" minHeight="25" minWidth="${scene.width}" StackPane.alignment="TOP_LEFT">
-                <MenuBar fx:id="menuBar" minWidth="${menuBarHBox.width}">
+                <MenuBar minWidth="${menuBarHBox.width}">
                     <Menu text="File">
                         <MenuItem text="Load default" onAction="#loadDefault"/>
                         <MenuItem text="Load new file" onAction="#loadNewFile"/>
                         <MenuItem text="Save" />
                     </Menu>
                     <Menu text="View">
-                        <MenuItem fx:id="zoomIn" onAction="#zoomButtonClicked" text="Zoom in" />
+                        <MenuItem onAction="#zoomButtonClicked" text="Zoom in" />
                         <MenuItem onAction="#zoomButtonClicked" text="Zoom out" />
                     </Menu>
                     <Menu text="Accessibility">
                         <Menu text="Color modes">
-                            <MenuItem fx:id="colorModeStandard" onAction="#changeColorMode" text="Standard" />
-                            <MenuItem fx:id="colorModeBlackWhite" onAction="#changeColorMode" text="Black and White" />
-                            <MenuItem fx:id="colorModeColorBlind" onAction="#changeColorMode" text="Colorblind" />
+                            <MenuItem onAction="#changeColorMode" text="Standard" />
+                            <MenuItem onAction="#changeColorMode" text="Black and White" />
+                            <MenuItem onAction="#changeColorMode" text="Colorblind" />
                         </Menu>
                     </Menu>
                 </MenuBar>
@@ -150,20 +150,19 @@
                   visible="false"
                   maxWidth="150"
                   prefWidth="150"
-                  maxHeight="85"
-                  prefHeight="85"
+                  maxHeight="100"
+                  prefHeight="100"
                   alignment="CENTER"
-                  style="-fx-border-color: red; -fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;"
-                  spacing="4">
+                  style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;"
+                  spacing="8">
                 <Text text="New Point of Interest"/>
                 <TextField fx:id="userNodeTextField"
                            onKeyPressed="#userNodeTextFieldKeyPressed"
-                           promptText="Write a description"
-                           text="Description..."
-                           maxWidth="130"
-                           prefWidth="130"
+                           promptText="Description"
+                           maxWidth="140"
+                           prefWidth="140"
                 />
-                <HBox maxWidth="130" alignment="BASELINE_CENTER">
+                <HBox maxWidth="140" alignment="BASELINE_CENTER">
                     <Button text="Cancel"
                             onAction="#userNodeCancelClicked"
                             maxWidth="90"
@@ -172,6 +171,64 @@
                     <ToolBar visible="false" HBox.hgrow="ALWAYS" />
                     <Button text="Save"
                             onAction="#userNodeSaveClicked"
+                            maxWidth="90"
+                            prefWidth="90"
+                    />
+                </HBox>
+            </VBox>
+            <VBox fx:id="userNodeClickedVBox"
+                  visible="false"
+                  maxWidth="200"
+                  prefWidth="200"
+                  maxHeight="100"
+                  prefHeight="100"
+                  alignment="CENTER"
+                  style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;"
+                  spacing="8">
+                <Text text="Failed to load description" fx:id="userNodeClickedText"/>
+                <Button text="Change description"
+                        onAction="#userNodeChangeDescriptionClicked"
+                        maxWidth="130"
+                />
+                <HBox maxWidth="130" alignment="BASELINE_CENTER">
+                    <Button text="Close"
+                            onAction="#userNodeCloseClicked"
+                            maxWidth="90"
+                            prefWidth="90"
+                    />
+                    <ToolBar visible="false" HBox.hgrow="ALWAYS" />
+                    <Button text="Delete"
+                            onAction="#userNodeDeleteClicked"
+                            maxWidth="90"
+                            prefWidth="90"
+                    />
+                </HBox>
+            </VBox>
+            <VBox fx:id="userNodeNewDescriptionVBox"
+                  visible="false"
+                  maxWidth="150"
+                  prefWidth="150"
+                  maxHeight="90"
+                  prefHeight="90"
+                  alignment="CENTER"
+                  style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;"
+                  spacing="7">
+                <Text text="Enter new description"/>
+                <TextField fx:id="userNodeNewDescriptionTextField"
+                           onKeyPressed="#userNodeNewDescTextFieldKeyPressed"
+                           promptText="New description"
+                           maxWidth="140"
+                           prefWidth="140"
+                />
+                <HBox maxWidth="140" alignment="BASELINE_CENTER">
+                    <Button text="Cancel"
+                            onAction="#userNodeNewDescCancelClicked"
+                            maxWidth="90"
+                            prefWidth="90"
+                    />
+                    <ToolBar visible="false" HBox.hgrow="ALWAYS" />
+                    <Button text="Save"
+                            onAction="#userNodeNewDescSaveClicked"
                             maxWidth="90"
                             prefWidth="90"
                     />

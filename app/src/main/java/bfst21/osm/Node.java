@@ -24,4 +24,12 @@ public class Node implements Serializable {
     public float getRealY() {
         return -y * 0.56f;
     }
+
+    public double distance(Node other) {
+        double p = 0.017453292519943295;            // Math.PI / 180
+        double a = 0.5 - Math.cos((other.getRealY() - this.getRealY()) * p)/2 +
+                Math.cos(this.getRealY() * p) * Math.cos(other.getRealY()) * p *
+                (1 - Math.cos((other.getX() - this.getX()) * p))/2;
+        return 12742 * Math.asin(Math.sqrt(a));     // 2 * R; R = 6371 km
+    }
 }
