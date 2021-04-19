@@ -209,6 +209,14 @@ public class XmlParser {
                                                 break;
                                         }
                                         break;
+                                    case "oneway":
+                                        if (value.equals("yes")) {
+                                            if (way != null) {
+                                                way.setOneWay(true);
+                                            }
+                                        }
+                                        break;
+
                                     case "waterway":
                                         elementType = ElementType.WATERWAY;
                                         break;

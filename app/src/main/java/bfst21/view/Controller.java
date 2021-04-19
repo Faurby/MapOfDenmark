@@ -125,7 +125,7 @@ public class Controller {
 
     public void onWindowResize(Stage stage) {
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
-        searchAddressVbox.setMaxWidth(stage.getWidth() * 0.25);
+        searchAddressVbox.setMaxWidth(stage.getWidth() * 0.25D);
         stage.getHeight();
         canvas.repaint();
     }
@@ -135,12 +135,12 @@ public class Controller {
         double deltaY;
 
         //Limit delta Y to avoid a rapid zoom update
-        if (scrollEvent.getDeltaY() > 0) {
-            deltaY = 32;
+        if (scrollEvent.getDeltaY() > 0.0D) {
+            deltaY = 32.0D;
         } else {
-            deltaY = -32;
+            deltaY = -32.0D;
         }
-        double factor = Math.pow(1.01, deltaY);
+        double factor = Math.pow(1.01D, deltaY);
         Point2D point = new Point2D(scrollEvent.getX(), scrollEvent.getY());
 
         canvas.zoom(factor, point, false);
@@ -187,7 +187,10 @@ public class Controller {
                 return null;
             }
         };
-        task.setOnSucceeded(e -> loadingText.setVisible(false));
+        task.setOnSucceeded(e -> {
+            loadingText.setVisible(false);
+            canvas.runRangeSearchTask();
+        });
         task.setOnFailed(e -> task.getException().printStackTrace());
         Thread thread = new Thread(task);
         thread.start();
@@ -211,7 +214,10 @@ public class Controller {
                     return null;
                 }
             };
-            task.setOnSucceeded(e -> loadingText.setVisible(false));
+            task.setOnSucceeded(e -> {
+                loadingText.setVisible(false);
+                canvas.runRangeSearchTask();
+            });
             task.setOnFailed(e -> task.getException().printStackTrace());
             Thread thread = new Thread(task);
             thread.start();

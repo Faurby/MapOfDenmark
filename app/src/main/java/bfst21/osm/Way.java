@@ -23,6 +23,7 @@ public class Way extends BoundingBoxElement implements Geometry, Drawable, Seria
     private String role;
     private int maxSpeed;
     private boolean isDrawn;
+    private boolean oneWay;
 
     public Way(long id) {
         super(id);
@@ -126,6 +127,10 @@ public class Way extends BoundingBoxElement implements Geometry, Drawable, Seria
         } else {
             return nodes.equals(other.nodes);
         }
+    }
+
+    public void setOneWay(boolean oneWay) {
+        this.oneWay = oneWay;
     }
 
     public void setMaxSpeed(int maxSpeed) {
