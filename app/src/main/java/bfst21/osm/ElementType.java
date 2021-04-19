@@ -57,6 +57,14 @@ public enum ElementType {
             Color.rgb(252, 132, 116),
             Color.rgb(252, 132, 116)
     ),
+    PEDESTRIAN(
+            0.0001f,
+            50000.0f,
+            0.0D,
+            Color.rgb(223, 241, 242),
+            Color.rgb(223, 241, 242),
+            Color.rgb(223, 241, 242)
+    ),
     ROAD(
             0.0003f,
             50000.0f,

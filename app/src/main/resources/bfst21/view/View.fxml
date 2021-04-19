@@ -64,6 +64,7 @@
                     <CheckBox text="Display landuse" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display cycleway" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display footway" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display pedestrian" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display road" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display residential" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display trunk" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>

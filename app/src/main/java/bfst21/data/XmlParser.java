@@ -154,8 +154,11 @@ public class XmlParser {
                                             case "footway":
                                             case "footpath":
                                             case "path":
-                                            case "pedestrian":
+
                                                 elementType = ElementType.FOOTWAY;
+                                                break;
+                                            case "pedestrian":
+                                                elementType = ElementType.PEDESTRIAN;
                                                 break;
                                             case "cycleway":
                                             case "track":
