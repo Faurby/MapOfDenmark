@@ -53,7 +53,6 @@
                     </padding>
                     <Text text="Debug options:" style="-fx-padding: 2"/>
                     <CheckBox text="Load relations" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-                    <CheckBox text="Load tagged ways" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Use KD tree" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Use R tree" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display KD tree" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
