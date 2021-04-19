@@ -285,8 +285,6 @@ public class XmlParser {
                 null,
                 null,
                 null,
-                null,
-                null,
                 minX,
                 maxX,
                 minY,

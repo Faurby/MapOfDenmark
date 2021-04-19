@@ -45,9 +45,7 @@ public class MapData {
             ElementLongIndex<Way> wayLongIndex,
             ElementLongIndex<Relation> relationLongIndex,
             HashMap<ElementGroup, KdTree<Way>> kdTreeMap,
-            HashMap<ElementGroup, RTree<Integer, Way>> rTreeMap,
             KdTree<Relation> kdTreeRelations,
-            RTree<Integer, Relation> rTreeRelations,
             DirectedGraph directedGraph,
             float minX,
             float maxX,
@@ -56,9 +54,7 @@ public class MapData {
 
         this.directedGraph = directedGraph;
         this.kdTreeMap = kdTreeMap;
-        this.rTreeMap = rTreeMap;
         this.kdTreeRelations = kdTreeRelations;
-        this.rTreeRelations = rTreeRelations;
         this.islands = islands;
         this.minX = minX;
         this.minY = minY;
@@ -351,16 +347,8 @@ public class MapData {
         return kdTreeMap;
     }
 
-    public HashMap<ElementGroup, RTree<Integer, Way>> getRTreeMap() {
-        return rTreeMap;
-    }
-
     public KdTree<Relation> getKdTreeRelations() {
         return kdTreeRelations;
-    }
-
-    public RTree<Integer, Relation> getrTreeRelations() {
-        return rTreeRelations;
     }
 
     public KdTree<Way> getKdTree(ElementGroup elementGroup) {

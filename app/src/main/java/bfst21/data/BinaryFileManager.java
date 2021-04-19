@@ -4,7 +4,6 @@ import bfst21.osm.*;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.tree.KdTree;
 import bfst21.models.MapData;
-import com.github.davidmoten.rtree2.RTree;
 
 import java.io.*;
 import java.util.HashMap;
@@ -26,9 +25,7 @@ public class BinaryFileManager {
                 (ElementLongIndex<Way>) input.readObject(),
                 (ElementLongIndex<Relation>) input.readObject(),
                 (HashMap<ElementGroup, KdTree<Way>>) input.readObject(),
-                (HashMap<ElementGroup, RTree<Integer, Way>>) input.readObject(),
                 (KdTree<Relation>) input.readObject(),
-                (RTree<Integer, Relation>) input.readObject(),
                 (DirectedGraph) input.readObject(),
                 input.readFloat(),
                 input.readFloat(),
@@ -45,9 +42,7 @@ public class BinaryFileManager {
             output.writeObject(null);
 
             output.writeObject(mapData.getKdTreeMap());
-            output.writeObject(mapData.getRTreeMap());
             output.writeObject(mapData.getKdTreeRelations());
-            output.writeObject(mapData.getrTreeRelations());
 
             //TODO: For some reason, it fails to save the directed graph
             // Set to null for now...
