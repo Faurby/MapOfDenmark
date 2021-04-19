@@ -133,9 +133,6 @@ public class MapCanvas extends Canvas {
                     }
                 }
             }
-            drawRelations();
-            drawLine(WayType.UNKNOWN);
-            drawUserNodes();
             drawGraph();
         }
         gc.restore();
