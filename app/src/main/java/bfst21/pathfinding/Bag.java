@@ -7,15 +7,15 @@ import java.util.NoSuchElementException;
 
 public class Bag<Item> implements Iterable<Item>, Serializable {
 
-    private static final long serialVersionUID = -6777730687589259096L;
 
+    private static final long serialVersionUID = -6777730687589259096L;
     private Node<Item> first;    // beginning of bag
     private int n;               // number of elements in bag
 
     // helper linked list class
     private static class Node<Item> implements Serializable {
-        private static final long serialVersionUID = 2758546483379647026L;
 
+        private static final long serialVersionUID = 2758546483379647026L;
         private Item item;
         private Node<Item> next;
     }

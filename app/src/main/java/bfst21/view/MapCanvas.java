@@ -216,9 +216,9 @@ public class MapCanvas extends Canvas {
             gc.setStroke(Color.DARKSLATEBLUE);
             gc.setLineWidth(0.0002 * widthModifier);
 
-            for (Edge edge : model.getMapData().getDirectedGraph().getEdges()) {
-                edge.draw(gc, zoomLevel);
-            }
+//            for (Edge edge : model.getMapData().getDirectedGraph().getEdges()) {
+//                edge.draw(gc, zoomLevel);
+//            }
         }
     }
 

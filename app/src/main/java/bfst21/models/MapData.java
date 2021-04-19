@@ -124,7 +124,7 @@ public class MapData {
         for (Way way : wayList) {
             if (way.getType() != null) {
                 if (way.canNavigate()) {
-                    double maxSpeed = way.getMaxSpeed();
+                    int maxSpeed = way.getMaxSpeed();
 
                     int size = way.getNodes().size();
                     for (int i = 0; i < (size - 1); i++) {

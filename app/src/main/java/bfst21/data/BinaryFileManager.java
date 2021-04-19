@@ -51,8 +51,8 @@ public class BinaryFileManager {
 
             //TODO: For some reason, it fails to save the directed graph
             // Set to null for now...
-            output.writeObject(null);
-            //output.writeObject(mapData.getDirectedGraph());
+            //output.writeObject(null);
+            output.writeObject(mapData.getDirectedGraph());
 
             output.writeFloat(mapData.getMinX());
             output.writeFloat(mapData.getMaxX());

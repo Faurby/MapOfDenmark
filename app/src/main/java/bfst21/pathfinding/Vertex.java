@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 public class Vertex implements Serializable {
 
-    private static final long serialVersionUID = 3949086273175715882L;
+    private static final long serialVersionUID = 7453492287212788153L;
 
     private final float x, y;
     private final int id;

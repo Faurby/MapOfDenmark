@@ -10,40 +10,40 @@ public class Edge implements Drawable, Serializable {
 
     private static final long serialVersionUID = -8885206149678561745L;
 
-    private final double distance, maxSpeed, weight;
-    private final Vertex from, to;
+    private final float distance, weight;
+    private final int from, to, maxSpeed;
 
-    public Edge(Vertex from, Vertex to, double maxSpeed) {
-        this.distance = from.distTo(to);
+    public Edge(int from, int to, float distance, int maxSpeed) {
+        this.distance = distance;
         this.from = from;
         this.to = to;
         this.maxSpeed = maxSpeed;
-        this.weight = distance * 60.0D / maxSpeed;
+        this.weight = (distance * 60.0f / maxSpeed);
     }
 
-    public Vertex getFrom() {
+    public int getFrom() {
         return from;
     }
 
-    public Vertex getTo() {
+    public int getTo() {
         return to;
     }
 
-    public double getWeight() {
-        return weight;
-    }
-
-    public double getMaxSpeed() {
+    public int getMaxSpeed() {
         return maxSpeed;
     }
 
-    public double getDistance() {
+    public float getWeight() {
+        return weight;
+    }
+
+    public float getDistance() {
         return distance;
     }
 
     @Override
     public void trace(GraphicsContext gc, double zoomLevel) {
-        gc.moveTo(from.getX(), from.getY());
-        gc.lineTo(to.getX(), to.getY());
+        //gc.moveTo(from.getX(), from.getY());
+        //gc.lineTo(to.getX(), to.getY());
     }
 }

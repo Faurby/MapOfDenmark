@@ -39,24 +39,24 @@ public class Dijkstra {
     }
 
     public void relax(Edge edge) {
-        Vertex from = edge.getFrom();
-        Vertex to = edge.getTo();
-
-        double weight = edge.getWeight();
-
-        int v = from.getID();
-        int w = to.getID();
-
-        if (distTo[w] > distTo[v] + weight) {
-            distTo[w] = distTo[v] + weight;
-            edgeTo[w] = edge;
-
-            if (pq.contains(w)) {
-                pq.decreaseKey(w, distTo[w]);
-
-            } else {
-                pq.insert(w, distTo[w]);
-            }
-        }
+//        Vertex from = edge.getFrom();
+//        Vertex to = edge.getTo();
+//
+//        double weight = edge.getWeight();
+//
+//        int v = from.getID();
+//        int w = to.getID();
+//
+//        if (distTo[w] > distTo[v] + weight) {
+//            distTo[w] = distTo[v] + weight;
+//            edgeTo[w] = edge;
+//
+//            if (pq.contains(w)) {
+//                pq.decreaseKey(w, distTo[w]);
+//
+//            } else {
+//                pq.insert(w, distTo[w]);
+//            }
+//        }
     }
 }

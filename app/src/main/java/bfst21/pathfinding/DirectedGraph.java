@@ -7,7 +7,6 @@ public class DirectedGraph implements Serializable {
 
     private static final long serialVersionUID = -2665514385590129687L;
 
-    private final Bag<Edge> edges;
     private final Bag<Vertex> vertices;
     private final int vertexAmount;
     private int edgeAmount;
@@ -15,7 +14,6 @@ public class DirectedGraph implements Serializable {
     public DirectedGraph(int vertexAmount) {
         this.vertexAmount = vertexAmount;
         this.edgeAmount = 0;
-        this.edges = new Bag<>();
         this.vertices = new Bag<>();
     }
 
@@ -37,11 +35,13 @@ public class DirectedGraph implements Serializable {
         return null;
     }
 
-    public void addEdge(Vertex from, Vertex to, double maxSpeed) {
-        Edge edge = new Edge(from, to, maxSpeed);
+    public void addEdge(Vertex from, Vertex to, int maxSpeed) {
+        float distance = (float) from.distTo(to);
+        Edge edge = new Edge(from.getID(), to.getID(), distance, maxSpeed);
         from.addEdge(edge);
         to.addEdge(edge);
-        edges.add(edge);
+        //vertices.add(from);
+        //vertices.add(to);
 
         edgeAmount++;
     }
@@ -52,10 +52,6 @@ public class DirectedGraph implements Serializable {
 
     public int getVertexAmount() {
         return vertexAmount;
-    }
-
-    public Bag<Edge> getEdges() {
-        return edges;
     }
 
     public Bag<Vertex> getVertices() {
