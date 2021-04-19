@@ -1,18 +1,17 @@
 package bfst21.tree;
 
-import bfst21.osm.Way;
 import java.io.Serializable;
 import java.util.List;
 
 
-public class KdNode implements Serializable {
+public class KdNode<T extends BoundingBoxElement> implements Serializable {
 
     private static final long serialVersionUID = 8198499209216068048L;
-    private KdNode rightChild, leftChild;
+    private KdNode<T> rightChild, leftChild;
 
     private final float minX, maxX, minY, maxY;
 
-    private List<Way> list;
+    private List<T> list;
 
     public KdNode(float minX, float maxX, float minY, float maxY) {
         this.minX = minX;
@@ -21,27 +20,27 @@ public class KdNode implements Serializable {
         this.maxY = maxY;
     }
 
-    public List<Way> getList() {
+    public List<T> getList() {
         return list;
     }
 
-    public void setList(List<Way> list) {
+    public void setList(List<T> list) {
         this.list = list;
     }
 
-    public void setRightChild(KdNode kdNode) {
+    public void setRightChild(KdNode<T> kdNode) {
         rightChild = kdNode;
     }
 
-    public void setLeftChild(KdNode kdNode) {
+    public void setLeftChild(KdNode<T> kdNode) {
         leftChild = kdNode;
     }
 
-    public KdNode getRightChild() {
+    public KdNode<T> getRightChild() {
         return rightChild;
     }
 
-    public KdNode getLeftChild() {
+    public KdNode<T> getLeftChild() {
         return leftChild;
     }
 

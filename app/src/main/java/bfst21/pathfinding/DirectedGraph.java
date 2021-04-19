@@ -1,35 +1,47 @@
 package bfst21.pathfinding;
 
-import edu.princeton.cs.algs4.Bag;
+import java.io.Serializable;
 
 
-public class DirectedGraph {
+public class DirectedGraph implements Serializable {
 
+    private static final long serialVersionUID = -2665514385590129687L;
+
+    private final Bag<Vertex> vertices;
     private final int vertexAmount;
     private int edgeAmount;
-    private Bag<Edge> edges;
-    private Bag<Vertex> vertices;
 
     public DirectedGraph(int vertexAmount) {
         this.vertexAmount = vertexAmount;
         this.edgeAmount = 0;
+        this.vertices = new Bag<>();
     }
 
-    public Vertex getVertex(float x, float y) {
+    public Vertex getVertex(float x, float y, int id) {
         for (Vertex vertex : vertices) {
             if (vertex.getX() == x && vertex.getY() == y) {
                 return vertex;
             }
         }
-        return new Vertex(x, y);
+        return new Vertex(x, y, id);
     }
 
-    public void addEdge(Vertex from, Vertex to) {
-        double maxSpeed = 55;
-        Edge edge = new Edge(from, to, maxSpeed);
+    public Vertex getVertex(int id) {
+        for (Vertex vertex : vertices) {
+            if (vertex.getID() == id) {
+                return vertex;
+            }
+        }
+        return null;
+    }
+
+    public void addEdge(Vertex from, Vertex to, int maxSpeed) {
+        float distance = (float) from.distTo(to);
+        Edge edge = new Edge(from.getID(), to.getID(), distance, maxSpeed);
         from.addEdge(edge);
         to.addEdge(edge);
-        edges.add(edge);
+        //vertices.add(from);
+        //vertices.add(to);
 
         edgeAmount++;
     }
@@ -40,10 +52,6 @@ public class DirectedGraph {
 
     public int getVertexAmount() {
         return vertexAmount;
-    }
-
-    public Bag<Edge> getEdges() {
-        return edges;
     }
 
     public Bag<Vertex> getVertices() {

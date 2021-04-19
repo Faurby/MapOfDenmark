@@ -1,21 +1,17 @@
 package bfst21.osm;
 
 
-public class NodeID {
+public class NodeID extends Element {
 
-    private final long id;
+    private static final long serialVersionUID = -5720053995520236497L;
     private final Node node;
 
     public NodeID(long id, Node node) {
-        this.id = id;
+        super(id);
         this.node = node;
     }
 
     public Node getNode() {
         return node;
-    }
-
-    public long getID() {
-        return id;
     }
 }

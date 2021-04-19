@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import bfst21.tree.BoundingBox;
+import bfst21.tree.BoundingBoxElement;
 import bfst21.view.Drawable;
 import com.github.davidmoten.rtree2.geometry.Geometries;
 import com.github.davidmoten.rtree2.geometry.Geometry;
@@ -14,81 +14,44 @@ import com.github.davidmoten.rtree2.internal.RectangleUtil;
 import javafx.scene.canvas.GraphicsContext;
 
 
-public class Way extends Element implements Geometry, Drawable, Serializable {
+public class Way extends BoundingBoxElement implements Geometry, Drawable, Serializable {
 
     private static final long serialVersionUID = 3139576893143362100L;
-    private List<Node> nodes = new ArrayList<>();
+    private final List<Node> nodes = new ArrayList<>();
 
-    private WayType wayType;
-    private int maxSpeed;
+    private ElementType elementType;
     private String role;
-
-    private float minX, maxX, minY, maxY;
+    private int maxSpeed;
+    private boolean isDrawn;
+    private boolean oneWay;
 
     public Way(long id) {
         super(id);
     }
 
-    protected void updateBoundingBox(Node node) {
-        if (nodes.size() == 1) {
-            minX = node.getX();
-            maxX = node.getX();
-            minY = node.getY();
-            maxY = node.getY();
-
-        } else {
-            float nX = node.getX();
-            float nY = node.getY();
-
-            if (nX < minX) {
-                minX = nX;
-            }
-            if (nY < minY) {
-                minY = nY;
-            }
-            if (nX > maxX) {
-                maxX = nX;
-            }
-            if (nY > maxY) {
-                maxY = nY;
-            }
+    public ElementSize getElementSize() {
+        if (elementType.hasMultipleSizes()) {
+            double xLength = maxX - minX;
+            double yLength = maxY - minY;
+            double areaSize = (xLength * yLength * Math.pow(10.0D, 9.0D));
+            return ElementSize.getSize(areaSize);
         }
-    }
-
-    public BoundingBox getBoundingBox() {
-        return new BoundingBox(minX, maxX, minY, maxY);
-    }
-
-    public Node first() {
-        return nodes.get(0);
-    }
-
-    public Node last() {
-        return nodes.get(nodes.size() - 1);
+        return ElementSize.DEFAULT;
     }
 
     public void add(Node node) {
         nodes.add(node);
-        updateBoundingBox(node);
+
+        boolean initialNode = nodes.size() == 1;
+        updateBoundingBox(node, initialNode);
     }
 
     @Override
     public void trace(GraphicsContext gc, double zoomLevel) {
         gc.moveTo(nodes.get(0).getX(), nodes.get(0).getY());
 
-        int inc = 1;
-        if (zoomLevel <= 750) {
-            inc = 10;
-        } else if (zoomLevel <= 1050) {
-            inc = 8;
-        } else if (zoomLevel <= 1350) {
-            inc = 6;
-        } else if (zoomLevel <= 1800) {
-            inc = 4;
-        } else if (zoomLevel <= 2400) {
-            inc = 2;
-        }
-        for (int i = 1; i < nodes.size(); i += inc) {
+        int nodeSkipAmount = getNodeSkipAmount(zoomLevel);
+        for (int i = 1; i < nodes.size(); i += nodeSkipAmount) {
             if (i <= nodes.size() - 2) {
                 Node node = nodes.get(i);
                 gc.lineTo(node.getX(), node.getY());
@@ -96,6 +59,30 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         }
         int last = nodes.size() - 1;
         gc.lineTo(nodes.get(last).getX(), nodes.get(last).getY());
+        isDrawn = true;
+    }
+
+    public static int getNodeSkipAmount(double zoomLevel) {
+        if (zoomLevel <= 100) {
+            return 10;
+        } else if (zoomLevel <= 140) {
+            return 9;
+        } else if (zoomLevel <= 190) {
+            return 8;
+        } else if (zoomLevel <= 270) {
+            return 7;
+        } else if (zoomLevel <= 350) {
+            return 6;
+        } else if (zoomLevel <= 500) {
+            return 5;
+        } else if (zoomLevel <= 700) {
+            return 4;
+        } else if (zoomLevel <= 950) {
+            return 3;
+        } else if (zoomLevel <= 1350) {
+            return 2;
+        }
+        return 1;
     }
 
     public static Way merge(Way first, Way second) {
@@ -142,40 +129,58 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         }
     }
 
-    public float getMinX() {
-        return minX;
-    }
-
-    public float getMaxX() {
-        return maxX;
-    }
-
-    public float getMinY() {
-        return minY;
-    }
-
-    public float getMaxY() {
-        return maxY;
+    public void setOneWay(boolean oneWay) {
+        this.oneWay = oneWay;
     }
 
     public void setMaxSpeed(int maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
 
-    public WayType getType() {
-        return wayType;
+    public int getMaxSpeed() {
+        return maxSpeed;
     }
 
-    public void setType(WayType wayType) {
-        this.wayType = wayType;
+    public ElementType getType() {
+        return elementType;
     }
 
-    public boolean isDrivable() {
-        
-        return wayType == WayType.PRIMARY ||
-                wayType == WayType.MOTORWAY ||
-                wayType == WayType.RESIDENTIAL ||
-                wayType == WayType.TERTIARY;
+    public void setType(ElementType elementType) {
+        this.elementType = elementType;
+    }
+
+    public boolean canNavigate() {
+        return elementType == ElementType.PRIMARY ||
+                elementType == ElementType.MOTORWAY ||
+                elementType == ElementType.TRUNK ||
+                elementType == ElementType.TERTIARY ||
+                elementType == ElementType.CYCLEWAY ||
+                elementType == ElementType.RESIDENTIAL ||
+                elementType == ElementType.ROAD ||
+                elementType == ElementType.FOOTWAY;
+    }
+
+    public boolean canDrive() {
+        return elementType == ElementType.PRIMARY ||
+                elementType == ElementType.MOTORWAY ||
+                elementType == ElementType.RESIDENTIAL ||
+                elementType == ElementType.TERTIARY ||
+                elementType == ElementType.TRUNK;
+    }
+
+    public boolean canBike() {
+        return elementType == ElementType.TERTIARY ||
+                elementType == ElementType.CYCLEWAY ||
+                elementType == ElementType.ROAD ||
+                elementType == ElementType.RESIDENTIAL;
+    }
+
+    public boolean canWalk() {
+        return elementType == ElementType.TERTIARY ||
+                elementType == ElementType.CYCLEWAY ||
+                elementType == ElementType.RESIDENTIAL ||
+                elementType == ElementType.ROAD ||
+                elementType == ElementType.FOOTWAY;
     }
 
     public void setRole(String role) {
@@ -188,6 +193,18 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
 
     public List<Node> getNodes() {
         return nodes;
+    }
+
+    public Node first() {
+        return nodes.get(0);
+    }
+
+    public Node last() {
+        return nodes.get(nodes.size() - 1);
+    }
+
+    public boolean isDrawn() {
+        return isDrawn;
     }
 
     @Override
@@ -224,13 +241,6 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         } else {
             return Math.min(d1, Math.min(d2, Math.min(d3, d4)));
         }
-    }
-
-    public double getArea() {
-        double xLength = maxX - minX;
-        double yLength = maxY - minY;
-        double area = xLength * yLength;
-        return area * Math.pow(10, 9);
     }
 
     @Override

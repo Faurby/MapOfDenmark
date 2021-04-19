@@ -6,24 +6,24 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class ElementLongIndex implements Serializable {
+public class ElementLongIndex<T extends Element> implements Serializable {
 
     private static final long serialVersionUID = 2352785882692399165L;
-    private final List<Element> elements = new ArrayList<>();
+    private final List<T> elements = new ArrayList<>();
     private boolean sorted = true;
 
-    public List<Element> getElements() {
+    public List<T> getElements() {
         return elements;
     }
 
-    public void put(Element element) {
+    public void put(T element) {
         elements.add(element);
         sorted = false;
     }
 
-    public Element get(long ref) {
+    public T get(long ref) {
         if (!sorted) {
-            elements.sort(Comparator.comparingLong(Element::getID));
+            elements.sort(Comparator.comparingLong(T::getID));
             sorted = true;
         }
         int lo = 0;               // nodes.get(lo).getID() <= ref
@@ -36,7 +36,7 @@ public class ElementLongIndex implements Serializable {
                 hi = mi;
             }
         }
-        Element element = elements.get(lo);
+        T element = elements.get(lo);
         return element.getID() == ref ? element : null;
     }
 }
