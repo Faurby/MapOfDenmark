@@ -58,9 +58,7 @@ public class Controller {
     @FXML
     private VBox DestinationBox;
     @FXML
-    private HBox expandAndSearchButtons;
-    @FXML
-    private Text startingPointText;
+    private HBox navigateAndSearchButtons;
     @FXML
     private Scene scene;
     @FXML
@@ -68,9 +66,9 @@ public class Controller {
     @FXML
     private ProgressBar progressBar;
     @FXML
-    private Button expandButton;
+    private Button navigateButton;
     @FXML
-    private Button collapseButton;
+    private Button minimizeButton;
     @FXML
     private VBox userNodeVBox;
     @FXML
@@ -95,6 +93,8 @@ public class Controller {
     private VBox userNodeNewDescriptionVBox;
     @FXML
     private TextField userNodeNewDescriptionTextField;
+    @FXML
+    private Text navigationHeader;
 
     private boolean userNodeToggle = false;
     ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
@@ -295,31 +295,31 @@ public class Controller {
 
     @FXML
     public void expandSearchView(ActionEvent actionEvent) {
-        if (actionEvent.toString().contains("expandButton")) {
+        if (actionEvent.toString().contains("navigateButton")) {
             if (startingPoint.getText() != null) {
                 destinationPoint.setText(startingPoint.getText());
                 startingPoint.setText("");
             }
+            navigationHeader.setVisible(true);
+            navigationHeader.setManaged(true);
             DestinationBox.setVisible(true);
             DestinationBox.setManaged(true);
-            startingPointText.setVisible(true);
-            startingPointText.setManaged(true);
             startingPoint.setPromptText("From:");
-            expandAndSearchButtons.setVisible(false);
-            expandAndSearchButtons.setManaged(false);
+            navigateAndSearchButtons.setVisible(false);
+            navigateAndSearchButtons.setManaged(false);
             //To avoid any TextArea being activated
             DestinationBox.requestFocus();
         } else {
             if (!destinationPoint.getText().equals("") && startingPoint.getText().equals("")) {
                 startingPoint.setText(destinationPoint.getText());
             }
+            navigationHeader.setVisible(false);
+            navigationHeader.setManaged(false);
             DestinationBox.setVisible(false);
             DestinationBox.setManaged(false);
-            startingPointText.setVisible(false);
-            startingPointText.setManaged(false);
             startingPoint.setPromptText("Choose an address...");
-            expandAndSearchButtons.setVisible(true);
-            expandAndSearchButtons.setManaged(true);
+            navigateAndSearchButtons.setVisible(true);
+            navigateAndSearchButtons.setManaged(true);
         }
     }
 
@@ -364,14 +364,14 @@ public class Controller {
             if (keyEvent.getSource().toString().contains("startingPoint")) {
                 startingPoint.setText(startingPoint.getText().trim());
                 if (!DestinationBox.isVisible()) {
-                    expandButton.requestFocus();
+                    navigateButton.requestFocus();
                 } else {
                     switchButton.requestFocus();
                 }
             } else if (keyEvent.getSource().toString().contains("destinationPoint")) {
                 destinationPoint.setText(destinationPoint.getText().trim());
                 startingPoint.setText(startingPoint.getText().trim());
-                collapseButton.requestFocus();
+                minimizeButton.requestFocus();
             }
         } else if (keyEvent.getCode() == KeyCode.ENTER) {
             startingPoint.setText(startingPoint.getText().trim());

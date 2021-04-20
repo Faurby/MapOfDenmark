@@ -84,20 +84,16 @@
                       style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B"
                       AnchorPane.leftAnchor="0.0"
                       AnchorPane.topAnchor="0.0">
-                    <padding><Insets bottom="5" left="10" right="10" top="5" /></padding>
-                    <Text style="-fx-font-size: 15" text="Search" />
-                    <Text fx:id="startingPointText" managed="false" text="Starting point:" visible="false" />
+                    <padding><Insets bottom="5" left="10" right="10" top="10" /></padding>
+                    <Text fx:id="navigationHeader" style="-fx-font-size: 15" text="Navigation" visible="false" managed="false"/>
                     <TextArea fx:id="startingPoint" minHeight="20" prefHeight="25" promptText="Choose an address..." wrapText="true" onKeyPressed="#tabEnterCheck" />
-                    <HBox fx:id="expandAndSearchButtons" alignment="BASELINE_CENTER" prefWidth="198.0" style="-fx-padding: 10 5 5 5">
-                        <Button fx:id="expandButton" onAction="#expandSearchView" text="Expand" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <HBox fx:id="navigateAndSearchButtons" alignment="BASELINE_CENTER" prefWidth="198.0" style="-fx-padding: 10 0 5 0">
+                        <Button fx:id="navigateButton" onAction="#expandSearchView" text="Navigate" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                         <ToolBar visible="false" HBox.hgrow="ALWAYS" />
                         <Button fx:id="searchButton" onAction="#searchAddressString" text="Search" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                     </HBox>
                     <VBox fx:id="DestinationBox" managed="false" visible="false">
                         <GridPane prefHeight="30" >
-                            <Pane GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS" visible="false"/>
-                            <Pane GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" visible="false"/>
-                            <Text GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.rowSpan="1" text="Destination:" />
                             <Button fx:id="switchButton" maxHeight="20" maxWidth="40" onAction="#switchText"
                                     GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.rowSpan="3">
                                 <graphic>
@@ -142,18 +138,14 @@
                             </ToggleButton>
                         </HBox>
 
-                        <HBox alignment="BASELINE_CENTER" style="-fx-padding: 10 5 5 5">
-                            <Button fx:id="collapseButton" onAction="#expandSearchView" text="Collapse" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <HBox alignment="BASELINE_CENTER" style="-fx-padding: 10 0 5 0">
+                            <Button fx:id="minimizeButton" onAction="#expandSearchView" text="Minimize" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                             <ToolBar visible="false" HBox.hgrow="ALWAYS" />
                             <Button fx:id="searchButtonExpanded" onAction="#searchAddressString" text="Search" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                         </HBox>
                     </VBox>
                     <VBox alignment="CENTER">
-                        <Button text="Add Point of Interest"
-                                onAction="#userNodeButtonClicked"
-                                maxWidth="145"
-                                prefWidth="145"
-                        />
+
                     </VBox>
                 </VBox>
                 <StackPane.margin>
@@ -182,6 +174,7 @@
                             <MenuItem onAction="#changeColorMode" text="Black and White" />
                             <MenuItem onAction="#changeColorMode" text="Colorblind" />
                         </Menu>
+                        <MenuItem onAction="#userNodeButtonClicked" text="Add point of interest"></MenuItem>
                     </Menu>
                 </MenuBar>
             </HBox>
