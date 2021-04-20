@@ -1,6 +1,5 @@
 package bfst21.view;
 
-import bfst21.address.Address;
 import bfst21.exceptions.MapDataNotLoadedException;
 import bfst21.models.*;
 import bfst21.osm.Node;
@@ -15,12 +14,9 @@ import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -36,8 +32,6 @@ public class Controller {
     @FXML
     private MapCanvas canvas;
     @FXML
-    private VBox searchAddressVbox;
-    @FXML
     private StackPane stackPane;
     @FXML
     private VBox debugBox;
@@ -52,41 +46,15 @@ public class Controller {
     @FXML
     private Text nodeSkipAmount;
     @FXML
-    private TextArea startingPoint;
-    @FXML
-    private TextArea destinationPoint;
-    @FXML
-    private VBox DestinationBox;
-    @FXML
-    private HBox expandAndSearchButtons;
-    @FXML
-    private Text startingPointText;
-    @FXML
     private Scene scene;
     @FXML
     private VBox loadingText;
     @FXML
     private ProgressBar progressBar;
     @FXML
-    private Button expandButton;
-    @FXML
-    private Button collapseButton;
-    @FXML
     private VBox userNodeVBox;
     @FXML
     private TextField userNodeTextField;
-    @FXML
-    private Button switchButton;
-    @FXML
-    private Button searchButton;
-    @FXML
-    private Button searchButtonExpanded;
-    @FXML
-    private ToggleButton CAR;
-    @FXML
-    private ToggleButton BIKE;
-    @FXML
-    private ToggleButton WALK;
     @FXML
     private VBox userNodeClickedVBox;
     @FXML
@@ -95,6 +63,8 @@ public class Controller {
     private VBox userNodeNewDescriptionVBox;
     @FXML
     private TextField userNodeNewDescriptionTextField;
+    @FXML
+    private VBox searchVBox;
 
     private boolean userNodeToggle = false;
     ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
@@ -135,7 +105,7 @@ public class Controller {
 
     public void onWindowResize(Stage stage) {
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
-        searchAddressVbox.setMaxWidth(stage.getWidth() * 0.25D);
+        searchVBox.setMaxWidth(stage.getWidth() * 0.25D);
         stage.getHeight();
         canvas.repaint();
     }
@@ -287,54 +257,6 @@ public class Controller {
         canvas.repaint();
     }
 
-    @FXML
-    public void searchAddressString() {
-        String sAddress = startingPoint.getText();
-        Address parsedSA = Address.parse(sAddress);
-
-        String dAddress = destinationPoint.getText();
-        Address parsedDA = Address.parse(dAddress);
-
-        System.out.println(parsedSA.toString());
-        System.out.println(parsedDA.toString());
-    }
-
-    @FXML
-    public void expandSearchView(ActionEvent actionEvent) {
-        if (actionEvent.toString().contains("expandButton")) {
-            if (startingPoint.getText() != null) {
-                destinationPoint.setText(startingPoint.getText());
-                startingPoint.setText("");
-            }
-            DestinationBox.setVisible(true);
-            DestinationBox.setManaged(true);
-            startingPointText.setVisible(true);
-            startingPointText.setManaged(true);
-            startingPoint.setPromptText("From:");
-            expandAndSearchButtons.setVisible(false);
-            expandAndSearchButtons.setManaged(false);
-            //To avoid any TextArea being activated
-            DestinationBox.requestFocus();
-        } else {
-            if (!destinationPoint.getText().equals("") && startingPoint.getText().equals("")) {
-                startingPoint.setText(destinationPoint.getText());
-            }
-            DestinationBox.setVisible(false);
-            DestinationBox.setManaged(false);
-            startingPointText.setVisible(false);
-            startingPointText.setManaged(false);
-            startingPoint.setPromptText("Choose an address...");
-            expandAndSearchButtons.setVisible(true);
-            expandAndSearchButtons.setManaged(true);
-        }
-    }
-
-    public void switchText() {
-        String s = startingPoint.getText();
-        startingPoint.setText(destinationPoint.getText());
-        destinationPoint.setText(s);
-    }
-
     public void onCheckDebug(ActionEvent actionEvent) {
         String text = actionEvent.toString().toLowerCase();
 
@@ -348,48 +270,6 @@ public class Controller {
         }
     }
 
-    public void transportationButtonPushed(ActionEvent actionEvent) {
-        TransportationOptions transOptions = new TransportationOptions();
-
-        if (actionEvent.getSource().toString().contains("WALK")) {
-            transOptions.chooseType(TransportationOption.WALK);
-            WALK.setSelected(true);
-        } else if (actionEvent.getSource().toString().contains("BIKE")) {
-            transOptions.chooseType(TransportationOption.BIKE);
-            BIKE.setSelected(true);
-        } else {
-            transOptions.chooseType(TransportationOption.CAR);
-            CAR.setSelected(true);
-        }
-        System.out.println(transOptions.returnType().toString());
-
-    }
-
-    public void tabEnterCheck(KeyEvent keyEvent) {
-        if (keyEvent.getCode() == KeyCode.TAB) {
-            if (keyEvent.getSource().toString().contains("startingPoint")) {
-                startingPoint.setText(startingPoint.getText().trim());
-                if (!DestinationBox.isVisible()) {
-                    expandButton.requestFocus();
-                } else {
-                    switchButton.requestFocus();
-                }
-            } else if (keyEvent.getSource().toString().contains("destinationPoint")) {
-                destinationPoint.setText(destinationPoint.getText().trim());
-                startingPoint.setText(startingPoint.getText().trim());
-                collapseButton.requestFocus();
-            }
-        } else if (keyEvent.getCode() == KeyCode.ENTER) {
-            startingPoint.setText(startingPoint.getText().trim());
-            destinationPoint.setText(destinationPoint.getText().trim());
-            searchAddressString();
-            if (DestinationBox.isVisible()) {
-                searchButtonExpanded.requestFocus();
-            } else {
-                searchButton.requestFocus();
-            }
-        }
-    }
 
     @FXML
     public void userNodeButtonClicked() throws MapDataNotLoadedException {
