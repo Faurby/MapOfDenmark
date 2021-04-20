@@ -231,14 +231,12 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
             if (checkRight) {
                 depth++;
                 searchNearestNeighbor(queryNode, kdNode.getRightChild());
-                searchNearestNeighbor(queryNode, kdNode.getLeftChild());
-                //investigateOtherSide(queryNode, kdNode.getLeftChild());
+                investigateOtherSide(queryNode, kdNode.getLeftChild());
                 depth--;
             } else {
                 depth++;
-                searchNearestNeighbor(queryNode, kdNode.getRightChild());
                 searchNearestNeighbor(queryNode, kdNode.getLeftChild());
-                //investigateOtherSide(queryNode, kdNode.getRightChild());
+                investigateOtherSide(queryNode, kdNode.getRightChild());
                 depth--;
             }
         }

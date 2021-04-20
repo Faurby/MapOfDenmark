@@ -1,7 +1,6 @@
 package bfst21.pathfinding;
 
 import bfst21.osm.ElementIntIndex;
-import javafx.scene.canvas.GraphicsContext;
 
 import java.io.Serializable;
 import java.util.HashMap;
