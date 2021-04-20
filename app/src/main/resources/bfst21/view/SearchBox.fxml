@@ -8,10 +8,10 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.text.Text?>
 
-<VBox fx:id="searchVBox"
+<VBox fx:id="searchBox"
       xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="bfst21.view.SearchVBoxController">
+      fx:controller="bfst21.view.SearchBoxController">
 
     <VBox fx:id="searchAddressVBox" minWidth="175" style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B">
         <padding><Insets bottom="5" left="10" right="10" top="10" /></padding>

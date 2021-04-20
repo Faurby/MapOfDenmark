@@ -6,9 +6,9 @@ import edu.princeton.cs.algs4.Stack;
 
 public class Dijkstra {
 
-    private double[] distTo;
-    private Edge[] edgeTo;
-    private IndexMinPQ<Double> pq;
+    private final double[] distTo;
+    private final Edge[] edgeTo;
+    private final IndexMinPQ<Double> pq;
 
     public Dijkstra(DirectedGraph directedGraph, Vertex source) {
 

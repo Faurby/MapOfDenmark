@@ -131,21 +131,25 @@ public class Controller {
     public void onMouseReleased() {
         canvas.runRangeSearchTask();
 
-        float mouseX = (float) canvas.mouseToModelCoords(lastMouse).getX();
-        float mouseY = (float) canvas.mouseToModelCoords(lastMouse).getY();
-        Node tempNodeAtMouseCoords = new Node(mouseX, -(mouseY * 0.56f));
-        UserNode closestNode = null;
-        if (!model.getMapData().getUserNodes().isEmpty()) {
-            for (UserNode userNode : model.getMapData().getUserNodes()) {
-                if (closestNode == null || tempNodeAtMouseCoords.distTo(userNode) < tempNodeAtMouseCoords.distTo(closestNode)) {
-                    closestNode = userNode;
+        if (model.getMapData() != null) {
+            float mouseX = (float) canvas.mouseToModelCoords(lastMouse).getX();
+            float mouseY = (float) canvas.mouseToModelCoords(lastMouse).getY();
+
+            Node tempNodeAtMouseCoords = new Node(mouseX, -(mouseY * 0.56f));
+            UserNode closestNode = null;
+
+            if (!model.getMapData().getUserNodes().isEmpty()) {
+                for (UserNode userNode : model.getMapData().getUserNodes()) {
+                    if (closestNode == null || tempNodeAtMouseCoords.distTo(userNode) < tempNodeAtMouseCoords.distTo(closestNode)) {
+                        closestNode = userNode;
+                    }
                 }
-            }
-            if (closestNode != null) {
-                if (tempNodeAtMouseCoords.distTo(closestNode) < 0.025) {
-                    userNodeClickedVBox.setVisible(true);
-                    userNodeClickedText.setText((closestNode.getDescription().equals("") ? "No description entered" : closestNode.getDescription()));
-                    currentUserNode = closestNode;
+                if (closestNode != null) {
+                    if (tempNodeAtMouseCoords.distTo(closestNode) < 0.025) {
+                        userNodeClickedVBox.setVisible(true);
+                        userNodeClickedText.setText((closestNode.getDescription().equals("") ? "No description entered" : closestNode.getDescription()));
+                        currentUserNode = closestNode;
+                    }
                 }
             }
         }
@@ -170,7 +174,7 @@ public class Controller {
         if (mouseEvent.isSecondaryButtonDown()) {
             Point2D point = canvas.mouseToModelCoords(lastMouse);
             Node node = new Node((float) point.getX(), (float) -point.getY() * 0.56f);
-            canvas.nearestNeighborSearch(node);
+            canvas.runNearestNeighborTask(node);
         }
 
         if (userNodeToggle && mouseEvent.isSecondaryButtonDown()) {
@@ -345,6 +349,7 @@ public class Controller {
         if (keyEvent.getCode().getName().equals("Enter")) {
             currentUserNode.changeDescription(userNodeNewDescriptionTextField.getText());
             userNodeNewDescriptionVBox.setVisible(false);
+
         } else if (keyEvent.getCode().getName().equals("Esc")) {
             userNodeNewDescriptionVBox.setVisible(false);
         }

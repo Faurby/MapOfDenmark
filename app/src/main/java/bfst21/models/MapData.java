@@ -16,6 +16,7 @@ import java.util.*;
 public class MapData {
 
     private DirectedGraph directedGraph;
+    private Dijkstra dijkstra;
 
     private HashMap<ElementGroup, KdTree<Way>> kdTreeMap;
     private HashMap<ElementGroup, RTree<Integer, Way>> rTreeMap;
@@ -35,8 +36,6 @@ public class MapData {
     private final float minX, minY, maxX, maxY;
 
     private final Options options = Options.getInstance();
-
-    private Dijkstra dijkstra;
 
     /**
      * MapData constructor.

@@ -40,6 +40,7 @@ public class MapCanvas extends Canvas {
 
     private int depth;
     private Task<Void> rangeSearchTask;
+    private Task<Void> nearestNeighborTask;
 
     private ColorMode colorMode = ColorMode.STANDARD;
     private Affine trans = new Affine();
@@ -207,13 +208,8 @@ public class MapCanvas extends Canvas {
      * Draws every point of interest created by the user.
      */
     private void drawUserNodes() {
-        gc.setStroke(Color.RED);
-        //float parsed = getZoomPercentAsFloat();
-        //gc.setLineWidth(0.0025 / (parsed / 100 * (parsed > 120 ? 2 : 1)));
-        gc.setLineWidth(10 * (1 / Math.sqrt(trans.determinant())));
-        //gc.setLineWidth(0.0025 * widthModifier);
-
         gc.setStroke(Color.BLUE);
+        gc.setLineWidth(10 * (1 / Math.sqrt(trans.determinant())));
 
         for (UserNode userNode : model.getMapData().getUserNodes()) {
             userNode.draw(gc, 0);
@@ -245,7 +241,7 @@ public class MapCanvas extends Canvas {
             gc.stroke();
 
             gc.setStroke(Color.RED);
-            gc.setLineWidth(0.0002 * widthModifier);
+            gc.setLineWidth(0.0004 * widthModifier);
 
             gc.beginPath();
             Iterable<Edge> it = model.getMapData().getDijkstra().pathTo(targetID);
@@ -300,8 +296,28 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void nearestNeighborSearch(Node node) {
-        nearestNeighborNode = model.getMapData().kdTreeNearestNeighborSearch(node, zoomLevel);
+    /**
+     * Starts a new nearest neighbor search task.
+     * Cancels the current nearest neighbor search task if it is running.
+     * Repaints the MapCanvas when the task is finished.
+     */
+    public void runNearestNeighborTask(Node node) {
+        if (nearestNeighborTask != null) {
+            if (nearestNeighborTask.isRunning()) {
+                nearestNeighborTask.cancel();
+            }
+        }
+        nearestNeighborTask = new Task<>() {
+            @Override
+            protected Void call() {
+                nearestNeighborNode = model.getMapData().kdTreeNearestNeighborSearch(node, zoomLevel);
+                return null;
+            }
+        };
+        nearestNeighborTask.setOnSucceeded(e -> repaint());
+        nearestNeighborTask.setOnFailed(e -> nearestNeighborTask.getException().printStackTrace());
+        Thread thread = new Thread(nearestNeighborTask);
+        thread.start();
     }
 
     /**

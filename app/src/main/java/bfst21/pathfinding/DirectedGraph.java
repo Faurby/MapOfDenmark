@@ -12,9 +12,8 @@ public class DirectedGraph implements Serializable {
 
     private int vertexAmount;
     private int edgeAmount;
-    private ElementIntIndex<Vertex> vertexIntIndex = new ElementIntIndex<>();
-    private HashMap<VertexPoint, Integer> vertexMap = new HashMap<>();
-    private Dijkstra dijkstra;
+    private final ElementIntIndex<Vertex> vertexIntIndex = new ElementIntIndex<>();
+    private final HashMap<VertexPoint, Integer> vertexMap = new HashMap<>();
 
     public DirectedGraph() {
         this.edgeAmount = 0;
@@ -49,15 +48,7 @@ public class DirectedGraph implements Serializable {
         edgeAmount++;
     }
 
-    public int getEdgeAmount() {
-        return edgeAmount;
-    }
-
     public int getVertexAmount() {
         return vertexAmount;
-    }
-
-    public ElementIntIndex<Vertex> getVertexIntIndex() {
-        return vertexIntIndex;
     }
 }
