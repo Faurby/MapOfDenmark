@@ -1,8 +1,6 @@
 package bfst21.tree;
 
-import bfst21.models.Util;
 import bfst21.osm.Node;
-import javafx.geometry.Point2D;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -189,15 +187,14 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
         }
     }
 
-    public Node preSearchNearestNeighbor(Node queryNode) {
+    public Node nearestNeighborSearch(Node queryNode) {
         depth = 0;
 
-        searchNearestNeighbor(queryNode, root);
+        nearestNeighborSearch(queryNode, root);
         return currentNearestNeighbor;
     }
 
-    private void searchNearestNeighbor(Node queryNode, KdNode<T> kdNode) {
-        boolean isDepthEven = depth % 2 == 0;
+    private void nearestNeighborSearch(Node queryNode, KdNode<T> kdNode) {
         boolean isLeaf = kdNode.getList() != null;
 
         boolean checkRight = false;
@@ -228,17 +225,15 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
                     checkRight = true;
                 }
             }
+            depth++;
             if (checkRight) {
-                depth++;
-                searchNearestNeighbor(queryNode, kdNode.getRightChild());
+                nearestNeighborSearch(queryNode, kdNode.getRightChild());
                 investigateOtherSide(queryNode, kdNode.getLeftChild());
-                depth--;
             } else {
-                depth++;
-                searchNearestNeighbor(queryNode, kdNode.getLeftChild());
+                nearestNeighborSearch(queryNode, kdNode.getLeftChild());
                 investigateOtherSide(queryNode, kdNode.getRightChild());
-                depth--;
             }
+            depth--;
         }
     }
 
@@ -257,11 +252,8 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
 
                 if (currentNearestNeighbor != null) {
                     distanceToCurrentNeighbor = queryNode.distTo(currentNearestNeighbor);
-
                 }
-
                 if (distance < distanceToCurrentNeighbor) {
-                    //System.out.println("Found node at "+node.getX()+" "+node.getY()+" distance change: "+distanceToCurrentNeighbor + " to "+distance);
                     currentNearestNeighbor = node;
                 }
             }
@@ -269,11 +261,9 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
     }
 
     private void investigateOtherSide(Node queryNode, KdNode<T> kdNode) {
-        boolean isDepthEven = depth % 2 == 0;
-
         double distanceToCurrentNeighbor = queryNode.distTo(currentNearestNeighbor);
 
-        if (isDepthEven) {
+        if (depth % 2 == 0) {
             float nodeMaxX = kdNode.getMaxX();
             float nodeMinX = kdNode.getMinX();
             float x = queryNode.getX();
@@ -282,7 +272,7 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
             float distToMin = Math.abs(x - nodeMinX);
 
             if (distanceToCurrentNeighbor > Math.min(distToMax, distToMin)) {
-                searchNearestNeighbor(queryNode, kdNode);
+                nearestNeighborSearch(queryNode, kdNode);
             }
 
         } else {
@@ -294,7 +284,7 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
             float distToMin = Math.abs(y - nodeMinY);
 
             if (distanceToCurrentNeighbor > Math.min(distToMax, distToMin)) {
-                searchNearestNeighbor(queryNode, kdNode);
+                nearestNeighborSearch(queryNode, kdNode);
             }
         }
     }

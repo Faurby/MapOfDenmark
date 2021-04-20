@@ -23,8 +23,6 @@ import javafx.scene.transform.NonInvertibleTransformException;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class MapCanvas extends Canvas {
@@ -59,6 +57,7 @@ public class MapCanvas extends Canvas {
      * Loads selected file in Model.
      * Pans the MapCanvas based on the bounds for the loaded map.
      * Fits the MapCanvas to the screen.
+     *
      * @param loadDefaultFile determines if the default or selected file should be loaded.
      */
     public void load(boolean loadDefaultFile) throws XMLStreamException, IOException, ClassNotFoundException {
@@ -109,8 +108,8 @@ public class MapCanvas extends Canvas {
                         drawOrFill(elementGroup);
                     }
                 } catch (IllegalArgumentException ex) {
-                    System.out.println("Failed to draw "+elementGroup);
-                    System.out.println("There is no DISPLAY_"+elementType+" in the Option class!");
+                    System.out.println("Failed to draw " + elementGroup);
+                    System.out.println("There is no DISPLAY_" + elementType + " in the Option class!");
                 }
             }
             drawUserNodes();
@@ -290,29 +289,19 @@ public class MapCanvas extends Canvas {
     }
 
     public void drawNeighborNodes() {
-        gc.setStroke(Color.RED);
-        gc.setLineWidth(0.002 * widthModifier);
-
-        gc.beginPath();
         if (nearestNeighborNode != null) {
+            gc.setStroke(Color.RED);
+            gc.setLineWidth(0.002 * widthModifier);
+
+            gc.beginPath();
             gc.moveTo(nearestNeighborNode.getX(), nearestNeighborNode.getY());
             gc.lineTo(nearestNeighborNode.getX(), nearestNeighborNode.getY());
+            gc.stroke();
         }
-        gc.stroke();
     }
 
-    public void neighborSearch(Node node) {
-        List<Node> list = model.getMapData().kdTreeNearestNeighborSearch(node, zoomLevel);
-
-        double minimumDistance = Double.MAX_VALUE;
-        for (Node found : list) {
-            double dist = node.distTo(found);
-
-            if (dist < minimumDistance) {
-                minimumDistance = dist;
-                nearestNeighborNode = found;
-            }
-        }
+    public void nearestNeighborSearch(Node node) {
+        nearestNeighborNode = model.getMapData().kdTreeNearestNeighborSearch(node, zoomLevel);
     }
 
     /**
@@ -487,6 +476,7 @@ public class MapCanvas extends Canvas {
 
     /**
      * Calculate zoom level percentage using the zoom limits.
+     *
      * @return zoom level percentage.
      */
     public String getZoomPercent() {
@@ -505,7 +495,7 @@ public class MapCanvas extends Canvas {
     }
 
     public float getZoomPercentAsFloat() {
-        return Float.parseFloat(getZoomPercent().substring(0, getZoomPercent().length()-1));
+        return Float.parseFloat(getZoomPercent().substring(0, getZoomPercent().length() - 1));
     }
 
     public double getZoomLevel() {

@@ -1,9 +1,12 @@
 package bfst21.pathfinding;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class VertexPoint {
 
+public class VertexPoint implements Serializable {
+
+    private static final long serialVersionUID = 2577330911650138815L;
     private final float x, y;
 
     public VertexPoint(float x, float y) {

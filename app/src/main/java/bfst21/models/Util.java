@@ -1,7 +1,7 @@
 package bfst21.models;
 
-
 import javafx.geometry.Point2D;
+
 
 public class Util {
 
@@ -21,10 +21,6 @@ public class Util {
                         Math.sin(rLonDistance / 2) * Math.sin(rLonDistance / 2);
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double value = R * c;
-
-        //System.out.println("Found dist "+value+" "+lat1+" "+lon1+" "+lat2+" "+lon2);
-
-        return value;
+        return R * c;
     }
 }

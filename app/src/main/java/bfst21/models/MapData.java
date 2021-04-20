@@ -369,24 +369,32 @@ public class MapData {
         kdTreeRelationSearchList = kdTreeRelations.preRangeSearch(boundingBox);
     }
 
-    public List<Node> kdTreeNearestNeighborSearch(Node node, double zoomLevel) {
+    public Node kdTreeNearestNeighborSearch(Node queryNode, double zoomLevel) {
         List<Node> list = new ArrayList<>();
-
-        System.out.println("Node search at "+node.getX()+" "+node.getY());
 
         for (ElementGroup elementGroup : ElementGroup.values()) {
             if (elementGroup.doShowElement(zoomLevel)) {
 
                 if (elementGroup.getType().canNavigate()) {
                     if (kdTreeMap.containsKey(elementGroup)) {
-                        Node found = kdTreeMap.get(elementGroup).preSearchNearestNeighbor(node);
-                        list.add(found);
+                        Node node = kdTreeMap.get(elementGroup).nearestNeighborSearch(queryNode);
+                        list.add(node);
                     }
                 }
             }
         }
-        System.out.println("Found nodes: "+list.size());
-        return list;
+        Node nearest = null;
+        double minimumDistance = Double.MAX_VALUE;
+
+        for (Node node : list) {
+            double distance = queryNode.distTo(node);
+
+            if (distance < minimumDistance) {
+                minimumDistance = distance;
+                nearest = node;
+            }
+        }
+        return nearest;
     }
 
     public HashMap<ElementGroup, KdTree<Way>> getKdTreeMap() {

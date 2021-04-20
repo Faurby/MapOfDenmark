@@ -5,6 +5,7 @@ import bfst21.osm.Node;
 
 import java.util.List;
 
+
 public abstract class BoundingBoxElement extends Element {
 
     private static final long serialVersionUID = 8229695993958002260L;

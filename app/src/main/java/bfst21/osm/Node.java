@@ -1,9 +1,6 @@
 package bfst21.osm;
 
 import bfst21.models.Util;
-import bfst21.pathfinding.Vertex;
-import javafx.geometry.Point2D;
-
 import java.io.Serializable;
 
 
@@ -29,16 +26,7 @@ public class Node implements Serializable {
         return -y * 0.56f;
     }
 
-    public double distance(Node other) {
-        double p = 0.017453292519943295;            // Math.PI / 180
-        double a = 0.5 - Math.cos((other.getRealY() - this.getRealY()) * p)/2 +
-                Math.cos(this.getRealY() * p) * Math.cos(other.getRealY()) * p *
-                (1 - Math.cos((other.getX() - this.getX()) * p))/2;
-        return 12742 * Math.asin(Math.sqrt(a));     // 2 * R; R = 6371 km
-    }
-
     public double distTo(Node other) {
-
         float lat1 = this.getRealY();
         float lon1 = this.getX();
         double lat2 = other.getRealY();
