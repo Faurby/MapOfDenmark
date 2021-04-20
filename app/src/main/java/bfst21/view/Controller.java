@@ -20,7 +20,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -35,8 +34,6 @@ public class Controller {
 
     @FXML
     private MapCanvas canvas;
-    @FXML
-    private VBox searchAddressVbox;
     @FXML
     private StackPane stackPane;
     @FXML
@@ -56,9 +53,9 @@ public class Controller {
     @FXML
     private TextArea destinationPoint;
     @FXML
-    private VBox DestinationBox;
+    private VBox navigationVBox;
     @FXML
-    private HBox navigateAndSearchButtons;
+    private VBox searchAddressVBox;
     @FXML
     private Scene scene;
     @FXML
@@ -94,7 +91,7 @@ public class Controller {
     @FXML
     private TextField userNodeNewDescriptionTextField;
     @FXML
-    private Text navigationHeader;
+    private TextArea addressArea;
 
     private boolean userNodeToggle = false;
     ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
@@ -135,7 +132,8 @@ public class Controller {
 
     public void onWindowResize(Stage stage) {
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
-        searchAddressVbox.setMaxWidth(stage.getWidth() * 0.25D);
+        searchAddressVBox.setMaxWidth(stage.getWidth() * 0.25D);
+        navigationVBox.setMaxWidth(stage.getWidth() * 0.30D);
         stage.getHeight();
         canvas.repaint();
     }
@@ -282,7 +280,7 @@ public class Controller {
     }
 
     @FXML
-    public void searchAddressString() {
+    public void searchNavigationAddresses() {
         String sAddress = startingPoint.getText();
         Address parsedSA = Address.parse(sAddress);
 
@@ -293,33 +291,32 @@ public class Controller {
         System.out.println(parsedDA.toString());
     }
 
+    private void searchSingleAddress() {
+        String address = addressArea.getText();
+        Address parsed = Address.parse(address);
+        System.out.println(parsed);
+    }
+
     @FXML
     public void expandSearchView(ActionEvent actionEvent) {
         if (actionEvent.toString().contains("navigateButton")) {
-            if (startingPoint.getText() != null) {
-                destinationPoint.setText(startingPoint.getText());
+            if (addressArea.getText() != null) {
+                destinationPoint.setText(addressArea.getText());
                 startingPoint.setText("");
             }
-            navigationHeader.setVisible(true);
-            navigationHeader.setManaged(true);
-            DestinationBox.setVisible(true);
-            DestinationBox.setManaged(true);
-            startingPoint.setPromptText("From:");
-            navigateAndSearchButtons.setVisible(false);
-            navigateAndSearchButtons.setManaged(false);
+            searchAddressVBox.setVisible(false);
+            navigationVBox.setVisible(true);
             //To avoid any TextArea being activated
-            DestinationBox.requestFocus();
+            navigationVBox.requestFocus();
         } else {
             if (!destinationPoint.getText().equals("") && startingPoint.getText().equals("")) {
-                startingPoint.setText(destinationPoint.getText());
+                addressArea.setText(destinationPoint.getText());
+            } else if (!startingPoint.getText().equals("")){
+                addressArea.setText(startingPoint.getText());
             }
-            navigationHeader.setVisible(false);
-            navigationHeader.setManaged(false);
-            DestinationBox.setVisible(false);
-            DestinationBox.setManaged(false);
-            startingPoint.setPromptText("Choose an address...");
-            navigateAndSearchButtons.setVisible(true);
-            navigateAndSearchButtons.setManaged(true);
+            searchAddressVBox.setVisible(true);
+            navigationVBox.setVisible(false);
+
         }
     }
 
@@ -361,25 +358,26 @@ public class Controller {
 
     public void tabEnterCheck(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.TAB) {
-            if (keyEvent.getSource().toString().contains("startingPoint")) {
+            if (keyEvent.getSource().toString().contains("addressArea")) {
+                addressArea.setText(addressArea.getText().trim());
+                navigateButton.requestFocus();
+            } else if (keyEvent.getSource().toString().contains("startingPoint")) {
                 startingPoint.setText(startingPoint.getText().trim());
-                if (!DestinationBox.isVisible()) {
-                    navigateButton.requestFocus();
-                } else {
-                    switchButton.requestFocus();
-                }
+                switchButton.requestFocus();
             } else if (keyEvent.getSource().toString().contains("destinationPoint")) {
                 destinationPoint.setText(destinationPoint.getText().trim());
                 startingPoint.setText(startingPoint.getText().trim());
                 minimizeButton.requestFocus();
             }
         } else if (keyEvent.getCode() == KeyCode.ENTER) {
-            startingPoint.setText(startingPoint.getText().trim());
-            destinationPoint.setText(destinationPoint.getText().trim());
-            searchAddressString();
-            if (DestinationBox.isVisible()) {
+            if (navigationVBox.isVisible()) {
                 searchButtonExpanded.requestFocus();
+                startingPoint.setText(startingPoint.getText().trim());
+                destinationPoint.setText(destinationPoint.getText().trim());
+                searchNavigationAddresses();
             } else {
+                addressArea.setText(addressArea.getText().trim());
+                searchSingleAddress();
                 searchButton.requestFocus();
             }
         }
