@@ -245,10 +245,12 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
     }
 
     private void investigateLeaf(Node queryNode, KdNode<T> kdNode) {
-        double distanceToCurrentNeighbor = Double.POSITIVE_INFINITY;
+        double distanceToCurrentNeighbor;
 
         if (currentNearestNeighbor != null) {
             distanceToCurrentNeighbor = queryNode.distTo(currentNearestNeighbor);
+        } else {
+            distanceToCurrentNeighbor = Double.POSITIVE_INFINITY;
         }
 
         for (T element : kdNode.getList()) {
@@ -257,10 +259,11 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
 
                 if (currentNearestNeighbor != null) {
                     distanceToCurrentNeighbor = queryNode.distTo(currentNearestNeighbor);
+
                 }
 
                 if (distance < distanceToCurrentNeighbor) {
-                    System.out.println("Found node at "+node.getX()+" "+node.getY()+" distance found: "+distance);
+                    //System.out.println("Found node at "+node.getX()+" "+node.getY()+" distance change: "+distanceToCurrentNeighbor + " to "+distance);
                     currentNearestNeighbor = node;
                 }
             }

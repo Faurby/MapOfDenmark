@@ -46,7 +46,7 @@ public class MapCanvas extends Canvas {
     private ColorMode colorMode = ColorMode.STANDARD;
     private Affine trans = new Affine();
 
-    private List<Node> neighborSearch = new ArrayList<>();
+    private Node nearestNeighborNode;
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -291,20 +291,28 @@ public class MapCanvas extends Canvas {
 
     public void drawNeighborNodes() {
         gc.setStroke(Color.RED);
-        gc.setLineWidth(0.02 * widthModifier);
+        gc.setLineWidth(0.002 * widthModifier);
 
         gc.beginPath();
-        for (Node found : neighborSearch) {
-            System.out.println("Coords: "+found.getX() + " "+found.getY());
-
-            gc.moveTo(found.getX(), found.getY());
-            gc.lineTo(found.getX(), found.getY());
+        if (nearestNeighborNode != null) {
+            gc.moveTo(nearestNeighborNode.getX(), nearestNeighborNode.getY());
+            gc.lineTo(nearestNeighborNode.getX(), nearestNeighborNode.getY());
         }
         gc.stroke();
     }
 
     public void neighborSearch(Node node) {
-        neighborSearch = model.getMapData().kdTreeNearestNeighborSearch(node, zoomLevel);
+        List<Node> list = model.getMapData().kdTreeNearestNeighborSearch(node, zoomLevel);
+
+        double minimumDistance = Double.MAX_VALUE;
+        for (Node found : list) {
+            double dist = node.distTo(found);
+
+            if (dist < minimumDistance) {
+                minimumDistance = dist;
+                nearestNeighborNode = found;
+            }
+        }
     }
 
     /**

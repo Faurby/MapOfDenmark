@@ -199,8 +199,7 @@ public class Controller {
 
         if (mouseEvent.isSecondaryButtonDown()) {
             Point2D point = canvas.mouseToModelCoords(lastMouse);
-            System.out.println("Point: "+point.getX() + " "+point.getY());
-            Node node = new Node((float) point.getX(), (float) point.getY() * 0.56f * 0.56f);
+            Node node = new Node((float) point.getX(), (float) -point.getY() * 0.56f);
             canvas.neighborSearch(node);
         }
 
