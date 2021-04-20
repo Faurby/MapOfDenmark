@@ -21,7 +21,7 @@ public class Way extends BoundingBoxElement implements Geometry, Drawable, Seria
 
     private ElementType elementType;
     private String role;
-    private int maxSpeed;
+    private int maxSpeed = 1;
     private boolean isDrawn;
     private boolean oneWay;
 
@@ -149,39 +149,6 @@ public class Way extends BoundingBoxElement implements Geometry, Drawable, Seria
         this.elementType = elementType;
     }
 
-    public boolean canNavigate() {
-        return elementType == ElementType.PRIMARY ||
-                elementType == ElementType.MOTORWAY ||
-                elementType == ElementType.TRUNK ||
-                elementType == ElementType.TERTIARY ||
-                elementType == ElementType.CYCLEWAY ||
-                elementType == ElementType.RESIDENTIAL ||
-                elementType == ElementType.ROAD ||
-                elementType == ElementType.FOOTWAY;
-    }
-
-    public boolean canDrive() {
-        return elementType == ElementType.PRIMARY ||
-                elementType == ElementType.MOTORWAY ||
-                elementType == ElementType.RESIDENTIAL ||
-                elementType == ElementType.TERTIARY ||
-                elementType == ElementType.TRUNK;
-    }
-
-    public boolean canBike() {
-        return elementType == ElementType.TERTIARY ||
-                elementType == ElementType.CYCLEWAY ||
-                elementType == ElementType.ROAD ||
-                elementType == ElementType.RESIDENTIAL;
-    }
-
-    public boolean canWalk() {
-        return elementType == ElementType.TERTIARY ||
-                elementType == ElementType.CYCLEWAY ||
-                elementType == ElementType.RESIDENTIAL ||
-                elementType == ElementType.ROAD ||
-                elementType == ElementType.FOOTWAY;
-    }
 
     public void setRole(String role) {
         this.role = role;

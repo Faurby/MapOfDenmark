@@ -163,6 +163,40 @@ public enum ElementType {
                 this == ElementType.WATER;
     }
 
+    public boolean canNavigate() {
+        return this == ElementType.PRIMARY ||
+                this == ElementType.MOTORWAY ||
+                this == ElementType.TRUNK ||
+                this == ElementType.TERTIARY ||
+                this == ElementType.CYCLEWAY ||
+                this == ElementType.RESIDENTIAL ||
+                this == ElementType.ROAD ||
+                this == ElementType.FOOTWAY;
+    }
+
+    public boolean canDrive() {
+        return this == ElementType.PRIMARY ||
+                this == ElementType.MOTORWAY ||
+                this == ElementType.RESIDENTIAL ||
+                this == ElementType.TERTIARY ||
+                this == ElementType.TRUNK;
+    }
+
+    public boolean canBike() {
+        return this == ElementType.TERTIARY ||
+                this == ElementType.CYCLEWAY ||
+                this == ElementType.ROAD ||
+                this == ElementType.RESIDENTIAL;
+    }
+
+    public boolean canWalk() {
+        return this == ElementType.TERTIARY ||
+                this == ElementType.CYCLEWAY ||
+                this == ElementType.RESIDENTIAL ||
+                this == ElementType.ROAD ||
+                this == ElementType.FOOTWAY;
+    }
+
     public boolean isDisplayOptionEnabled() {
         return Options.getInstance().getBool(Option.valueOf("DISPLAY_" + this));
     }

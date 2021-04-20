@@ -1,6 +1,7 @@
 package bfst21.models;
 
 import bfst21.osm.*;
+import bfst21.pathfinding.Dijkstra;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.pathfinding.Vertex;
 import bfst21.tree.BoundingBox;
@@ -34,6 +35,8 @@ public class MapData {
     private final float minX, minY, maxX, maxY;
 
     private final Options options = Options.getInstance();
+
+    private Dijkstra dijkstra;
 
     /**
      * MapData constructor.
@@ -113,29 +116,52 @@ public class MapData {
      * Builds a directed graph used for path finding.
      */
     public void buildDirectedGraph(List<Way> wayList) {
-        directedGraph = new DirectedGraph(wayList.size());
+        directedGraph = new DirectedGraph();
         System.out.println("Building directed graph for path finding...");
 
         int idCount = 0;
         for (Way way : wayList) {
             if (way.getType() != null) {
-                if (way.canNavigate()) {
-                    int maxSpeed = way.getMaxSpeed();
+                if (way.getType().canNavigate()) {
 
                     int size = way.getNodes().size();
                     for (int i = 0; i < (size - 1); i++) {
-                        Node first = way.getNodes().get(i);
-                        Node last = way.getNodes().get(i + 1);
+                        Node v = way.getNodes().get(i);
+                        Node w = way.getNodes().get(i + 1);
 
-                        Vertex from = directedGraph.getVertex(first.getX(), first.getY(), idCount);
-                        Vertex to = directedGraph.getVertex(last.getX(), last.getY(), idCount);
+                        int vID = idCount;
+                        int wID = idCount + 1;
 
-                        directedGraph.addEdge(from, to, maxSpeed);
-                        idCount++;
+                        directedGraph.createVertex(v.getX(), v.getY(), vID);
+                        directedGraph.createVertex(w.getX(), w.getY(), wID);
+                        idCount += 2;
                     }
                 }
             }
         }
+        idCount = 0;
+        for (Way way : wayList) {
+            if (way.getType() != null) {
+                if (way.getType().canNavigate()) {
+
+                    int maxSpeed = way.getMaxSpeed();
+
+                    int size = way.getNodes().size();
+                    for (int i = 0; i < (size - 1); i++) {
+                        Node v = way.getNodes().get(i);
+                        Node w = way.getNodes().get(i + 1);
+
+                        Vertex from = directedGraph.getVertex(v.getX(), v.getY());
+                        Vertex to = directedGraph.getVertex(w.getX(), w.getY());
+
+                        directedGraph.addEdge(from, to, maxSpeed);
+                        idCount += 2;
+                    }
+                }
+            }
+        }
+        Vertex source = directedGraph.getVertex(99350);
+        dijkstra = new Dijkstra(directedGraph, source);
     }
 
     /**
@@ -343,6 +369,26 @@ public class MapData {
         kdTreeRelationSearchList = kdTreeRelations.preRangeSearch(boundingBox);
     }
 
+    public List<Node> kdTreeNearestNeighborSearch(Node node, double zoomLevel) {
+        List<Node> list = new ArrayList<>();
+
+        System.out.println("Node search at "+node.getX()+" "+node.getY());
+
+        for (ElementGroup elementGroup : ElementGroup.values()) {
+            if (elementGroup.doShowElement(zoomLevel)) {
+
+                if (elementGroup.getType().canNavigate()) {
+                    if (kdTreeMap.containsKey(elementGroup)) {
+                        Node found = kdTreeMap.get(elementGroup).preSearchNearestNeighbor(node);
+                        list.add(found);
+                    }
+                }
+            }
+        }
+        System.out.println("Found nodes: "+list.size());
+        return list;
+    }
+
     public HashMap<ElementGroup, KdTree<Way>> getKdTreeMap() {
         return kdTreeMap;
     }
@@ -381,5 +427,9 @@ public class MapData {
 
     public void addUserNode(UserNode userNode) {
         userNodes.add(userNode);
+    }
+
+    public Dijkstra getDijkstra() {
+        return dijkstra;
     }
 }

@@ -41,7 +41,11 @@ public class Relation extends BoundingBoxElement implements Geometry, Serializab
     }
 
     public List<Node> getNodes() {
-        return nodes;
+        List<Node> list = new ArrayList<>(nodes);
+        for (Way way : ways) {
+            list.addAll(way.getNodes());
+        }
+        return list;
     }
 
     public List<Way> getWays() {

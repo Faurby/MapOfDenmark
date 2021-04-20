@@ -1,38 +1,44 @@
 package bfst21.pathfinding;
 
+import bfst21.osm.ElementIntIndex;
+import javafx.scene.canvas.GraphicsContext;
+
 import java.io.Serializable;
+import java.util.HashMap;
 
 
 public class DirectedGraph implements Serializable {
 
     private static final long serialVersionUID = -2665514385590129687L;
 
-    private final Bag<Vertex> vertices;
-    private final int vertexAmount;
+    private int vertexAmount;
     private int edgeAmount;
+    private ElementIntIndex<Vertex> vertexIntIndex = new ElementIntIndex<>();
+    private HashMap<VertexPoint, Integer> vertexMap = new HashMap<>();
+    private Dijkstra dijkstra;
 
-    public DirectedGraph(int vertexAmount) {
-        this.vertexAmount = vertexAmount;
+    public DirectedGraph() {
         this.edgeAmount = 0;
-        this.vertices = new Bag<>();
     }
 
-    public Vertex getVertex(float x, float y, int id) {
-        for (Vertex vertex : vertices) {
-            if (vertex.getX() == x && vertex.getY() == y) {
-                return vertex;
-            }
+    public void createVertex(float x, float y, int id) {
+        vertexIntIndex.put(new Vertex(x, y, id));
+        vertexMap.put(new VertexPoint(x, y), id);
+        vertexAmount++;
+    }
+
+    public Vertex getVertex(float x, float y) {
+        VertexPoint vertexPoint = new VertexPoint(x, y);
+
+        if (vertexMap.containsKey(vertexPoint)) {
+            int id = vertexMap.get(vertexPoint);
+            return vertexIntIndex.get(id);
         }
-        return new Vertex(x, y, id);
+        return null;
     }
 
     public Vertex getVertex(int id) {
-        for (Vertex vertex : vertices) {
-            if (vertex.getID() == id) {
-                return vertex;
-            }
-        }
-        return null;
+        return vertexIntIndex.get(id);
     }
 
     public void addEdge(Vertex from, Vertex to, int maxSpeed) {
@@ -40,8 +46,6 @@ public class DirectedGraph implements Serializable {
         Edge edge = new Edge(from.getID(), to.getID(), distance, maxSpeed);
         from.addEdge(edge);
         to.addEdge(edge);
-        //vertices.add(from);
-        //vertices.add(to);
 
         edgeAmount++;
     }
@@ -54,7 +58,7 @@ public class DirectedGraph implements Serializable {
         return vertexAmount;
     }
 
-    public Bag<Vertex> getVertices() {
-        return vertices;
+    public ElementIntIndex<Vertex> getVertexIntIndex() {
+        return vertexIntIndex;
     }
 }

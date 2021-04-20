@@ -3,6 +3,8 @@ package bfst21.tree;
 import bfst21.osm.Element;
 import bfst21.osm.Node;
 
+import java.util.List;
+
 public abstract class BoundingBoxElement extends Element {
 
     private static final long serialVersionUID = 8229695993958002260L;
@@ -11,6 +13,8 @@ public abstract class BoundingBoxElement extends Element {
     public BoundingBoxElement(long id) {
         super(id);
     }
+
+    public abstract List<Node> getNodes();
 
     protected void updateBoundingBox(Node node, boolean initialBoundingBoxUpdate) {
         if (initialBoundingBoxUpdate) {

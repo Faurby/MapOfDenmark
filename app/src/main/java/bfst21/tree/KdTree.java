@@ -1,5 +1,9 @@
 package bfst21.tree;
 
+import bfst21.models.Util;
+import bfst21.osm.Node;
+import javafx.geometry.Point2D;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -12,6 +16,8 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
     private KdNode<T> root;
     private int depth = 0;
     private int maxDepth = 0;
+
+    private Node currentNearestNeighbor = null;
 
     public KdNode<T> getRoot() {
         return root;
@@ -26,7 +32,7 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
         return list;
     }
 
-    public void rangeSearch(BoundingBox boundingBox, KdNode<T> kdNode, List<T> list) {
+    private void rangeSearch(BoundingBox boundingBox, KdNode<T> kdNode, List<T> list) {
         if (kdNode != null) {
 
             if (kdNode.getList() != null) {
@@ -109,7 +115,7 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
         }
     }
 
-    public void addChild(KdNode<T> currentElement, List<T> list, boolean right) {
+    private void addChild(KdNode<T> currentElement, List<T> list, boolean right) {
 
         if (list != null) {
             if (list.size() > 0) {
@@ -179,6 +185,115 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
                     addChild(middleNode, rightList, true);
                     depth--;
                 }
+            }
+        }
+    }
+
+    public Node preSearchNearestNeighbor(Node queryNode) {
+        depth = 0;
+
+        searchNearestNeighbor(queryNode, root);
+        return currentNearestNeighbor;
+    }
+
+    private void searchNearestNeighbor(Node queryNode, KdNode<T> kdNode) {
+        boolean isDepthEven = depth % 2 == 0;
+        boolean isLeaf = kdNode.getList() != null;
+
+        boolean checkRight = false;
+        boolean checkLeft = false;
+
+        if (isLeaf) {
+            investigateLeaf(queryNode, kdNode);
+
+        } else {
+            if (depth % 2 == 0) {
+                float nodeMaxX = kdNode.getMaxX();
+                float nodeMinX = kdNode.getMinX();
+                double x = queryNode.getX();
+
+                if (nodeMaxX >= x) {
+                    checkLeft = true;
+                } else if (nodeMinX <= x) {
+                    checkRight = true;
+                }
+            } else {
+                float nodeMaxY = kdNode.getMaxY();
+                float nodeMinY = kdNode.getMinY();
+                double y = queryNode.getY();
+
+                if (nodeMaxY >= y) {
+                    checkLeft = true;
+                } else if (nodeMinY <= y) {
+                    checkRight = true;
+                }
+            }
+            if (checkRight) {
+                depth++;
+                searchNearestNeighbor(queryNode, kdNode.getRightChild());
+                searchNearestNeighbor(queryNode, kdNode.getLeftChild());
+                //investigateOtherSide(queryNode, kdNode.getLeftChild());
+                depth--;
+            } else {
+                depth++;
+                searchNearestNeighbor(queryNode, kdNode.getRightChild());
+                searchNearestNeighbor(queryNode, kdNode.getLeftChild());
+                //investigateOtherSide(queryNode, kdNode.getRightChild());
+                depth--;
+            }
+        }
+    }
+
+    private void investigateLeaf(Node queryNode, KdNode<T> kdNode) {
+        double distanceToCurrentNeighbor = Double.POSITIVE_INFINITY;
+
+        if (currentNearestNeighbor != null) {
+            distanceToCurrentNeighbor = queryNode.distTo(currentNearestNeighbor);
+        }
+
+        for (T element : kdNode.getList()) {
+            for (Node node : element.getNodes()) {
+                double distance = queryNode.distTo(node);
+
+                if (currentNearestNeighbor != null) {
+                    distanceToCurrentNeighbor = queryNode.distTo(currentNearestNeighbor);
+                }
+
+                if (distance < distanceToCurrentNeighbor) {
+                    System.out.println("Found node at "+node.getX()+" "+node.getY()+" distance found: "+distance);
+                    currentNearestNeighbor = node;
+                }
+            }
+        }
+    }
+
+    private void investigateOtherSide(Node queryNode, KdNode<T> kdNode) {
+        boolean isDepthEven = depth % 2 == 0;
+
+        double distanceToCurrentNeighbor = queryNode.distTo(currentNearestNeighbor);
+
+        if (isDepthEven) {
+            float nodeMaxX = kdNode.getMaxX();
+            float nodeMinX = kdNode.getMinX();
+            float x = queryNode.getX();
+
+            float distToMax = Math.abs(x - nodeMaxX);
+            float distToMin = Math.abs(x - nodeMinX);
+
+            if (distanceToCurrentNeighbor > Math.min(distToMax, distToMin)) {
+                searchNearestNeighbor(queryNode, kdNode);
+            }
+
+        } else {
+            float nodeMaxY = kdNode.getMaxY();
+            float nodeMinY = kdNode.getMinY();
+            float y = queryNode.getY();
+
+            float distToMax = Math.abs(y - nodeMaxY);
+            float distToMin = Math.abs(y - nodeMinY);
+
+            if (distanceToCurrentNeighbor > Math.min(distToMax, distToMin)) {
+                searchNearestNeighbor(queryNode, kdNode);
             }
         }
     }

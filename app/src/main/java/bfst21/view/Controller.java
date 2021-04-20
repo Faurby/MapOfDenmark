@@ -196,7 +196,14 @@ public class Controller {
     private void onMousePressed(MouseEvent mouseEvent) {
         lastMouse = new Point2D(mouseEvent.getX(), mouseEvent.getY());
         updateAverageRepaintTime();
-        
+
+        if (mouseEvent.isSecondaryButtonDown()) {
+            Point2D point = canvas.mouseToModelCoords(lastMouse);
+            System.out.println("Point: "+point.getX() + " "+point.getY());
+            Node node = new Node((float) point.getX(), (float) point.getY() * 0.56f * 0.56f);
+            canvas.neighborSearch(node);
+        }
+
         if (userNodeToggle && mouseEvent.isSecondaryButtonDown()) {
             userNodeVBox.setVisible(true);
             userNodeTextField.requestFocus();
@@ -272,7 +279,7 @@ public class Controller {
         if (buttonClicked.contains("standard")) {
             canvas.setColorMode(ColorMode.STANDARD);
 
-        } else if (buttonClicked.contains("blackwhite")) {
+        } else if (buttonClicked.contains("blackandwhite")) {
             canvas.setColorMode(ColorMode.BLACK_WHITE);
 
         } else if (buttonClicked.contains("colorblind")) {

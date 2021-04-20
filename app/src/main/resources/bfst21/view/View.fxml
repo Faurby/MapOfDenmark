@@ -178,9 +178,9 @@
                     </Menu>
                     <Menu text="Accessibility">
                         <Menu text="Color modes">
-                            <MenuItem onAction="#changeColorMode" text="Standard" />
-                            <MenuItem onAction="#changeColorMode" text="Black and White" />
-                            <MenuItem onAction="#changeColorMode" text="Colorblind" />
+                            <MenuItem fx:id="Standard" onAction="#changeColorMode" text="Standard" />
+                            <MenuItem fx:id="BlackAndWhite" onAction="#changeColorMode" text="Black and White" />
+                            <MenuItem fx:id="ColorBlind" onAction="#changeColorMode" text="Colorblind" />
                         </Menu>
                     </Menu>
                 </MenuBar>

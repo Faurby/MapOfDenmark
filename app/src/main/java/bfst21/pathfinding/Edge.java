@@ -1,12 +1,9 @@
 package bfst21.pathfinding;
 
-import bfst21.view.Drawable;
-import javafx.scene.canvas.GraphicsContext;
-
 import java.io.Serializable;
 
 
-public class Edge implements Drawable, Serializable {
+public class Edge implements Serializable {
 
     private static final long serialVersionUID = -8885206149678561745L;
 
@@ -39,11 +36,5 @@ public class Edge implements Drawable, Serializable {
 
     public float getDistance() {
         return distance;
-    }
-
-    @Override
-    public void trace(GraphicsContext gc, double zoomLevel) {
-        //gc.moveTo(from.getX(), from.getY());
-        //gc.lineTo(to.getX(), to.getY());
     }
 }

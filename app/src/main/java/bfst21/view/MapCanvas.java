@@ -3,7 +3,9 @@ package bfst21.view;
 import bfst21.models.Option;
 import bfst21.models.Options;
 import bfst21.osm.*;
+import bfst21.pathfinding.DirectedGraph;
 import bfst21.pathfinding.Edge;
+import bfst21.pathfinding.Vertex;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
 import bfst21.models.Model;
@@ -21,6 +23,8 @@ import javafx.scene.transform.NonInvertibleTransformException;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MapCanvas extends Canvas {
@@ -41,6 +45,8 @@ public class MapCanvas extends Canvas {
 
     private ColorMode colorMode = ColorMode.STANDARD;
     private Affine trans = new Affine();
+
+    private List<Node> neighborSearch = new ArrayList<>();
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -108,6 +114,7 @@ public class MapCanvas extends Canvas {
                 }
             }
             drawUserNodes();
+            drawNeighborNodes();
 
             //Display the kd-tree if option is enabled
             if (options.getBool(Option.USE_KD_TREE)) {
@@ -133,7 +140,8 @@ public class MapCanvas extends Canvas {
                     }
                 }
             }
-            drawGraph();
+            //drawGraph();
+            drawPathTo(74680);
         }
         gc.restore();
 
@@ -201,8 +209,9 @@ public class MapCanvas extends Canvas {
      */
     private void drawUserNodes() {
         gc.setStroke(Color.RED);
-        float parsed = getZoomPercentAsFloat();
-        gc.setLineWidth(0.0025 / (parsed / 100 * (parsed > 120 ? 2 : 1)));
+        //float parsed = getZoomPercentAsFloat();
+        //gc.setLineWidth(0.0025 / (parsed / 100 * (parsed > 120 ? 2 : 1)));
+        gc.setLineWidth(10 * (1 / Math.sqrt(trans.determinant())));
         //gc.setLineWidth(0.0025 * widthModifier);
 
         gc.setStroke(Color.BLUE);
@@ -212,17 +221,45 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    /**
-     * Draws a visualization of the directed graph if option is enabled.
-     */
-    private void drawGraph() {
+    public void drawPathTo(int targetID) {
         if (options.getBool(Option.DISPLAY_GRAPH)) {
+            DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
+
             gc.setStroke(Color.DARKSLATEBLUE);
             gc.setLineWidth(0.0002 * widthModifier);
 
-//            for (Edge edge : model.getMapData().getDirectedGraph().getEdges()) {
-//                edge.draw(gc, zoomLevel);
-//            }
+            gc.beginPath();
+            Edge[] edges = model.getMapData().getDijkstra().getEdgeTo();
+            for (Edge edge : edges) {
+                if (edge != null) {
+
+                    int from = edge.getFrom();
+                    int to = edge.getTo();
+
+                    Vertex vertexTo = directedGraph.getVertex(to);
+                    Vertex vertexFrom = directedGraph.getVertex(from);
+
+                    gc.moveTo(vertexFrom.getX(), vertexFrom.getY());
+                    gc.lineTo(vertexTo.getX(), vertexTo.getY());
+                }
+            }
+            gc.stroke();
+
+            gc.setStroke(Color.RED);
+            gc.setLineWidth(0.0002 * widthModifier);
+
+            gc.beginPath();
+            Iterable<Edge> it = model.getMapData().getDijkstra().pathTo(targetID);
+            if (it != null) {
+                for (Edge edge : it) {
+                    Vertex from = directedGraph.getVertex(edge.getFrom());
+                    Vertex to = directedGraph.getVertex(edge.getTo());
+
+                    gc.moveTo(from.getX(), from.getY());
+                    gc.lineTo(to.getX(), to.getY());
+                }
+                gc.stroke();
+            }
         }
     }
 
@@ -250,6 +287,24 @@ public class MapCanvas extends Canvas {
                 runRangeSearchTask();
             }
         }
+    }
+
+    public void drawNeighborNodes() {
+        gc.setStroke(Color.RED);
+        gc.setLineWidth(0.02 * widthModifier);
+
+        gc.beginPath();
+        for (Node found : neighborSearch) {
+            System.out.println("Coords: "+found.getX() + " "+found.getY());
+
+            gc.moveTo(found.getX(), found.getY());
+            gc.lineTo(found.getX(), found.getY());
+        }
+        gc.stroke();
+    }
+
+    public void neighborSearch(Node node) {
+        neighborSearch = model.getMapData().kdTreeNearestNeighborSearch(node, zoomLevel);
     }
 
     /**

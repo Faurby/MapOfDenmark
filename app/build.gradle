@@ -15,12 +15,12 @@ plugins {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'bfst21.vector.Launcher'
+        attributes 'Main-Class': 'bfst21.core.Launcher'
     }
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
-    from('data/amager.zip.obj')
+    from('data/amager.obj')
 }
 
 javafx {
@@ -74,6 +74,7 @@ tasks.withType(JavaCompile) {
 tasks.withType(Test) {
     systemProperty "file.encoding", "UTF-8"
 }
+
 tasks.withType(JavaExec) {
     jvmArgs = ['-Xms1000m', '-Xmx3000m']
 }

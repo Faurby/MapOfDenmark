@@ -1,6 +1,7 @@
 package bfst21.pathfinding;
 
 import edu.princeton.cs.algs4.IndexMinPQ;
+import edu.princeton.cs.algs4.Stack;
 
 
 public class Dijkstra {
@@ -15,8 +16,6 @@ public class Dijkstra {
 
         distTo = new double[vertexAmount];
         edgeTo = new Edge[vertexAmount];
-
-        //validateVertex(s);
 
         int sourceID = source.getID();
 
@@ -39,24 +38,44 @@ public class Dijkstra {
     }
 
     public void relax(Edge edge) {
-//        Vertex from = edge.getFrom();
-//        Vertex to = edge.getTo();
-//
-//        double weight = edge.getWeight();
-//
-//        int v = from.getID();
-//        int w = to.getID();
-//
-//        if (distTo[w] > distTo[v] + weight) {
-//            distTo[w] = distTo[v] + weight;
-//            edgeTo[w] = edge;
-//
-//            if (pq.contains(w)) {
-//                pq.decreaseKey(w, distTo[w]);
-//
-//            } else {
-//                pq.insert(w, distTo[w]);
-//            }
-//        }
+        int v = edge.getFrom();
+        int w = edge.getTo();
+
+        double weight = edge.getWeight();
+
+        if (distTo[w] > distTo[v] + weight) {
+            distTo[w] = distTo[v] + weight;
+            edgeTo[w] = edge;
+
+            if (pq.contains(w)) {
+                pq.decreaseKey(w, distTo[w]);
+
+            } else {
+                pq.insert(w, distTo[w]);
+            }
+        }
+    }
+
+    public double distTo(int targetID) {
+        return distTo[targetID];
+    }
+
+    public boolean hasPathTo(int targetID) {
+        return distTo[targetID] < Double.POSITIVE_INFINITY;
+    }
+
+    public Iterable<Edge> pathTo(int targetID) {
+        if (!hasPathTo(targetID)) {
+            return null;
+        }
+        Stack<Edge> path = new Stack<>();
+        for (Edge e = edgeTo[targetID]; e != null; e = edgeTo[e.getFrom()]) {
+            path.push(e);
+        }
+        return path;
+    }
+
+    public Edge[] getEdgeTo() {
+        return edgeTo;
     }
 }

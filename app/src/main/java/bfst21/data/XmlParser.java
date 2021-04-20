@@ -1,5 +1,6 @@
 package bfst21.data;
 
+import bfst21.address.TST;
 import bfst21.models.Option;
 import bfst21.models.Options;
 import bfst21.osm.*;
@@ -43,6 +44,9 @@ public class XmlParser {
         OsmAddress osmAddress = new OsmAddress();
         ElementType elementType = null;
 
+        TST<Node> tries = new TST<>();
+
+        ElementLongIndex<NodeID> navigationLongIndex = new ElementLongIndex<>();
         ElementLongIndex<NodeID> nodeLongIndex = new ElementLongIndex<>();
         ElementLongIndex<Way> wayLongIndex = new ElementLongIndex<>();
         ElementLongIndex<Relation> relationLongIndex = new ElementLongIndex<>();
@@ -139,6 +143,11 @@ public class XmlParser {
                                     case "building":
                                         elementType = ElementType.BUILDING;
                                         break;
+                                    case "bridge":
+                                        if (value.equals("yes")) {
+                                            elementType = ElementType.TERTIARY;
+                                        }
+                                        break;
                                     case "highway":
                                         switch (value) {
                                             case "motorway":
@@ -154,7 +163,6 @@ public class XmlParser {
                                             case "footway":
                                             case "footpath":
                                             case "path":
-
                                                 elementType = ElementType.FOOTWAY;
                                                 break;
                                             case "pedestrian":
@@ -173,15 +181,16 @@ public class XmlParser {
                                                 break;
                                             case "tertiary":
                                             case "secondary":
+                                            case "unclassified":
                                                 elementType = ElementType.TERTIARY;
                                                 break;
                                         }
                                         break;
                                     case "landuse":
                                         if (value.equals("grass") ||
-                                                value.equals("meadow") ||
-                                                value.equals("orchard") ||
-                                                value.equals("allotments")) {
+                                            value.equals("meadow") ||
+                                            value.equals("orchard") ||
+                                            value.equals("allotments")) {
                                             elementType = ElementType.LANDUSE;
                                         }
                                         break;
@@ -193,7 +202,7 @@ public class XmlParser {
                                     case "maxspeed":
                                         if (way != null) {
                                             if (way.getType() != null) {
-                                                if (way.canDrive()) {
+                                                if (way.getType().canDrive()) {
                                                     try {
                                                         way.setMaxSpeed(Integer.parseInt(value));
                                                     } catch (NumberFormatException ignored) {
