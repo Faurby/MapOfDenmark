@@ -96,21 +96,22 @@
                       visible="false" >
                     <padding><Insets bottom="5" left="10" right="10" top="10" /></padding>
 
-                    <Text fx:id="navigationHeader" style="-fx-font-size: 15" text="Navigation"/>
-                    <TextArea fx:id="startingPoint" minHeight="20" prefHeight="25" promptText="From:" wrapText="true" onKeyPressed="#tabEnterCheck" />
+                    <Text fx:id="navigationHeader" style="-fx-font-size: 15 " text="Navigation" />
 
-                    <GridPane prefHeight="30" >
-                        <Button fx:id="switchButton" maxHeight="20" maxWidth="40" onAction="#switchText"
-                                GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.rowSpan="3">
+                    <GridPane vgap="5" hgap="2">
+                        <TextArea GridPane.columnIndex="1" GridPane.rowIndex="1"
+                                fx:id="startingPoint" minHeight="25" prefHeight="25" promptText="From:" wrapText="true" onKeyPressed="#tabEnterCheck" />
+                        <TextArea GridPane.columnIndex="1" GridPane.rowIndex="3"
+                                fx:id="destinationPoint" minHeight="25" prefHeight="25" promptText="To:" wrapText="true" onKeyPressed="#tabEnterCheck"/>
+                        <Button GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="3"
+                                fx:id="switchButton" maxHeight="20" maxWidth="40" onAction="#switchText" >
                             <graphic>
-                                <ImageView fitHeight="20.0" fitWidth="40.0" preserveRatio="true" style="-fx-background-color: TRANSPARENT">
+                                <ImageView fitWidth="10.0" preserveRatio="true" style="-fx-background-color: TRANSPARENT">
                                     <Image url="/arrowPic.png" />
                                 </ImageView>
                             </graphic>
                         </Button>
                     </GridPane>
-
-                    <TextArea fx:id="destinationPoint" minHeight="25" prefHeight="25" promptText="To:" wrapText="true" onKeyPressed="#tabEnterCheck"/>
 
                     <HBox style="-fx-padding: 10 0 0 0 ; -fx-alignment: CENTER " >
                         <ToggleButton fx:id="CAR" minHeight="40" minWidth="35" prefWidth="120" onAction="#transportationButtonPushed" selected="true" style="-fx-border-color: LIGHTGREY">
@@ -158,8 +159,8 @@
             </AnchorPane>
             <VBox fx:id="loadingText" minHeight="100" minWidth="100" visible="false"
                   style="-fx-background-color: WHITE; -fx-padding: 20;" alignment="CENTER">
-                <Text text="Loading" style="-fx-font-size: 24;"></Text>
-                <ProgressBar fx:id="progressBar" style="-fx-padding: 20;" minWidth="200"></ProgressBar>
+                <Text text="Loading" style="-fx-font-size: 24;"/>
+                <ProgressBar fx:id="progressBar" style="-fx-padding: 20;" minWidth="200"/>
             </VBox>
             <HBox fx:id="menuBarHBox" maxHeight="25" minHeight="25" minWidth="${scene.width}" StackPane.alignment="TOP_LEFT">
                 <MenuBar minWidth="${menuBarHBox.width}">
@@ -178,7 +179,7 @@
                             <MenuItem onAction="#changeColorMode" text="Black and White" />
                             <MenuItem onAction="#changeColorMode" text="Colorblind" />
                         </Menu>
-                        <MenuItem onAction="#userNodeButtonClicked" text="Add point of interest"></MenuItem>
+                        <MenuItem onAction="#userNodeButtonClicked" text="Add point of interest"/>
                     </Menu>
                 </MenuBar>
             </HBox>
