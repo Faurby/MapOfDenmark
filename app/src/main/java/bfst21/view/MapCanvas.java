@@ -47,6 +47,7 @@ public class MapCanvas extends Canvas {
     private Affine trans = new Affine();
 
     private Node nearestNeighborNode;
+    private int destinationID;
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -141,7 +142,9 @@ public class MapCanvas extends Canvas {
                 }
             }
             //drawGraph();
-            drawPathTo(74680);
+            if (destinationID != 0) {
+                drawPathTo(destinationID);
+            }
         }
         gc.restore();
 
@@ -301,7 +304,7 @@ public class MapCanvas extends Canvas {
         gc.stroke();
     }
 
-    public void neighborSearch(Node node) {
+    public Node neighborSearch(Node node) {
         List<Node> list = model.getMapData().kdTreeNearestNeighborSearch(node, zoomLevel);
 
         double minimumDistance = Double.MAX_VALUE;
@@ -313,6 +316,7 @@ public class MapCanvas extends Canvas {
                 nearestNeighborNode = found;
             }
         }
+        return nearestNeighborNode;
     }
 
     /**
@@ -502,6 +506,10 @@ public class MapCanvas extends Canvas {
 
             return (int) current + "%";
         }
+    }
+
+    public void setDestinationID(int id) {
+        destinationID = id;
     }
 
     public float getZoomPercentAsFloat() {
