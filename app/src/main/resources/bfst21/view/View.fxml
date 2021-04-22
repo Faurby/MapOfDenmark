@@ -75,10 +75,10 @@
 
                 <fx:include fx:id="searchVBox" source="SearchBox.fxml"
                             AnchorPane.leftAnchor="0.0"
-                            AnchorPane.topAnchor="0.0" />
+                            AnchorPane.topAnchor="0.0"/>
 
                 <StackPane.margin>
-                    <Insets top="30.0" />
+                    <Insets top="30.0"/>
                 </StackPane.margin>
             </AnchorPane>
             <VBox fx:id="loadingText" minHeight="100" minWidth="100" visible="false"
@@ -91,17 +91,17 @@
                     <Menu text="File">
                         <MenuItem text="Load default" onAction="#loadDefault"/>
                         <MenuItem text="Load new file" onAction="#loadNewFile"/>
-                        <MenuItem text="Save" />
+                        <MenuItem text="Save"/>
                     </Menu>
                     <Menu text="View">
-                        <MenuItem onAction="#zoomButtonClicked" text="Zoom in" />
-                        <MenuItem onAction="#zoomButtonClicked" text="Zoom out" />
+                        <MenuItem fx:id="zoomin" onAction="#zoomButtonClicked" text="Zoom in"/>
+                        <MenuItem onAction="#zoomButtonClicked" text="Zoom out"/>
                     </Menu>
                     <Menu text="Accessibility">
                         <Menu text="Color modes">
-                            <MenuItem fx:id="Standard" onAction="#changeColorMode" text="Standard" />
-                            <MenuItem fx:id="BlackAndWhite" onAction="#changeColorMode" text="Black and White" />
-                            <MenuItem fx:id="ColorBlind" onAction="#changeColorMode" text="Colorblind" />
+                            <MenuItem fx:id="Standard" onAction="#changeColorMode" text="Standard"/>
+                            <MenuItem fx:id="BlackAndWhite" onAction="#changeColorMode" text="Black and White"/>
+                            <MenuItem fx:id="ColorBlind" onAction="#changeColorMode" text="Colorblind"/>
                         </Menu>
                         <MenuItem onAction="#userNodeButtonClicked" text="Add point of interest"/>
                     </Menu>
@@ -129,7 +129,7 @@
                             maxWidth="90"
                             prefWidth="90"
                     />
-                    <ToolBar visible="false" HBox.hgrow="ALWAYS" />
+                    <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
                     <Button text="Save"
                             onAction="#userNodeSaveClicked"
                             maxWidth="90"
@@ -157,7 +157,7 @@
                             maxWidth="90"
                             prefWidth="90"
                     />
-                    <ToolBar visible="false" HBox.hgrow="ALWAYS" />
+                    <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
                     <Button text="Delete"
                             onAction="#userNodeDeleteClicked"
                             maxWidth="90"
@@ -187,7 +187,7 @@
                             maxWidth="90"
                             prefWidth="90"
                     />
-                    <ToolBar visible="false" HBox.hgrow="ALWAYS" />
+                    <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
                     <Button text="Save"
                             onAction="#userNodeNewDescSaveClicked"
                             maxWidth="90"

@@ -258,7 +258,7 @@ public class Controller {
     public void zoomButtonClicked(ActionEvent actionEvent) {
 
         Point2D point = new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2);
-        if (actionEvent.toString().contains("zoomIn")) {
+        if (actionEvent.toString().toLowerCase().contains("zoomin")) {
             canvas.zoom(2.0D, point, false);
         } else {
             canvas.zoom(0.5D, point, false);

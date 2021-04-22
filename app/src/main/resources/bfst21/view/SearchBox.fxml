@@ -27,7 +27,7 @@
           visible="false" managed="false" >
         <padding><Insets bottom="5" left="10" right="10" top="10" /></padding>
 
-        <Text style="-fx-font-size: 15 " text="Navigation" />
+        <Text style="-fx-font-size: 15 " text="Navigation"/>
 
         <GridPane vgap="5" hgap="2">
             <TextArea GridPane.columnIndex="1" GridPane.rowIndex="1"

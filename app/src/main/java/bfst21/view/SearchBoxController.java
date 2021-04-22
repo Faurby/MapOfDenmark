@@ -1,6 +1,7 @@
 package bfst21.view;
 
 import bfst21.address.Address;
+import bfst21.exceptions.IllegalInputException;
 import bfst21.models.TransportationOption;
 import bfst21.models.TransportationOptions;
 import javafx.event.ActionEvent;
@@ -44,21 +45,34 @@ public class SearchBoxController {
 
     @FXML
     public void searchNavigationAddresses() {
-        String sAddress = startingPoint.getText();
-        Address parsedSA = Address.parse(sAddress);
+        if(startingPoint.getText().trim().equals("")) {
+            throw new IllegalInputException("Search field is empty", startingPoint.toString());
+        }
+        else if(destinationPoint.getText().trim().equals("")) {
+            throw new IllegalInputException("Search field is empty", destinationPoint.toString());
+        }
+        else {
+            String sAddress = startingPoint.getText();
+            Address parsedSA = Address.parse(sAddress);
 
-        String dAddress = destinationPoint.getText();
-        Address parsedDA = Address.parse(dAddress);
+            String dAddress = destinationPoint.getText();
+            Address parsedDA = Address.parse(dAddress);
 
-        System.out.println(parsedSA.toString());
-        System.out.println(parsedDA.toString());
+            System.out.println(parsedSA.toString());
+            System.out.println(parsedDA.toString());
+        }
     }
 
     @FXML
     private void searchSingleAddress() {
-        String address = addressArea.getText();
-        Address parsed = Address.parse(address);
-        System.out.println(parsed);
+        if(!addressArea.getText().trim().equals("")) {
+            String address = addressArea.getText();
+            Address parsed = Address.parse(address);
+            System.out.println(parsed);
+        }
+        else {
+            throw new IllegalInputException("Search field is empty");
+        }
     }
 
     @FXML
