@@ -85,6 +85,7 @@ public class MapData {
                         }
                     }
                 } else {
+                    relation.mergeOuterWays();
                     relationList.add(relation);
                 }
             }
@@ -102,65 +103,57 @@ public class MapData {
         }
     }
 
-    //TODO: Figure out how to merge relations...
-    private void mergeRelations(List<Relation> relationList) {
-        for (Relation relation : relationList) {
-            for (Way way : relation.getWays()) {
-
-            }
-        }
-    }
-
     /**
      * Builds a directed graph used for path finding.
      */
     public void buildDirectedGraph(List<Way> wayList) {
-        directedGraph = new DirectedGraph();
-        System.out.println("Building directed graph for path finding...");
+        if (options.getBool(Option.USE_GRAPH)) {
 
-        int idCount = 0;
-        for (Way way : wayList) {
-            if (way.getType() != null) {
-                if (way.getType().canNavigate()) {
+            directedGraph = new DirectedGraph();
+            System.out.println("Building directed graph for path finding...");
 
-                    int size = way.getNodes().size();
-                    for (int i = 0; i < (size - 1); i++) {
-                        Node v = way.getNodes().get(i);
-                        Node w = way.getNodes().get(i + 1);
+            int idCount = 0;
+            for (Way way : wayList) {
+                if (way.getType() != null) {
+                    if (way.getType().canNavigate()) {
 
-                        int vID = idCount;
-                        int wID = idCount + 1;
+                        int size = way.getNodes().size();
+                        for (int i = 0; i < (size - 1); i++) {
+                            Node v = way.getNodes().get(i);
+                            Node w = way.getNodes().get(i + 1);
 
-                        directedGraph.createVertex(v.getX(), v.getY(), vID);
-                        directedGraph.createVertex(w.getX(), w.getY(), wID);
-                        idCount += 2;
+                            int vID = idCount;
+                            int wID = idCount + 1;
+
+                            directedGraph.createVertex(v.getX(), v.getY(), vID);
+                            directedGraph.createVertex(w.getX(), w.getY(), wID);
+                            idCount += 2;
+                        }
+                    }
+                }
+            }
+            idCount = 0;
+            for (Way way : wayList) {
+                if (way.getType() != null) {
+                    if (way.getType().canNavigate()) {
+
+                        int maxSpeed = way.getMaxSpeed();
+
+                        int size = way.getNodes().size();
+                        for (int i = 0; i < (size - 1); i++) {
+                            Node v = way.getNodes().get(i);
+                            Node w = way.getNodes().get(i + 1);
+
+                            Vertex from = directedGraph.getVertex(v.getX(), v.getY());
+                            Vertex to = directedGraph.getVertex(w.getX(), w.getY());
+
+                            directedGraph.addEdge(from, to, maxSpeed);
+                            idCount += 2;
+                        }
                     }
                 }
             }
         }
-        idCount = 0;
-        for (Way way : wayList) {
-            if (way.getType() != null) {
-                if (way.getType().canNavigate()) {
-
-                    int maxSpeed = way.getMaxSpeed();
-
-                    int size = way.getNodes().size();
-                    for (int i = 0; i < (size - 1); i++) {
-                        Node v = way.getNodes().get(i);
-                        Node w = way.getNodes().get(i + 1);
-
-                        Vertex from = directedGraph.getVertex(v.getX(), v.getY());
-                        Vertex to = directedGraph.getVertex(w.getX(), w.getY());
-
-                        directedGraph.addEdge(from, to, maxSpeed);
-                        idCount += 2;
-                    }
-                }
-            }
-        }
-//        Vertex source = directedGraph.getVertex(99350);
-//        dijkstra = new Dijkstra(directedGraph, source);
     }
 
     public void setDijkstraSource(Vertex source) {

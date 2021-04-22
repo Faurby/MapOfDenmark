@@ -2,6 +2,7 @@ package bfst21.osm;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import bfst21.tree.BoundingBoxElement;
@@ -83,6 +84,20 @@ public class Way extends BoundingBoxElement implements Geometry, Drawable, Seria
             return 2;
         }
         return 1;
+    }
+
+    public static Way reverseMerge(Way first, Way second) {
+        if (first == null) {
+            return second;
+        }
+        if (second == null) {
+            return first;
+        }
+        Way merged = new Way(first.getID());
+        merged.nodes.addAll(first.nodes);
+        Collections.reverse(second.nodes);
+        merged.nodes.addAll(second.nodes.subList(1, second.nodes.size()));
+        return merged;
     }
 
     public static Way merge(Way first, Way second) {

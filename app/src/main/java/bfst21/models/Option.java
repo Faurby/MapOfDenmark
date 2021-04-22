@@ -5,6 +5,7 @@ public enum Option {
 
     USE_KD_TREE,
     USE_R_TREE,
+    USE_GRAPH,
 
     SAVE_OBJ_FILE,
 
