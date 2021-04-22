@@ -191,7 +191,7 @@ public class Controller {
         if (mouseEvent.isShiftDown() && mouseEvent.isPrimaryButtonDown()) {
             Point2D point = canvas.mouseToModelCoords(lastMouse);
             Node node = new Node((float) point.getX(), (float) -point.getY() * 0.56f);
-            Node nearestNode = canvas.neighborSearch(node);
+            Node nearestNode = canvas.nearestNeighborSearch(node);
             Vertex vertex = model.getMapData().getDirectedGraph().getVertex(nearestNode.getX(), nearestNode.getY());
             if (resetDjikstra) {
                 resetDjikstra = false;

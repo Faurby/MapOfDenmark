@@ -299,12 +299,16 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    public Node nearestNeighborSearch(Node queryNode) {
+        return model.getMapData().kdTreeNearestNeighborSearch(queryNode, zoomLevel);
+    }
+
     /**
      * Starts a new nearest neighbor search task.
      * Cancels the current nearest neighbor search task if it is running.
      * Repaints the MapCanvas when the task is finished.
      */
-    public void runNearestNeighborTask(Node node) {
+    public void runNearestNeighborTask(Node queryNode) {
         if (nearestNeighborTask != null) {
             if (nearestNeighborTask.isRunning()) {
                 nearestNeighborTask.cancel();
@@ -313,7 +317,7 @@ public class MapCanvas extends Canvas {
         nearestNeighborTask = new Task<>() {
             @Override
             protected Void call() {
-                nearestNeighborNode = model.getMapData().kdTreeNearestNeighborSearch(node, zoomLevel);
+                nearestNeighborNode = nearestNeighborSearch(queryNode);
                 return null;
             }
         };
