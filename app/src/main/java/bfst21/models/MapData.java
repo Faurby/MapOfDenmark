@@ -159,7 +159,11 @@ public class MapData {
                 }
             }
         }
-        Vertex source = directedGraph.getVertex(99350);
+//        Vertex source = directedGraph.getVertex(99350);
+//        dijkstra = new Dijkstra(directedGraph, source);
+    }
+
+    public void setDijkstraSource(Vertex source) {
         dijkstra = new Dijkstra(directedGraph, source);
     }
 

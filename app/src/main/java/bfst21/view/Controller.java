@@ -5,6 +5,7 @@ import bfst21.models.*;
 import bfst21.osm.Node;
 import bfst21.osm.UserNode;
 import bfst21.osm.Way;
+import bfst21.pathfinding.Vertex;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -63,6 +64,10 @@ public class Controller {
     private VBox userNodeNewDescriptionVBox;
     @FXML
     private TextField userNodeNewDescriptionTextField;
+    private Node source;
+    private Node destination;
+    private boolean resetDjikstra = true;
+
     @FXML
     private VBox searchVBox;
 
@@ -181,6 +186,22 @@ public class Controller {
             userNodeVBox.setVisible(true);
             userNodeTextField.requestFocus();
             scene.setCursor(Cursor.DEFAULT);
+        }
+
+        if (mouseEvent.isShiftDown() && mouseEvent.isPrimaryButtonDown()) {
+            Point2D point = canvas.mouseToModelCoords(lastMouse);
+            Node node = new Node((float) point.getX(), (float) -point.getY() * 0.56f);
+            Node nearestNode = canvas.neighborSearch(node);
+            Vertex vertex = model.getMapData().getDirectedGraph().getVertex(nearestNode.getX(), nearestNode.getY());
+            if (resetDjikstra) {
+                resetDjikstra = false;
+                model.getMapData().setDijkstraSource(vertex);
+                canvas.setDestinationID(0);
+            } else {
+                canvas.setDestinationID(vertex.getID());
+                resetDjikstra = true;
+            }
+
         }
     }
 
