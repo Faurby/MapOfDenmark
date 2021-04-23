@@ -1,9 +1,13 @@
 package bfst21.view;
 
 import bfst21.address.Address;
+import bfst21.address.TST;
 import bfst21.exceptions.IllegalInputException;
+import bfst21.models.MapData;
+import bfst21.models.Model;
 import bfst21.models.TransportationOption;
 import bfst21.models.TransportationOptions;
+import bfst21.osm.Node;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -12,6 +16,10 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SearchBoxController {
@@ -37,12 +45,16 @@ public class SearchBoxController {
     @FXML
     private Button switchButton;
     @FXML
-    private Button minimizeButton;
-    @FXML
     private Button searchButtonExpanded;
     @FXML
     private VBox navigationVBox;
 
+    private TST<Node> streetTries;
+
+    private Controller controller;
+
+    @FXML
+    private VBox searchBox;
 
     @FXML
     public void searchNavigationAddresses() {
@@ -124,7 +136,7 @@ public class SearchBoxController {
 
     }
 
-    public void tabEnterCheck(KeyEvent keyEvent) {
+    public void typingCheck(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.TAB) {
             if (keyEvent.getSource().toString().contains("addressArea")) {
                 addressArea.setText(addressArea.getText().trim());
@@ -148,6 +160,32 @@ public class SearchBoxController {
                 searchSingleAddress();
                 searchButton.requestFocus();
             }
+        } else {
+            if (addressArea.getText().trim().length() >= 5) {
+                if (streetTries == null) {
+                    MapCanvas mapCanvas = controller.getCanvas();
+                    Model model = mapCanvas.getModel();
+                    MapData mapData = model.getMapData();
+                    streetTries = mapData.getStreetTries();
+                }
+
+                Iterable<String> list = streetTries.keysWithPrefix(addressArea.getText());
+
+                for (String s : streetTries.keys()) {
+                    System.out.println("a: "+s);
+                }
+                for (String s : list) {
+                    System.out.println("b: "+s);
+                }
+            }
         }
+    }
+
+    public void onWindowResize(Stage stage) {
+        searchBox.setMaxWidth(stage.getWidth() * 0.25D);
+    }
+
+    public void setController(Controller controller) {
+        this.controller = controller;
     }
 }

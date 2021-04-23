@@ -1,5 +1,6 @@
 package bfst21.data;
 
+import bfst21.address.TST;
 import bfst21.osm.*;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.tree.KdTree;
@@ -27,6 +28,7 @@ public class BinaryFileManager {
                 (HashMap<ElementGroup, KdTree<Way>>) input.readObject(),
                 (KdTree<Relation>) input.readObject(),
                 (DirectedGraph) input.readObject(),
+                (TST<Node>) input.readObject(),
                 input.readFloat(),
                 input.readFloat(),
                 input.readFloat(),

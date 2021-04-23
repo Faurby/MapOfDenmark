@@ -42,9 +42,9 @@ public class XmlParser {
         Way way = null;
         Relation relation = null;
         OsmAddress osmAddress = new OsmAddress();
+        Node node = null;
         ElementType elementType = null;
-
-        TST<Node> tries = new TST<>();
+        TST<Node> streetTries = new TST<>();
 
         ElementLongIndex<NodeID> nodeLongIndex = new ElementLongIndex<>();
         ElementLongIndex<Way> wayLongIndex = new ElementLongIndex<>();
@@ -60,6 +60,7 @@ public class XmlParser {
             switch (reader.next()) {
                 case START_ELEMENT:
                     switch (reader.getLocalName()) {
+
                         case "bounds":
                             minX = Float.parseFloat(reader.getAttributeValue(null, "minlon"));
                             maxX = Float.parseFloat(reader.getAttributeValue(null, "maxlon"));
@@ -72,7 +73,8 @@ public class XmlParser {
                             float lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
                             float lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
 
-                            nodeLongIndex.put(new NodeID(nodeID, new Node(lon, lat)));
+                            node = new Node(lon,lat);
+                            nodeLongIndex.put(new NodeID(nodeID, node));
                             break;
 
                         case "way":
@@ -138,6 +140,7 @@ public class XmlParser {
                                         break;
                                     case "addr:street":
                                         osmAddress.setStreet(value);
+                                        streetTries.put(value, node);
                                         break;
                                     case "building":
                                         elementType = ElementType.BUILDING;
@@ -255,7 +258,8 @@ public class XmlParser {
 
                         case "node":
                             if (osmAddress.getCity() != null) {
-//                                System.out.println("Found: "+osmAddress.getCity());
+                                //System.out.println("Found: "+osmAddress.getStreet() + osmAddress.getHouseNumber());
+                                //System.out.println("Added: "+streetTries.get(osmAddress.getStreet()));
                             }
                             break;
 
@@ -296,6 +300,7 @@ public class XmlParser {
                 null,
                 null,
                 null,
+                streetTries,
                 minX,
                 maxX,
                 minY,

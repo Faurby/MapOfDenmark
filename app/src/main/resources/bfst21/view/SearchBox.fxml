@@ -15,7 +15,7 @@
 
     <VBox fx:id="searchAddressVBox" minWidth="175" style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B">
         <padding><Insets bottom="5" left="10" right="10" top="10" /></padding>
-        <TextArea fx:id="addressArea" minHeight="20" prefHeight="25" promptText="Type an address..." wrapText="true" onKeyPressed="#tabEnterCheck" />
+        <TextArea fx:id="addressArea" minHeight="20" prefHeight="25" promptText="Type an address..." wrapText="true" onKeyPressed="#typingCheck" />
         <HBox alignment="BASELINE_CENTER" prefWidth="198.0" style="-fx-padding: 10 0 5 0">
             <Button fx:id="navigateButton" onAction="#expandSearchView" text="Navigate" GridPane.columnIndex="0" GridPane.rowIndex="0" />
             <ToolBar visible="false" HBox.hgrow="ALWAYS" />
@@ -31,9 +31,9 @@
 
         <GridPane vgap="5" hgap="2">
             <TextArea GridPane.columnIndex="1" GridPane.rowIndex="1"
-                      fx:id="startingPoint" minHeight="25" prefHeight="25" promptText="From:" wrapText="true" onKeyPressed="#tabEnterCheck" />
+                      fx:id="startingPoint" minHeight="25" prefHeight="25" promptText="From:" wrapText="true" onKeyPressed="#typingCheck" />
             <TextArea GridPane.columnIndex="1" GridPane.rowIndex="3"
-                      fx:id="destinationPoint" minHeight="25" prefHeight="25" promptText="To:" wrapText="true" onKeyPressed="#tabEnterCheck"/>
+                      fx:id="destinationPoint" minHeight="25" prefHeight="25" promptText="To:" wrapText="true" onKeyPressed="#typingCheck"/>
             <Button GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="3"
                     fx:id="switchButton" maxHeight="20" maxWidth="40" onAction="#switchText" >
                 <graphic>

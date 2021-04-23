@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox fx:id="searchAddressVBox"
+      xmlns:fx="http://javafx.com/javafx"
+      fx:controller="bfst21.view.Controller"
+      minWidth="175"
+      style="-fx-background-color: #f6f6f6;
+      -fx-border-color: #3E859B">
+        <padding><Insets bottom="5" left="10" right="10" top="10" /></padding>
+        <TextArea fx:id="addressArea" minHeight="20" prefHeight="25" promptText="Lol biatch..." />
+
+    </VBox>

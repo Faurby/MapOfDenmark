@@ -1,5 +1,6 @@
 package bfst21.models;
 
+import bfst21.address.TST;
 import bfst21.osm.*;
 import bfst21.pathfinding.Dijkstra;
 import bfst21.pathfinding.DirectedGraph;
@@ -35,6 +36,8 @@ public class MapData {
 
     private final float minX, minY, maxX, maxY;
 
+    private TST<Node> streetTries;
+
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
     private Vertex originVertex;
@@ -52,6 +55,7 @@ public class MapData {
             HashMap<ElementGroup, KdTree<Way>> kdTreeMap,
             KdTree<Relation> kdTreeRelations,
             DirectedGraph directedGraph,
+            TST<Node> streetTries,
             float minX,
             float maxX,
             float minY,
@@ -61,10 +65,13 @@ public class MapData {
         this.kdTreeMap = kdTreeMap;
         this.kdTreeRelations = kdTreeRelations;
         this.islands = islands;
+        this.streetTries = streetTries;
         this.minX = minX;
         this.minY = minY;
         this.maxX = maxX;
         this.maxY = maxY;
+
+        System.out.println("Set tries: "+streetTries.size());
 
         //We need to initially fill the search HashMaps with empty Lists.
         //This is to avoid issues when accessing the search map before a range search.
@@ -454,4 +461,6 @@ public class MapData {
     public void setDestinationVertex(Vertex destinationVertex) {
         this.destinationVertex = destinationVertex;
     }
+
+    public TST<Node> getStreetTries() { return streetTries; }
 }

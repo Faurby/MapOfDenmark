@@ -25,6 +25,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -68,12 +69,12 @@ public class Controller {
     private Node destination;
     private boolean resetDjikstra = true;
 
-    @FXML
-    private VBox searchVBox;
-
     private boolean userNodeToggle = false;
     ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
     UserNode currentUserNode = null;
+
+    @FXML
+    private SearchBoxController searchBoxController;
 
     private Model model;
     private Point2D lastMouse;
@@ -94,9 +95,16 @@ public class Controller {
         repaintTime.setText("Repaint time: " + canvas.getAverageRepaintTime());
     }
 
+    public MapCanvas getCanvas() {
+        return canvas;
+    }
+
     public void init(Model model) {
         this.model = model;
         canvas.init(model);
+
+        searchBoxController.setController(this);
+
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
         progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
         updateZoomBox();
@@ -110,9 +118,10 @@ public class Controller {
 
     public void onWindowResize(Stage stage) {
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
-        searchVBox.setMaxWidth(stage.getWidth() * 0.25D);
         stage.getHeight();
         canvas.repaint();
+        searchBoxController.onWindowResize(stage);
+        //searchBoxController.setMaxWidth(stage.getWidth() * 0.25D);
     }
 
     @FXML
