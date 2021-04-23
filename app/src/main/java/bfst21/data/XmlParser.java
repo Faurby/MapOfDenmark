@@ -186,11 +186,17 @@ public class XmlParser {
                                                 break;
                                         }
                                         break;
+                                    case "railway":
+                                        switch (value) {
+                                            case "rail":
+                                                elementType = ElementType.RAILWAY;
+                                                break;
+                                        }
                                     case "landuse":
                                         if (value.equals("grass") ||
-                                            value.equals("meadow") ||
-                                            value.equals("orchard") ||
-                                            value.equals("allotments")) {
+                                                value.equals("meadow") ||
+                                                value.equals("orchard") ||
+                                                value.equals("allotments")) {
                                             elementType = ElementType.LANDUSE;
                                         }
                                         break;

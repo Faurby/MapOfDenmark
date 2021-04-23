@@ -121,6 +121,14 @@ public enum ElementType {
             Color.rgb(51, 51, 51),
             Color.rgb(169, 169, 169)
     ),
+    RAILWAY(
+            0.00006f,
+            1500.0f,
+            0.0D,
+            Color.rgb(50, 50, 50),
+            Color.rgb(50, 50, 50),
+            Color.rgb(50, 50, 50)
+    ),
     UNKNOWN(
             0.002f,
             500.0f,
