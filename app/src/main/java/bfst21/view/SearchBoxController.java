@@ -6,7 +6,6 @@ import bfst21.exceptions.IllegalInputException;
 import bfst21.models.MapData;
 import bfst21.models.Model;
 import bfst21.osm.Node;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -78,8 +77,6 @@ public class SearchBoxController extends SubController {
                     MapData mapData = model.getMapData();
                     streetTries = mapData.getStreetTries();
                 }
-                Iterable<String> list = streetTries.keysWithPrefix(addressArea.getText());
-
                 Iterable<String> list = streetTries.keysWithPrefix(addressArea.getText());
                 for (String s : list) {
                     System.out.println("b: "+s);
