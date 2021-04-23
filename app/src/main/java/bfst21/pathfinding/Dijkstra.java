@@ -9,8 +9,9 @@ public class Dijkstra {
     private final double[] distTo;
     private final Edge[] edgeTo;
     private final IndexMinPQ<Double> pq;
+    private boolean foundDestination;
 
-    public Dijkstra(DirectedGraph directedGraph, Vertex source) {
+    public Dijkstra(DirectedGraph directedGraph, Vertex source, Vertex destination) {
 
         int vertexAmount = directedGraph.getVertexAmount();
 
@@ -26,10 +27,14 @@ public class Dijkstra {
 
         pq = new IndexMinPQ<>(vertexAmount);
         pq.insert(sourceID, distTo[sourceID]);
-        while (!pq.isEmpty()) {
+        while (!pq.isEmpty() && !foundDestination) {
             int vertexID = pq.delMin();
             Vertex vertex = directedGraph.getVertex(vertexID);
+
             if (vertex != null) {
+                if (vertex.getID() == destination.getID()) {
+                    foundDestination = true;
+                }
                 for (Edge edge : vertex.getEdges()) {
                     relax(edge);
                 }

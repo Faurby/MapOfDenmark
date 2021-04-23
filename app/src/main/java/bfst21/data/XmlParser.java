@@ -46,7 +46,6 @@ public class XmlParser {
 
         TST<Node> tries = new TST<>();
 
-        ElementLongIndex<NodeID> navigationLongIndex = new ElementLongIndex<>();
         ElementLongIndex<NodeID> nodeLongIndex = new ElementLongIndex<>();
         ElementLongIndex<Way> wayLongIndex = new ElementLongIndex<>();
         ElementLongIndex<Relation> relationLongIndex = new ElementLongIndex<>();

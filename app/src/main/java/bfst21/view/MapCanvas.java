@@ -46,7 +46,8 @@ public class MapCanvas extends Canvas {
     private Affine trans = new Affine();
 
     private Node nearestNeighborNode;
-    private int destinationID;
+    private Vertex originVertex;
+    private Vertex destinationVertex;
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -142,8 +143,8 @@ public class MapCanvas extends Canvas {
                 }
             }
             drawGraph();
-            if (destinationID != 0) {
-                drawPathTo(destinationID);
+            if (destinationVertex != null) {
+                drawPathTo(destinationVertex.getID());
             }
         }
         gc.restore();
@@ -335,8 +336,14 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    public void runDijkstra() {
+        if (originVertex != null && destinationVertex != null) {
+            model.getMapData().runDijkstra(originVertex, destinationVertex);
+        }
+    }
+
     public Node nearestNeighborSearch(Node queryNode) {
-        return model.getMapData().kdTreeNearestNeighborSearch(queryNode, zoomLevel);
+        return model.getMapData().kdTreeNearestNeighborSearch(queryNode);
     }
 
     /**
@@ -553,8 +560,12 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void setDestinationID(int id) {
-        destinationID = id;
+    public void setDestinationVertex(Vertex vertex) {
+        this.destinationVertex = vertex;
+    }
+
+    public void setOriginVertex(Vertex vertex) {
+        this.originVertex = vertex;
     }
 
     public float getZoomPercentAsFloat() {

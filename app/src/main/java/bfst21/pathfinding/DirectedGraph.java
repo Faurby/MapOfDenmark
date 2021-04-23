@@ -42,9 +42,13 @@ public class DirectedGraph implements Serializable {
 
     public void addEdge(Vertex from, Vertex to, int maxSpeed) {
         float distance = (float) from.distTo(to);
-        Edge edge = new Edge(from.getID(), to.getID(), distance, maxSpeed);
-        from.addEdge(edge);
-        to.addEdge(edge);
+        Edge edge1 = new Edge(from.getID(), to.getID(), distance, maxSpeed);
+        Edge edge2 = new Edge(to.getID(), from.getID(), distance, maxSpeed);
+
+        from.addEdge(edge1);
+        to.addEdge(edge1);
+        from.addEdge(edge2);
+        to.addEdge(edge2);
 
         edgeAmount++;
     }

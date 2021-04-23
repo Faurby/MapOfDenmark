@@ -195,10 +195,11 @@ public class Controller {
             Vertex vertex = model.getMapData().getDirectedGraph().getVertex(nearestNode.getX(), nearestNode.getY());
             if (resetDjikstra) {
                 resetDjikstra = false;
-                model.getMapData().setDijkstraSource(vertex);
-                canvas.setDestinationID(0);
+                canvas.setOriginVertex(vertex);
+                canvas.setDestinationVertex(null);
             } else {
-                canvas.setDestinationID(vertex.getID());
+                canvas.setDestinationVertex(vertex);
+                canvas.runDijkstra();
                 resetDjikstra = true;
             }
 

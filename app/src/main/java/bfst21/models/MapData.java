@@ -156,8 +156,8 @@ public class MapData {
         }
     }
 
-    public void setDijkstraSource(Vertex source) {
-        dijkstra = new Dijkstra(directedGraph, source);
+    public void runDijkstra(Vertex origin, Vertex destination) {
+        dijkstra = new Dijkstra(directedGraph, origin, destination);
     }
 
     /**
@@ -365,17 +365,14 @@ public class MapData {
         kdTreeRelationSearchList = kdTreeRelations.preRangeSearch(boundingBox);
     }
 
-    public Node kdTreeNearestNeighborSearch(Node queryNode, double zoomLevel) {
+    public Node kdTreeNearestNeighborSearch(Node queryNode) {
         List<Node> list = new ArrayList<>();
 
         for (ElementGroup elementGroup : ElementGroup.values()) {
-            if (elementGroup.doShowElement(zoomLevel)) {
-
-                if (elementGroup.getType().canNavigate()) {
-                    if (kdTreeMap.containsKey(elementGroup)) {
-                        Node node = kdTreeMap.get(elementGroup).nearestNeighborSearch(queryNode);
-                        list.add(node);
-                    }
+            if (elementGroup.getType().canNavigate()) {
+                if (kdTreeMap.containsKey(elementGroup)) {
+                    Node node = kdTreeMap.get(elementGroup).nearestNeighborSearch(queryNode);
+                    list.add(node);
                 }
             }
         }
