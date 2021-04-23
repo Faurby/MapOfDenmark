@@ -1,8 +1,12 @@
 package bfst21.pathfinding;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Coordinate {
+
+public class Coordinate implements Serializable {
+
+    private static final long serialVersionUID = 2782626737460220190L;
 
     private final float x;
     private final float y;

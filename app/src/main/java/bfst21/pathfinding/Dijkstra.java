@@ -59,10 +59,6 @@ public class Dijkstra {
         }
     }
 
-    public double distTo(int targetID) {
-        return distTo[targetID];
-    }
-
     public boolean hasPathTo(int targetID) {
         return distTo[targetID] < Double.POSITIVE_INFINITY;
     }

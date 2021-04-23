@@ -31,11 +31,6 @@ public class DirectedGraph implements Serializable {
         return -1;
     }
 
-    public int getVertexID(float x, float y) {
-        Coordinate coordinate = new Coordinate(x, y);
-        return getVertexID(coordinate);
-    }
-
     public Coordinate getVertexCoords(int id) {
         if (idToCoordsMap.containsKey(id)) {
             return idToCoordsMap.get(id);

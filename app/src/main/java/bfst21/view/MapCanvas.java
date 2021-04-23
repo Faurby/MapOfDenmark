@@ -49,10 +49,6 @@ public class MapCanvas extends Canvas {
 
     private Node nearestNeighborNode;
 
-    public Affine getTrans() {
-        return trans;
-    }
-
     /**
      * Initializes MapCanvas with the given Model.
      */
@@ -545,5 +541,9 @@ public class MapCanvas extends Canvas {
 
     public Model getModel() {
         return model;
+    }
+
+    public Affine getTrans() {
+        return trans;
     }
 }

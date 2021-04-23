@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class ElementGroup implements Serializable {
 
     private static final long serialVersionUID = -4246725919555317161L;

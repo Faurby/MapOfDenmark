@@ -1,5 +1,6 @@
 package bfst21.view;
 
+
 public abstract class SubController {
 
     protected MainController mainController;

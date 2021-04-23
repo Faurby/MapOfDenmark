@@ -189,11 +189,8 @@ public class XmlParser {
                                         }
                                         break;
                                     case "railway":
-                                        switch (value) {
-                                            case "rail":
-                                                elementType = ElementType.RAILWAY;
-                                                break;
-                                        }
+                                        elementType = ElementType.RAILWAY;
+                                        break;
                                     case "aeroway":
                                         switch (value) {
                                             case "taxiway":

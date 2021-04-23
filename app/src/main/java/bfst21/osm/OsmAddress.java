@@ -1,5 +1,6 @@
 package bfst21.osm;
 
+
 public class OsmAddress {
 
     private String city, houseNumber, name, postcode, street;

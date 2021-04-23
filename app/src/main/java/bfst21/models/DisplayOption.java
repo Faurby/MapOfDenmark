@@ -1,5 +1,6 @@
 package bfst21.models;
 
+
 public enum DisplayOption {
     LOAD_RELATIONS,
 

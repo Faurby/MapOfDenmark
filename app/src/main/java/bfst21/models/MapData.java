@@ -36,7 +36,7 @@ public class MapData {
 
     private final float minX, minY, maxX, maxY;
 
-    private TST<Node> streetTries;
+    private final TST<Node> streetTries;
 
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
