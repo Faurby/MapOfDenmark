@@ -9,9 +9,12 @@ import bfst21.osm.Node;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -25,7 +28,9 @@ public class SearchBoxController extends SubController {
     @FXML
     private Button searchButton;
     @FXML
-    private VBox searchBox;
+    private StackPane searchBox;
+    @FXML
+    private VBox suggestions;
 
     private TST<Node> streetTries;
 
@@ -70,19 +75,28 @@ public class SearchBoxController extends SubController {
             addressArea.setText(addressArea.getText().trim());
             searchSingleAddress();
             searchButton.requestFocus();
+        } else if (keyEvent.getCode() == KeyCode.BACK_SPACE && addressArea.getText().trim().length() <= 3){
+            suggestions.getChildren().clear();
         } else {
-            if (addressArea.getText().trim().length() >= 4) {
-                if (streetTries == null) {
+            if (addressArea.getText().trim().length() >= 2) {
+                try{ if (streetTries == null) {
                     MapCanvas mapCanvas = mainController.getCanvas();
                     Model model = mapCanvas.getModel();
                     MapData mapData = model.getMapData();
                     streetTries = mapData.getStreetTries();
                 }
-                Iterable<String> list = streetTries.keysWithPrefix(addressArea.getText());
 
                 Iterable<String> list = streetTries.keysWithPrefix(addressArea.getText());
+                suggestions.getChildren().clear();
                 for (String s : list) {
-                    System.out.println("b: "+s);
+                    Label b = new Label(s);
+                    b.setOnMouseClicked((event) -> {
+                        addressArea.setText(b.getText());
+                        suggestions.getChildren().clear();
+                    });
+                    suggestions.getChildren().add(b);
+                }} catch (NullPointerException e) {
+                    e.getMessage();
                 }
             }
         }
