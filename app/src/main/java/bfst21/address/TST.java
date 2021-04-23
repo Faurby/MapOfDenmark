@@ -1,7 +1,11 @@
 package bfst21.address;
 
+// Code in this class was copied from the algs4 library. Credit to Sedgewick & Wayne.
+// Code was modified. Modifications: Implement Serializable
 
-public class TST<Value> {
+import java.io.Serializable;
+
+public class TST<Value> implements Serializable {
     private int n;              // size
     private Node<Value> root;   // root of TST
 
