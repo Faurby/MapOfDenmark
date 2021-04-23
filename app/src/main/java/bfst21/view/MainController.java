@@ -5,7 +5,7 @@ import bfst21.models.*;
 import bfst21.osm.Node;
 import bfst21.osm.UserNode;
 import bfst21.osm.Way;
-import bfst21.pathfinding.Vertex;
+import bfst21.pathfinding.Coordinate;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -200,13 +200,15 @@ public class MainController {
             Point2D point = canvas.mouseToModelCoords(lastMouse);
             Node node = new Node((float) point.getX(), (float) -point.getY() * 0.56f);
             Node nearestNode = model.getMapData().kdTreeNearestNeighborSearch(node);
-            Vertex vertex = model.getMapData().getDirectedGraph().getVertex(nearestNode.getX(), nearestNode.getY());
+
+            Coordinate coords = new Coordinate(nearestNode.getX(), nearestNode.getY());
+
             if (resetDjikstra) {
                 resetDjikstra = false;
-                model.getMapData().setOriginVertex(vertex);
-                model.getMapData().setDestinationVertex(null);
+                model.getMapData().originCoords = coords;
+                model.getMapData().destinationCoords = null;
             } else {
-                model.getMapData().setDestinationVertex(vertex);
+                model.getMapData().destinationCoords = coords;
                 model.getMapData().runDijkstra();
                 resetDjikstra = true;
             }

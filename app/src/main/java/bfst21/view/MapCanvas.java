@@ -1,11 +1,11 @@
 package bfst21.view;
 
-import bfst21.models.DisplayOption;
 import bfst21.models.DisplayOptions;
+import bfst21.models.DisplayOption;
 import bfst21.osm.*;
+import bfst21.pathfinding.Coordinate;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.pathfinding.Edge;
-import bfst21.pathfinding.Vertex;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
 import bfst21.models.Model;
@@ -23,6 +23,8 @@ import javafx.scene.transform.NonInvertibleTransformException;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class MapCanvas extends Canvas {
@@ -145,8 +147,8 @@ public class MapCanvas extends Canvas {
                 }
             }
             drawGraph();
-            if (model.getMapData().getDestinationVertex() != null) {
-                drawPathTo(model.getMapData().getDestinationVertex().getID());
+            if (model.getMapData().destinationCoords != null) {
+                drawPathTo(model.getMapData().destinationCoords);
             }
         }
         gc.restore();
@@ -228,37 +230,19 @@ public class MapCanvas extends Canvas {
 
             gc.setStroke(Color.DARKSLATEBLUE);
             gc.setLineWidth(0.0002 * widthModifier);
-
             gc.beginPath();
-            for (Vertex vertex : directedGraph.getVertexIntIndex().getElements()) {
-                for (Edge edge : vertex.getEdges()) {
 
-                    int from = edge.getFrom();
-                    int to = edge.getTo();
-
-                    Vertex vertexTo;
-                    Vertex vertexFrom;
-
-                    if (vertex.getID() == from) {
-                        vertexFrom = vertex;
-                    } else {
-                        vertexFrom = directedGraph.getVertex(from);
-                    }
-                    if (vertex.getID() == to) {
-                        vertexTo = vertex;
-                    } else {
-                        vertexTo = directedGraph.getVertex(to);
-                    }
-
-                    gc.moveTo(vertexFrom.getX(), vertexFrom.getY());
-                    gc.lineTo(vertexTo.getX(), vertexTo.getY());
+            HashMap<Integer, List<Edge>> adj = directedGraph.getAdjacentEdges();
+            for (Integer vertexID : adj.keySet()) {
+                for (Edge edge : adj.get(vertexID)) {
+                    edge.draw(directedGraph, gc);
                 }
             }
             gc.stroke();
         }
     }
 
-    public void drawPathTo(int targetID) {
+    public void drawPathTo(Coordinate destination) {
         if (displayOptions.getBool(DisplayOption.DISPLAY_DIJKSTRA)) {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
@@ -269,15 +253,7 @@ public class MapCanvas extends Canvas {
             Edge[] edges = model.getMapData().getDijkstra().getEdgeTo();
             for (Edge edge : edges) {
                 if (edge != null) {
-
-                    int from = edge.getFrom();
-                    int to = edge.getTo();
-
-                    Vertex vertexTo = directedGraph.getVertex(to);
-                    Vertex vertexFrom = directedGraph.getVertex(from);
-
-                    gc.moveTo(vertexFrom.getX(), vertexFrom.getY());
-                    gc.lineTo(vertexTo.getX(), vertexTo.getY());
+                    edge.draw(directedGraph, gc);
                 }
             }
             gc.stroke();
@@ -285,15 +261,14 @@ public class MapCanvas extends Canvas {
             gc.setStroke(Color.RED);
             gc.setLineWidth(0.0004 * widthModifier);
 
-            gc.beginPath();
-            Iterable<Edge> it = model.getMapData().getDijkstra().pathTo(targetID);
-            if (it != null) {
-                for (Edge edge : it) {
-                    Vertex from = directedGraph.getVertex(edge.getFrom());
-                    Vertex to = directedGraph.getVertex(edge.getTo());
+            int destinationID = directedGraph.getVertexID(destination);
 
-                    gc.moveTo(from.getX(), from.getY());
-                    gc.lineTo(to.getX(), to.getY());
+            Iterable<Edge> it = model.getMapData().getDijkstra().pathTo(destinationID);
+            if (it != null) {
+                gc.beginPath();
+
+                for (Edge edge : it) {
+                    edge.draw(directedGraph, gc);
                 }
                 gc.stroke();
             }

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,6 +18,18 @@ public class RelationTest {
     @Test
     public void mergeRelation_correctMerge() {
         Relation rel = new Relation(1337);
+
+        float[] arr1 = new float[]{1,2};
+        float[] arr2 = new float[]{1,2};
+
+        HashMap<float[], Integer> map = new HashMap<>();
+        map.put(arr1, 1);
+
+        if (map.containsKey(arr2)) {
+            System.out.println("Yes");
+        } else {
+            System.out.println("No");
+        }
 
         Way way1 = new Way(1);
         Way way2 = new Way(2);

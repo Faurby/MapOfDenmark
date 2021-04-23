@@ -11,14 +11,15 @@ public class Dijkstra {
     private final IndexMinPQ<Double> pq;
     private boolean foundDestination;
 
-    public Dijkstra(DirectedGraph directedGraph, Vertex source, Vertex destination) {
+    public Dijkstra(DirectedGraph directedGraph, Coordinate source, Coordinate destination) {
+
+        int sourceID = directedGraph.getVertexID(source);
+        int destinationID = directedGraph.getVertexID(destination);
 
         int vertexAmount = directedGraph.getVertexAmount();
 
         distTo = new double[vertexAmount];
         edgeTo = new Edge[vertexAmount];
-
-        int sourceID = source.getID();
 
         for (int v = 0; v < vertexAmount; v++) {
             distTo[v] = Double.POSITIVE_INFINITY;
@@ -29,15 +30,12 @@ public class Dijkstra {
         pq.insert(sourceID, distTo[sourceID]);
         while (!pq.isEmpty() && !foundDestination) {
             int vertexID = pq.delMin();
-            Vertex vertex = directedGraph.getVertex(vertexID);
 
-            if (vertex != null) {
-                if (vertex.getID() == destination.getID()) {
-                    foundDestination = true;
-                }
-                for (Edge edge : vertex.getEdges()) {
-                    relax(edge);
-                }
+            if (vertexID == destinationID) {
+                foundDestination = true;
+            }
+            for (Edge edge : directedGraph.getAdjacentEdges(vertexID)) {
+                relax(edge);
             }
         }
     }

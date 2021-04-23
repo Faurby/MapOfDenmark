@@ -1,9 +1,11 @@
 package bfst21.pathfinding;
 
-import bfst21.osm.ElementIntIndex;
+import bfst21.models.Util;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class DirectedGraph implements Serializable {
@@ -11,57 +13,71 @@ public class DirectedGraph implements Serializable {
     private static final long serialVersionUID = -2665514385590129687L;
 
     private int vertexAmount;
-    private int edgeAmount;
-    private final ElementIntIndex<Vertex> vertexIntIndex = new ElementIntIndex<>();
-    private final HashMap<Vertex, Integer> vertexMap = new HashMap<>();
-
-    public DirectedGraph() {
-        this.edgeAmount = 0;
-    }
+    private final HashMap<Coordinate, Integer> coordsToIdMap = new HashMap<>();
+    private final HashMap<Integer, Coordinate> idToCoordsMap = new HashMap<>();
+    private final HashMap<Integer, List<Edge>> adjacentEdges = new HashMap<>();
 
     public void createVertex(float x, float y, int id) {
-        Vertex vertex = new Vertex(x, y, id);
-        vertexIntIndex.put(vertex);
-        vertexMap.put(vertex, id);
+        Coordinate coordinate = new Coordinate(x, y);
+        coordsToIdMap.put(coordinate, id);
+        idToCoordsMap.put(id, coordinate);
         vertexAmount++;
     }
 
-    public Vertex getVertex(float x, float y) {
-        Vertex vertex = new Vertex(x, y, 1);
+    public int getVertexID(Coordinate coordinate) {
+        if (coordsToIdMap.containsKey(coordinate)) {
+            return coordsToIdMap.get(coordinate);
+        }
+        return -1;
+    }
 
-        if (vertexMap.containsKey(vertex)) {
-            int id = vertexMap.get(vertex);
-            return vertexIntIndex.get(id);
+    public int getVertexID(float x, float y) {
+        Coordinate coordinate = new Coordinate(x, y);
+        return getVertexID(coordinate);
+    }
+
+    public Coordinate getVertexCoords(int id) {
+        if (idToCoordsMap.containsKey(id)) {
+            return idToCoordsMap.get(id);
         }
         return null;
     }
 
-    public Vertex getVertex(int id) {
-        return vertexIntIndex.get(id);
+    public void addEdge(Coordinate fromCoords, Coordinate toCoords, int maxSpeed) {
+        int fromID = getVertexID(fromCoords);
+        int toID = getVertexID(toCoords);
+
+        float distance = (float) Util.distTo(fromCoords.getX(), fromCoords.getY(), toCoords.getX(), toCoords.getY());
+        Edge edge1 = new Edge(fromID, toID, distance, maxSpeed);
+        Edge edge2 = new Edge(toID, fromID, distance, maxSpeed);
+
+        addEdge(toID, edge1);
+        addEdge(toID, edge2);
+        addEdge(fromID, edge1);
+        addEdge(fromID, edge2);
     }
 
-    public void addEdge(Vertex from, Vertex to, int maxSpeed) {
-        float distance = (float) from.distTo(to);
-        Edge edge1 = new Edge(from.getID(), to.getID(), distance, maxSpeed);
-        Edge edge2 = new Edge(to.getID(), from.getID(), distance, maxSpeed);
-
-        from.addEdge(edge1);
-        to.addEdge(edge1);
-        from.addEdge(edge2);
-        to.addEdge(edge2);
-
-        edgeAmount++;
+    private void addEdge(int vertexID, Edge edge) {
+        List<Edge> edges = new ArrayList<>();
+        if (adjacentEdges.containsKey(vertexID)) {
+            edges = adjacentEdges.get(vertexID);
+        }
+        edges.add(edge);
+        adjacentEdges.put(vertexID, edges);
     }
 
     public int getVertexAmount() {
         return vertexAmount;
     }
 
-    public ElementIntIndex<Vertex> getVertexIntIndex() {
-        return vertexIntIndex;
+    public List<Edge> getAdjacentEdges(int vertexID) {
+        if (adjacentEdges.containsKey(vertexID)) {
+            return adjacentEdges.get(vertexID);
+        }
+        return new ArrayList<>();
     }
 
-    public HashMap<Vertex, Integer> getVertexMap() {
-        return vertexMap;
+    public HashMap<Integer, List<Edge>> getAdjacentEdges() {
+        return adjacentEdges;
     }
 }
