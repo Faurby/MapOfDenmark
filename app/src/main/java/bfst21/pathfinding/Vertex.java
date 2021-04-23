@@ -3,6 +3,7 @@ package bfst21.pathfinding;
 import bfst21.models.Util;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 
 public class Vertex implements Serializable {
@@ -51,5 +52,18 @@ public class Vertex implements Serializable {
         float lon2 = otherVertex.getX();
 
         return Util.distTo(lat1, lon1, lat2, lon2);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vertex that = (Vertex) o;
+        return Float.compare(that.x, x) == 0 && Float.compare(that.y, y) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }

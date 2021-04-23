@@ -29,6 +29,8 @@ public class MapCanvas extends Canvas {
 
     private Model model;
 
+    private static MapCanvas instance;
+
     private final double zoomLevelMin = 50.0D, zoomLevelMax = 100_000.0D;
     private double zoomLevel;
     private double widthModifier = 1.0D;
@@ -46,7 +48,6 @@ public class MapCanvas extends Canvas {
     private Affine trans = new Affine();
 
     private Node nearestNeighborNode;
-    private int destinationID;
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -141,9 +142,9 @@ public class MapCanvas extends Canvas {
                     }
                 }
             }
-            //drawGraph();
-            if (destinationID != 0) {
-                drawPathTo(destinationID);
+            drawGraph();
+            if (model.getMapData().getDestinationVertex() != null) {
+                drawPathTo(model.getMapData().getDestinationVertex().getID());
             }
         }
         gc.restore();
@@ -219,8 +220,44 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void drawPathTo(int targetID) {
+    public void drawGraph() {
         if (displayOptions.getBool(DisplayOption.DISPLAY_GRAPH)) {
+            DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
+
+            gc.setStroke(Color.DARKSLATEBLUE);
+            gc.setLineWidth(0.0002 * widthModifier);
+
+            gc.beginPath();
+            for (Vertex vertex : directedGraph.getVertexIntIndex().getElements()) {
+                for (Edge edge : vertex.getEdges()) {
+
+                    int from = edge.getFrom();
+                    int to = edge.getTo();
+
+                    Vertex vertexTo;
+                    Vertex vertexFrom;
+
+                    if (vertex.getID() == from) {
+                        vertexFrom = vertex;
+                    } else {
+                        vertexFrom = directedGraph.getVertex(from);
+                    }
+                    if (vertex.getID() == to) {
+                        vertexTo = vertex;
+                    } else {
+                        vertexTo = directedGraph.getVertex(to);
+                    }
+
+                    gc.moveTo(vertexFrom.getX(), vertexFrom.getY());
+                    gc.lineTo(vertexTo.getX(), vertexTo.getY());
+                }
+            }
+            gc.stroke();
+        }
+    }
+
+    public void drawPathTo(int targetID) {
+        if (displayOptions.getBool(DisplayOption.DISPLAY_DIJKSTRA)) {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
             gc.setStroke(Color.DARKSLATEBLUE);
@@ -299,10 +336,6 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public Node nearestNeighborSearch(Node queryNode) {
-        return model.getMapData().kdTreeNearestNeighborSearch(queryNode, zoomLevel);
-    }
-
     /**
      * Starts a new nearest neighbor search task.
      * Cancels the current nearest neighbor search task if it is running.
@@ -317,7 +350,7 @@ public class MapCanvas extends Canvas {
         nearestNeighborTask = new Task<>() {
             @Override
             protected Void call() {
-                nearestNeighborNode = nearestNeighborSearch(queryNode);
+                nearestNeighborNode = model.getMapData().kdTreeNearestNeighborSearch(queryNode);
                 return null;
             }
         };
@@ -517,10 +550,6 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void setDestinationID(int id) {
-        destinationID = id;
-    }
-
     public float getZoomPercentAsFloat() {
         return Float.parseFloat(getZoomPercent().substring(0, getZoomPercent().length() - 1));
     }
@@ -535,5 +564,20 @@ public class MapCanvas extends Canvas {
             return value.substring(0, 8);
         }
         return value;
+    }
+
+    /**
+     * Creates an instance of MapCanvas if it does not exist yet
+     * @return singleton instance of MapCanvas
+     */
+    public static MapCanvas getInstance() {
+        if (instance == null) {
+            instance = new MapCanvas();
+        }
+        return instance;
+    }
+
+    public Model getModel() {
+        return model;
     }
 }
