@@ -46,10 +46,10 @@ public class SearchBoxController {
     @FXML
     public void searchNavigationAddresses() {
         if(startingPoint.getText().trim().equals("")) {
-            throw new IllegalInputException("Search field is empty", startingPoint.toString());
+            throw new IllegalInputException("Search field is empty", startingPoint.getId());
         }
         else if(destinationPoint.getText().trim().equals("")) {
-            throw new IllegalInputException("Search field is empty", destinationPoint.toString());
+            throw new IllegalInputException("Search field is empty", destinationPoint.getId());
         }
         else {
             String sAddress = startingPoint.getText();
