@@ -29,6 +29,8 @@ public class MapCanvas extends Canvas {
 
     private Model model;
 
+    private static MapCanvas instance;
+
     private final double zoomLevelMin = 50.0D, zoomLevelMax = 100_000.0D;
     private double zoomLevel;
     private double widthModifier = 1.0D;
@@ -46,8 +48,6 @@ public class MapCanvas extends Canvas {
     private Affine trans = new Affine();
 
     private Node nearestNeighborNode;
-    private Vertex originVertex;
-    private Vertex destinationVertex;
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -143,8 +143,8 @@ public class MapCanvas extends Canvas {
                 }
             }
             drawGraph();
-            if (destinationVertex != null) {
-                drawPathTo(destinationVertex.getID());
+            if (model.getMapData().getDestinationVertex() != null) {
+                drawPathTo(model.getMapData().getDestinationVertex().getID());
             }
         }
         gc.restore();
@@ -336,16 +336,6 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void runDijkstra() {
-        if (originVertex != null && destinationVertex != null) {
-            model.getMapData().runDijkstra(originVertex, destinationVertex);
-        }
-    }
-
-    public Node nearestNeighborSearch(Node queryNode) {
-        return model.getMapData().kdTreeNearestNeighborSearch(queryNode);
-    }
-
     /**
      * Starts a new nearest neighbor search task.
      * Cancels the current nearest neighbor search task if it is running.
@@ -360,7 +350,7 @@ public class MapCanvas extends Canvas {
         nearestNeighborTask = new Task<>() {
             @Override
             protected Void call() {
-                nearestNeighborNode = nearestNeighborSearch(queryNode);
+                nearestNeighborNode = model.getMapData().kdTreeNearestNeighborSearch(queryNode);
                 return null;
             }
         };
@@ -560,14 +550,6 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void setDestinationVertex(Vertex vertex) {
-        this.destinationVertex = vertex;
-    }
-
-    public void setOriginVertex(Vertex vertex) {
-        this.originVertex = vertex;
-    }
-
     public float getZoomPercentAsFloat() {
         return Float.parseFloat(getZoomPercent().substring(0, getZoomPercent().length() - 1));
     }
@@ -582,5 +564,16 @@ public class MapCanvas extends Canvas {
             return value.substring(0, 8);
         }
         return value;
+    }
+
+    /**
+     * Creates an instance of MapCanvas if it does not exist yet
+     * @return singleton instance of MapCanvas
+     */
+    public static MapCanvas getInstance() {
+        if (instance == null) {
+            instance = new MapCanvas();
+        }
+        return instance;
     }
 }

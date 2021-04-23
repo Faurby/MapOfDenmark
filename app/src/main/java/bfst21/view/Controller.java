@@ -191,15 +191,15 @@ public class Controller {
         if (mouseEvent.isShiftDown() && mouseEvent.isPrimaryButtonDown()) {
             Point2D point = canvas.mouseToModelCoords(lastMouse);
             Node node = new Node((float) point.getX(), (float) -point.getY() * 0.56f);
-            Node nearestNode = canvas.nearestNeighborSearch(node);
+            Node nearestNode = model.getMapData().kdTreeNearestNeighborSearch(node);
             Vertex vertex = model.getMapData().getDirectedGraph().getVertex(nearestNode.getX(), nearestNode.getY());
             if (resetDjikstra) {
                 resetDjikstra = false;
-                canvas.setOriginVertex(vertex);
-                canvas.setDestinationVertex(null);
+                model.getMapData().setOriginVertex(vertex);
+                model.getMapData().setDestinationVertex(null);
             } else {
-                canvas.setDestinationVertex(vertex);
-                canvas.runDijkstra();
+                model.getMapData().setDestinationVertex(vertex);
+                model.getMapData().runDijkstra();
                 resetDjikstra = true;
             }
 

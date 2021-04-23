@@ -37,6 +37,9 @@ public class MapData {
 
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
+    private Vertex originVertex;
+    private Vertex destinationVertex;
+
     /**
      * MapData constructor.
      * Creates directed graph for path finding.
@@ -156,8 +159,10 @@ public class MapData {
         }
     }
 
-    public void runDijkstra(Vertex origin, Vertex destination) {
-        dijkstra = new Dijkstra(directedGraph, origin, destination);
+    public void runDijkstra() {
+        if (originVertex != null && destinationVertex != null) {
+            dijkstra = new Dijkstra(directedGraph, originVertex, destinationVertex);
+        }
     }
 
     /**
@@ -432,5 +437,21 @@ public class MapData {
 
     public Dijkstra getDijkstra() {
         return dijkstra;
+    }
+
+    public Vertex getOriginVertex() {
+        return originVertex;
+    }
+
+    public void setOriginVertex(Vertex originVertex) {
+        this.originVertex = originVertex;
+    }
+
+    public Vertex getDestinationVertex() {
+        return destinationVertex;
+    }
+
+    public void setDestinationVertex(Vertex destinationVertex) {
+        this.destinationVertex = destinationVertex;
     }
 }
