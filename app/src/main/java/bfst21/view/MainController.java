@@ -23,13 +23,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import java.io.File;
-import java.util.Map;
 import java.util.Objects;
 
 
-public class Controller {
+public class MainController {
 
     @FXML
     private MapCanvas canvas;
@@ -65,16 +63,16 @@ public class Controller {
     private VBox userNodeNewDescriptionVBox;
     @FXML
     private TextField userNodeNewDescriptionTextField;
-    private Node source;
-    private Node destination;
+    @FXML
+    private SearchBoxController searchBoxController;
+    @FXML
+    private NavigationBoxController navigationBoxController;
+
     private boolean resetDjikstra = true;
 
     private boolean userNodeToggle = false;
     ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
     UserNode currentUserNode = null;
-
-    @FXML
-    private SearchBoxController searchBoxController;
 
     private Model model;
     private Point2D lastMouse;
@@ -104,6 +102,7 @@ public class Controller {
         canvas.init(model);
 
         searchBoxController.setController(this);
+        navigationBoxController.setController(this);
 
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
         progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
@@ -121,7 +120,7 @@ public class Controller {
         stage.getHeight();
         canvas.repaint();
         searchBoxController.onWindowResize(stage);
-        //searchBoxController.setMaxWidth(stage.getWidth() * 0.25D);
+        navigationBoxController.onWindowResize(stage);
     }
 
     @FXML
@@ -211,13 +210,11 @@ public class Controller {
                 model.getMapData().runDijkstra();
                 resetDjikstra = true;
             }
-
         }
     }
 
     @FXML
     public void loadDefault() {
-
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() throws Exception {
@@ -266,8 +263,8 @@ public class Controller {
 
     @FXML
     public void zoomButtonClicked(ActionEvent actionEvent) {
-
         Point2D point = new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2);
+
         if (actionEvent.toString().toLowerCase().contains("zoomin")) {
             canvas.zoom(2.0D, point, false);
         } else {
@@ -304,7 +301,6 @@ public class Controller {
             }
         }
     }
-
 
     @FXML
     public void userNodeButtonClicked() throws MapDataNotLoadedException {
@@ -395,5 +391,21 @@ public class Controller {
     public void userNodeNewDescSaveClicked() {
         currentUserNode.changeDescription(userNodeNewDescriptionTextField.getText());
         userNodeNewDescriptionVBox.setVisible(false);
+    }
+
+    public void setNavigationBoxVisible(boolean visible) {
+        navigationBoxController.setVisible(visible);
+    }
+
+    public void setSearchBoxVisible(boolean visible) {
+        searchBoxController.setVisible(visible);
+    }
+
+    public void setNavigationBoxAddressText(String address) {
+        navigationBoxController.transferAddressText(address);
+    }
+
+    public void setSearchBoxAddressText(String address) {
+        searchBoxController.transferAddressText(address);
     }
 }

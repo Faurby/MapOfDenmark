@@ -6,7 +6,7 @@
 <?import javafx.geometry.Insets?>
 <VBox fx:id="searchAddressVBox"
       xmlns:fx="http://javafx.com/javafx"
-      fx:controller="bfst21.view.Controller"
+      fx:mainController="bfst21.view.MainController"
       minWidth="175"
       style="-fx-background-color: #f6f6f6;
       -fx-border-color: #3E859B">
