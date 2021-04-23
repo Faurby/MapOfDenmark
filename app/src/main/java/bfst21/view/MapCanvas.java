@@ -174,7 +174,7 @@ public class MapCanvas extends Canvas {
                 gc.setFillRule(FillRule.EVEN_ODD);
 
                 for (Relation rel : model.getMapData().getRelations(elementType)) {
-                    gc.setFill(elementType.getColor());
+                    gc.setFill(getColor(elementType));
                     rel.fill(gc, zoomLevel);
                 }
                 gc.setFillRule(FillRule.NON_ZERO);

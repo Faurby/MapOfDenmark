@@ -15,7 +15,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(223, 222, 222),
             Color.rgb(151, 151, 151),
-            Color.rgb(211, 211, 211)
+            Color.rgb(25, 26, 28)
     ),
     LANDUSE(
             1f,
@@ -23,7 +23,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(172, 220, 180),
             Color.rgb(69, 80, 7),
-            Color.rgb(211, 211, 211)
+            Color.rgb(29,50,36)
     ),
     WATER(
             1f,
@@ -31,7 +31,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(160, 196, 252),
             Color.rgb(0, 126, 170),
-            Color.rgb(0, 0, 0)
+            Color.rgb(52,66,93)
     ),
     WATERWAY(
             0.0002f,
@@ -39,7 +39,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(160, 196, 252),
             Color.rgb(0, 126, 170),
-            Color.rgb(0, 0, 0)
+            Color.rgb(52,66,93)
     ),
     CYCLEWAY(
             0.0001f,
@@ -47,7 +47,7 @@ public enum ElementType {
             0.0001D,
             Color.rgb(33, 33, 250),
             Color.rgb(33, 33, 250),
-            Color.rgb(33, 33, 250)
+            Color.rgb(52,66,130)
     ),
     FOOTWAY(
             0.0001f,
@@ -55,7 +55,7 @@ public enum ElementType {
             0.0001D,
             Color.rgb(252, 132, 116),
             Color.rgb(252, 132, 116),
-            Color.rgb(252, 132, 116)
+            Color.rgb(152, 32, 116)
     ),
     PEDESTRIAN(
             0.0001f,
@@ -63,7 +63,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(223, 241, 242),
             Color.rgb(223, 241, 242),
-            Color.rgb(223, 241, 242)
+            Color.rgb(61,64,67)
     ),
     ROAD(
             0.0003f,
@@ -71,7 +71,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
-            Color.rgb(255, 255, 255)
+            Color.rgb(61,64,67)
     ),
     RESIDENTIAL(
             0.00015f,
@@ -79,7 +79,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
-            Color.rgb(255, 255, 255)
+            Color.rgb(61,64,67)
     ),
     TRUNK(
             0.0003f,
@@ -87,7 +87,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
-            Color.rgb(255, 255, 255)
+            Color.rgb(61,64,67)
     ),
     MOTORWAY(
             0.0003f,
@@ -95,7 +95,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(248, 197, 81),
             Color.rgb(248, 198, 81),
-            Color.rgb(169, 169, 169)
+            Color.rgb(150,129,67)
     ),
     TERTIARY(
             0.0003f,
@@ -103,7 +103,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
-            Color.rgb(255, 255, 255)
+            Color.rgb(61,64,67)
     ),
     PRIMARY(
             0.0003f,
@@ -111,7 +111,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(236, 148, 164),
             Color.rgb(255, 140, 0),
-            Color.rgb(255, 255, 255)
+            Color.rgb(95,99,104)
     ),
     BUILDING(
             1f,
@@ -119,7 +119,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(197, 185, 175),
             Color.rgb(51, 51, 51),
-            Color.rgb(169, 169, 169)
+            Color.rgb(89, 89, 89)
     ),
     RAILWAY(
             0.00006f,
@@ -127,7 +127,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(50, 50, 50),
             Color.rgb(50, 50, 50),
-            Color.rgb(50, 50, 50)
+            Color.rgb(200, 200, 200)
     ),
     UNKNOWN(
             0.002f,
