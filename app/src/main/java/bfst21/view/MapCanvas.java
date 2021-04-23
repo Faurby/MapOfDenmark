@@ -141,7 +141,7 @@ public class MapCanvas extends Canvas {
                     }
                 }
             }
-            //drawGraph();
+            drawGraph();
             if (destinationID != 0) {
                 drawPathTo(destinationID);
             }
@@ -219,8 +219,44 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void drawPathTo(int targetID) {
+    public void drawGraph() {
         if (displayOptions.getBool(DisplayOption.DISPLAY_GRAPH)) {
+            DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
+
+            gc.setStroke(Color.DARKSLATEBLUE);
+            gc.setLineWidth(0.0002 * widthModifier);
+
+            gc.beginPath();
+            for (Vertex vertex : directedGraph.getVertexIntIndex().getElements()) {
+                for (Edge edge : vertex.getEdges()) {
+
+                    int from = edge.getFrom();
+                    int to = edge.getTo();
+
+                    Vertex vertexTo;
+                    Vertex vertexFrom;
+
+                    if (vertex.getID() == from) {
+                        vertexFrom = vertex;
+                    } else {
+                        vertexFrom = directedGraph.getVertex(from);
+                    }
+                    if (vertex.getID() == to) {
+                        vertexTo = vertex;
+                    } else {
+                        vertexTo = directedGraph.getVertex(to);
+                    }
+
+                    gc.moveTo(vertexFrom.getX(), vertexFrom.getY());
+                    gc.lineTo(vertexTo.getX(), vertexTo.getY());
+                }
+            }
+            gc.stroke();
+        }
+    }
+
+    public void drawPathTo(int targetID) {
+        if (displayOptions.getBool(DisplayOption.DISPLAY_DIJKSTRA)) {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
             gc.setStroke(Color.DARKSLATEBLUE);
