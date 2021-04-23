@@ -35,7 +35,7 @@ public class MapData {
 
     private final float minX, minY, maxX, maxY;
 
-    private final Options options = Options.getInstance();
+    private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
     /**
      * MapData constructor.
@@ -107,7 +107,7 @@ public class MapData {
      * Builds a directed graph used for path finding.
      */
     public void buildDirectedGraph(List<Way> wayList) {
-        if (options.getBool(Option.USE_GRAPH)) {
+        if (displayOptions.getBool(DisplayOption.USE_GRAPH)) {
 
             directedGraph = new DirectedGraph();
             System.out.println("Building directed graph for path finding...");
@@ -167,13 +167,13 @@ public class MapData {
      * There is no need to build any trees if we loaded an .obj file.
      */
     public void buildSearchTreesForRelations(List<Relation> relationList) {
-        if (options.getBool(Option.USE_KD_TREE)) {
+        if (displayOptions.getBool(DisplayOption.USE_KD_TREE)) {
             if (kdTreeRelations == null) {
                 kdTreeRelations = new KdTree<>();
                 kdTreeRelations.build(relationList);
                 System.out.println("Built kd-tree for relations with depth: " + kdTreeRelations.getMaxDepth());
             }
-        } else if (options.getBool(Option.USE_R_TREE)) {
+        } else if (displayOptions.getBool(DisplayOption.USE_R_TREE)) {
             if (rTreeRelations == null) {
                 rTreeRelations = RTree.star().maxChildren(6).create();
 
@@ -195,7 +195,7 @@ public class MapData {
      */
     public void buildSearchTreesForWays(List<Way> wayList) {
 
-        if (options.getBool(Option.USE_KD_TREE)) {
+        if (displayOptions.getBool(DisplayOption.USE_KD_TREE)) {
             if (kdTreeMap == null) {
                 kdTreeMap = new HashMap<>();
 
@@ -213,7 +213,7 @@ public class MapData {
                     }
                 }
             }
-        } else if (options.getBool(Option.USE_R_TREE)) {
+        } else if (displayOptions.getBool(DisplayOption.USE_R_TREE)) {
             if (rTreeMap == null) {
                 rTreeMap = new HashMap<>();
 
@@ -284,10 +284,10 @@ public class MapData {
      * @return list of Relations found by the kd-tree or r-tree range search.
      */
     public List<Relation> getRelations() {
-        if (options.getBool(Option.USE_KD_TREE)) {
+        if (displayOptions.getBool(DisplayOption.USE_KD_TREE)) {
             return kdTreeRelationSearchList;
 
-        } else if (options.getBool(Option.USE_R_TREE)) {
+        } else if (displayOptions.getBool(DisplayOption.USE_R_TREE)) {
             return rTreeRelationSearchList;
         }
         return new ArrayList<>();
@@ -304,10 +304,10 @@ public class MapData {
         if (elementGroup.getType() == ElementType.ISLAND) {
             return islands;
 
-        } else if (options.getBool(Option.USE_KD_TREE)) {
+        } else if (displayOptions.getBool(DisplayOption.USE_KD_TREE)) {
             return kdTreeSearchMap.get(elementGroup);
 
-        } else if (options.getBool(Option.USE_R_TREE)) {
+        } else if (displayOptions.getBool(DisplayOption.USE_R_TREE)) {
             return rTreeSearchMap.get(elementGroup);
         }
         return new ArrayList<>();

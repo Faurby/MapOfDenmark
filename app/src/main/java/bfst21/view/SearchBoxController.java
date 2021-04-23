@@ -13,6 +13,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 
+
 public class SearchBoxController {
 
     @FXML
@@ -45,13 +46,13 @@ public class SearchBoxController {
 
     @FXML
     public void searchNavigationAddresses() {
-        if(startingPoint.getText().trim().equals("")) {
+        if (startingPoint.getText().trim().equals("")) {
             throw new IllegalInputException("Search field is empty", startingPoint.getId());
-        }
-        else if(destinationPoint.getText().trim().equals("")) {
+
+        } else if (destinationPoint.getText().trim().equals("")) {
             throw new IllegalInputException("Search field is empty", destinationPoint.getId());
-        }
-        else {
+
+        } else {
             String sAddress = startingPoint.getText();
             Address parsedSA = Address.parse(sAddress);
 
@@ -65,12 +66,11 @@ public class SearchBoxController {
 
     @FXML
     private void searchSingleAddress() {
-        if(!addressArea.getText().trim().equals("")) {
+        if (!addressArea.getText().trim().equals("")) {
             String address = addressArea.getText();
             Address parsed = Address.parse(address);
             System.out.println(parsed);
-        }
-        else {
+        } else {
             throw new IllegalInputException("Search field is empty");
         }
     }

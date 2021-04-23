@@ -1,5 +1,6 @@
 package bfst21.exceptions;
 
+
 public class IllegalInputException extends RuntimeException {
 
     public IllegalInputException(String str) {

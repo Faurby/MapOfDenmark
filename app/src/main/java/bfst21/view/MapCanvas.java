@@ -1,7 +1,7 @@
 package bfst21.view;
 
-import bfst21.models.Option;
-import bfst21.models.Options;
+import bfst21.models.DisplayOption;
+import bfst21.models.DisplayOptions;
 import bfst21.osm.*;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.pathfinding.Edge;
@@ -35,7 +35,7 @@ public class MapCanvas extends Canvas {
 
     private long totalRepaints, totalLastRepaintTime, lastTenAverageRepaintTime;
 
-    private final Options options = Options.getInstance();
+    private final DisplayOptions displayOptions = DisplayOptions.getInstance();
     private final GraphicsContext gc = getGraphicsContext2D();
 
     private int depth;
@@ -118,8 +118,8 @@ public class MapCanvas extends Canvas {
             drawNeighborNodes();
 
             //Display the kd-tree if option is enabled
-            if (options.getBool(Option.USE_KD_TREE)) {
-                if (options.getBool(Option.DISPLAY_KD_TREE)) {
+            if (displayOptions.getBool(DisplayOption.USE_KD_TREE)) {
+                if (displayOptions.getBool(DisplayOption.DISPLAY_KD_TREE)) {
                     depth = 0;
 
                     float maxX = model.getMapData().getMaxX();
@@ -167,7 +167,7 @@ public class MapCanvas extends Canvas {
      * outer Ways of the Relation are properly filled.
      */
     public void drawRelations(ElementType elementType) {
-        if (options.getBool(Option.DISPLAY_RELATIONS)) {
+        if (displayOptions.getBool(DisplayOption.DISPLAY_RELATIONS)) {
             if (elementType.doShowElement(zoomLevel)) {
 
                 gc.setFillRule(FillRule.EVEN_ODD);
@@ -220,7 +220,7 @@ public class MapCanvas extends Canvas {
     }
 
     public void drawPathTo(int targetID) {
-        if (options.getBool(Option.DISPLAY_GRAPH)) {
+        if (displayOptions.getBool(DisplayOption.DISPLAY_GRAPH)) {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
             gc.setStroke(Color.DARKSLATEBLUE);
@@ -356,7 +356,7 @@ public class MapCanvas extends Canvas {
      */
     public void rangeSearch() {
         if (model.getMapData() != null) {
-            if (options.getBool(Option.USE_KD_TREE)) {
+            if (displayOptions.getBool(DisplayOption.USE_KD_TREE)) {
                 double x1 = trans.getTx() / Math.sqrt(trans.determinant());
                 double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
                 double x2 = getWidth() - x1;
@@ -373,7 +373,7 @@ public class MapCanvas extends Canvas {
                 BoundingBox boundingBox = new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
                 model.getMapData().kdTreeRangeSearch(boundingBox, zoomLevel);
 
-            } else if (options.getBool(Option.USE_R_TREE)) {
+            } else if (displayOptions.getBool(DisplayOption.USE_R_TREE)) {
                 double x1 = trans.getTx() / Math.sqrt(trans.determinant());
                 double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
                 double x2 = getWidth() - x1;

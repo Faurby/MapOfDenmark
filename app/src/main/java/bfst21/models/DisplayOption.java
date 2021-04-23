@@ -1,6 +1,6 @@
 package bfst21.models;
 
-public enum Option {
+public enum DisplayOption {
     LOAD_RELATIONS,
 
     USE_KD_TREE,

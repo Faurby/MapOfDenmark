@@ -1,8 +1,8 @@
 package bfst21.data;
 
 import bfst21.address.TST;
-import bfst21.models.Option;
-import bfst21.models.Options;
+import bfst21.models.DisplayOption;
+import bfst21.models.DisplayOptions;
 import bfst21.osm.*;
 import bfst21.models.MapData;
 
@@ -30,7 +30,7 @@ public class XmlParser {
 
     public MapData loadOSM(InputStream input) throws XMLStreamException, FactoryConfigurationError {
 
-        Options options = Options.getInstance();
+        DisplayOptions displayOptions = DisplayOptions.getInstance();
 
         InputFactoryProviderImpl iprovider = new InputFactoryProviderImpl();
 
@@ -83,14 +83,14 @@ public class XmlParser {
                             break;
 
                         case "relation":
-                            if (options.getBool(Option.LOAD_RELATIONS)) {
+                            if (displayOptions.getBool(DisplayOption.LOAD_RELATIONS)) {
                                 long relationID = Long.parseLong(reader.getAttributeValue(null, "id"));
                                 relation = new Relation(relationID);
                             }
                             break;
 
                         case "member":
-                            if (options.getBool(Option.LOAD_RELATIONS)) {
+                            if (displayOptions.getBool(DisplayOption.LOAD_RELATIONS)) {
                                 String type = reader.getAttributeValue(null, "type");
                                 String memRef = reader.getAttributeValue(null, "ref");
                                 if (type != null) {
@@ -261,7 +261,7 @@ public class XmlParser {
                             break;
 
                         case "relation":
-                            if (options.getBool(Option.LOAD_RELATIONS)) {
+                            if (displayOptions.getBool(DisplayOption.LOAD_RELATIONS)) {
                                 if (elementType != null) {
                                     relation.setType(elementType);
                                     elementType = null;

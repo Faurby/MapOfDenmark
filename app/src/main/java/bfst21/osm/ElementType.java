@@ -1,7 +1,7 @@
 package bfst21.osm;
 
-import bfst21.models.Option;
-import bfst21.models.Options;
+import bfst21.models.DisplayOption;
+import bfst21.models.DisplayOptions;
 import javafx.scene.paint.Color;
 
 
@@ -198,7 +198,7 @@ public enum ElementType {
     }
 
     public boolean isDisplayOptionEnabled() {
-        return Options.getInstance().getBool(Option.valueOf("DISPLAY_" + this));
+        return DisplayOptions.getInstance().getBool(DisplayOption.valueOf("DISPLAY_" + this));
     }
 
     public double getLineDashes() {

@@ -39,7 +39,7 @@ public class Model {
 
         System.out.println("Model loading file: "+fileName);
         long time = -System.nanoTime();
-        Options options = Options.getInstance();
+        DisplayOptions displayOptions = DisplayOptions.getInstance();
 
         if (fileName.endsWith(".osm")) {
             XmlParser xmlParser = new XmlParser();
@@ -48,7 +48,7 @@ public class Model {
         } else if (fileName.endsWith(".zip")) {
             BinaryFileManager binaryFileManager = new BinaryFileManager();
             loadZIP(fileName);
-            if (options.getBool(Option.SAVE_OBJ_FILE)) {
+            if (displayOptions.getBool(DisplayOption.SAVE_OBJ_FILE)) {
                 binaryFileManager.saveOBJ(fileName.split("\\.")[0] + ".obj", mapData);
             }
 

@@ -77,7 +77,7 @@ public class Controller {
 
     private Model model;
     private Point2D lastMouse;
-    private final Options options = Options.getInstance();
+    private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
     public void updateZoomBox() {
         zoomPercent.setText("Zoom percent: " + canvas.getZoomPercent());
@@ -285,10 +285,10 @@ public class Controller {
     public void onCheckDebug(ActionEvent actionEvent) {
         String text = actionEvent.toString().toLowerCase();
 
-        for (Option option : Option.values()) {
-            String optionText = option.toString().toLowerCase().replaceAll("_", " ");
+        for (DisplayOption displayOption : DisplayOption.values()) {
+            String optionText = displayOption.toString().toLowerCase().replaceAll("_", " ");
             if (text.contains(optionText)) {
-                options.toggle(option);
+                displayOptions.toggle(displayOption);
                 canvas.repaint();
                 break;
             }
