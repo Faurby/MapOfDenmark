@@ -1,6 +1,7 @@
 package bfst21.pathfinding;
 
 import bfst21.models.Util;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,21 +15,13 @@ public class DirectedGraph implements Serializable {
     private int vertexAmount;
     private final HashMap<Coordinate, Integer> coordsToIdMap = new HashMap<>();
     private final HashMap<Integer, Coordinate> idToCoordsMap = new HashMap<>();
-
-    private Bag<Edge>[] adj;
+    private final HashMap<Integer, List<Edge>> adjacentEdges = new HashMap<>();
 
     public void createVertex(float x, float y, int id) {
         Coordinate coordinate = new Coordinate(x, y);
         coordsToIdMap.put(coordinate, id);
         idToCoordsMap.put(id, coordinate);
         vertexAmount++;
-    }
-
-    private void createEdgeBag() {
-        if (adj == null && vertexAmount > 0) {
-            adj = (Bag<Edge>[]) new Bag[vertexAmount];
-            System.out.println("Create with size: "+vertexAmount);
-        }
     }
 
     public int getVertexID(Coordinate coordinate) {
@@ -51,8 +44,6 @@ public class DirectedGraph implements Serializable {
     }
 
     public void addEdge(Coordinate fromCoords, Coordinate toCoords, int maxSpeed) {
-        createEdgeBag();
-
         int fromID = getVertexID(fromCoords);
         int toID = getVertexID(toCoords);
 
@@ -60,19 +51,33 @@ public class DirectedGraph implements Serializable {
         Edge edge1 = new Edge(fromID, toID, distance, maxSpeed);
         Edge edge2 = new Edge(toID, fromID, distance, maxSpeed);
 
-        System.out.println("Ids: "+toID+" "+fromID);
+        addEdge(toID, edge1);
+        addEdge(toID, edge2);
+        addEdge(fromID, edge1);
+        addEdge(fromID, edge2);
+    }
 
-        adj[toID].add(edge1);
-        adj[toID].add(edge2);
-        adj[fromID].add(edge1);
-        adj[fromID].add(edge2);
+    private void addEdge(int vertexID, Edge edge) {
+        List<Edge> edges = new ArrayList<>();
+        if (adjacentEdges.containsKey(vertexID)) {
+            edges = adjacentEdges.get(vertexID);
+        }
+        edges.add(edge);
+        adjacentEdges.put(vertexID, edges);
     }
 
     public int getVertexAmount() {
         return vertexAmount;
     }
 
-    public Bag<Edge>[] getAdj() {
-        return adj;
+    public List<Edge> getAdjacentEdges(int vertexID) {
+        if (adjacentEdges.containsKey(vertexID)) {
+            return adjacentEdges.get(vertexID);
+        }
+        return new ArrayList<>();
+    }
+
+    public HashMap<Integer, List<Edge>> getAdjacentEdges() {
+        return adjacentEdges;
     }
 }

@@ -1,9 +1,8 @@
 package bfst21.view;
 
-import bfst21.models.DisplayOption;
 import bfst21.models.DisplayOptions;
+import bfst21.models.DisplayOption;
 import bfst21.osm.*;
-import bfst21.pathfinding.Bag;
 import bfst21.pathfinding.Coordinate;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.pathfinding.Edge;
@@ -24,6 +23,8 @@ import javafx.scene.transform.NonInvertibleTransformException;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class MapCanvas extends Canvas {
@@ -229,21 +230,12 @@ public class MapCanvas extends Canvas {
 
             gc.setStroke(Color.DARKSLATEBLUE);
             gc.setLineWidth(0.0002 * widthModifier);
-
             gc.beginPath();
-            for (Bag<Edge> edgeBag : directedGraph.getAdj()) {
-                for (Edge edge : edgeBag) {
 
-                    int fromID = edge.getFrom();
-                    int toID = edge.getTo();
-
-                    Coordinate fromCoords = directedGraph.getVertexCoords(fromID);
-                    Coordinate toCoords = directedGraph.getVertexCoords(toID);
-
-                    if (fromCoords != null && toCoords != null) {
-                        gc.moveTo(fromCoords.getX(), fromCoords.getY());
-                        gc.lineTo(toCoords.getX(), toCoords.getY());
-                    }
+            HashMap<Integer, List<Edge>> adj = directedGraph.getAdjacentEdges();
+            for (Integer vertexID : adj.keySet()) {
+                for (Edge edge : adj.get(vertexID)) {
+                    edge.draw(directedGraph, gc);
                 }
             }
             gc.stroke();
@@ -261,17 +253,7 @@ public class MapCanvas extends Canvas {
             Edge[] edges = model.getMapData().getDijkstra().getEdgeTo();
             for (Edge edge : edges) {
                 if (edge != null) {
-
-                    int fromID = edge.getFrom();
-                    int toID = edge.getTo();
-
-                    Coordinate fromCoords = directedGraph.getVertexCoords(fromID);
-                    Coordinate toCoords = directedGraph.getVertexCoords(toID);
-
-                    if (fromCoords != null && toCoords != null) {
-                        gc.moveTo(fromCoords.getX(), fromCoords.getY());
-                        gc.lineTo(toCoords.getX(), toCoords.getY());
-                    }
+                    edge.draw(directedGraph, gc);
                 }
             }
             gc.stroke();
@@ -281,21 +263,12 @@ public class MapCanvas extends Canvas {
 
             int destinationID = directedGraph.getVertexID(destination);
 
-            gc.beginPath();
             Iterable<Edge> it = model.getMapData().getDijkstra().pathTo(destinationID);
             if (it != null) {
+                gc.beginPath();
+
                 for (Edge edge : it) {
-
-                    int fromID = edge.getFrom();
-                    int toID = edge.getTo();
-
-                    Coordinate fromCoords = directedGraph.getVertexCoords(fromID);
-                    Coordinate toCoords = directedGraph.getVertexCoords(toID);
-
-                    if (fromCoords != null && toCoords != null) {
-                        gc.moveTo(fromCoords.getX(), fromCoords.getY());
-                        gc.lineTo(toCoords.getX(), toCoords.getY());
-                    }
+                    edge.draw(directedGraph, gc);
                 }
                 gc.stroke();
             }

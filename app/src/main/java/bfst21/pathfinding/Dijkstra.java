@@ -34,7 +34,7 @@ public class Dijkstra {
             if (vertexID == destinationID) {
                 foundDestination = true;
             }
-            for (Edge edge : directedGraph.getAdj()[vertexID]) {
+            for (Edge edge : directedGraph.getAdjacentEdges(vertexID)) {
                 relax(edge);
             }
         }
