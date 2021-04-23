@@ -20,7 +20,7 @@
 <?import javafx.scene.control.TextField?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
-       fx:controller="bfst21.view.Controller"
+       fx:controller="bfst21.view.MainController"
        fx:id="scene">
     <root>
         <StackPane fx:id="stackPane" minHeight="480" minWidth="640">
@@ -75,6 +75,10 @@
                 <padding><Insets bottom="8" left="8" top="8" /></padding>
 
                 <fx:include fx:id="searchBox" source="SearchBox.fxml"
+                            AnchorPane.leftAnchor="0.0"
+                            AnchorPane.topAnchor="0.0"/>
+
+                <fx:include fx:id="navigationBox" source="NavigationBox.fxml" visible="false" managed="false"
                             AnchorPane.leftAnchor="0.0"
                             AnchorPane.topAnchor="0.0"/>
 
