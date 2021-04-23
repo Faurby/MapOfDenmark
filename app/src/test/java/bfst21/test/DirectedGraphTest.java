@@ -34,7 +34,7 @@ public class DirectedGraphTest {
         directedGraph.addEdge(v3, v5, 10);
         directedGraph.addEdge(v5, v6, 10);
 
-        Dijkstra dijkstra = new Dijkstra(directedGraph, v1);
+        Dijkstra dijkstra = new Dijkstra(directedGraph, v1, v6);
         assertTrue(dijkstra.hasPathTo(v2.getID()));
         assertTrue(dijkstra.hasPathTo(v3.getID()));
         assertTrue(dijkstra.hasPathTo(v4.getID()));
