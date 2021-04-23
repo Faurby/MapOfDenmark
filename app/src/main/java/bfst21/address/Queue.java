@@ -1,10 +1,14 @@
 package bfst21.address;
 
+// Code in this class was copied from the algs4 library. Credit to Sedgewick & Wayne.
+// Code was modified. Modifications: Implement Serializable
+
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 
-public class Queue<Item> implements Iterable<Item> {
+public class Queue<Item> implements Iterable<Item>, Serializable {
     private Node<Item> first;    // beginning of queue
     private Node<Item> last;     // end of queue
     private int n;               // number of elements on queue

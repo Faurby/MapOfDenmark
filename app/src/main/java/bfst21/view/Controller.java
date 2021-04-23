@@ -159,7 +159,7 @@ public class Controller {
                     }
                 }
                 if (closestNode != null) {
-                    if (tempNodeAtMouseCoords.distTo(closestNode) < 0.025) {
+                    if (tempNodeAtMouseCoords.distTo(closestNode) < 300 * (1 / Math.sqrt(canvas.getTrans().determinant()))) {
                         userNodeClickedVBox.setVisible(true);
                         userNodeClickedText.setText((closestNode.getDescription().equals("") ? "No description entered" : closestNode.getDescription()));
                         currentUserNode = closestNode;
