@@ -2,9 +2,9 @@ package bfst21.models;
 
 import bfst21.address.TST;
 import bfst21.osm.*;
+import bfst21.pathfinding.Coordinate;
 import bfst21.pathfinding.Dijkstra;
 import bfst21.pathfinding.DirectedGraph;
-import bfst21.pathfinding.Vertex;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdTree;
 import com.github.davidmoten.rtree2.Entry;
@@ -40,8 +40,8 @@ public class MapData {
 
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
-    private Vertex originVertex;
-    private Vertex destinationVertex;
+    public Coordinate originCoords;
+    public Coordinate destinationCoords;
 
     /**
      * MapData constructor.
@@ -70,8 +70,6 @@ public class MapData {
         this.minY = minY;
         this.maxX = maxX;
         this.maxY = maxY;
-
-        System.out.println("Set tries: "+streetTries.size());
 
         //We need to initially fill the search HashMaps with empty Lists.
         //This is to avoid issues when accessing the search map before a range search.
@@ -154,10 +152,10 @@ public class MapData {
                             Node v = way.getNodes().get(i);
                             Node w = way.getNodes().get(i + 1);
 
-                            Vertex from = directedGraph.getVertex(v.getX(), v.getY());
-                            Vertex to = directedGraph.getVertex(w.getX(), w.getY());
+                            Coordinate fromCoords = new Coordinate(v.getX(), v.getY());
+                            Coordinate toCoords = new Coordinate(w.getX(), w.getY());
 
-                            directedGraph.addEdge(from, to, maxSpeed);
+                            directedGraph.addEdge(fromCoords, toCoords, maxSpeed);
                             idCount += 2;
                         }
                     }
@@ -167,8 +165,8 @@ public class MapData {
     }
 
     public void runDijkstra() {
-        if (originVertex != null && destinationVertex != null) {
-            dijkstra = new Dijkstra(directedGraph, originVertex, destinationVertex);
+        if (originCoords != null && destinationCoords != null) {
+            dijkstra = new Dijkstra(directedGraph, originCoords, destinationCoords);
         }
     }
 
@@ -444,22 +442,6 @@ public class MapData {
 
     public Dijkstra getDijkstra() {
         return dijkstra;
-    }
-
-    public Vertex getOriginVertex() {
-        return originVertex;
-    }
-
-    public void setOriginVertex(Vertex originVertex) {
-        this.originVertex = originVertex;
-    }
-
-    public Vertex getDestinationVertex() {
-        return destinationVertex;
-    }
-
-    public void setDestinationVertex(Vertex destinationVertex) {
-        this.destinationVertex = destinationVertex;
     }
 
     public TST<Node> getStreetTries() { return streetTries; }

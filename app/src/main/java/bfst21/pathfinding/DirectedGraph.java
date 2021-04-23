@@ -1,9 +1,10 @@
 package bfst21.pathfinding;
 
-import bfst21.osm.ElementIntIndex;
-
+import bfst21.models.Util;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class DirectedGraph implements Serializable {
@@ -11,57 +12,67 @@ public class DirectedGraph implements Serializable {
     private static final long serialVersionUID = -2665514385590129687L;
 
     private int vertexAmount;
-    private int edgeAmount;
-    private final ElementIntIndex<Vertex> vertexIntIndex = new ElementIntIndex<>();
-    private final HashMap<Vertex, Integer> vertexMap = new HashMap<>();
+    private final HashMap<Coordinate, Integer> coordsToIdMap = new HashMap<>();
+    private final HashMap<Integer, Coordinate> idToCoordsMap = new HashMap<>();
 
-    public DirectedGraph() {
-        this.edgeAmount = 0;
-    }
+    private Bag<Edge>[] adj;
 
     public void createVertex(float x, float y, int id) {
-        Vertex vertex = new Vertex(x, y, id);
-        vertexIntIndex.put(vertex);
-        vertexMap.put(vertex, id);
+        Coordinate coordinate = new Coordinate(x, y);
+        coordsToIdMap.put(coordinate, id);
+        idToCoordsMap.put(id, coordinate);
         vertexAmount++;
     }
 
-    public Vertex getVertex(float x, float y) {
-        Vertex vertex = new Vertex(x, y, 1);
+    private void createEdgeBag() {
+        if (adj == null && vertexAmount > 0) {
+            adj = (Bag<Edge>[]) new Bag[vertexAmount];
+            System.out.println("Create with size: "+vertexAmount);
+        }
+    }
 
-        if (vertexMap.containsKey(vertex)) {
-            int id = vertexMap.get(vertex);
-            return vertexIntIndex.get(id);
+    public int getVertexID(Coordinate coordinate) {
+        if (coordsToIdMap.containsKey(coordinate)) {
+            return coordsToIdMap.get(coordinate);
+        }
+        return -1;
+    }
+
+    public int getVertexID(float x, float y) {
+        Coordinate coordinate = new Coordinate(x, y);
+        return getVertexID(coordinate);
+    }
+
+    public Coordinate getVertexCoords(int id) {
+        if (idToCoordsMap.containsKey(id)) {
+            return idToCoordsMap.get(id);
         }
         return null;
     }
 
-    public Vertex getVertex(int id) {
-        return vertexIntIndex.get(id);
-    }
+    public void addEdge(Coordinate fromCoords, Coordinate toCoords, int maxSpeed) {
+        createEdgeBag();
 
-    public void addEdge(Vertex from, Vertex to, int maxSpeed) {
-        float distance = (float) from.distTo(to);
-        Edge edge1 = new Edge(from.getID(), to.getID(), distance, maxSpeed);
-        Edge edge2 = new Edge(to.getID(), from.getID(), distance, maxSpeed);
+        int fromID = getVertexID(fromCoords);
+        int toID = getVertexID(toCoords);
 
-        from.addEdge(edge1);
-        to.addEdge(edge1);
-        from.addEdge(edge2);
-        to.addEdge(edge2);
+        float distance = (float) Util.distTo(fromCoords.getX(), fromCoords.getY(), toCoords.getX(), toCoords.getY());
+        Edge edge1 = new Edge(fromID, toID, distance, maxSpeed);
+        Edge edge2 = new Edge(toID, fromID, distance, maxSpeed);
 
-        edgeAmount++;
+        System.out.println("Ids: "+toID+" "+fromID);
+
+        adj[toID].add(edge1);
+        adj[toID].add(edge2);
+        adj[fromID].add(edge1);
+        adj[fromID].add(edge2);
     }
 
     public int getVertexAmount() {
         return vertexAmount;
     }
 
-    public ElementIntIndex<Vertex> getVertexIntIndex() {
-        return vertexIntIndex;
-    }
-
-    public HashMap<Vertex, Integer> getVertexMap() {
-        return vertexMap;
+    public Bag<Edge>[] getAdj() {
+        return adj;
     }
 }
