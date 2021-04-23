@@ -129,6 +129,14 @@ public enum ElementType {
             Color.rgb(50, 50, 50),
             Color.rgb(200, 200, 200)
     ),
+    AEROWAY(
+            0.002f,
+            5000.0f,
+            0.0D,
+            Color.rgb(200, 200, 200),
+            Color.rgb(200, 200, 200),
+            Color.rgb(61,64,67)
+    ),
     UNKNOWN(
             0.002f,
             500.0f,

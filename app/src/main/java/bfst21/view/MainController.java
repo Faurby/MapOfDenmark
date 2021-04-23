@@ -302,7 +302,6 @@ public class MainController {
         }
     }
 
-
     @FXML
     public void userNodeButtonClicked() throws MapDataNotLoadedException {
         if (model.getMapData() == null) {

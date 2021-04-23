@@ -194,6 +194,13 @@ public class XmlParser {
                                                 elementType = ElementType.RAILWAY;
                                                 break;
                                         }
+                                    case "aeroway":
+                                        switch (value) {
+                                            case "taxiway":
+                                            case "runway":
+                                            elementType = ElementType.AEROWAY;
+                                            break;
+                                        }
                                     case "landuse":
                                         if (value.equals("grass") ||
                                                 value.equals("meadow") ||
