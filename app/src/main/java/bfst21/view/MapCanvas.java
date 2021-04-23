@@ -29,8 +29,6 @@ public class MapCanvas extends Canvas {
 
     private Model model;
 
-    private static MapCanvas instance;
-
     private final double zoomLevelMin = 50.0D, zoomLevelMax = 100_000.0D;
     private double zoomLevel;
     private double widthModifier = 1.0D;
@@ -178,7 +176,7 @@ public class MapCanvas extends Canvas {
                 gc.setFillRule(FillRule.EVEN_ODD);
 
                 for (Relation rel : model.getMapData().getRelations(elementType)) {
-                    gc.setFill(elementType.getColor());
+                    gc.setFill(getColor(elementType));
                     rel.fill(gc, zoomLevel);
                 }
                 gc.setFillRule(FillRule.NON_ZERO);
@@ -568,20 +566,5 @@ public class MapCanvas extends Canvas {
             return value.substring(0, 8);
         }
         return value;
-    }
-
-    /**
-     * Creates an instance of MapCanvas if it does not exist yet
-     * @return singleton instance of MapCanvas
-     */
-    public static MapCanvas getInstance() {
-        if (instance == null) {
-            instance = new MapCanvas();
-        }
-        return instance;
-    }
-
-    public Model getModel() {
-        return model;
     }
 }
