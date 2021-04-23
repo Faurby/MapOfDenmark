@@ -101,7 +101,7 @@
                     <Menu text="Accessibility">
                         <Menu text="Color modes">
                             <MenuItem fx:id="Standard" onAction="#changeColorMode" text="Standard"/>
-                            <MenuItem fx:id="BlackAndWhite" onAction="#changeColorMode" text="Black and White"/>
+                            <MenuItem fx:id="BlackAndWhite" onAction="#changeColorMode" text="Dark Theme"/>
                             <MenuItem fx:id="ColorBlind" onAction="#changeColorMode" text="Colorblind"/>
                         </Menu>
                         <MenuItem onAction="#userNodeButtonClicked" text="Add point of interest"/>
