@@ -161,7 +161,7 @@ public class SearchBoxController {
                 searchButton.requestFocus();
             }
         } else {
-            if (addressArea.getText().trim().length() >= 5) {
+            if (addressArea.getText().trim().length() >= 4) {
                 if (streetTries == null) {
                     MapCanvas mapCanvas = controller.getCanvas();
                     Model model = mapCanvas.getModel();
@@ -169,11 +169,11 @@ public class SearchBoxController {
                     streetTries = mapData.getStreetTries();
                 }
 
-                Iterable<String> list = streetTries.keysWithPrefix(addressArea.getText());
+                //for (String s : streetTries.keys()) {
+                //    System.out.println("a: "+s);
+                //}
 
-                for (String s : streetTries.keys()) {
-                    System.out.println("a: "+s);
-                }
+                Iterable<String> list = streetTries.keysWithPrefix(addressArea.getText());
                 for (String s : list) {
                     System.out.println("b: "+s);
                 }
