@@ -567,4 +567,8 @@ public class MapCanvas extends Canvas {
         }
         return value;
     }
+
+    public Model getModel() {
+        return model;
+    }
 }
