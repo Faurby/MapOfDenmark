@@ -29,9 +29,9 @@ public enum ElementType {
             1f,
             1000.0f,
             0.0D,
-            Color.rgb(103, 167, 113),
-            Color.rgb(53, 62, 5),
-            Color.rgb(18,42,26)
+            Color.rgb(162, 210, 170),
+            Color.rgb(59, 70, 0),
+            Color.rgb(19,40,26)
     ),
     WATER(
             1f,
@@ -174,6 +174,7 @@ public enum ElementType {
         return this == ElementType.BUILDING ||
                this == ElementType.ISLAND ||
                this == ElementType.LANDUSE ||
+               this == ElementType.FOREST ||
                this == ElementType.WATER;
     }
 
@@ -184,6 +185,7 @@ public enum ElementType {
     public boolean hasMultipleSizes() {
         return this == ElementType.BUILDING ||
                 this == ElementType.LANDUSE ||
+                this == ElementType.FOREST ||
                 this == ElementType.WATER;
     }
 
