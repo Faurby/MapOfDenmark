@@ -1,4 +1,4 @@
-package bfst21.view;
+package bfst21.view.controllers;
 
 import bfst21.address.Address;
 import bfst21.exceptions.IllegalInputException;

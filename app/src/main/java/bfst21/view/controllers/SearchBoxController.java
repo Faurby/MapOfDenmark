@@ -1,4 +1,4 @@
-package bfst21.view;
+package bfst21.view.controllers;
 
 import bfst21.address.Address;
 import bfst21.address.TST;
@@ -6,6 +6,7 @@ import bfst21.exceptions.IllegalInputException;
 import bfst21.models.MapData;
 import bfst21.models.Model;
 import bfst21.osm.Node;
+import bfst21.view.MapCanvas;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

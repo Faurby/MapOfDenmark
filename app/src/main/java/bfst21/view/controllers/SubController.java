@@ -1,4 +1,4 @@
-package bfst21.view;
+package bfst21.view.controllers;
 
 
 public abstract class SubController {

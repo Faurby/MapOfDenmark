@@ -9,9 +9,14 @@ public class Node implements Serializable {
     private static final long serialVersionUID = -343957913094540189L;
     private final float x, y;
 
-    public Node(float lon, float lat) {
+    public Node(float lon, float lat, boolean convertLat) {
         this.x = lon;
-        this.y = -lat / 0.56f;
+
+        if (convertLat) {
+            this.y = -lat / 0.56f;
+        } else {
+            this.y = lat;
+        }
     }
 
     public float getX() {

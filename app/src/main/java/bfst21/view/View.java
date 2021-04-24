@@ -3,6 +3,7 @@ package bfst21.view;
 import java.io.IOException;
 
 import bfst21.models.Model;
+import bfst21.view.controllers.MainController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

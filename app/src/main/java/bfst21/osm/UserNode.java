@@ -10,7 +10,7 @@ public class UserNode extends Node implements Drawable {
     private String description;
 
     public UserNode(float lat, float lon, String description) {
-        super(lat, lon);
+        super(lat, lon, false);
         this.description = description;
     }
 

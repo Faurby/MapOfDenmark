@@ -1,4 +1,4 @@
-package bfst21.view;
+package bfst21.view.controllers;
 
 import bfst21.exceptions.MapDataNotLoadedException;
 import bfst21.models.*;
@@ -6,6 +6,8 @@ import bfst21.osm.Node;
 import bfst21.osm.UserNode;
 import bfst21.osm.Way;
 import bfst21.pathfinding.Coordinate;
+import bfst21.view.ColorMode;
+import bfst21.view.MapCanvas;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -145,20 +147,18 @@ public class MainController {
         canvas.runRangeSearchTask();
 
         if (model.getMapData() != null) {
-            float mouseX = (float) canvas.mouseToModelCoords(lastMouse).getX();
-            float mouseY = (float) canvas.mouseToModelCoords(lastMouse).getY();
-
-            Node tempNodeAtMouseCoords = new Node(mouseX, -(mouseY * 0.56f));
+            Point2D point = canvas.mouseToModelCoords(lastMouse);
+            Node nodeAtMouse = new Node((float) point.getX(), (float) point.getY(), false);
             UserNode closestNode = null;
 
             if (!model.getMapData().getUserNodes().isEmpty()) {
                 for (UserNode userNode : model.getMapData().getUserNodes()) {
-                    if (closestNode == null || tempNodeAtMouseCoords.distTo(userNode) < tempNodeAtMouseCoords.distTo(closestNode)) {
+                    if (closestNode == null || nodeAtMouse.distTo(userNode) < nodeAtMouse.distTo(closestNode)) {
                         closestNode = userNode;
                     }
                 }
                 if (closestNode != null) {
-                    if (tempNodeAtMouseCoords.distTo(closestNode) < 300 * (1 / Math.sqrt(canvas.getTrans().determinant()))) {
+                    if (nodeAtMouse.distTo(closestNode) < 300 * (1 / Math.sqrt(canvas.getTrans().determinant()))) {
                         userNodeClickedVBox.setVisible(true);
                         userNodeClickedText.setText((closestNode.getDescription().equals("") ? "No description entered" : closestNode.getDescription()));
                         currentUserNode = closestNode;
@@ -186,8 +186,8 @@ public class MainController {
 
         if (mouseEvent.isSecondaryButtonDown()) {
             Point2D point = canvas.mouseToModelCoords(lastMouse);
-            Node node = new Node((float) point.getX(), (float) -point.getY() * 0.56f);
-            canvas.runNearestNeighborTask(node);
+            Node nodeAtMouse = new Node((float) point.getX(), (float) point.getY(), false);
+            canvas.runNearestNeighborTask(nodeAtMouse);
         }
 
         if (userNodeToggle && mouseEvent.isSecondaryButtonDown()) {
@@ -198,8 +198,8 @@ public class MainController {
 
         if (mouseEvent.isShiftDown() && mouseEvent.isPrimaryButtonDown()) {
             Point2D point = canvas.mouseToModelCoords(lastMouse);
-            Node node = new Node((float) point.getX(), (float) -point.getY() * 0.56f);
-            Node nearestNode = model.getMapData().kdTreeNearestNeighborSearch(node);
+            Node nodeAtMouse = new Node((float) point.getX(), (float) point.getY(), false);
+            Node nearestNode = model.getMapData().kdTreeNearestNeighborSearch(nodeAtMouse);
 
             Coordinate coords = new Coordinate(nearestNode.getX(), nearestNode.getY());
 
@@ -339,9 +339,10 @@ public class MainController {
     }
 
     private void saveUserNode() {
-        float mouseX = (float) canvas.mouseToModelCoords(lastMouse).getX();
-        float mouseY = (float) canvas.mouseToModelCoords(lastMouse).getY();
-        model.getMapData().addUserNode(new UserNode(mouseX, -(mouseY * 0.56f), userNodeTextField.getText()));
+        Point2D point = canvas.mouseToModelCoords(lastMouse);
+        UserNode userNode = new UserNode((float) point.getX(), (float) point.getY(), userNodeTextField.getText());
+
+        model.getMapData().addUserNode(userNode);
         scene.setCursor(Cursor.DEFAULT);
         userNodeToggle = false;
         userNodeVBox.setVisible(false);

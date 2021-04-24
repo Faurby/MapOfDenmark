@@ -8,7 +8,7 @@
 <StackPane fx:id="searchBox"
       xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="bfst21.view.SearchBoxController">
+      fx:controller="bfst21.view.controllers.SearchBoxController">
 
     <VBox
             minWidth="175" style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B">

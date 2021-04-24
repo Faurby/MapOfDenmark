@@ -11,7 +11,7 @@
 <VBox fx:id="navigationBox"
       xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="bfst21.view.NavigationBoxController"
+      fx:controller="bfst21.view.controllers.NavigationBoxController"
       minWidth="200" style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B"
       visible="false" managed="false">
 
