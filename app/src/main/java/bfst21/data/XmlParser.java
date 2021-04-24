@@ -1,6 +1,6 @@
 package bfst21.data;
 
-import bfst21.address.TriesMap;
+import bfst21.address.TST;
 import bfst21.models.DisplayOption;
 import bfst21.models.DisplayOptions;
 import bfst21.osm.*;
@@ -44,7 +44,8 @@ public class XmlParser {
         OsmAddress osmAddress = null;
         Node node = null;
         ElementType elementType = null;
-        TriesMap triesMap = new TriesMap();
+        //TriesMap triesMap = new TriesMap();
+        TST<Node> addressTries = new TST<>();
 
         ElementLongIndex<NodeID> nodeLongIndex = new ElementLongIndex<>();
         ElementLongIndex<Way> wayLongIndex = new ElementLongIndex<>();
@@ -278,7 +279,8 @@ public class XmlParser {
 
                         case "node":
                             if (osmAddress != null && osmAddress.isValid()) {
-                                triesMap.addAddress(osmAddress);
+                                //triesMap.addAddress(osmAddress);
+                                addressTries.put(osmAddress.toString(), osmAddress.getNode());
                             }
                             break;
 
@@ -319,7 +321,7 @@ public class XmlParser {
                 null,
                 null,
                 null,
-                triesMap,
+                addressTries,
                 minX,
                 maxX,
                 minY,

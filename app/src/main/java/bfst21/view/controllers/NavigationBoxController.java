@@ -1,6 +1,6 @@
 package bfst21.view.controllers;
 
-import bfst21.address.TriesMap;
+import bfst21.address.TST;
 import bfst21.exceptions.IllegalInputException;
 import bfst21.models.MapData;
 import bfst21.models.Model;
@@ -38,7 +38,7 @@ public class NavigationBoxController extends SubController {
     @FXML
     private VBox navigationBox;
 
-    private TriesMap triesMap;
+    private TST<Node> addressTries;
 
     @FXML
     public void searchNavigationAddresses() {
@@ -49,18 +49,18 @@ public class NavigationBoxController extends SubController {
             throw new IllegalInputException("Search field is empty", destinationPoint.getId());
 
         } else {
-            if (triesMap == null) {
+            if (addressTries == null) {
                 MapCanvas mapCanvas = mainController.getCanvas();
                 Model model = mapCanvas.getModel();
                 MapData mapData = model.getMapData();
-                triesMap = mapData.getTriesMap();
+                addressTries = mapData.getAddressTries();
             }
 
             String originAddress = startingPoint.getText();
-            Node originNode = triesMap.getNode(originAddress);
+            Node originNode = addressTries.get(originAddress);
 
             String destinationAddress = destinationPoint.getText();
-            Node destinationNode = triesMap.getNode(destinationAddress);
+            Node destinationNode = addressTries.get(destinationAddress);
 
             if (originNode != null && destinationNode != null) {
 

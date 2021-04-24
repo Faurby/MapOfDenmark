@@ -1,5 +1,6 @@
 package bfst21.models;
 
+import bfst21.address.TST;
 import bfst21.address.TriesMap;
 import bfst21.osm.*;
 import bfst21.pathfinding.Dijkstra;
@@ -26,7 +27,7 @@ public class MapData {
 
     private final float minX, minY, maxX, maxY;
 
-    private final TriesMap triesMap;
+    private final TST<Node> addressTries;
 
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
@@ -45,7 +46,7 @@ public class MapData {
             HashMap<ElementGroup, KdTree<Way>> kdTreeMap,
             KdTree<Relation> kdTreeRelations,
             DirectedGraph directedGraph,
-            TriesMap triesMap,
+            TST<Node> addressTries,
             float minX,
             float maxX,
             float minY,
@@ -55,7 +56,7 @@ public class MapData {
         this.kdTreeMap = kdTreeMap;
         this.kdTreeRelations = kdTreeRelations;
         this.islands = islands;
-        this.triesMap = triesMap;
+        this.addressTries = addressTries;
         this.minX = minX;
         this.minY = minY;
         this.maxX = maxX;
@@ -371,7 +372,7 @@ public class MapData {
         return dijkstra;
     }
 
-    public TriesMap getTriesMap() {
-        return triesMap;
+    public TST<Node> getAddressTries() {
+        return addressTries;
     }
 }

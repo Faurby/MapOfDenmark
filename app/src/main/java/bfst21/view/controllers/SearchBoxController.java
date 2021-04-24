@@ -1,10 +1,11 @@
 package bfst21.view.controllers;
 
 import bfst21.address.Address;
-import bfst21.address.TriesMap;
+import bfst21.address.TST;
 import bfst21.exceptions.IllegalInputException;
 import bfst21.models.MapData;
 import bfst21.models.Model;
+import bfst21.osm.Node;
 import bfst21.view.MapCanvas;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -30,7 +31,7 @@ public class SearchBoxController extends SubController {
     @FXML
     private VBox suggestions;
 
-    private TriesMap triesMap;
+    private TST<Node> addressTries;
 
     @FXML
     private void searchSingleAddress() {
@@ -84,21 +85,25 @@ public class SearchBoxController extends SubController {
             int textLength = addressArea.getText().trim().length();
             if (textLength >= 2) {
                 try {
-                    if (triesMap == null) {
+                    if (addressTries == null) {
                         MapCanvas mapCanvas = mainController.getCanvas();
                         Model model = mapCanvas.getModel();
                         MapData mapData = model.getMapData();
-                        triesMap = mapData.getTriesMap();
+                        addressTries = mapData.getAddressTries();
                     }
 
+                    int count = 0;
                     suggestions.getChildren().clear();
-                    for (String s : triesMap.keysWithPrefix(addressArea.getText(), textLength)) {
-                        Label b = new Label(s);
-                        b.setOnMouseClicked((event) -> {
-                            addressArea.setText(b.getText());
-                            suggestions.getChildren().clear();
-                        });
-                        suggestions.getChildren().add(b);
+                    for (String s : addressTries.keysWithPrefix(addressArea.getText())) {
+                        if (count <= 10) {
+                            Label b = new Label(s);
+                            b.setOnMouseClicked((event) -> {
+                                addressArea.setText(b.getText());
+                                suggestions.getChildren().clear();
+                            });
+                            suggestions.getChildren().add(b);
+                            count++;
+                        }
                     }
                 } catch (NullPointerException e) {
                     e.getMessage();
