@@ -3,8 +3,8 @@ package bfst21.address;
 
 public class Postcode {
 
-    private String city;
-    private int postcode;
+    private final String city;
+    private final int postcode;
 
     public Postcode(String city, int postcode) {
         this.city = city;

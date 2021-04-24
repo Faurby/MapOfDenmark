@@ -2,29 +2,24 @@ package bfst21.osm;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import bfst21.tree.BoundingBox;
+import bfst21.tree.BoundingBoxElement;
 import bfst21.view.Drawable;
-import com.github.davidmoten.rtree2.geometry.Geometries;
-import com.github.davidmoten.rtree2.geometry.Geometry;
-import com.github.davidmoten.rtree2.geometry.Rectangle;
-import com.github.davidmoten.rtree2.internal.Line2D;
-import com.github.davidmoten.rtree2.internal.RectangleUtil;
 import javafx.scene.canvas.GraphicsContext;
 
 
-public class Way extends Element implements Geometry, Drawable, Serializable {
+public class Way extends BoundingBoxElement implements Drawable, Serializable {
 
     private static final long serialVersionUID = 3139576893143362100L;
     private final List<Node> nodes = new ArrayList<>();
 
     private ElementType elementType;
     private String role;
-    private int maxSpeed;
-    private boolean isDrawn;
-
-    private float minX, maxX, minY, maxY;
+    private int maxSpeed = 1;
+    private boolean oneWay;
+    private boolean oneWayBike;
 
     public Way(long id) {
         super(id);
@@ -40,35 +35,11 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         return ElementSize.DEFAULT;
     }
 
-    protected void updateBoundingBox(Node node) {
-        if (nodes.size() == 1) {
-            minX = node.getX();
-            maxX = node.getX();
-            minY = node.getY();
-            maxY = node.getY();
-
-        } else {
-            float nX = node.getX();
-            float nY = node.getY();
-
-            if (nX < minX) {
-                minX = nX;
-            }
-            if (nY < minY) {
-                minY = nY;
-            }
-            if (nX > maxX) {
-                maxX = nX;
-            }
-            if (nY > maxY) {
-                maxY = nY;
-            }
-        }
-    }
-
     public void add(Node node) {
         nodes.add(node);
-        updateBoundingBox(node);
+
+        boolean initialNode = nodes.size() == 1;
+        updateBoundingBox(node, initialNode);
     }
 
     @Override
@@ -84,7 +55,6 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         }
         int last = nodes.size() - 1;
         gc.lineTo(nodes.get(last).getX(), nodes.get(last).getY());
-        isDrawn = true;
     }
 
     public static int getNodeSkipAmount(double zoomLevel) {
@@ -108,6 +78,20 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
             return 2;
         }
         return 1;
+    }
+
+    public static Way reverseMerge(Way first, Way second) {
+        if (first == null) {
+            return second;
+        }
+        if (second == null) {
+            return first;
+        }
+        Way merged = new Way(first.getID());
+        merged.nodes.addAll(first.nodes);
+        Collections.reverse(second.nodes);
+        merged.nodes.addAll(second.nodes.subList(1, second.nodes.size()));
+        return merged;
     }
 
     public static Way merge(Way first, Way second) {
@@ -154,20 +138,16 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         }
     }
 
-    public float getMinX() {
-        return minX;
+    public void setOneWay(boolean oneWay) {
+        this.oneWay = oneWay;
     }
 
-    public float getMaxX() {
-        return maxX;
+    public void setOneWayBike(boolean oneWayBike) {
+        this.oneWayBike = oneWayBike;
     }
 
-    public float getMinY() {
-        return minY;
-    }
-
-    public float getMaxY() {
-        return maxY;
+    public boolean isOneWay() {
+        return oneWay;
     }
 
     public void setMaxSpeed(int maxSpeed) {
@@ -186,39 +166,6 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         this.elementType = elementType;
     }
 
-    public boolean canNavigate() {
-        return elementType == ElementType.PRIMARY ||
-                elementType == ElementType.MOTORWAY ||
-                elementType == ElementType.TRUNK ||
-                elementType == ElementType.TERTIARY ||
-                elementType == ElementType.CYCLEWAY ||
-                elementType == ElementType.RESIDENTIAL ||
-                elementType == ElementType.ROAD ||
-                elementType == ElementType.FOOTWAY;
-    }
-
-    public boolean canDrive() {
-        return elementType == ElementType.PRIMARY ||
-                elementType == ElementType.MOTORWAY ||
-                elementType == ElementType.RESIDENTIAL ||
-                elementType == ElementType.TERTIARY ||
-                elementType == ElementType.TRUNK;
-    }
-
-    public boolean canBike() {
-        return elementType == ElementType.TERTIARY ||
-                elementType == ElementType.CYCLEWAY ||
-                elementType == ElementType.ROAD ||
-                elementType == ElementType.RESIDENTIAL;
-    }
-
-    public boolean canWalk() {
-        return elementType == ElementType.TERTIARY ||
-                elementType == ElementType.CYCLEWAY ||
-                elementType == ElementType.RESIDENTIAL ||
-                elementType == ElementType.ROAD ||
-                elementType == ElementType.FOOTWAY;
-    }
 
     public void setRole(String role) {
         this.role = role;
@@ -232,71 +179,11 @@ public class Way extends Element implements Geometry, Drawable, Serializable {
         return nodes;
     }
 
-    public BoundingBox getBoundingBox() {
-        return new BoundingBox(minX, maxX, minY, maxY);
-    }
-
     public Node first() {
         return nodes.get(0);
     }
 
     public Node last() {
         return nodes.get(nodes.size() - 1);
-    }
-
-    public boolean isDrawn() {
-        return isDrawn;
-    }
-
-    @Override
-    public double distance(Rectangle r) {
-        if (r.contains(minX, minY) || r.contains(maxX, maxY)) {
-            return 0;
-        } else {
-            double d1 = distance(r.x1(), r.y1(), r.x1(), r.y2());
-            if (d1 == 0) {
-                return 0;
-            }
-            double d2 = distance(r.x1(), r.y2(), r.x2(), r.y2());
-            if (d2 == 0) {
-                return 0;
-            }
-            double d3 = distance(r.x2(), r.y2(), r.x2(), r.y1());
-            double d4 = distance(r.x2(), r.y1(), r.x1(), r.y1());
-            return Math.min(d1, Math.min(d2, Math.min(d3, d4)));
-        }
-    }
-
-    private double distance(double x1, double y1, double x2, double y2) {
-        Line2D line = new Line2D(x1, y1, x2, y2);
-        double d1 = line.ptSegDist(this.minX, this.minY);
-        double d2 = line.ptSegDist(this.maxX, this.maxY);
-        Line2D line2 = new Line2D(this.minX, this.minY, this.maxX, this.maxY);
-        double d3 = line2.ptSegDist(x1, y1);
-        if (d3 == 0) {
-            return 0;
-        }
-        double d4 = line2.ptSegDist(x2, y2);
-        if (d4 == 0) {
-            return 0;
-        } else {
-            return Math.min(d1, Math.min(d2, Math.min(d3, d4)));
-        }
-    }
-
-    @Override
-    public Rectangle mbr() {
-        return Geometries.rectangle(minX, minY, maxX, maxY);
-    }
-
-    @Override
-    public boolean intersects(Rectangle r) {
-        return RectangleUtil.rectangleIntersectsLine(r.x1(), r.y1(), r.x2() - r.x1(),
-                r.y2() - r.y1(), minX, minY, maxX, maxY);
-    }
-
-    @Override
-    public boolean isDoublePrecision() {
-        return false;
     }
 }

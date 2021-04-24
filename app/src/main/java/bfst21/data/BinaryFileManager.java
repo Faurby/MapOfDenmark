@@ -1,9 +1,10 @@
 package bfst21.data;
 
+import bfst21.address.TST;
 import bfst21.osm.*;
+import bfst21.pathfinding.DirectedGraph;
 import bfst21.tree.KdTree;
 import bfst21.models.MapData;
-import com.github.davidmoten.rtree2.RTree;
 
 import java.io.*;
 import java.util.HashMap;
@@ -22,10 +23,12 @@ public class BinaryFileManager {
         }
         return new MapData(
                 (List<Way>) input.readObject(),
-                (WayLongIndex) input.readObject(),
-                (List<Relation>) input.readObject(),
-                (HashMap<ElementGroup, KdTree>) input.readObject(),
-                (HashMap<ElementGroup, RTree<Integer, Way>>) input.readObject(),
+                (ElementLongIndex<Way>) input.readObject(),
+                (ElementLongIndex<Relation>) input.readObject(),
+                (HashMap<ElementGroup, KdTree<Way>>) input.readObject(),
+                (KdTree<Relation>) input.readObject(),
+                (DirectedGraph) input.readObject(),
+                (TST<Node>) input.readObject(),
                 input.readFloat(),
                 input.readFloat(),
                 input.readFloat(),
@@ -35,11 +38,18 @@ public class BinaryFileManager {
 
     public void saveOBJ(String fileName, MapData mapData) throws IOException {
         try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)))) {
+
             output.writeObject(mapData.getWays(ElementGroup.getElementGroup(ElementType.ISLAND, ElementSize.DEFAULT)));
-            output.writeObject(mapData.getWayLongIndex());
-            output.writeObject(mapData.getRelations());
+            output.writeObject(null);
+            output.writeObject(null);
+
             output.writeObject(mapData.getKdTreeMap());
-            output.writeObject(mapData.getRTreeMap());
+            output.writeObject(mapData.getKdTreeRelations());
+
+            output.writeObject(mapData.getDirectedGraph());
+
+            output.writeObject(mapData.getAddressTries());
+
             output.writeFloat(mapData.getMinX());
             output.writeFloat(mapData.getMaxX());
             output.writeFloat(mapData.getMinY());

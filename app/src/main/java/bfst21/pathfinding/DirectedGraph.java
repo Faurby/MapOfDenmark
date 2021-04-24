@@ -1,62 +1,81 @@
 package bfst21.pathfinding;
 
-import edu.princeton.cs.algs4.Bag;
+import bfst21.osm.Node;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
-public class DirectedGraph {
+public class DirectedGraph implements Serializable {
 
-    private final Bag<Edge> edges;
-    private final Bag<Vertex> vertices;
-    private final int vertexAmount;
-    private int edgeAmount;
+    private static final long serialVersionUID = -2665514385590129687L;
 
-    public DirectedGraph(int vertexAmount) {
-        this.vertexAmount = vertexAmount;
-        this.edgeAmount = 0;
-        this.edges = new Bag<>();
-        this.vertices = new Bag<>();
+    private int vertexAmount;
+    private final HashMap<Node, Integer> coordsToIdMap = new HashMap<>();
+    private final HashMap<Integer, Node> idToCoordsMap = new HashMap<>();
+    private final HashMap<Integer, List<Edge>> adjacentEdges = new HashMap<>();
+
+    public void createVertex(float x, float y, int id) {
+        Node node = new Node(x, y, false);
+        coordsToIdMap.put(node, id);
+        idToCoordsMap.put(id, node);
+        vertexAmount++;
     }
 
-    public Vertex getVertex(float x, float y, int id) {
-        for (Vertex vertex : vertices) {
-            if (vertex.getX() == x && vertex.getY() == y) {
-                return vertex;
-            }
+    public int getVertexID(Node node) {
+        if (coordsToIdMap.containsKey(node)) {
+            return coordsToIdMap.get(node);
         }
-        return new Vertex(x, y, id);
+        return -1;
     }
 
-    public Vertex getVertex(int id) {
-        for (Vertex vertex : vertices) {
-            if (vertex.getID() == id) {
-                return vertex;
-            }
+    public Node getVertexNode(int id) {
+        if (idToCoordsMap.containsKey(id)) {
+            return idToCoordsMap.get(id);
         }
         return null;
     }
 
-    public void addEdge(Vertex from, Vertex to, double maxSpeed) {
-        Edge edge = new Edge(from, to, maxSpeed);
-        from.addEdge(edge);
-        to.addEdge(edge);
-        edges.add(edge);
+    public void addEdge(Node fromNode, Node toNode, int maxSpeed, boolean oneWay) {
+        int fromID = getVertexID(fromNode);
+        int toID = getVertexID(toNode);
 
-        edgeAmount++;
+        float distance = (float) fromNode.distTo(toNode);
+        Edge edge1 = new Edge(fromID, toID, distance, maxSpeed);
+
+        addEdge(toID, edge1);
+        addEdge(fromID, edge1);
+
+        if (!oneWay) {
+            Edge edge2 = new Edge(toID, fromID, distance, maxSpeed);
+            addEdge(toID, edge2);
+            addEdge(fromID, edge2);
+        }
     }
 
-    public int getEdgeAmount() {
-        return edgeAmount;
+    private void addEdge(int vertexID, Edge edge) {
+        List<Edge> edges = new ArrayList<>();
+        if (adjacentEdges.containsKey(vertexID)) {
+            edges = adjacentEdges.get(vertexID);
+        }
+        edges.add(edge);
+        adjacentEdges.put(vertexID, edges);
     }
 
     public int getVertexAmount() {
         return vertexAmount;
     }
 
-    public Bag<Edge> getEdges() {
-        return edges;
+    public List<Edge> getAdjacentEdges(int vertexID) {
+        if (adjacentEdges.containsKey(vertexID)) {
+            return adjacentEdges.get(vertexID);
+        }
+        return new ArrayList<>();
     }
 
-    public Bag<Vertex> getVertices() {
-        return vertices;
+    public HashMap<Integer, List<Edge>> getAdjacentEdges() {
+        return adjacentEdges;
     }
 }

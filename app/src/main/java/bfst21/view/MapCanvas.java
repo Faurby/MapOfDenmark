@@ -1,8 +1,9 @@
 package bfst21.view;
 
-import bfst21.models.Option;
-import bfst21.models.Options;
+import bfst21.models.DisplayOptions;
+import bfst21.models.DisplayOption;
 import bfst21.osm.*;
+import bfst21.pathfinding.DirectedGraph;
 import bfst21.pathfinding.Edge;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
@@ -21,6 +22,8 @@ import javafx.scene.transform.NonInvertibleTransformException;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class MapCanvas extends Canvas {
@@ -33,14 +36,17 @@ public class MapCanvas extends Canvas {
 
     private long totalRepaints, totalLastRepaintTime, lastTenAverageRepaintTime;
 
-    private final Options options = Options.getInstance();
+    private final DisplayOptions displayOptions = DisplayOptions.getInstance();
     private final GraphicsContext gc = getGraphicsContext2D();
 
     private int depth;
     private Task<Void> rangeSearchTask;
+    private Task<Void> nearestNeighborTask;
 
     private ColorMode colorMode = ColorMode.STANDARD;
     private Affine trans = new Affine();
+
+    private Node nearestNeighborNode;
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -53,6 +59,7 @@ public class MapCanvas extends Canvas {
      * Loads selected file in Model.
      * Pans the MapCanvas based on the bounds for the loaded map.
      * Fits the MapCanvas to the screen.
+     *
      * @param loadDefaultFile determines if the default or selected file should be loaded.
      */
     public void load(boolean loadDefaultFile) throws XMLStreamException, IOException, ClassNotFoundException {
@@ -64,7 +71,7 @@ public class MapCanvas extends Canvas {
         zoomLevel = 1.0D;
         double zoomFactor = getWidth() / (model.getMapData().getMaxX() - model.getMapData().getMinX());
 
-        zoom(zoomFactor, new Point2D(0, 0));
+        zoom(zoomFactor, new Point2D(0, 0), true);
     }
 
     /**
@@ -93,43 +100,49 @@ public class MapCanvas extends Canvas {
                 ElementType elementType = elementGroup.getType();
                 try {
                     if (elementType.isDisplayOptionEnabled()) {
+
+                        //TODO: This is a bit scuffed
+                        // but relations needs to be drawn in the correct order somehow...
+                        ElementSize elementSize = elementGroup.getSize();
+                        if (elementSize == ElementSize.DEFAULT || elementSize == ElementSize.SMALL) {
+                            drawRelations(elementType);
+                        }
                         drawOrFill(elementGroup);
                     }
                 } catch (IllegalArgumentException ex) {
-                    System.out.println("Failed to draw "+elementGroup);
-                    System.out.println("There is no DISPLAY_"+elementType+" in the Option class!");
+                    System.out.println("Failed to draw " + elementGroup);
+                    System.out.println("There is no DISPLAY_" + elementType + " in the Option class!");
                 }
             }
-            //TODO: Issue: Relations need to be drawn after certain elements but before certain roads
-            // For example it needs to be drawn after landuse and water but before roads
-            drawRelations();
             drawUserNodes();
+            drawNeighborNodes();
 
             //Display the kd-tree if option is enabled
-            if (options.getBool(Option.USE_KD_TREE)) {
-                if (options.getBool(Option.DISPLAY_KD_TREE)) {
-                    depth = 0;
+            if (displayOptions.getBool(DisplayOption.DISPLAY_KD_TREE)) {
+                depth = 0;
 
-                    float maxX = model.getMapData().getMaxX();
-                    float maxY = model.getMapData().getMaxY();
-                    float minX = model.getMapData().getMinX();
-                    float minY = model.getMapData().getMinY();
+                float maxX = model.getMapData().getMaxX();
+                float maxY = model.getMapData().getMaxY();
+                float minX = model.getMapData().getMinX();
+                float minY = model.getMapData().getMinY();
 
-                    for (ElementGroup elementGroup : ElementGroup.values()) {
-                        if (elementGroup.doShowElement(zoomLevel)) {
+                for (ElementGroup elementGroup : ElementGroup.values()) {
+                    if (elementGroup.doShowElement(zoomLevel)) {
 
-                            if (elementGroup.getType().isDisplayOptionEnabled()) {
+                        if (elementGroup.getType().isDisplayOptionEnabled()) {
 
-                                KdTree kdTree = model.getMapData().getKdTree(elementGroup);
-                                if (kdTree != null) {
-                                    drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
-                                }
+                            KdTree<Way> kdTree = model.getMapData().getKdTree(elementGroup);
+                            if (kdTree != null) {
+                                drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
                             }
                         }
                     }
                 }
             }
             drawGraph();
+            if (model.getMapData().destinationNode != null) {
+                drawPathTo(model.getMapData().destinationNode);
+            }
         }
         gc.restore();
 
@@ -147,37 +160,47 @@ public class MapCanvas extends Canvas {
     }
 
     /**
-     * Begins a range search for the specific tree if enabled.
+     * Draw every multipolygon Relation to display at the current zoom level.
+     * Uses FillRule.EVEN_ODD to ensure that inner and
+     * outer Ways of the Relation are properly filled.
      */
-    public void rangeSearch() {
-        if (model.getMapData() != null) {
-            if (options.getBool(Option.USE_KD_TREE)) {
-                double x1 = trans.getTx() / Math.sqrt(trans.determinant());
-                double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
-                double x2 = getWidth() - x1;
-                double y2 = getHeight() - y1;
+    public void drawRelations(ElementType elementType) {
+        if (displayOptions.getBool(DisplayOption.DISPLAY_RELATIONS)) {
+            if (elementType.doShowElement(zoomLevel)) {
 
-                x1 -= 50;
-                y1 -= 50;
-                x2 += 50;
-                y2 += 50;
+                gc.setFillRule(FillRule.EVEN_ODD);
 
-                Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
-                Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
+                for (Relation rel : model.getMapData().getRelations(elementType)) {
+                    gc.setFill(getColor(elementType));
+                    rel.fill(gc, zoomLevel);
+                }
+                gc.setFillRule(FillRule.NON_ZERO);
+            }
+        }
+    }
 
-                BoundingBox boundingBox = new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
-                model.getMapData().kdTreeRangeSearch(boundingBox, zoomLevel);
+    /**
+     * Draws or fills every Way with the ElementGroup to display at the current zoom level.
+     * Retrieves values for colors, size and line dashes from the ElementType.
+     */
+    public void drawOrFill(ElementGroup elementGroup) {
+        if (elementGroup.doShowElement(zoomLevel)) {
+            ElementType elementType = elementGroup.getType();
+            gc.setLineDashes(elementType.getLineDashes());
 
-            } else if (options.getBool(Option.USE_R_TREE)) {
-                double x1 = trans.getTx() / Math.sqrt(trans.determinant());
-                double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
-                double x2 = getWidth() - x1;
-                double y2 = getHeight() - y1;
+            if (elementType.doFillDraw()) {
+                gc.setFill(getColor(elementType));
+                for (Way way : model.getMapData().getWays(elementGroup)) {
+                    way.fill(gc, zoomLevel);
+                }
+            } else {
+                double size = elementType.getDrawSize() * widthModifier;
 
-                Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
-                Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
-
-                model.getMapData().rTreeRangeSearch(p1.getX(), p1.getY(), p2.getX(), p2.getY(), zoomLevel);
+                gc.setStroke(getColor(elementType));
+                gc.setLineWidth(size);
+                for (Way line : model.getMapData().getWays(elementGroup)) {
+                    line.draw(gc, zoomLevel);
+                }
             }
         }
     }
@@ -186,8 +209,8 @@ public class MapCanvas extends Canvas {
      * Draws every point of interest created by the user.
      */
     private void drawUserNodes() {
-        gc.setStroke(Color.RED);
-        gc.setLineWidth(0.002 * widthModifier);
+        gc.setStroke(Color.BLUE);
+        gc.setLineWidth(10 * (1 / Math.sqrt(trans.determinant())));
 
         for (UserNode userNode : model.getMapData().getUserNodes()) {
             userNode.draw(gc, 0);
@@ -195,16 +218,169 @@ public class MapCanvas extends Canvas {
     }
 
     /**
-     * Draws a visualization of the directed graph if option is enabled.
+     * Draw the entire navigation graph.
      */
-    private void drawGraph() {
-        if (options.getBool(Option.DISPLAY_GRAPH)) {
+    public void drawGraph() {
+        if (displayOptions.getBool(DisplayOption.DISPLAY_GRAPH)) {
+            DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
+
+            gc.setStroke(Color.DARKSLATEBLUE);
+            gc.setLineWidth(0.0002 * widthModifier);
+            gc.beginPath();
+
+            HashMap<Integer, List<Edge>> adj = directedGraph.getAdjacentEdges();
+            for (Integer vertexID : adj.keySet()) {
+                for (Edge edge : adj.get(vertexID)) {
+                    edge.draw(directedGraph, gc);
+                }
+            }
+            gc.stroke();
+        }
+    }
+
+    /**
+     * Draws a path from the origin node to the destination node.
+     * Draws every path that dijkstra has investigated.
+     */
+    public void drawPathTo(Node destination) {
+        if (displayOptions.getBool(DisplayOption.DISPLAY_DIJKSTRA)) {
+            DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
+
             gc.setStroke(Color.DARKSLATEBLUE);
             gc.setLineWidth(0.0002 * widthModifier);
 
-            for (Edge edge : model.getMapData().getDirectedGraph().getEdges()) {
-                edge.draw(gc, zoomLevel);
+            gc.beginPath();
+            Edge[] edges = model.getMapData().getDijkstra().getEdgeTo();
+            for (Edge edge : edges) {
+                if (edge != null) {
+                    edge.draw(directedGraph, gc);
+                }
             }
+            gc.stroke();
+
+            gc.setStroke(Color.RED);
+            gc.setLineWidth(0.0004 * widthModifier);
+
+            int destinationID = directedGraph.getVertexID(destination);
+
+            Iterable<Edge> it = model.getMapData().getDijkstra().pathTo(destinationID);
+            if (it != null) {
+                gc.beginPath();
+
+                for (Edge edge : it) {
+                    edge.draw(directedGraph, gc);
+                }
+                gc.stroke();
+            }
+        }
+    }
+
+    /**
+     * Pans and repaints the MapCanvas with the given delta x and y.
+     */
+    public void pan(double dx, double dy) {
+        trans.prependTranslation(dx, dy);
+        repaint();
+    }
+
+    /**
+     * Zooms and repaints the MapCanvas with the given zoom factor.
+     * Runs a range search task unless it is the initial zoom after loading the map.
+     */
+    public void zoom(double zoomFactor, Point2D center, boolean initialZoom) {
+        double zoomLevelNext = zoomLevel * zoomFactor;
+
+        if (zoomLevelNext < zoomLevelMax && zoomLevelNext > zoomLevelMin) {
+            zoomLevel = zoomLevelNext;
+            trans.prependScale(zoomFactor, zoomFactor, center);
+            repaint();
+
+            if (!initialZoom) {
+                runRangeSearchTask();
+            }
+        }
+    }
+
+    public void drawNeighborNodes() {
+        if (nearestNeighborNode != null) {
+            gc.setStroke(Color.RED);
+            gc.setLineWidth(0.002 * widthModifier);
+
+            gc.beginPath();
+            gc.moveTo(nearestNeighborNode.getX(), nearestNeighborNode.getY());
+            gc.lineTo(nearestNeighborNode.getX(), nearestNeighborNode.getY());
+            gc.stroke();
+        }
+    }
+
+    /**
+     * Starts a new nearest neighbor search task.
+     * Cancels the current nearest neighbor search task if it is running.
+     * Repaints the MapCanvas when the task is finished.
+     */
+    public void runNearestNeighborTask(Node queryNode) {
+        if (nearestNeighborTask != null) {
+            if (nearestNeighborTask.isRunning()) {
+                nearestNeighborTask.cancel();
+            }
+        }
+        nearestNeighborTask = new Task<>() {
+            @Override
+            protected Void call() {
+                nearestNeighborNode = model.getMapData().kdTreeNearestNeighborSearch(queryNode);
+                return null;
+            }
+        };
+        nearestNeighborTask.setOnSucceeded(e -> repaint());
+        nearestNeighborTask.setOnFailed(e -> nearestNeighborTask.getException().printStackTrace());
+        Thread thread = new Thread(nearestNeighborTask);
+        thread.start();
+    }
+
+    /**
+     * Starts a new range search task.
+     * Cancels the current range search task if it is running.
+     * Repaints the MapCanvas when the task is finished.
+     */
+    public void runRangeSearchTask() {
+        if (rangeSearchTask != null) {
+            if (rangeSearchTask.isRunning()) {
+                rangeSearchTask.cancel();
+            }
+        }
+        rangeSearchTask = new Task<>() {
+            @Override
+            protected Void call() {
+                rangeSearch();
+                return null;
+            }
+        };
+        rangeSearchTask.setOnSucceeded(e -> repaint());
+        rangeSearchTask.setOnFailed(e -> rangeSearchTask.getException().printStackTrace());
+        Thread thread = new Thread(rangeSearchTask);
+        thread.start();
+    }
+
+    /**
+     * Begins a range search for the kd-tree if MapData is available.
+     */
+    public void rangeSearch() {
+        if (model.getMapData() != null) {
+            double x1 = trans.getTx() / Math.sqrt(trans.determinant());
+            double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
+            double x2 = getWidth() - x1;
+            double y2 = getHeight() - y1;
+
+            x1 -= 50;
+            y1 -= 50;
+            x2 += 50;
+            y2 += 50;
+
+            Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
+            Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
+
+            BoundingBox boundingBox = new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
+            model.getMapData().kdTreeRangeSearch(boundingBox, zoomLevel);
         }
     }
 
@@ -268,54 +444,6 @@ public class MapCanvas extends Canvas {
     }
 
     /**
-     * Pans and repaints the MapCanvas with the given delta x and y.
-     */
-    public void pan(double dx, double dy) {
-        trans.prependTranslation(dx, dy);
-        repaint();
-    }
-
-    /**
-     * Zooms and repaints the MapCanvas with the given zoom factor.
-     * Runs a range search task.
-     */
-    public void zoom(double zoomFactor, Point2D center) {
-        double zoomLevelNext = zoomLevel * zoomFactor;
-
-        if (zoomLevelNext < zoomLevelMax && zoomLevelNext > zoomLevelMin) {
-            zoomLevel = zoomLevelNext;
-            trans.prependScale(zoomFactor, zoomFactor, center);
-            repaint();
-
-            runRangeSearchTask();
-        }
-    }
-
-    /**
-     * Starts a new range search task.
-     * Cancels the current range search task if it is running.
-     * Repaints the MapCanvas when the task is finished.
-     */
-    public void runRangeSearchTask() {
-        if (rangeSearchTask != null) {
-            if (rangeSearchTask.isRunning()) {
-                rangeSearchTask.cancel();
-            }
-        }
-        rangeSearchTask = new Task<>() {
-            @Override
-            protected Void call() {
-                rangeSearch();
-                return null;
-            }
-        };
-        rangeSearchTask.setOnSucceeded(e -> repaint());
-        rangeSearchTask.setOnFailed(e -> rangeSearchTask.getException().printStackTrace());
-        Thread thread = new Thread(rangeSearchTask);
-        thread.start();
-    }
-
-    /**
      * Converts "screen" coordinates for a Point2D to "map" coordinates.
      * The new coordinates fit the values of OSM nodes.
      */
@@ -329,78 +457,12 @@ public class MapCanvas extends Canvas {
     }
 
     /**
-     * Draw every multipolygon Relation to display at the current zoom level.
-     * Uses FillRule.EVEN_ODD to ensure that inner and
-     * outer Ways of the Relation are properly filled.
-     */
-    public void drawRelations() {
-//        for (Relation rel : model.getMapData().getRelations()) {
-//            for (Way way : rel.getWays()) {
-//                if (way.getType() != null) {
-//                    ElementType elementType = way.getType();
-//                    if (zoomLevel >= elementType.getZoomLevelRequired()) {
-//                        if (elementType == ElementType.BUILDING ||
-//                            elementType == ElementType.LANDUSE ||
-//                            elementType == ElementType.WATER) {
-//                            gc.setFill(elementType.getColor());
-//                            way.fill(gc, zoomLevel);
-//                        } else {
-//                            double size = elementType.getDrawSize() * widthModifier;
-//                            gc.setStroke(getColor(elementType));
-//                            gc.setLineWidth(size);
-//                            way.draw(gc, zoomLevel);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-        if (options.getBool(Option.DISPLAY_RELATIONS)) {
-            gc.setFillRule(FillRule.EVEN_ODD);
-            for (Relation rel : model.getMapData().getRelations()) {
-                if (rel.getType() != null) {
-                    ElementType elementType = rel.getType();
-                    if (zoomLevel >= elementType.getZoomLevelRequired()) {
-                        gc.setFill(elementType.getColor());
-                        rel.fill(gc, zoomLevel);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Draws or fills every Way with the ElementGroup to display at the current zoom level.
-     * Retrieves values for colors, size and line dashes from the ElementType.
-     */
-    public void drawOrFill(ElementGroup elementGroup) {
-        if (elementGroup.doShowElement(zoomLevel)) {
-            ElementType elementType = elementGroup.getType();
-            gc.setLineDashes(elementType.getLineDashes());
-
-            if (elementType.doFillDraw()) {
-                gc.setFill(getColor(elementType));
-                for (Way way : model.getMapData().getWays(elementGroup)) {
-                    way.fill(gc, zoomLevel);
-                }
-            } else {
-                double size = elementType.getDrawSize() * widthModifier;
-
-                gc.setStroke(getColor(elementType));
-                gc.setLineWidth(size);
-                for (Way line : model.getMapData().getWays(elementGroup)) {
-                    line.draw(gc, zoomLevel);
-                }
-            }
-        }
-    }
-
-    /**
      * @return Color for the specific ElementType depending on the current color mode.
      */
     public Color getColor(ElementType elementType) {
         if (colorMode == ColorMode.COLOR_BLIND) {
             return elementType.getColorBlind();
-        } else if (colorMode == ColorMode.BLACK_WHITE) {
+        } else if (colorMode == ColorMode.DARK_MODE) {
             return elementType.getBlackWhite();
         }
         return elementType.getColor();
@@ -434,6 +496,7 @@ public class MapCanvas extends Canvas {
 
     /**
      * Calculate zoom level percentage using the zoom limits.
+     *
      * @return zoom level percentage.
      */
     public String getZoomPercent() {
@@ -451,6 +514,10 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    public float getZoomPercentAsFloat() {
+        return Float.parseFloat(getZoomPercent().substring(0, getZoomPercent().length() - 1));
+    }
+
     public double getZoomLevel() {
         return zoomLevel;
     }
@@ -461,5 +528,13 @@ public class MapCanvas extends Canvas {
             return value.substring(0, 8);
         }
         return value;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public Affine getTrans() {
+        return trans;
     }
 }

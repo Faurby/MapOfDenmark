@@ -1,7 +1,8 @@
 package bfst21.data;
 
-import bfst21.models.Option;
-import bfst21.models.Options;
+import bfst21.address.TST;
+import bfst21.models.DisplayOption;
+import bfst21.models.DisplayOptions;
 import bfst21.osm.*;
 import bfst21.models.MapData;
 
@@ -29,7 +30,7 @@ public class XmlParser {
 
     public MapData loadOSM(InputStream input) throws XMLStreamException, FactoryConfigurationError {
 
-        Options options = Options.getInstance();
+        DisplayOptions displayOptions = DisplayOptions.getInstance();
 
         InputFactoryProviderImpl iprovider = new InputFactoryProviderImpl();
 
@@ -40,14 +41,16 @@ public class XmlParser {
 
         Way way = null;
         Relation relation = null;
-        OsmAddress osmAddress = new OsmAddress();
+        OsmAddress osmAddress = null;
+        Node node = null;
         ElementType elementType = null;
+        //TriesMap triesMap = new TriesMap();
+        TST<Node> addressTries = new TST<>();
 
-        NodeLongIndex nodeLongIndex = new NodeLongIndex();
-        WayLongIndex wayLongIndex = new WayLongIndex();
-        RelationLongIndex relationLongIndex = new RelationLongIndex();
+        ElementLongIndex<NodeID> nodeLongIndex = new ElementLongIndex<>();
+        ElementLongIndex<Way> wayLongIndex = new ElementLongIndex<>();
+        ElementLongIndex<Relation> relationLongIndex = new ElementLongIndex<>();
 
-        List<Relation> relations = new ArrayList<>();
         List<Way> coastlines = new ArrayList<>();
         List<Way> islands;
 
@@ -58,6 +61,7 @@ public class XmlParser {
             switch (reader.next()) {
                 case START_ELEMENT:
                     switch (reader.getLocalName()) {
+
                         case "bounds":
                             minX = Float.parseFloat(reader.getAttributeValue(null, "minlon"));
                             maxX = Float.parseFloat(reader.getAttributeValue(null, "maxlon"));
@@ -70,7 +74,8 @@ public class XmlParser {
                             float lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
                             float lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
 
-                            nodeLongIndex.put(new NodeID(nodeID, new Node(lon, lat)));
+                            node = new Node(lon, lat, true);
+                            nodeLongIndex.put(new NodeID(nodeID, node));
                             break;
 
                         case "way":
@@ -80,21 +85,21 @@ public class XmlParser {
                             break;
 
                         case "relation":
-                            if (options.getBool(Option.LOAD_RELATIONS)) {
+                            if (displayOptions.getBool(DisplayOption.LOAD_RELATIONS)) {
                                 long relationID = Long.parseLong(reader.getAttributeValue(null, "id"));
                                 relation = new Relation(relationID);
                             }
                             break;
 
                         case "member":
-                            if (options.getBool(Option.LOAD_RELATIONS)) {
+                            if (displayOptions.getBool(DisplayOption.LOAD_RELATIONS)) {
                                 String type = reader.getAttributeValue(null, "type");
                                 String memRef = reader.getAttributeValue(null, "ref");
                                 if (type != null) {
                                     if (type.equalsIgnoreCase("node")) {
-                                        Node memNode = nodeLongIndex.get(Long.parseLong(memRef));
+                                        NodeID memNode = nodeLongIndex.get(Long.parseLong(memRef));
                                         if (memNode != null) {
-                                            relation.addMember(memNode);
+                                            relation.addMember(memNode.getNode());
                                         }
                                     } else if (type.equalsIgnoreCase("way")) {
                                         Way memWay = wayLongIndex.get(Long.parseLong(memRef));
@@ -122,14 +127,11 @@ public class XmlParser {
                             if (way != null || relation != null || key.contains("addr:")) {
                                 switch (key) {
                                     case "addr:city":
-                                        osmAddress = new OsmAddress();
+                                        osmAddress = new OsmAddress(node);
                                         osmAddress.setCity(value);
                                         break;
                                     case "addr:housenumber":
                                         osmAddress.setHouseNumber(value);
-                                        break;
-                                    case "addr:name":
-                                        osmAddress.setName(value);
                                         break;
                                     case "addr:postcode":
                                         osmAddress.setPostcode(value);
@@ -139,6 +141,11 @@ public class XmlParser {
                                         break;
                                     case "building":
                                         elementType = ElementType.BUILDING;
+                                        break;
+                                    case "bridge":
+                                        if (value.equals("yes")) {
+                                            elementType = ElementType.TERTIARY;
+                                        }
                                         break;
                                     case "highway":
                                         switch (value) {
@@ -155,8 +162,10 @@ public class XmlParser {
                                             case "footway":
                                             case "footpath":
                                             case "path":
-                                            case "pedestrian":
                                                 elementType = ElementType.FOOTWAY;
+                                                break;
+                                            case "pedestrian":
+                                                elementType = ElementType.PEDESTRIAN;
                                                 break;
                                             case "cycleway":
                                             case "track":
@@ -171,7 +180,21 @@ public class XmlParser {
                                                 break;
                                             case "tertiary":
                                             case "secondary":
+                                            case "unclassified":
                                                 elementType = ElementType.TERTIARY;
+                                                break;
+                                        }
+                                        break;
+                                    case "railway":
+                                        if (value.equals("rail")) {
+                                            elementType = ElementType.RAILWAY;
+                                        }
+                                        break;
+                                    case "aeroway":
+                                        switch (value) {
+                                            case "taxiway":
+                                            case "runway":
+                                                elementType = ElementType.AEROWAY;
                                                 break;
                                         }
                                         break;
@@ -181,6 +204,9 @@ public class XmlParser {
                                             value.equals("orchard") ||
                                             value.equals("allotments")) {
                                             elementType = ElementType.LANDUSE;
+
+                                        } else if (value.equals("forest")) {
+                                            elementType = ElementType.FOREST;
                                         }
                                         break;
                                     case "leisure":
@@ -191,7 +217,7 @@ public class XmlParser {
                                     case "maxspeed":
                                         if (way != null) {
                                             if (way.getType() != null) {
-                                                if (way.canDrive()) {
+                                                if (way.getType().canDrive()) {
                                                     try {
                                                         way.setMaxSpeed(Integer.parseInt(value));
                                                     } catch (NumberFormatException ignored) {
@@ -208,24 +234,42 @@ public class XmlParser {
                                             case "water":
                                                 elementType = ElementType.WATER;
                                                 break;
+                                            case "wood":
+                                                elementType = ElementType.FOREST;
+                                                break;
+                                        }
+                                        break;
+                                    case "oneway":
+                                        if (value.equals("yes")) {
+                                            if (way != null) {
+                                                way.setOneWay(true);
+                                            }
+                                        }
+                                        break;
+                                    case "oneway:bicycle":
+                                        if (value.equals("yes")) {
+                                            if (way != null) {
+                                                way.setOneWayBike(true);
+                                            }
                                         }
                                         break;
                                     case "waterway":
                                         elementType = ElementType.WATERWAY;
                                         break;
-                                }
-                            } else if (relation != null) {
-                                if (key.equals("type")) {
-                                    if (value.equals("multipolygon")) {
-                                        relation.setMultipolygon(true);
-                                    }
+                                    case "type":
+                                        if (relation != null) {
+                                            if (value.equals("multipolygon")) {
+                                                relation.setMultipolygon(true);
+                                            }
+                                        }
+                                        break;
                                 }
                             }
                             break;
 
                         case "nd":
                             long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
-                            way.add(nodeLongIndex.get(ref));
+                            way.add(nodeLongIndex.get(ref).getNode());
                             break;
                     }
                     break;
@@ -234,18 +278,18 @@ public class XmlParser {
                     switch (reader.getLocalName()) {
 
                         case "node":
-                            if (osmAddress.getCity() != null) {
-//                                System.out.println("Found: "+osmAddress.getCity());
+                            if (osmAddress != null && osmAddress.isValid()) {
+                                //triesMap.addAddress(osmAddress);
+                                addressTries.put(osmAddress.toString(), osmAddress.getNode());
                             }
                             break;
 
                         case "relation":
-                            if (options.getBool(Option.LOAD_RELATIONS)) {
+                            if (displayOptions.getBool(DisplayOption.LOAD_RELATIONS)) {
                                 if (elementType != null) {
                                     relation.setType(elementType);
                                     elementType = null;
                                 }
-                                relations.add(relation);
                                 relationLongIndex.put(relation);
                                 relation = null;
                             }
@@ -273,9 +317,11 @@ public class XmlParser {
         return new MapData(
                 islands,
                 wayLongIndex,
-                relations,
+                relationLongIndex,
                 null,
                 null,
+                null,
+                addressTries,
                 minX,
                 maxX,
                 minY,
@@ -289,7 +335,9 @@ public class XmlParser {
         for (Way coast : coastlines) {
             Way before = pieces.remove(coast.first());
             Way after = pieces.remove(coast.last());
-            if (before == after) after = null;
+            if (before == after) {
+                after = null;
+            }
             Way merged = Way.merge(before, coast, after);
             pieces.put(merged.first(), merged);
             pieces.put(merged.last(), merged);

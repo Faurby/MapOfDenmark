@@ -3,7 +3,7 @@ package bfst21.address;
 
 public class Street {
 
-    private String street;
+    private final String street;
 
     public Street(String street) {
         this.street = street;

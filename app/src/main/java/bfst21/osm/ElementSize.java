@@ -1,5 +1,6 @@
 package bfst21.osm;
 
+
 public enum ElementSize {
     EXTRA_LARGE(500_000.0f, 500.0f),
     LARGE(100_000.0f, 1_000.0f),

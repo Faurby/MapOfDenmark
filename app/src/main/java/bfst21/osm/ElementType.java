@@ -1,7 +1,7 @@
 package bfst21.osm;
 
-import bfst21.models.Option;
-import bfst21.models.Options;
+import bfst21.models.DisplayOption;
+import bfst21.models.DisplayOptions;
 import javafx.scene.paint.Color;
 
 
@@ -15,7 +15,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(223, 222, 222),
             Color.rgb(151, 151, 151),
-            Color.rgb(211, 211, 211)
+            Color.rgb(25, 26, 28)
     ),
     LANDUSE(
             1f,
@@ -23,7 +23,15 @@ public enum ElementType {
             0.0D,
             Color.rgb(172, 220, 180),
             Color.rgb(69, 80, 7),
-            Color.rgb(211, 211, 211)
+            Color.rgb(29,50,36)
+    ),
+    FOREST(
+            1f,
+            1000.0f,
+            0.0D,
+            Color.rgb(162, 210, 170),
+            Color.rgb(59, 70, 0),
+            Color.rgb(19,40,26)
     ),
     WATER(
             1f,
@@ -31,7 +39,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(160, 196, 252),
             Color.rgb(0, 126, 170),
-            Color.rgb(0, 0, 0)
+            Color.rgb(52,66,93)
     ),
     WATERWAY(
             0.0002f,
@@ -39,7 +47,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(160, 196, 252),
             Color.rgb(0, 126, 170),
-            Color.rgb(0, 0, 0)
+            Color.rgb(52,66,93)
     ),
     CYCLEWAY(
             0.0001f,
@@ -47,7 +55,7 @@ public enum ElementType {
             0.0001D,
             Color.rgb(33, 33, 250),
             Color.rgb(33, 33, 250),
-            Color.rgb(33, 33, 250)
+            Color.rgb(52,66,130)
     ),
     FOOTWAY(
             0.0001f,
@@ -55,7 +63,15 @@ public enum ElementType {
             0.0001D,
             Color.rgb(252, 132, 116),
             Color.rgb(252, 132, 116),
-            Color.rgb(252, 132, 116)
+            Color.rgb(152, 32, 116)
+    ),
+    PEDESTRIAN(
+            0.0001f,
+            50000.0f,
+            0.0D,
+            Color.rgb(223, 241, 242),
+            Color.rgb(223, 241, 242),
+            Color.rgb(61,64,67)
     ),
     ROAD(
             0.0003f,
@@ -63,7 +79,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
-            Color.rgb(255, 255, 255)
+            Color.rgb(61,64,67)
     ),
     RESIDENTIAL(
             0.00015f,
@@ -71,7 +87,15 @@ public enum ElementType {
             0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
-            Color.rgb(255, 255, 255)
+            Color.rgb(61,64,67)
+    ),
+    RAILWAY(
+            0.00006f,
+            1500.0f,
+            0.0D,
+            Color.rgb(80, 80, 80),
+            Color.rgb(80, 80, 80),
+            Color.rgb(200, 200, 200)
     ),
     TRUNK(
             0.0003f,
@@ -79,7 +103,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
-            Color.rgb(255, 255, 255)
+            Color.rgb(61,64,67)
     ),
     MOTORWAY(
             0.0003f,
@@ -87,7 +111,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(248, 197, 81),
             Color.rgb(248, 198, 81),
-            Color.rgb(169, 169, 169)
+            Color.rgb(150,129,67)
     ),
     TERTIARY(
             0.0003f,
@@ -95,7 +119,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
-            Color.rgb(255, 255, 255)
+            Color.rgb(61,64,67)
     ),
     PRIMARY(
             0.0003f,
@@ -103,7 +127,15 @@ public enum ElementType {
             0.0D,
             Color.rgb(236, 148, 164),
             Color.rgb(255, 140, 0),
-            Color.rgb(255, 255, 255)
+            Color.rgb(95,99,104)
+    ),
+    AEROWAY(
+            0.002f,
+            5000.0f,
+            0.0D,
+            Color.rgb(200, 200, 200),
+            Color.rgb(200, 200, 200),
+            Color.rgb(61,64,67)
     ),
     BUILDING(
             1f,
@@ -111,7 +143,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(197, 185, 175),
             Color.rgb(51, 51, 51),
-            Color.rgb(169, 169, 169)
+            Color.rgb(89, 89, 89)
     ),
     UNKNOWN(
             0.002f,
@@ -142,6 +174,7 @@ public enum ElementType {
         return this == ElementType.BUILDING ||
                this == ElementType.ISLAND ||
                this == ElementType.LANDUSE ||
+               this == ElementType.FOREST ||
                this == ElementType.WATER;
     }
 
@@ -152,11 +185,46 @@ public enum ElementType {
     public boolean hasMultipleSizes() {
         return this == ElementType.BUILDING ||
                 this == ElementType.LANDUSE ||
+                this == ElementType.FOREST ||
                 this == ElementType.WATER;
     }
 
+    public boolean canNavigate() {
+        return this == ElementType.PRIMARY ||
+                this == ElementType.MOTORWAY ||
+                this == ElementType.TRUNK ||
+                this == ElementType.TERTIARY ||
+                this == ElementType.CYCLEWAY ||
+                this == ElementType.RESIDENTIAL ||
+                this == ElementType.ROAD ||
+                this == ElementType.FOOTWAY;
+    }
+
+    public boolean canDrive() {
+        return this == ElementType.PRIMARY ||
+                this == ElementType.MOTORWAY ||
+                this == ElementType.RESIDENTIAL ||
+                this == ElementType.TERTIARY ||
+                this == ElementType.TRUNK;
+    }
+
+    public boolean canBike() {
+        return this == ElementType.TERTIARY ||
+                this == ElementType.CYCLEWAY ||
+                this == ElementType.ROAD ||
+                this == ElementType.RESIDENTIAL;
+    }
+
+    public boolean canWalk() {
+        return this == ElementType.TERTIARY ||
+                this == ElementType.CYCLEWAY ||
+                this == ElementType.RESIDENTIAL ||
+                this == ElementType.ROAD ||
+                this == ElementType.FOOTWAY;
+    }
+
     public boolean isDisplayOptionEnabled() {
-        return Options.getInstance().getBool(Option.valueOf("DISPLAY_" + this));
+        return DisplayOptions.getInstance().getBool(DisplayOption.valueOf("DISPLAY_" + this));
     }
 
     public double getLineDashes() {
