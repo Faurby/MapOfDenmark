@@ -9,6 +9,9 @@ import java.util.NoSuchElementException;
 
 
 public class Queue<Item> implements Iterable<Item>, Serializable {
+
+    private static final long serialVersionUID = 6191688388055061607L;
+
     private Node<Item> first;    // beginning of queue
     private Node<Item> last;     // end of queue
     private int n;               // number of elements on queue

@@ -1,5 +1,6 @@
 package bfst21.address;
 
+
 public class City {
 
     private final int postcode;

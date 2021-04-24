@@ -6,10 +6,15 @@ package bfst21.address;
 import java.io.Serializable;
 
 public class TST<Value> implements Serializable {
+
+    private static final long serialVersionUID = -3195198871698251378L;
+
     private int n;              // size
     private Node<Value> root;   // root of TST
 
-    private static class Node<Value> {
+    private static class Node<Value> implements Serializable {
+        private static final long serialVersionUID = 1097052710816157996L;
+
         private char c;                        // character
         private Node<Value> left, mid, right;  // left, middle, and right subtries
         private Value val;                     // value associated with string
