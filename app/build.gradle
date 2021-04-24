@@ -45,9 +45,6 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:29.0-jre'
 
-    // RTree
-    implementation 'com.github.davidmoten:rtree2:0.9-RC1'
-
     // Woodstox parser
     implementation 'com.fasterxml.woodstox:woodstox-core:6.2.5'
 

@@ -11,7 +11,6 @@ public class DisplayOptions {
 
     private DisplayOptions() {
         options.put(DisplayOption.DISPLAY_KD_TREE, false);
-        options.put(DisplayOption.USE_R_TREE, false);
         options.put(DisplayOption.DISPLAY_GRAPH, false);
         options.put(DisplayOption.DISPLAY_DIJKSTRA, false);
     }

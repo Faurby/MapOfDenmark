@@ -279,8 +279,8 @@ public class MainController {
         if (buttonClicked.contains("standard")) {
             canvas.setColorMode(ColorMode.STANDARD);
 
-        } else if (buttonClicked.contains("blackandwhite")) {
-            canvas.setColorMode(ColorMode.BLACK_WHITE);
+        } else if (buttonClicked.contains("darkmode")) {
+            canvas.setColorMode(ColorMode.DARK_MODE);
 
         } else if (buttonClicked.contains("colorblind")) {
             canvas.setColorMode(ColorMode.COLOR_BLIND);

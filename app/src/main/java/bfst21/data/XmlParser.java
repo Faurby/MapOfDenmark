@@ -1,7 +1,5 @@
 package bfst21.data;
 
-import bfst21.address.AddressType;
-import bfst21.address.TST;
 import bfst21.address.TriesMap;
 import bfst21.models.DisplayOption;
 import bfst21.models.DisplayOptions;

@@ -46,8 +46,6 @@
                     </padding>
                     <Text text="Debug options:" style="-fx-padding: 2"/>
                     <CheckBox text="Load relations" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-                    <CheckBox text="Use KD tree" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-                    <CheckBox text="Use R tree" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Use graph" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display KD tree" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display graph" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
@@ -104,9 +102,9 @@
                     </Menu>
                     <Menu text="Accessibility">
                         <Menu text="Color modes">
-                            <MenuItem fx:id="Standard" onAction="#changeColorMode" text="Standard"/>
-                            <MenuItem fx:id="BlackAndWhite" onAction="#changeColorMode" text="Dark Theme"/>
-                            <MenuItem fx:id="ColorBlind" onAction="#changeColorMode" text="Colorblind"/>
+                            <MenuItem fx:id="standard" onAction="#changeColorMode" text="Standard"/>
+                            <MenuItem fx:id="darkMode" onAction="#changeColorMode" text="Dark mode"/>
+                            <MenuItem fx:id="colorBlind" onAction="#changeColorMode" text="Colorblind"/>
                         </Menu>
                         <MenuItem onAction="#userNodeButtonClicked" text="Add point of interest"/>
                     </Menu>

@@ -118,24 +118,22 @@ public class MapCanvas extends Canvas {
             drawNeighborNodes();
 
             //Display the kd-tree if option is enabled
-            if (displayOptions.getBool(DisplayOption.USE_KD_TREE)) {
-                if (displayOptions.getBool(DisplayOption.DISPLAY_KD_TREE)) {
-                    depth = 0;
+            if (displayOptions.getBool(DisplayOption.DISPLAY_KD_TREE)) {
+                depth = 0;
 
-                    float maxX = model.getMapData().getMaxX();
-                    float maxY = model.getMapData().getMaxY();
-                    float minX = model.getMapData().getMinX();
-                    float minY = model.getMapData().getMinY();
+                float maxX = model.getMapData().getMaxX();
+                float maxY = model.getMapData().getMaxY();
+                float minX = model.getMapData().getMinX();
+                float minY = model.getMapData().getMinY();
 
-                    for (ElementGroup elementGroup : ElementGroup.values()) {
-                        if (elementGroup.doShowElement(zoomLevel)) {
+                for (ElementGroup elementGroup : ElementGroup.values()) {
+                    if (elementGroup.doShowElement(zoomLevel)) {
 
-                            if (elementGroup.getType().isDisplayOptionEnabled()) {
+                        if (elementGroup.getType().isDisplayOptionEnabled()) {
 
-                                KdTree<Way> kdTree = model.getMapData().getKdTree(elementGroup);
-                                if (kdTree != null) {
-                                    drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
-                                }
+                            KdTree<Way> kdTree = model.getMapData().getKdTree(elementGroup);
+                            if (kdTree != null) {
+                                drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
                             }
                         }
                     }
@@ -219,6 +217,9 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    /**
+     * Draw the entire navigation graph.
+     */
     public void drawGraph() {
         if (displayOptions.getBool(DisplayOption.DISPLAY_GRAPH)) {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
@@ -237,6 +238,10 @@ public class MapCanvas extends Canvas {
         }
     }
 
+    /**
+     * Draws a path from the origin node to the destination node.
+     * Draws every path that dijkstra has investigated.
+     */
     public void drawPathTo(Node destination) {
         if (displayOptions.getBool(DisplayOption.DISPLAY_DIJKSTRA)) {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
@@ -357,38 +362,25 @@ public class MapCanvas extends Canvas {
     }
 
     /**
-     * Begins a range search for the specific tree if enabled.
+     * Begins a range search for the kd-tree if MapData is available.
      */
     public void rangeSearch() {
         if (model.getMapData() != null) {
-            if (displayOptions.getBool(DisplayOption.USE_KD_TREE)) {
-                double x1 = trans.getTx() / Math.sqrt(trans.determinant());
-                double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
-                double x2 = getWidth() - x1;
-                double y2 = getHeight() - y1;
+            double x1 = trans.getTx() / Math.sqrt(trans.determinant());
+            double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
+            double x2 = getWidth() - x1;
+            double y2 = getHeight() - y1;
 
-                x1 -= 50;
-                y1 -= 50;
-                x2 += 50;
-                y2 += 50;
+            x1 -= 50;
+            y1 -= 50;
+            x2 += 50;
+            y2 += 50;
 
-                Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
-                Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
+            Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
+            Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
 
-                BoundingBox boundingBox = new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
-                model.getMapData().kdTreeRangeSearch(boundingBox, zoomLevel);
-
-            } else if (displayOptions.getBool(DisplayOption.USE_R_TREE)) {
-                double x1 = trans.getTx() / Math.sqrt(trans.determinant());
-                double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
-                double x2 = getWidth() - x1;
-                double y2 = getHeight() - y1;
-
-                Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
-                Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
-
-                model.getMapData().rTreeRangeSearch(p1.getX(), p1.getY(), p2.getX(), p2.getY(), zoomLevel);
-            }
+            BoundingBox boundingBox = new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
+            model.getMapData().kdTreeRangeSearch(boundingBox, zoomLevel);
         }
     }
 
@@ -470,7 +462,7 @@ public class MapCanvas extends Canvas {
     public Color getColor(ElementType elementType) {
         if (colorMode == ColorMode.COLOR_BLIND) {
             return elementType.getColorBlind();
-        } else if (colorMode == ColorMode.BLACK_WHITE) {
+        } else if (colorMode == ColorMode.DARK_MODE) {
             return elementType.getBlackWhite();
         }
         return elementType.getColor();

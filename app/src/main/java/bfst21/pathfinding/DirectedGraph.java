@@ -1,6 +1,5 @@
 package bfst21.pathfinding;
 
-import bfst21.models.Util;
 import bfst21.osm.Node;
 
 import java.io.Serializable;

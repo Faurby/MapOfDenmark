@@ -1,15 +1,11 @@
 package bfst21.models;
 
-import bfst21.address.TST;
 import bfst21.address.TriesMap;
 import bfst21.osm.*;
 import bfst21.pathfinding.Dijkstra;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdTree;
-import com.github.davidmoten.rtree2.Entry;
-import com.github.davidmoten.rtree2.RTree;
-import com.github.davidmoten.rtree2.geometry.Geometries;
 
 import java.util.*;
 
@@ -20,16 +16,10 @@ public class MapData {
     private Dijkstra dijkstra;
 
     private HashMap<ElementGroup, KdTree<Way>> kdTreeMap;
-    private HashMap<ElementGroup, RTree<Integer, Way>> rTreeMap;
-
-    private final HashMap<ElementGroup, List<Way>> kdTreeSearchMap = new HashMap<>(),
-                                                   rTreeSearchMap = new HashMap<>();
+    private final HashMap<ElementGroup, List<Way>> kdTreeSearchMap = new HashMap<>();
 
     private KdTree<Relation> kdTreeRelations;
-    private RTree<Integer, Relation> rTreeRelations;
-
-    private List<Relation> kdTreeRelationSearchList = new ArrayList<>(),
-                           rTreeRelationSearchList = new ArrayList<>();
+    private List<Relation> kdTreeRelationSearchList = new ArrayList<>();
 
     private final List<UserNode> userNodes = new ArrayList<>();
     private final List<Way> islands;
@@ -46,7 +36,7 @@ public class MapData {
     /**
      * MapData constructor.
      * Creates directed graph for path finding.
-     * Builds kd-trees or r-trees if option is enabled.
+     * Builds kd-trees for Ways and Relations.
      */
     public MapData(
             List<Way> islands,
@@ -71,11 +61,10 @@ public class MapData {
         this.maxX = maxX;
         this.maxY = maxY;
 
-        //We need to initially fill the search HashMaps with empty Lists.
+        //We need to initially fill the search HashMap with empty Lists.
         //This is to avoid issues when accessing the search map before a range search.
         for (ElementGroup elementGroup : ElementGroup.values()) {
             kdTreeSearchMap.put(elementGroup, new ArrayList<>());
-            rTreeSearchMap.put(elementGroup, new ArrayList<>());
         }
 
         if (wayLongIndex != null && relationLongIndex != null) {
@@ -102,23 +91,23 @@ public class MapData {
             if (directedGraph == null) {
                 buildDirectedGraph(wayLongIndex.getElements());
             }
-            if (kdTreeMap == null && rTreeMap == null) {
+            if (kdTreeMap == null) {
                 buildSearchTreesForWays(wayLongIndex.getElements());
             }
-            if (kdTreeRelations == null && rTreeRelations == null) {
+            if (kdTreeRelations == null) {
                 buildSearchTreesForRelations(relationList);
             }
         }
     }
 
     /**
-     * Builds a directed graph used for path finding.
+     * Builds a directed graph used for path finding if option is enabled.
      */
     public void buildDirectedGraph(List<Way> wayList) {
         if (displayOptions.getBool(DisplayOption.USE_GRAPH)) {
 
+            long time = -System.nanoTime();
             directedGraph = new DirectedGraph();
-            System.out.println("Building directed graph for path finding...");
 
             int idCount = 0;
             for (Way way : wayList) {
@@ -158,9 +147,14 @@ public class MapData {
                     }
                 }
             }
+            time += System.nanoTime();
+            System.out.println("Built directed graph for path finding in " + time / 1_000_000 + "ms");
         }
     }
 
+    /**
+     * Run dijkstra path finding if nodes for origin and destination are present.
+     */
     public void runDijkstra() {
         if (originNode != null && destinationNode != null) {
             dijkstra = new Dijkstra(directedGraph, originNode, destinationNode);
@@ -168,32 +162,25 @@ public class MapData {
     }
 
     /**
-     * Builds kd-tree or r-tree for Relations if the option is enabled
+     * Builds a kd-tree for Relations
      * <p>
-     * The trees are only built if no trees are given in the constructor of this class.
-     * There is no need to build any trees if we loaded an .obj file.
+     * The tree is only built if no tree is given in the constructor of this class.
+     * There is no need to build any tree if we loaded an .obj file.
      */
     public void buildSearchTreesForRelations(List<Relation> relationList) {
-        if (displayOptions.getBool(DisplayOption.USE_KD_TREE)) {
-            if (kdTreeRelations == null) {
-                kdTreeRelations = new KdTree<>();
-                kdTreeRelations.build(relationList);
-                System.out.println("Built kd-tree for relations with depth: " + kdTreeRelations.getMaxDepth());
-            }
-        } else if (displayOptions.getBool(DisplayOption.USE_R_TREE)) {
-            if (rTreeRelations == null) {
-                rTreeRelations = RTree.star().maxChildren(6).create();
+        if (kdTreeRelations == null) {
+            long time = -System.nanoTime();
 
-                for (Relation relation : relationList) {
-                    rTreeRelations = rTreeRelations.add(0, relation);
-                }
-                System.out.println("Built r-tree for relations");
-            }
+            kdTreeRelations = new KdTree<>();
+            kdTreeRelations.build(relationList);
+
+            time += System.nanoTime();
+            System.out.println("Built kd-tree for relations in " + time / 1_000_000 + "ms with depth: " + kdTreeRelations.getMaxDepth());
         }
     }
 
     /**
-     * Builds a HashMap of kd-trees or r-trees for Ways if the option is enabled.
+     * Builds a HashMap of kd-trees for Ways.
      * <p>
      * A tree is built for every ElementGroup as we only need certain trees at a given zoom level.
      * <p>
@@ -202,40 +189,23 @@ public class MapData {
      */
     public void buildSearchTreesForWays(List<Way> wayList) {
 
-        if (displayOptions.getBool(DisplayOption.USE_KD_TREE)) {
-            if (kdTreeMap == null) {
-                kdTreeMap = new HashMap<>();
+        if (kdTreeMap == null) {
+            kdTreeMap = new HashMap<>();
 
-                System.out.println("Building kd-trees...");
-                HashMap<ElementGroup, List<Way>> wayMap = getElementMap(wayList);
+            HashMap<ElementGroup, List<Way>> wayMap = getElementMap(wayList);
 
-                for (ElementGroup elementGroup : ElementGroup.values()) {
-                    List<Way> innerWayList = wayMap.get(elementGroup);
+            for (ElementGroup elementGroup : ElementGroup.values()) {
+                List<Way> innerWayList = wayMap.get(elementGroup);
 
-                    if (innerWayList.size() > 0) {
-                        KdTree<Way> kdTree = new KdTree<>();
-                        this.kdTreeMap.put(elementGroup, kdTree);
-                        kdTree.build(innerWayList);
-                        System.out.println("Built kd-tree for " + elementGroup.toString() + " with depth: " + kdTree.getMaxDepth());
-                    }
-                }
-            }
-        } else if (displayOptions.getBool(DisplayOption.USE_R_TREE)) {
-            if (rTreeMap == null) {
-                rTreeMap = new HashMap<>();
+                if (innerWayList.size() > 0) {
+                    long time = -System.nanoTime();
 
-                System.out.println("Building r-trees...");
-                HashMap<ElementGroup, List<Way>> wayMap = getElementMap(wayList);
+                    KdTree<Way> kdTree = new KdTree<>();
+                    this.kdTreeMap.put(elementGroup, kdTree);
+                    kdTree.build(innerWayList);
 
-                for (ElementGroup elementGroup : ElementGroup.values()) {
-
-                    RTree<Integer, Way> rTree = RTree.star().maxChildren(6).create();
-
-                    for (Way way : wayMap.get(elementGroup)) {
-                        rTree = rTree.add(0, way);
-                    }
-                    this.rTreeMap.put(elementGroup, rTree);
-                    System.out.println("Built r-tree for " + elementGroup.toString());
+                    time += System.nanoTime();
+                    System.out.println("Built kd-tree for " + elementGroup.toString() + " in " + time / 1_000_000 + "ms with depth: " + kdTree.getMaxDepth());
                 }
             }
         }
@@ -245,7 +215,7 @@ public class MapData {
      * @return HashMap containing every ElementGroup and their list of Ways
      * The lists are built using the elements from the wayLongIndex
      */
-    public HashMap<ElementGroup, List<Way>> getElementMap(List<Way> wayList) {
+    private HashMap<ElementGroup, List<Way>> getElementMap(List<Way> wayList) {
         HashMap<ElementGroup, List<Way>> elementMap = new HashMap<>();
 
         for (ElementGroup elementGroup : ElementGroup.values()) {
@@ -288,21 +258,15 @@ public class MapData {
     }
 
     /**
-     * @return list of Relations found by the kd-tree or r-tree range search.
+     * @return list of Relations found by the kd-tree range search.
      */
     public List<Relation> getRelations() {
-        if (displayOptions.getBool(DisplayOption.USE_KD_TREE)) {
-            return kdTreeRelationSearchList;
-
-        } else if (displayOptions.getBool(DisplayOption.USE_R_TREE)) {
-            return rTreeRelationSearchList;
-        }
-        return new ArrayList<>();
+        return kdTreeRelationSearchList;
     }
 
     /**
      * Returns a list of Ways with the specific ElementGroup.
-     * List is retrieved from search map filled by the kd-tree or r-tree range search.
+     * List is retrieved from search map filled by the kd-tree range search.
      *
      * @param elementGroup specific ElementGroup.
      * @return list of Ways with the specific ElementGroup.
@@ -310,48 +274,8 @@ public class MapData {
     public List<Way> getWays(ElementGroup elementGroup) {
         if (elementGroup.getType() == ElementType.ISLAND) {
             return islands;
-
-        } else if (displayOptions.getBool(DisplayOption.USE_KD_TREE)) {
-            return kdTreeSearchMap.get(elementGroup);
-
-        } else if (displayOptions.getBool(DisplayOption.USE_R_TREE)) {
-            return rTreeSearchMap.get(elementGroup);
         }
-        return new ArrayList<>();
-    }
-
-    /**
-     * Starts a range search within the screens BoundingBox for all r-trees
-     * if the specific ElementGroup is enabled at the given zoomLevel.
-     */
-    public void rTreeRangeSearch(double x1, double y1, double x2, double y2, double zoomLevel) {
-        //Search way r-trees
-        for (ElementGroup elementGroup : ElementGroup.values()) {
-            if (elementGroup.doShowElement(zoomLevel)) {
-
-                Iterable<Entry<Integer, Way>> results =
-                    rTreeMap.get(elementGroup).search(Geometries.rectangle(x1, y1, x2, y2));
-
-                Iterator<Entry<Integer, Way>> rTreeIterator = results.iterator();
-                List<Way> wayList = new ArrayList<>();
-
-                while (rTreeIterator.hasNext()) {
-                    Way way = rTreeIterator.next().geometry();
-                    wayList.add(way);
-                }
-                rTreeSearchMap.put(elementGroup, wayList);
-            }
-        }
-        //Search relation r-tree
-        Iterable<Entry<Integer, Relation>> results =
-            rTreeRelations.search(Geometries.rectangle(x1, y1, x2, y2));
-
-        rTreeRelationSearchList = new ArrayList<>();
-
-        for (Entry<Integer, Relation> result : results) {
-            Relation relation = result.geometry();
-            rTreeRelationSearchList.add(relation);
-        }
+        return kdTreeSearchMap.get(elementGroup);
     }
 
     /**
@@ -372,6 +296,12 @@ public class MapData {
         kdTreeRelationSearchList = kdTreeRelations.preRangeSearch(boundingBox);
     }
 
+    /**
+     * Starts a nearest neighbor search for the kd-tree with the given query node.
+     * Will only search in kd-trees with an ElementGroup where navigation is possible.
+     * <p>
+     * When a list of nearby nodes are found, we will then find the closest node.
+     */
     public Node kdTreeNearestNeighborSearch(Node queryNode) {
         List<Node> list = new ArrayList<>();
 
