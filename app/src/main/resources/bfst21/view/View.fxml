@@ -55,6 +55,7 @@
                     <CheckBox text="Display water" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display waterway" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display landuse" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Display forest" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display cycleway" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display footway" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display pedestrian" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
@@ -84,6 +85,11 @@
                     <Insets top="30.0"/>
                 </StackPane.margin>
             </AnchorPane>
+
+            <fx:include fx:id="startView" source="StartView.fxml"
+                        AnchorPane.leftAnchor="0.0"
+                        AnchorPane.topAnchor="0.0"/>
+
             <VBox fx:id="loadingText" minHeight="100" minWidth="100" visible="false"
                   style="-fx-background-color: WHITE; -fx-padding: 20;" alignment="CENTER">
                 <Text text="Loading" style="-fx-font-size: 24;"/>

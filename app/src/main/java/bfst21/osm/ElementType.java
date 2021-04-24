@@ -29,9 +29,9 @@ public enum ElementType {
             1f,
             1000.0f,
             0.0D,
-            Color.rgb(172, 220, 180),
-            Color.rgb(69, 80, 7),
-            Color.rgb(29,50,36)
+            Color.rgb(103, 167, 113),
+            Color.rgb(53, 62, 5),
+            Color.rgb(18,42,26)
     ),
     WATER(
             1f,
