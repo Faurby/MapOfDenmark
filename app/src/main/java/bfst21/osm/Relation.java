@@ -92,44 +92,38 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
                         Way hasFirst = pieces.remove(way.first());
                         Way hasLast = pieces.remove(way.last());
 
-                        boolean hasAdded = false;
+                        Way merged = null;
 
                         if (hasFirst != null) {
-                            if (way.first() == hasFirst.last()) { //Some way is before this way
-                                Way merged = Way.merge(hasFirst, way);
-                                merged.setRole("outer");
-                                pieces.put(merged.first(), merged);
-                                pieces.put(merged.last(), merged);
-                                hasAdded = true;
+                            if (way.first() == hasFirst.last()) {
+                                //Some way is before this way
+                                merged = Way.merge(hasFirst, way);
 
+                            //Both ways have same node as their first
+                            //So we need to reverse the way and add it AFTER hasFirst way
                             } else if (way.first() == hasFirst.first()) {
-                                Way merged = Way.reverseMerge(hasFirst, way);
-                                merged.setRole("outer");
-                                pieces.put(merged.first(), merged);
-                                pieces.put(merged.last(), merged);
-                                hasAdded = true;
+                                merged = Way.reverseMerge(hasFirst, way);
                             }
                         } else if (hasLast != null) {
-                            if (way.last() == hasLast.first()) { //Some way is after this way
-                                Way merged = Way.merge(way, hasLast);
-                                merged.setRole("outer");
-                                pieces.put(merged.first(), merged);
-                                pieces.put(merged.last(), merged);
-                                hasAdded = true;
+                            if (way.last() == hasLast.first()) {
+                                //Some way is after this way
+                                merged = Way.merge(way, hasLast);
 
+                            //Both ways have same node as their last
+                            //So we need to reverse the way and add it AFTER hasLast way
                             } else if (way.last() == hasLast.last()) {
-                                Way merged = Way.reverseMerge(hasLast, way);
-                                merged.setRole("outer");
-                                pieces.put(merged.first(), merged);
-                                pieces.put(merged.last(), merged);
-                                hasAdded = true;
+                                merged = Way.reverseMerge(hasLast, way);
                             }
                         }
-                        if (!hasAdded) {
+                        if (merged != null) {
+                            merged.setRole("outer");
+                            pieces.put(merged.first(), merged);
+                            pieces.put(merged.last(), merged);
+
+                        } else {
                             pieces.put(way.first(), way);
                             pieces.put(way.last(), way);
                         }
-
                     } else {
                         mergedWayList.add(way);
                     }
