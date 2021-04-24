@@ -86,10 +86,6 @@
                 </StackPane.margin>
             </AnchorPane>
 
-            <fx:include fx:id="startView" source="StartView.fxml"
-                        AnchorPane.leftAnchor="0.0"
-                        AnchorPane.topAnchor="0.0"/>
-
             <VBox fx:id="loadingText" minHeight="100" minWidth="100" visible="false"
                   style="-fx-background-color: WHITE; -fx-padding: 20;" alignment="CENTER">
                 <Text text="Loading" style="-fx-font-size: 24;"/>
