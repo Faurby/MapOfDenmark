@@ -18,8 +18,8 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
     private ElementType elementType;
     private String role;
     private int maxSpeed = 1;
-    private boolean isDrawn;
     private boolean oneWay;
+    private boolean oneWayBike;
 
     public Way(long id) {
         super(id);
@@ -55,7 +55,6 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
         }
         int last = nodes.size() - 1;
         gc.lineTo(nodes.get(last).getX(), nodes.get(last).getY());
-        isDrawn = true;
     }
 
     public static int getNodeSkipAmount(double zoomLevel) {
@@ -143,6 +142,14 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
         this.oneWay = oneWay;
     }
 
+    public void setOneWayBike(boolean oneWayBike) {
+        this.oneWayBike = oneWayBike;
+    }
+
+    public boolean isOneWay() {
+        return oneWay;
+    }
+
     public void setMaxSpeed(int maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
@@ -178,9 +185,5 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
 
     public Node last() {
         return nodes.get(nodes.size() - 1);
-    }
-
-    public boolean isDrawn() {
-        return isDrawn;
     }
 }

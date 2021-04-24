@@ -50,10 +50,6 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
         return ways;
     }
 
-    public List<Relation> getRelations() {
-        return relations;
-    }
-
     public void addMember(Node node) {
         nodes.add(node);
 

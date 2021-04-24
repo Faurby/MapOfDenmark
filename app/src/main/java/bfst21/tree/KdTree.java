@@ -198,30 +198,23 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
         boolean isLeaf = kdNode.getList() != null;
 
         boolean checkRight = false;
-        boolean checkLeft = false;
 
         if (isLeaf) {
             investigateLeaf(queryNode, kdNode);
 
         } else {
             if (depth % 2 == 0) {
-                float nodeMaxX = kdNode.getMaxX();
                 float nodeMinX = kdNode.getMinX();
                 double x = queryNode.getX();
 
-                if (nodeMaxX >= x) {
-                    checkLeft = true;
-                } else if (nodeMinX <= x) {
+                if (nodeMinX <= x) {
                     checkRight = true;
                 }
             } else {
-                float nodeMaxY = kdNode.getMaxY();
                 float nodeMinY = kdNode.getMinY();
                 double y = queryNode.getY();
 
-                if (nodeMaxY >= y) {
-                    checkLeft = true;
-                } else if (nodeMinY <= y) {
+                if (nodeMinY <= y) {
                     checkRight = true;
                 }
             }

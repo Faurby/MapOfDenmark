@@ -141,7 +141,7 @@ public class MapData {
                             Node v = way.getNodes().get(i);
                             Node w = way.getNodes().get(i + 1);
 
-                            directedGraph.addEdge(v, w, maxSpeed);
+                            directedGraph.addEdge(v, w, maxSpeed, way.isOneWay());
                             idCount += 2;
                         }
                     }

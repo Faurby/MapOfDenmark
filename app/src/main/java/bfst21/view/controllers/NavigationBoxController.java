@@ -1,12 +1,11 @@
 package bfst21.view.controllers;
 
-import bfst21.address.Address;
 import bfst21.address.TriesMap;
 import bfst21.exceptions.IllegalInputException;
 import bfst21.models.MapData;
 import bfst21.models.Model;
-import bfst21.models.TransportationOption;
-import bfst21.models.TransportationOptions;
+import bfst21.models.TransportOption;
+import bfst21.models.TransportOptions;
 import bfst21.osm.Node;
 import bfst21.view.MapCanvas;
 import javafx.event.ActionEvent;
@@ -85,16 +84,18 @@ public class NavigationBoxController extends SubController {
     }
 
     public void transportationButtonPushed(ActionEvent actionEvent) {
-        TransportationOptions transOptions = new TransportationOptions();
+        TransportOptions transOptions = new TransportOptions();
 
         if (actionEvent.getSource().toString().contains("WALK")) {
-            transOptions.chooseType(TransportationOption.WALK);
+            transOptions.chooseType(TransportOption.WALK);
             WALK.setSelected(true);
+
         } else if (actionEvent.getSource().toString().contains("BIKE")) {
-            transOptions.chooseType(TransportationOption.BIKE);
+            transOptions.chooseType(TransportOption.BIKE);
             BIKE.setSelected(true);
+
         } else {
-            transOptions.chooseType(TransportationOption.CAR);
+            transOptions.chooseType(TransportOption.CAR);
             CAR.setSelected(true);
         }
         System.out.println(transOptions.returnType().toString());
@@ -103,9 +104,11 @@ public class NavigationBoxController extends SubController {
 
     public void typingCheck(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.TAB) {
+
             if (keyEvent.getSource().toString().contains("startingPoint")) {
                 startingPoint.setText(startingPoint.getText().trim());
                 destinationPoint.requestFocus();
+
             } else if (keyEvent.getSource().toString().contains("destinationPoint")) {
                 destinationPoint.setText(destinationPoint.getText().trim());
                 startingPoint.setText(startingPoint.getText().trim());
@@ -121,7 +124,6 @@ public class NavigationBoxController extends SubController {
 
     @FXML
     public void expandSearchView() {
-
         mainController.setNavigationBoxVisible(false);
         mainController.setSearchBoxVisible(true);
 

@@ -38,18 +38,21 @@ public class DirectedGraph implements Serializable {
         return null;
     }
 
-    public void addEdge(Node fromNode, Node toNode, int maxSpeed) {
+    public void addEdge(Node fromNode, Node toNode, int maxSpeed, boolean oneWay) {
         int fromID = getVertexID(fromNode);
         int toID = getVertexID(toNode);
 
         float distance = (float) fromNode.distTo(toNode);
         Edge edge1 = new Edge(fromID, toID, distance, maxSpeed);
-        Edge edge2 = new Edge(toID, fromID, distance, maxSpeed);
 
         addEdge(toID, edge1);
-        addEdge(toID, edge2);
         addEdge(fromID, edge1);
-        addEdge(fromID, edge2);
+
+        if (!oneWay) {
+            Edge edge2 = new Edge(toID, fromID, distance, maxSpeed);
+            addEdge(toID, edge2);
+            addEdge(fromID, edge2);
+        }
     }
 
     private void addEdge(int vertexID, Edge edge) {

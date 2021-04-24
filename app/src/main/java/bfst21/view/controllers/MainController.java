@@ -274,18 +274,16 @@ public class MainController {
 
     @FXML
     public void changeColorMode(ActionEvent actionEvent) {
-        String buttonClicked = actionEvent.toString().toLowerCase();
+        String text = actionEvent.toString().toLowerCase();
 
-        if (buttonClicked.contains("standard")) {
-            canvas.setColorMode(ColorMode.STANDARD);
-
-        } else if (buttonClicked.contains("darkmode")) {
-            canvas.setColorMode(ColorMode.DARK_MODE);
-
-        } else if (buttonClicked.contains("colorblind")) {
-            canvas.setColorMode(ColorMode.COLOR_BLIND);
+        for (ColorMode colorMode : ColorMode.values()) {
+            String optionText = colorMode.toString().toLowerCase().replaceAll("_", "");
+            if (text.contains(optionText)) {
+                canvas.setColorMode(colorMode);
+                canvas.repaint();
+                break;
+            }
         }
-        canvas.repaint();
     }
 
     public void onCheckDebug(ActionEvent actionEvent) {

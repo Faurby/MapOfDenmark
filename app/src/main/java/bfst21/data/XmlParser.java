@@ -73,7 +73,7 @@ public class XmlParser {
                             float lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
                             float lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
 
-                            node = new Node(lon,lat, true);
+                            node = new Node(lon, lat, true);
                             nodeLongIndex.put(new NodeID(nodeID, node));
                             break;
 
@@ -191,8 +191,8 @@ public class XmlParser {
                                         switch (value) {
                                             case "taxiway":
                                             case "runway":
-                                            elementType = ElementType.AEROWAY;
-                                            break;
+                                                elementType = ElementType.AEROWAY;
+                                                break;
                                         }
                                     case "landuse":
                                         if (value.equals("grass") ||
@@ -236,11 +236,16 @@ public class XmlParser {
                                             }
                                         }
                                         break;
-
+                                    case "oneway:bicycle":
+                                        if (value.equals("yes")) {
+                                            if (way != null) {
+                                                way.setOneWayBike(true);
+                                            }
+                                        }
+                                        break;
                                     case "waterway":
                                         elementType = ElementType.WATERWAY;
                                         break;
-
                                     case "type":
                                         if (relation != null) {
                                             if (value.equals("multipolygon")) {

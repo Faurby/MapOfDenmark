@@ -1,7 +1,7 @@
 package bfst21.models;
 
 
-public enum TransportationOption {
+public enum TransportOption {
     CAR,
     BIKE,
     WALK

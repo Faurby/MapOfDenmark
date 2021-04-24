@@ -104,7 +104,7 @@
                         <Menu text="Color modes">
                             <MenuItem fx:id="standard" onAction="#changeColorMode" text="Standard"/>
                             <MenuItem fx:id="darkMode" onAction="#changeColorMode" text="Dark mode"/>
-                            <MenuItem fx:id="colorBlind" onAction="#changeColorMode" text="Colorblind"/>
+                            <MenuItem fx:id="colorBlind" onAction="#changeColorMode" text="Color blind"/>
                         </Menu>
                         <MenuItem onAction="#userNodeButtonClicked" text="Add point of interest"/>
                     </Menu>

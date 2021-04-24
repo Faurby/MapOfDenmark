@@ -43,10 +43,6 @@ public abstract class BoundingBoxElement extends Element {
         }
     }
 
-    public BoundingBox getBoundingBox() {
-        return new BoundingBox(minX, maxX, minY, maxY);
-    }
-
     public float getMinX() {
         return minX;
     }
