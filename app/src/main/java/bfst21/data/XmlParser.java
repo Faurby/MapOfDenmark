@@ -185,7 +185,9 @@ public class XmlParser {
                                         }
                                         break;
                                     case "railway":
-                                        elementType = ElementType.RAILWAY;
+                                        if (value.equals("rail")) {
+                                            elementType = ElementType.RAILWAY;
+                                        }
                                         break;
                                     case "aeroway":
                                         switch (value) {
@@ -194,12 +196,16 @@ public class XmlParser {
                                                 elementType = ElementType.AEROWAY;
                                                 break;
                                         }
+                                        break;
                                     case "landuse":
                                         if (value.equals("grass") ||
-                                                value.equals("meadow") ||
-                                                value.equals("orchard") ||
-                                                value.equals("allotments")) {
+                                            value.equals("meadow") ||
+                                            value.equals("orchard") ||
+                                            value.equals("allotments")) {
                                             elementType = ElementType.LANDUSE;
+
+                                        } else if (value.equals("forest")) {
+                                            elementType = ElementType.FOREST;
                                         }
                                         break;
                                     case "leisure":
@@ -226,6 +232,9 @@ public class XmlParser {
                                                 break;
                                             case "water":
                                                 elementType = ElementType.WATER;
+                                                break;
+                                            case "wood":
+                                                elementType = ElementType.FOREST;
                                                 break;
                                         }
                                         break;

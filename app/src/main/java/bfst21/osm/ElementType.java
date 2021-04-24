@@ -25,6 +25,14 @@ public enum ElementType {
             Color.rgb(69, 80, 7),
             Color.rgb(29,50,36)
     ),
+    FOREST(
+            1f,
+            1000.0f,
+            0.0D,
+            Color.rgb(172, 220, 180),
+            Color.rgb(69, 80, 7),
+            Color.rgb(29,50,36)
+    ),
     WATER(
             1f,
             500.0f,
@@ -81,6 +89,14 @@ public enum ElementType {
             Color.rgb(255, 255, 255),
             Color.rgb(61,64,67)
     ),
+    RAILWAY(
+            0.00006f,
+            1500.0f,
+            0.0D,
+            Color.rgb(80, 80, 80),
+            Color.rgb(80, 80, 80),
+            Color.rgb(200, 200, 200)
+    ),
     TRUNK(
             0.0003f,
             50000.0f,
@@ -113,22 +129,6 @@ public enum ElementType {
             Color.rgb(255, 140, 0),
             Color.rgb(95,99,104)
     ),
-    BUILDING(
-            1f,
-            40000.0f,
-            0.0D,
-            Color.rgb(197, 185, 175),
-            Color.rgb(51, 51, 51),
-            Color.rgb(89, 89, 89)
-    ),
-    RAILWAY(
-            0.00006f,
-            1500.0f,
-            0.0D,
-            Color.rgb(50, 50, 50),
-            Color.rgb(50, 50, 50),
-            Color.rgb(200, 200, 200)
-    ),
     AEROWAY(
             0.002f,
             5000.0f,
@@ -136,6 +136,14 @@ public enum ElementType {
             Color.rgb(200, 200, 200),
             Color.rgb(200, 200, 200),
             Color.rgb(61,64,67)
+    ),
+    BUILDING(
+            1f,
+            40000.0f,
+            0.0D,
+            Color.rgb(197, 185, 175),
+            Color.rgb(51, 51, 51),
+            Color.rgb(89, 89, 89)
     ),
     UNKNOWN(
             0.002f,
