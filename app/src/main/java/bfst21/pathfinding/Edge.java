@@ -1,5 +1,6 @@
 package bfst21.pathfinding;
 
+import bfst21.osm.Node;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.Serializable;
@@ -19,12 +20,12 @@ public class Edge implements Serializable {
     }
 
     public void draw(DirectedGraph directedGraph, GraphicsContext gc) {
-        Coordinate fromCoords = directedGraph.getVertexCoords(from);
-        Coordinate toCoords = directedGraph.getVertexCoords(to);
+        Node fromNode = directedGraph.getVertexNode(from);
+        Node toNode = directedGraph.getVertexNode(to);
 
-        if (fromCoords != null && toCoords != null) {
-            gc.moveTo(fromCoords.getX(), fromCoords.getY());
-            gc.lineTo(toCoords.getX(), toCoords.getY());
+        if (fromNode != null && toNode != null) {
+            gc.moveTo(fromNode.getX(), fromNode.getY());
+            gc.lineTo(toNode.getX(), toNode.getY());
         }
     }
 

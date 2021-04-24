@@ -2,7 +2,6 @@ package bfst21.models;
 
 import bfst21.address.TST;
 import bfst21.osm.*;
-import bfst21.pathfinding.Coordinate;
 import bfst21.pathfinding.Dijkstra;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.tree.BoundingBox;
@@ -40,8 +39,8 @@ public class MapData {
 
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
-    public Coordinate originCoords;
-    public Coordinate destinationCoords;
+    public Node originNode;
+    public Node destinationNode;
 
     /**
      * MapData constructor.
@@ -152,10 +151,7 @@ public class MapData {
                             Node v = way.getNodes().get(i);
                             Node w = way.getNodes().get(i + 1);
 
-                            Coordinate fromCoords = new Coordinate(v.getX(), v.getY());
-                            Coordinate toCoords = new Coordinate(w.getX(), w.getY());
-
-                            directedGraph.addEdge(fromCoords, toCoords, maxSpeed);
+                            directedGraph.addEdge(v, w, maxSpeed);
                             idCount += 2;
                         }
                     }
@@ -165,8 +161,8 @@ public class MapData {
     }
 
     public void runDijkstra() {
-        if (originCoords != null && destinationCoords != null) {
-            dijkstra = new Dijkstra(directedGraph, originCoords, destinationCoords);
+        if (originNode != null && destinationNode != null) {
+            dijkstra = new Dijkstra(directedGraph, originNode, destinationNode);
         }
     }
 

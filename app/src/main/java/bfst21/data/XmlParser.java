@@ -132,9 +132,6 @@ public class XmlParser {
                                     case "addr:housenumber":
                                         osmAddress.setHouseNumber(value);
                                         break;
-                                    case "addr:name":
-                                        osmAddress.setName(value);
-                                        break;
                                     case "addr:postcode":
                                         osmAddress.setPostcode(value);
                                         break;
@@ -268,8 +265,7 @@ public class XmlParser {
 
                         case "node":
                             if (osmAddress.getCity() != null) {
-                                //System.out.println("Found: "+osmAddress.getStreet() + osmAddress.getHouseNumber());
-                                //System.out.println("Added: "+streetTries.get(osmAddress.getStreet()));
+                                //System.out.println("Addr: "+ osmAddress);
                             }
                             break;
 

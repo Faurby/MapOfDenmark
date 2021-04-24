@@ -1,5 +1,6 @@
 package bfst21.pathfinding;
 
+import bfst21.osm.Node;
 import edu.princeton.cs.algs4.IndexMinPQ;
 import edu.princeton.cs.algs4.Stack;
 
@@ -11,7 +12,7 @@ public class Dijkstra {
     private final IndexMinPQ<Double> pq;
     private boolean foundDestination;
 
-    public Dijkstra(DirectedGraph directedGraph, Coordinate source, Coordinate destination) {
+    public Dijkstra(DirectedGraph directedGraph, Node source, Node destination) {
 
         int sourceID = directedGraph.getVertexID(source);
         int destinationID = directedGraph.getVertexID(destination);

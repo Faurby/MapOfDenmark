@@ -5,7 +5,6 @@ import bfst21.models.*;
 import bfst21.osm.Node;
 import bfst21.osm.UserNode;
 import bfst21.osm.Way;
-import bfst21.pathfinding.Coordinate;
 import bfst21.view.ColorMode;
 import bfst21.view.MapCanvas;
 import javafx.concurrent.Task;
@@ -201,14 +200,12 @@ public class MainController {
             Node nodeAtMouse = new Node((float) point.getX(), (float) point.getY(), false);
             Node nearestNode = model.getMapData().kdTreeNearestNeighborSearch(nodeAtMouse);
 
-            Coordinate coords = new Coordinate(nearestNode.getX(), nearestNode.getY());
-
             if (resetDjikstra) {
                 resetDjikstra = false;
-                model.getMapData().originCoords = coords;
-                model.getMapData().destinationCoords = null;
+                model.getMapData().originNode = nearestNode;
+                model.getMapData().destinationNode = null;
             } else {
-                model.getMapData().destinationCoords = coords;
+                model.getMapData().destinationNode = nearestNode;
                 model.getMapData().runDijkstra();
                 resetDjikstra = true;
             }

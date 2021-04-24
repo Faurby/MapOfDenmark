@@ -3,7 +3,7 @@ package bfst21.osm;
 
 public class OsmAddress {
 
-    private String city, houseNumber, name, postcode, street;
+    private String city, houseNumber, postcode, street;
 
     public String getCity() {
         return city;
@@ -11,10 +11,6 @@ public class OsmAddress {
 
     public String getHouseNumber() {
         return houseNumber;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String getPostcode() {
@@ -33,15 +29,15 @@ public class OsmAddress {
         this.houseNumber = houseNumber;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setPostcode(String postcode) {
         this.postcode = postcode;
     }
 
     public void setStreet(String street) {
         this.street = street;
+    }
+
+    public String toString() {
+        return street + " " + houseNumber + " " + city + " " + postcode;
     }
 }

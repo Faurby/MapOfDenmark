@@ -3,7 +3,6 @@ package bfst21.view;
 import bfst21.models.DisplayOptions;
 import bfst21.models.DisplayOption;
 import bfst21.osm.*;
-import bfst21.pathfinding.Coordinate;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.pathfinding.Edge;
 import bfst21.tree.BoundingBox;
@@ -143,8 +142,8 @@ public class MapCanvas extends Canvas {
                 }
             }
             drawGraph();
-            if (model.getMapData().destinationCoords != null) {
-                drawPathTo(model.getMapData().destinationCoords);
+            if (model.getMapData().destinationNode != null) {
+                drawPathTo(model.getMapData().destinationNode);
             }
         }
         gc.restore();
@@ -238,7 +237,7 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void drawPathTo(Coordinate destination) {
+    public void drawPathTo(Node destination) {
         if (displayOptions.getBool(DisplayOption.DISPLAY_DIJKSTRA)) {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 

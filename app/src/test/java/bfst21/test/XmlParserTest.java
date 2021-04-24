@@ -7,7 +7,7 @@ import bfst21.models.Util;
 import bfst21.osm.ElementGroup;
 import bfst21.osm.ElementSize;
 import bfst21.osm.ElementType;
-import bfst21.pathfinding.Coordinate;
+import bfst21.osm.Node;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,10 +45,10 @@ public class XmlParserTest {
 
     @Test
     public void getCorrectDistanceBetween2Coordinates() {
-        Coordinate c1 = new Coordinate(12.6224313f, 55.6571112f);
-        Coordinate c2 = new Coordinate(12.6238016f, 55.6573865f);
+        Node n1 = new Node(12.6224313f, 55.6571112f, false);
+        Node n2 = new Node(12.6238016f, 55.6573865f, false);
 
-        double distance = Util.distTo(c1.getX(), c1.getY(), c2.getX(), c2.getY());
+        double distance = n1.distTo(n2);
         assertEquals(0.09125, distance, 0.0001);
     }
 }

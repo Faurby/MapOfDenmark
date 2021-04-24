@@ -1,6 +1,6 @@
 package bfst21.test;
 
-import bfst21.pathfinding.Coordinate;
+import bfst21.osm.Node;
 import bfst21.pathfinding.Dijkstra;
 import bfst21.pathfinding.DirectedGraph;
 import org.junit.jupiter.api.Test;
@@ -21,20 +21,20 @@ public class DirectedGraphTest {
         directedGraph.createVertex(3, 2, 4);
         directedGraph.createVertex(3, 3, 5);
 
-        Coordinate c0 = directedGraph.getVertexCoords(0);
-        Coordinate c1 = directedGraph.getVertexCoords(1);
-        Coordinate c2 = directedGraph.getVertexCoords(2);
-        Coordinate c3 = directedGraph.getVertexCoords(3);
-        Coordinate c4 = directedGraph.getVertexCoords(4);
-        Coordinate c5 = directedGraph.getVertexCoords(5);
+        Node n0 = directedGraph.getVertexNode(0);
+        Node n1 = directedGraph.getVertexNode(1);
+        Node n2 = directedGraph.getVertexNode(2);
+        Node n3 = directedGraph.getVertexNode(3);
+        Node n4 = directedGraph.getVertexNode(4);
+        Node n5 = directedGraph.getVertexNode(5);
 
-        directedGraph.addEdge(c0, c2, 10);
-        directedGraph.addEdge(c2, c1, 10);
-        directedGraph.addEdge(c2, c3, 10);
-        directedGraph.addEdge(c2, c4, 10);
-        directedGraph.addEdge(c4, c5, 10);
+        directedGraph.addEdge(n0, n2, 10);
+        directedGraph.addEdge(n2, n1, 10);
+        directedGraph.addEdge(n2, n3, 10);
+        directedGraph.addEdge(n2, n4, 10);
+        directedGraph.addEdge(n4, n5, 10);
 
-        Dijkstra dijkstra = new Dijkstra(directedGraph, c0, c5);
+        Dijkstra dijkstra = new Dijkstra(directedGraph, n0, n5);
         assertTrue(dijkstra.hasPathTo(1));
         assertTrue(dijkstra.hasPathTo(2));
         assertTrue(dijkstra.hasPathTo(3));

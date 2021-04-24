@@ -41,10 +41,10 @@ public class RelationTest {
         way3.setRole("outer");
         way4.setRole("outer");
 
-        Node node1 = new Node(12.582717f, -99.42255f);
-        Node node2 = new Node(12.582533f, -99.4223f);
-        Node node3 = new Node(12.575992f, -99.421005f);
-        Node node4 = new Node(12.575649f, -99.42077f);
+        Node node1 = new Node(12.582717f, -99.42255f, true);
+        Node node2 = new Node(12.582533f, -99.4223f, true);
+        Node node3 = new Node(12.575992f, -99.421005f, true);
+        Node node4 = new Node(12.575649f, -99.42077f, true);
 
         way1.add(node1);
         way1.add(node2);
