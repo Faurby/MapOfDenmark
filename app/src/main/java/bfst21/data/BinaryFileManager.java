@@ -1,6 +1,7 @@
 package bfst21.data;
 
 import bfst21.address.TST;
+import bfst21.address.TriesMap;
 import bfst21.osm.*;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.tree.KdTree;
@@ -28,7 +29,7 @@ public class BinaryFileManager {
                 (HashMap<ElementGroup, KdTree<Way>>) input.readObject(),
                 (KdTree<Relation>) input.readObject(),
                 (DirectedGraph) input.readObject(),
-                (TST<Node>) input.readObject(),
+                (TriesMap) input.readObject(),
                 input.readFloat(),
                 input.readFloat(),
                 input.readFloat(),
@@ -47,6 +48,8 @@ public class BinaryFileManager {
             output.writeObject(mapData.getKdTreeRelations());
 
             output.writeObject(mapData.getDirectedGraph());
+
+            output.writeObject(mapData.getTriesMap());
 
             output.writeFloat(mapData.getMinX());
             output.writeFloat(mapData.getMaxX());

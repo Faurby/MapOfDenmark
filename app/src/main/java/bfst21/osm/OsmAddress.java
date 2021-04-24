@@ -4,6 +4,15 @@ package bfst21.osm;
 public class OsmAddress {
 
     private String city, houseNumber, postcode, street;
+    private final Node node;
+
+    public OsmAddress(Node node) {
+        this.node = node;
+    }
+
+    public Node getNode() {
+        return node;
+    }
 
     public String getCity() {
         return city;
@@ -35,6 +44,22 @@ public class OsmAddress {
 
     public void setStreet(String street) {
         this.street = street;
+    }
+
+    public boolean isValid() {
+        if (street == null) {
+            return false;
+        }
+        if (houseNumber == null) {
+            return false;
+        }
+        if (city == null) {
+            return false;
+        }
+        if (postcode == null) {
+            return false;
+        }
+        return node != null;
     }
 
     public String toString() {

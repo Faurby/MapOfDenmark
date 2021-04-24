@@ -1,7 +1,9 @@
 package bfst21.view.controllers;
 
 import bfst21.address.Address;
+import bfst21.address.AddressType;
 import bfst21.address.TST;
+import bfst21.address.TriesMap;
 import bfst21.exceptions.IllegalInputException;
 import bfst21.models.MapData;
 import bfst21.models.Model;
@@ -19,6 +21,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.HashMap;
+
 
 public class SearchBoxController extends SubController {
 
@@ -33,7 +37,7 @@ public class SearchBoxController extends SubController {
     @FXML
     private VBox suggestions;
 
-    private TST<Node> streetTries;
+    private TriesMap triesMap;
 
     @FXML
     private void searchSingleAddress() {
@@ -76,27 +80,28 @@ public class SearchBoxController extends SubController {
             addressArea.setText(addressArea.getText().trim());
             searchSingleAddress();
             searchButton.requestFocus();
-        } else if (keyEvent.getCode() == KeyCode.BACK_SPACE && addressArea.getText().trim().length() <= 3){
+        } else if (keyEvent.getCode() == KeyCode.BACK_SPACE && addressArea.getText().trim().length() <= 3) {
             suggestions.getChildren().clear();
         } else {
-            if (addressArea.getText().trim().length() >= 2) {
-                try{ if (streetTries == null) {
-                    MapCanvas mapCanvas = mainController.getCanvas();
-                    Model model = mapCanvas.getModel();
-                    MapData mapData = model.getMapData();
-                    streetTries = mapData.getStreetTries();
-                }
-
-                Iterable<String> list = streetTries.keysWithPrefix(addressArea.getText());
-                suggestions.getChildren().clear();
-                for (String s : list) {
-                    Label b = new Label(s);
-                    b.setOnMouseClicked((event) -> {
-                        addressArea.setText(b.getText());
-                        suggestions.getChildren().clear();
-                    });
-                    suggestions.getChildren().add(b);
-                }} catch (NullPointerException e) {
+            int textLength = addressArea.getText().trim().length();
+            if (textLength >= 2) {
+                try {
+                    if (triesMap == null) {
+                        MapCanvas mapCanvas = mainController.getCanvas();
+                        Model model = mapCanvas.getModel();
+                        MapData mapData = model.getMapData();
+                        triesMap = mapData.getTriesMap();
+                    }
+                    suggestions.getChildren().clear();
+                    for (String s : triesMap.keysWithPrefix(addressArea.getText(), textLength)) {
+                        Label b = new Label(s);
+                        b.setOnMouseClicked((event) -> {
+                            addressArea.setText(b.getText());
+                            suggestions.getChildren().clear();
+                        });
+                        suggestions.getChildren().add(b);
+                    }
+                } catch (NullPointerException e) {
                     e.getMessage();
                 }
             }

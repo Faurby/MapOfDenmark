@@ -1,6 +1,8 @@
 package bfst21.data;
 
+import bfst21.address.AddressType;
 import bfst21.address.TST;
+import bfst21.address.TriesMap;
 import bfst21.models.DisplayOption;
 import bfst21.models.DisplayOptions;
 import bfst21.osm.*;
@@ -41,10 +43,10 @@ public class XmlParser {
 
         Way way = null;
         Relation relation = null;
-        OsmAddress osmAddress = new OsmAddress();
+        OsmAddress osmAddress = null;
         Node node = null;
         ElementType elementType = null;
-        TST<Node> streetTries = new TST<>();
+        TriesMap triesMap = new TriesMap();
 
         ElementLongIndex<NodeID> nodeLongIndex = new ElementLongIndex<>();
         ElementLongIndex<Way> wayLongIndex = new ElementLongIndex<>();
@@ -126,7 +128,7 @@ public class XmlParser {
                             if (way != null || relation != null || key.contains("addr:")) {
                                 switch (key) {
                                     case "addr:city":
-                                        osmAddress = new OsmAddress();
+                                        osmAddress = new OsmAddress(node);
                                         osmAddress.setCity(value);
                                         break;
                                     case "addr:housenumber":
@@ -137,7 +139,6 @@ public class XmlParser {
                                         break;
                                     case "addr:street":
                                         osmAddress.setStreet(value);
-                                        streetTries.put(value, node);
                                         break;
                                     case "building":
                                         elementType = ElementType.BUILDING;
@@ -264,8 +265,8 @@ public class XmlParser {
                     switch (reader.getLocalName()) {
 
                         case "node":
-                            if (osmAddress.getCity() != null) {
-                                //System.out.println("Addr: "+ osmAddress);
+                            if (osmAddress != null && osmAddress.isValid()) {
+                                triesMap.addAddress(osmAddress);
                             }
                             break;
 
@@ -306,7 +307,7 @@ public class XmlParser {
                 null,
                 null,
                 null,
-                streetTries,
+                triesMap,
                 minX,
                 maxX,
                 minY,
