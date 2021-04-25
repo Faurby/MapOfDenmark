@@ -37,10 +37,8 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
         return ElementSize.DEFAULT;
     }
 
-    public void add(Node node) {
+    public void add(float[] nodeCoords) {
         boolean initialNode = coords.length == 2;
-
-        float[] nodeCoords = node.getCoords();
 
         if (coordsAmount == coords.length) {
             resizeCoords(coords.length * 2);

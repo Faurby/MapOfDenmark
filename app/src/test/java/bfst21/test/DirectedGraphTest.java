@@ -1,6 +1,5 @@
 package bfst21.test;
 
-import bfst21.osm.Node;
 import bfst21.pathfinding.Dijkstra;
 import bfst21.pathfinding.DirectedGraph;
 import org.junit.jupiter.api.Test;
@@ -14,27 +13,27 @@ public class DirectedGraphTest {
     public void test() {
         DirectedGraph directedGraph = new DirectedGraph();
 
-        directedGraph.createVertex(1, 2, 0);
-        directedGraph.createVertex(2, 1, 1);
-        directedGraph.createVertex(2, 2, 2);
-        directedGraph.createVertex(2, 3, 3);
-        directedGraph.createVertex(3, 2, 4);
-        directedGraph.createVertex(3, 3, 5);
+        float[] coords0 = new float[]{1, 2};
+        float[] coords1 = new float[]{2, 1};
+        float[] coords2 = new float[]{2, 2};
+        float[] coords3 = new float[]{2, 3};
+        float[] coords4 = new float[]{3, 2};
+        float[] coords5 = new float[]{3, 3};
 
-        Node n0 = directedGraph.getVertexNode(0);
-        Node n1 = directedGraph.getVertexNode(1);
-        Node n2 = directedGraph.getVertexNode(2);
-        Node n3 = directedGraph.getVertexNode(3);
-        Node n4 = directedGraph.getVertexNode(4);
-        Node n5 = directedGraph.getVertexNode(5);
+        directedGraph.createVertex(coords0, 0);
+        directedGraph.createVertex(coords1, 1);
+        directedGraph.createVertex(coords2, 2);
+        directedGraph.createVertex(coords3, 3);
+        directedGraph.createVertex(coords4, 4);
+        directedGraph.createVertex(coords5, 5);
 
-        directedGraph.addEdge(n0, n2, 10, false);
-        directedGraph.addEdge(n2, n1, 10, false);
-        directedGraph.addEdge(n2, n3, 10, false);
-        directedGraph.addEdge(n2, n4, 10, false);
-        directedGraph.addEdge(n4, n5, 10, false);
+        directedGraph.addEdge(coords0, coords3, 10, false);
+        directedGraph.addEdge(coords2, coords1, 10, false);
+        directedGraph.addEdge(coords2, coords3, 10, false);
+        directedGraph.addEdge(coords2, coords4, 10, false);
+        directedGraph.addEdge(coords4, coords5, 10, false);
 
-        Dijkstra dijkstra = new Dijkstra(directedGraph, n0, n5);
+        Dijkstra dijkstra = new Dijkstra(directedGraph, coords0, coords5);
         assertTrue(dijkstra.hasPathTo(1));
         assertTrue(dijkstra.hasPathTo(2));
         assertTrue(dijkstra.hasPathTo(3));

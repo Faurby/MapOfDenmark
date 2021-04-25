@@ -269,7 +269,7 @@ public class XmlParser {
 
                         case "nd":
                             long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
-                            way.add(nodeLongIndex.get(ref).getNode());
+                            way.add(nodeLongIndex.get(ref).getNode().getCoords());
                             break;
                     }
                     break;
