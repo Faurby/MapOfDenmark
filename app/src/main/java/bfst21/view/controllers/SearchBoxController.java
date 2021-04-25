@@ -5,7 +5,6 @@ import bfst21.address.TST;
 import bfst21.exceptions.IllegalInputException;
 import bfst21.models.MapData;
 import bfst21.models.Model;
-import bfst21.osm.Node;
 import bfst21.view.MapCanvas;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -32,7 +31,7 @@ public class SearchBoxController extends SubController {
     @FXML
     private VBox suggestions;
 
-    private TST<Node> addressTries;
+    private TST<float[]> addressTries;
     private Task<Void> addressSuggestionTask;
     private Iterable<String> addressSuggestions;
 
