@@ -1,7 +1,7 @@
 package bfst21.tree;
 
 import bfst21.models.Util;
-import bfst21.osm.Node;
+import bfst21.osm.BoundingBoxElement;
 
 import java.io.Serializable;
 import java.util.ArrayList;

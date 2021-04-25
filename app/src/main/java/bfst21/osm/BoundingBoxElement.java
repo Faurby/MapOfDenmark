@@ -1,6 +1,4 @@
-package bfst21.tree;
-
-import bfst21.osm.Element;
+package bfst21.osm;
 
 
 public abstract class BoundingBoxElement extends Element {
@@ -8,11 +6,33 @@ public abstract class BoundingBoxElement extends Element {
     private static final long serialVersionUID = 8229695993958002260L;
     protected float minX, maxX, minY, maxY;
 
+    protected float[] coords = new float[2];
+    protected int coordsAmount = 0;
+    private boolean initialBoundingBoxUpdate = true;
+
     public BoundingBoxElement(long id) {
         super(id);
     }
 
-    public abstract float[] getCoords();
+    public void addNode(float[] nodeCoords) {
+        if (coordsAmount == coords.length) {
+            resizeCoords(coords.length * 2);
+        }
+        coords[coordsAmount] = nodeCoords[0];
+        coords[coordsAmount + 1] = nodeCoords[1];
+        coordsAmount += 2;
+
+        updateBoundingBox(nodeCoords, initialBoundingBoxUpdate);
+        initialBoundingBoxUpdate = false;
+    }
+
+    protected void resizeCoords(int capacity) {
+        float[] copy = new float[capacity];
+        for (int i = 0; i < coordsAmount; i++) {
+            copy[i] = coords[i];
+        }
+        coords = copy;
+    }
 
     protected void updateBoundingBox(float[] coords, boolean initialBoundingBoxUpdate) {
         float nX = coords[0];
@@ -39,6 +59,8 @@ public abstract class BoundingBoxElement extends Element {
             }
         }
     }
+
+    public abstract float[] getCoords();
 
     public float getMinX() {
         return minX;

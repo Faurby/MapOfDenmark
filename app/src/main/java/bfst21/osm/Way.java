@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import bfst21.models.Util;
-import bfst21.tree.BoundingBoxElement;
 import bfst21.view.Drawable;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -12,10 +11,6 @@ import javafx.scene.canvas.GraphicsContext;
 public class Way extends BoundingBoxElement implements Drawable, Serializable {
 
     private static final long serialVersionUID = 3139576893143362100L;
-    //private final List<Node> nodes = new ArrayList<>();
-
-    private float[] coords = new float[2];
-    private int coordsAmount = 0;
 
     private ElementType elementType;
     private String role;
@@ -37,44 +32,15 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
         return ElementSize.DEFAULT;
     }
 
-    public void add(float[] nodeCoords) {
-        boolean initialNode = coords.length == 2;
-
-        if (coordsAmount == coords.length) {
-            resizeCoords(coords.length * 2);
-        }
-        coords[coordsAmount] = nodeCoords[0];
-        coords[coordsAmount + 1] = nodeCoords[1];
-        coordsAmount += 2;
-
-        updateBoundingBox(nodeCoords, initialNode);
-    }
-
-    private void resizeCoords(int capacity) {
-        float[] copy = new float[capacity];
-        for (int i = 0; i < coordsAmount; i++) {
-            copy[i] = coords[i];
-        }
-        coords = copy;
-    }
-
     @Override
     public void trace(GraphicsContext gc, double zoomLevel) {
-        if (elementType == ElementType.ISLAND) {
-            System.out.println("--------");
-            System.out.println("Start: "+coords[0]+" "+coords[1]);
-        }
         gc.moveTo(coords[0], coords[1]);
 
-        //int nodeSkipAmount = getNodeSkipAmount(zoomLevel);
-        for (int i = 2; i < (coordsAmount); i += 2) {
+        int nodeSkipAmount = getNodeSkipAmount(zoomLevel);
+        for (int i = 2; i < (coordsAmount - 2); i += 2 * nodeSkipAmount) {
             gc.lineTo(coords[i], coords[i + 1]);
-            if (elementType == ElementType.ISLAND) {
-                System.out.println("lineTo: "+coords[i]+" "+coords[i + 1]);
-            }
         }
-        //int last = nodes.size() - 1;
-        //gc.lineTo(nodes.get(last).getX(), nodes.get(last).getY());
+        gc.lineTo(coords[coordsAmount - 2], coords[coordsAmount - 1]);
     }
 
     public static int getNodeSkipAmount(double zoomLevel) {
@@ -100,35 +66,7 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
         return 1;
     }
 
-    public static Way reverseMerge(Way first, Way second) {
-        if (first == null) {
-            return second;
-        }
-        if (second == null) {
-            return first;
-        }
-        int firstSize = first.getCoordsAmount();
-        int secondSize = second.getCoordsAmount();
-        int mergedSize = firstSize + secondSize - 2;
-
-        float[] firstCoords = first.getCoords();
-        float[] secondCoords = Util.reverseCoordsArray(second.getCoords(), secondSize);
-
-        Way merged = new Way(first.getID());
-        merged.coords = new float[mergedSize];
-        merged.coordsAmount = mergedSize;
-
-        for (int i = 0; i < firstSize; i++) {
-            merged.coords[i] = firstCoords[i];
-        }
-        for (int i = 2; i < secondSize; i++) {
-            int position = i - 2 + firstSize;
-            merged.coords[position] = secondCoords[i];
-        }
-        return merged;
-    }
-
-    public static Way merge(Way first, Way second) {
+    public static Way merge(Way first, Way second, boolean reverse) {
         if (first == null) {
             return second;
         }
@@ -141,6 +79,9 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
 
         float[] firstCoords = first.getCoords();
         float[] secondCoords = second.getCoords();
+        if (reverse) {
+            secondCoords = Util.reverseCoordsArray(second.getCoords(), secondSize);
+        }
 
         Way merged = new Way(first.getID());
         merged.coords = new float[mergedSize];
@@ -157,7 +98,7 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
     }
 
     public static Way merge(Way before, Way coast, Way after) {
-        return merge(merge(before, coast), after);
+        return merge(merge(before, coast, false), after, false);
     }
 
     @Override

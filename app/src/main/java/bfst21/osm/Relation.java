@@ -1,6 +1,5 @@
 package bfst21.osm;
 
-import bfst21.tree.BoundingBoxElement;
 import bfst21.view.Drawable;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -15,9 +14,6 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
 
     private static final long serialVersionUID = 4549832550595113105L;
 
-    private float[] coords = new float[2];
-    private int coordAmount = 0;
-
     private final List<Relation> relations;
     private List<Way> ways;
 
@@ -29,14 +25,6 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
         super(id);
         ways = new ArrayList<>();
         relations = new ArrayList<>();
-    }
-
-    public boolean isMultipolygon() {
-        return multipolygon;
-    }
-
-    public void setMultipolygon(boolean multipolygon) {
-        this.multipolygon = multipolygon;
     }
 
     public float[] getCoords() {
@@ -52,7 +40,7 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
 
             if (newAmount >= relationCoordsSize) {
                 float[] copy = new float[newAmount * 2];
-                for (int i = 0; i < coordAmount; i++) {
+                for (int i = 0; i < coordsAmount; i++) {
                     copy[i] = relationCoords[i];
                 }
                 relationCoords = copy;
@@ -65,33 +53,7 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
         return relationCoords;
     }
 
-    public List<Way> getWays() {
-        return ways;
-    }
-
-    public void addMember(Node node) {
-        float[] nodeCoords = node.getCoords();
-
-        if (coordAmount == coords.length) {
-            resizeCoords(coords.length * 2);
-        }
-        coords[coordAmount] = nodeCoords[0];
-        coords[coordAmount + 1] = nodeCoords[1];
-        coordAmount += 2;
-
-        updateBoundingBox(nodeCoords, initialBoundingBoxUpdate);
-        initialBoundingBoxUpdate = false;
-    }
-
-    private void resizeCoords(int capacity) {
-        float[] copy = new float[capacity];
-        for (int i = 0; i < coordAmount; i++) {
-            copy[i] = coords[i];
-        }
-        coords = copy;
-    }
-
-    public void addMember(Way way) {
+    public void addWay(Way way) {
         ways.add(way);
 
         float[] coords = way.getCoords();
@@ -105,20 +67,8 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
         }
     }
 
-    public void addMember(Relation relation) {
-        relations.add(relation);
-    }
-
-    public void setType(ElementType elementType) {
-        this.elementType = elementType;
-    }
-
-    public ElementType getType() {
-        return elementType;
-    }
-
     public void mergeOuterWays() {
-        if (isMultipolygon()) {
+        if (multipolygon) {
             List<Way> mergedWayList = new ArrayList<>();
 
             Map<Node, Way> pieces = new HashMap<>();
@@ -136,22 +86,22 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
                         if (hasFirst != null) {
                             if (way.first().equals(hasFirst.last())) {
                                 //Some way is before this way
-                                merged = Way.merge(hasFirst, way);
+                                merged = Way.merge(hasFirst, way, false);
 
                             //Both ways have same node as their first
                             //So we need to reverse the way and add it AFTER hasFirst way
                             } else if (way.first().equals(hasFirst.first())) {
-                                merged = Way.reverseMerge(hasFirst, way);
+                                merged = Way.merge(hasFirst, way, true);
                             }
                         } else if (hasLast != null) {
                             if (way.last().equals(hasLast.first())) {
                                 //Some way is after this way
-                                merged = Way.merge(way, hasLast);
+                                merged = Way.merge(way, hasLast, false);
 
                             //Both ways have same node as their last
                             //So we need to reverse the way and add it AFTER hasLast way
                             } else if (way.last().equals(hasLast.last())) {
-                                merged = Way.reverseMerge(hasLast, way);
+                                merged = Way.merge(hasLast, way, true);
                             }
                         }
                         if (merged != null) {
@@ -182,7 +132,7 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
     @Override
     public void trace(GraphicsContext gc, double zoomLevel) {
 
-        for (Way way : getWays()) {
+        for (Way way : ways) {
             String role = way.getRole();
             if (role != null) {
                 float[] coords = way.getCoords();
@@ -199,5 +149,33 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
                 }
             }
         }
+    }
+
+    public boolean isMultipolygon() {
+        return multipolygon;
+    }
+
+    public void setMultipolygon(boolean multipolygon) {
+        this.multipolygon = multipolygon;
+    }
+
+    public List<Way> getWays() {
+        return ways;
+    }
+
+    public void addRelation(Relation relation) {
+        relations.add(relation);
+    }
+
+    public List<Relation> getRelations() {
+        return relations;
+    }
+
+    public void setType(ElementType elementType) {
+        this.elementType = elementType;
+    }
+
+    public ElementType getType() {
+        return elementType;
     }
 }

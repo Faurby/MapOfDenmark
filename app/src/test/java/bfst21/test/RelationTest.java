@@ -40,10 +40,10 @@ public class RelationTest {
         way4.add(coords4);
         way4.add(coords3);
 
-        rel.addMember(way1);
-        rel.addMember(way2);
-        rel.addMember(way3);
-        rel.addMember(way4);
+        rel.addWay(way1);
+        rel.addWay(way2);
+        rel.addWay(way3);
+        rel.addWay(way4);
 
         rel.setMultipolygon(true);
         rel.mergeOuterWays();

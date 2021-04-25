@@ -32,7 +32,7 @@ public class WayTest {
         way3.add(coords4);
         way3.add(coords1);
 
-        Way merged = Way.merge(way1, way2);
+        Way merged = Way.merge(way1, way2, false);
 
         float[] expectedCoords = way3.getCoords();
         float[] mergedCoords = merged.getCoords();
@@ -53,7 +53,7 @@ public class WayTest {
         w1.add(coords2);
         w1.add(coords3);
 
-        assertEquals(w1, Way.merge(w1, null));
-        assertEquals(w1, Way.merge(null, w1));
+        assertEquals(w1, Way.merge(w1, null, false));
+        assertEquals(w1, Way.merge(null, w1, false));
     }
 }

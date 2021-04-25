@@ -99,7 +99,7 @@ public class XmlParser {
                                     if (type.equalsIgnoreCase("node")) {
                                         NodeID memNode = nodeLongIndex.get(Long.parseLong(memRef));
                                         if (memNode != null) {
-                                            relation.addMember(memNode.getNode());
+                                            relation.addNode(memNode.getNode().getCoords());
                                         }
                                     } else if (type.equalsIgnoreCase("way")) {
                                         Way memWay = wayLongIndex.get(Long.parseLong(memRef));
@@ -108,12 +108,12 @@ public class XmlParser {
                                             if (role != null && !role.isEmpty()) {
                                                 memWay.setRole(role);
                                             }
-                                            relation.addMember(memWay);
+                                            relation.addWay(memWay);
                                         }
                                     } else if (type.equalsIgnoreCase("relation")) {
                                         Relation memRelation = relationLongIndex.get(Long.parseLong(memRef));
                                         if (memRelation != null) {
-                                            relation.addMember(memRelation);
+                                            relation.addRelation(memRelation);
                                         }
                                     }
                                 }
@@ -269,7 +269,7 @@ public class XmlParser {
 
                         case "nd":
                             long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
-                            way.add(nodeLongIndex.get(ref).getNode().getCoords());
+                            way.addNode(nodeLongIndex.get(ref).getNode().getCoords());
                             break;
                     }
                     break;
