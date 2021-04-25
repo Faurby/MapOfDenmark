@@ -7,6 +7,7 @@ import bfst21.models.MapData;
 import bfst21.models.Model;
 import bfst21.osm.Node;
 import bfst21.view.MapCanvas;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -32,6 +33,8 @@ public class SearchBoxController extends SubController {
     private VBox suggestions;
 
     private TST<Node> addressTries;
+    private Task<Void> addressSuggestionTask;
+    private Iterable<String> addressSuggestions;
 
     @FXML
     private void searchSingleAddress() {
@@ -72,7 +75,6 @@ public class SearchBoxController extends SubController {
                 addressArea.setText(addressArea.getText().trim());
                 navigateButton.requestFocus();
             }
-
         } else if (keyEvent.getCode() == KeyCode.ENTER) {
             addressArea.setText(addressArea.getText().trim());
             searchSingleAddress();
@@ -84,32 +86,50 @@ public class SearchBoxController extends SubController {
         } else {
             int textLength = addressArea.getText().trim().length();
             if (textLength >= 2) {
-                try {
-                    if (addressTries == null) {
-                        MapCanvas mapCanvas = mainController.getCanvas();
-                        Model model = mapCanvas.getModel();
-                        MapData mapData = model.getMapData();
-                        addressTries = mapData.getAddressTries();
-                    }
-
-                    int count = 0;
-                    suggestions.getChildren().clear();
-                    for (String s : addressTries.keysWithPrefix(addressArea.getText())) {
-                        if (count <= 10) {
-                            Label b = new Label(s);
-                            b.setOnMouseClicked((event) -> {
-                                addressArea.setText(b.getText());
-                                suggestions.getChildren().clear();
-                            });
-                            suggestions.getChildren().add(b);
-                            count++;
-                        }
-                    }
-                } catch (NullPointerException e) {
-                    e.getMessage();
-                }
+                runAddressSuggestionTask();
             }
         }
+    }
+
+    private void displayAddressSuggestions() {
+        int count = 0;
+        suggestions.getChildren().clear();
+        for (String s : addressSuggestions) {
+            if (count <= 10) {
+                Label b = new Label(s);
+                b.setOnMouseClicked((event) -> {
+                    addressArea.setText(b.getText());
+                    suggestions.getChildren().clear();
+                });
+                suggestions.getChildren().add(b);
+                count++;
+            }
+        }
+    }
+
+    private void runAddressSuggestionTask() {
+        if (addressSuggestionTask != null) {
+            if (addressSuggestionTask.isRunning()) {
+                addressSuggestionTask.cancel();
+            }
+        }
+        addressSuggestionTask = new Task<>() {
+            @Override
+            protected Void call() {
+                if (addressTries == null) {
+                    MapCanvas mapCanvas = mainController.getCanvas();
+                    Model model = mapCanvas.getModel();
+                    MapData mapData = model.getMapData();
+                    addressTries = mapData.getAddressTries();
+                }
+                addressSuggestions = addressTries.keysWithPrefix(addressArea.getText());
+                return null;
+            }
+        };
+        addressSuggestionTask.setOnSucceeded(e -> displayAddressSuggestions());
+        addressSuggestionTask.setOnFailed(e -> addressSuggestionTask.getException().printStackTrace());
+        Thread thread = new Thread(addressSuggestionTask);
+        thread.start();
     }
 
     public void onWindowResize(Stage stage) {
