@@ -28,11 +28,11 @@ public class DirectedGraphTest {
         Node n4 = directedGraph.getVertexNode(4);
         Node n5 = directedGraph.getVertexNode(5);
 
-        directedGraph.addEdge(n0, n2, 10);
-        directedGraph.addEdge(n2, n1, 10);
-        directedGraph.addEdge(n2, n3, 10);
-        directedGraph.addEdge(n2, n4, 10);
-        directedGraph.addEdge(n4, n5, 10);
+        directedGraph.addEdge(n0, n2, 10, false);
+        directedGraph.addEdge(n2, n1, 10, false);
+        directedGraph.addEdge(n2, n3, 10, false);
+        directedGraph.addEdge(n2, n4, 10, false);
+        directedGraph.addEdge(n4, n5, 10, false);
 
         Dijkstra dijkstra = new Dijkstra(directedGraph, n0, n5);
         assertTrue(dijkstra.hasPathTo(1));

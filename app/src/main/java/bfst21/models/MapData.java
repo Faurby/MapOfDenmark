@@ -1,7 +1,6 @@
 package bfst21.models;
 
 import bfst21.address.TST;
-import bfst21.address.TriesMap;
 import bfst21.osm.*;
 import bfst21.pathfinding.Dijkstra;
 import bfst21.pathfinding.DirectedGraph;

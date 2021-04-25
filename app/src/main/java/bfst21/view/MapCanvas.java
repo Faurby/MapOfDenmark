@@ -22,8 +22,8 @@ import javafx.scene.transform.NonInvertibleTransformException;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 
 public class MapCanvas extends Canvas {
@@ -228,7 +228,7 @@ public class MapCanvas extends Canvas {
             gc.setLineWidth(0.0002 * widthModifier);
             gc.beginPath();
 
-            HashMap<Integer, List<Edge>> adj = directedGraph.getAdjacentEdges();
+            TreeMap<Integer, List<Edge>> adj = directedGraph.getAdjacentEdges();
             for (Integer vertexID : adj.keySet()) {
                 for (Edge edge : adj.get(vertexID)) {
                     edge.draw(directedGraph, gc);
@@ -246,17 +246,17 @@ public class MapCanvas extends Canvas {
         if (displayOptions.getBool(DisplayOption.DISPLAY_DIJKSTRA)) {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
-            gc.setStroke(Color.DARKSLATEBLUE);
-            gc.setLineWidth(0.0002 * widthModifier);
-
-            gc.beginPath();
-            Edge[] edges = model.getMapData().getDijkstra().getEdgeTo();
-            for (Edge edge : edges) {
-                if (edge != null) {
-                    edge.draw(directedGraph, gc);
-                }
-            }
-            gc.stroke();
+//            gc.setStroke(Color.DARKSLATEBLUE);
+//            gc.setLineWidth(0.0002 * widthModifier);
+//
+//            gc.beginPath();
+//            Edge[] edges = model.getMapData().getDijkstra().getEdgeTo();
+//            for (Edge edge : edges) {
+//                if (edge != null) {
+//                    edge.draw(directedGraph, gc);
+//                }
+//            }
+//            gc.stroke();
 
             gc.setStroke(Color.RED);
             gc.setLineWidth(0.0004 * widthModifier);
@@ -512,10 +512,6 @@ public class MapCanvas extends Canvas {
 
             return (int) current + "%";
         }
-    }
-
-    public float getZoomPercentAsFloat() {
-        return Float.parseFloat(getZoomPercent().substring(0, getZoomPercent().length() - 1));
     }
 
     public double getZoomLevel() {

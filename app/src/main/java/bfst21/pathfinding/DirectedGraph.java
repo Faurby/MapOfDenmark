@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 
 public class DirectedGraph implements Serializable {
@@ -14,8 +15,8 @@ public class DirectedGraph implements Serializable {
 
     private int vertexAmount;
     private final HashMap<Node, Integer> coordsToIdMap = new HashMap<>();
-    private final HashMap<Integer, Node> idToCoordsMap = new HashMap<>();
-    private final HashMap<Integer, List<Edge>> adjacentEdges = new HashMap<>();
+    private final TreeMap<Integer, Node> idToCoordsMap = new TreeMap<>();
+    private final TreeMap<Integer, List<Edge>> adjacentEdges = new TreeMap<>();
 
     public void createVertex(float x, float y, int id) {
         Node node = new Node(x, y, false);
@@ -75,7 +76,7 @@ public class DirectedGraph implements Serializable {
         return new ArrayList<>();
     }
 
-    public HashMap<Integer, List<Edge>> getAdjacentEdges() {
+    public TreeMap<Integer, List<Edge>> getAdjacentEdges() {
         return adjacentEdges;
     }
 }
