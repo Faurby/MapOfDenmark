@@ -200,9 +200,9 @@ public class XmlParser {
                                         break;
                                     case "landuse":
                                         if (value.equals("grass") ||
-                                            value.equals("meadow") ||
-                                            value.equals("orchard") ||
-                                            value.equals("allotments")) {
+                                                value.equals("meadow") ||
+                                                value.equals("orchard") ||
+                                                value.equals("allotments")) {
                                             elementType = ElementType.LANDUSE;
 
                                         } else if (value.equals("forest")) {
@@ -344,7 +344,7 @@ public class XmlParser {
         }
         List<Way> merged = new ArrayList<>();
         pieces.forEach((node, way) -> {
-            if (way.last() == node) {
+            if (way.last().equals(node)) {
                 merged.add(way);
             }
         });

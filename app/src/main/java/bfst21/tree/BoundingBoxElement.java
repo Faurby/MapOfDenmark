@@ -1,9 +1,6 @@
 package bfst21.tree;
 
 import bfst21.osm.Element;
-import bfst21.osm.Node;
-
-import java.util.List;
 
 
 public abstract class BoundingBoxElement extends Element {
@@ -15,19 +12,19 @@ public abstract class BoundingBoxElement extends Element {
         super(id);
     }
 
-    public abstract List<Node> getNodes();
+    public abstract float[] getCoords();
 
-    protected void updateBoundingBox(Node node, boolean initialBoundingBoxUpdate) {
+    protected void updateBoundingBox(float[] coords, boolean initialBoundingBoxUpdate) {
+        float nX = coords[0];
+        float nY = coords[1];
+
         if (initialBoundingBoxUpdate) {
-            minX = node.getX();
-            maxX = node.getX();
-            minY = node.getY();
-            maxY = node.getY();
+            minX = nX;
+            maxX = nX;
+            minY = nY;
+            maxY = nY;
 
         } else {
-            float nX = node.getX();
-            float nY = node.getY();
-
             if (nX < minX) {
                 minX = nX;
             }

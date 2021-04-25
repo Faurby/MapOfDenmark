@@ -24,6 +24,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 import java.io.File;
 import java.util.Objects;
 
@@ -185,8 +186,8 @@ public class MainController {
 
         if (mouseEvent.isSecondaryButtonDown()) {
             Point2D point = canvas.mouseToModelCoords(lastMouse);
-            Node nodeAtMouse = new Node((float) point.getX(), (float) point.getY(), false);
-            canvas.runNearestNeighborTask(nodeAtMouse);
+            float[] queryCoords = new float[]{(float) point.getX(), (float) point.getY()};
+            canvas.runNearestNeighborTask(queryCoords);
         }
 
         if (userNodeToggle && mouseEvent.isSecondaryButtonDown()) {
@@ -197,15 +198,15 @@ public class MainController {
 
         if (mouseEvent.isShiftDown() && mouseEvent.isPrimaryButtonDown()) {
             Point2D point = canvas.mouseToModelCoords(lastMouse);
-            Node nodeAtMouse = new Node((float) point.getX(), (float) point.getY(), false);
-            Node nearestNode = model.getMapData().kdTreeNearestNeighborSearch(nodeAtMouse);
+            float[] queryCoords = new float[]{(float) point.getX(), (float) point.getY()};
+            float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords);
 
             if (resetDjikstra) {
                 resetDjikstra = false;
-                model.getMapData().originNode = nearestNode;
-                model.getMapData().destinationNode = null;
+                model.getMapData().originCoords = nearestCoords;
+                model.getMapData().destinationCoords = null;
             } else {
-                model.getMapData().destinationNode = nearestNode;
+                model.getMapData().destinationCoords = nearestCoords;
                 model.getMapData().runDijkstra();
                 resetDjikstra = true;
             }

@@ -12,7 +12,7 @@ public class Dijkstra {
     private final IndexMinPQ<Double> pq;
     private boolean foundDestination;
 
-    public Dijkstra(DirectedGraph directedGraph, Node source, Node destination) {
+    public Dijkstra(DirectedGraph directedGraph, float[] source, float[] destination) {
 
         int sourceID = directedGraph.getVertexID(source);
         int destinationID = directedGraph.getVertexID(destination);

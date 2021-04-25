@@ -15,7 +15,9 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
 
     private static final long serialVersionUID = 4549832550595113105L;
 
-    private final List<Node> nodes;
+    private float[] coords = new float[2];
+    private int coordAmount = 0;
+
     private final List<Relation> relations;
     private List<Way> ways;
 
@@ -25,7 +27,6 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
 
     public Relation(long id) {
         super(id);
-        nodes = new ArrayList<>();
         ways = new ArrayList<>();
         relations = new ArrayList<>();
     }
@@ -38,12 +39,30 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
         this.multipolygon = multipolygon;
     }
 
-    public List<Node> getNodes() {
-        List<Node> list = new ArrayList<>(nodes);
+    public float[] getCoords() {
+        float[] relationCoords = new float[2];
+
+        int relationCoordsAmount = 0;
         for (Way way : ways) {
-            list.addAll(way.getNodes());
+
+            float[] wayCoords = way.getCoords();
+            int wayCoordsSize = wayCoords.length;
+            int relationCoordsSize = relationCoords.length;
+            int newAmount = relationCoordsAmount + wayCoordsSize;
+
+            if (newAmount >= relationCoordsSize) {
+                float[] copy = new float[newAmount * 2];
+                for (int i = 0; i < coordAmount; i++) {
+                    copy[i] = relationCoords[i];
+                }
+                relationCoords = copy;
+            }
+            for (int i = 0; i < wayCoordsSize; i++) {
+                relationCoords[i + relationCoordsAmount] = wayCoords[i];
+            }
+            relationCoordsAmount = newAmount;
         }
-        return list;
+        return relationCoords;
     }
 
     public List<Way> getWays() {
@@ -51,17 +70,37 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
     }
 
     public void addMember(Node node) {
-        nodes.add(node);
+        float[] nodeCoords = node.getCoords();
 
-        updateBoundingBox(node, initialBoundingBoxUpdate);
+        if (coordAmount == coords.length) {
+            resizeCoords(coords.length * 2);
+        }
+        coords[coordAmount] = nodeCoords[0];
+        coords[coordAmount + 1] = nodeCoords[1];
+        coordAmount += 2;
+
+        updateBoundingBox(nodeCoords, initialBoundingBoxUpdate);
         initialBoundingBoxUpdate = false;
+    }
+
+    private void resizeCoords(int capacity) {
+        float[] copy = new float[capacity];
+        for (int i = 0; i < coordAmount; i++) {
+            copy[i] = coords[i];
+        }
+        coords = copy;
     }
 
     public void addMember(Way way) {
         ways.add(way);
 
-        for (Node node : way.getNodes()) {
-            updateBoundingBox(node, initialBoundingBoxUpdate);
+        float[] coords = way.getCoords();
+        for (int i = 0; i < coords.length; i += 2) {
+
+            float x = coords[i];
+            float y = coords[i + 1];
+
+            updateBoundingBox(new float[]{x, y}, initialBoundingBoxUpdate);
             initialBoundingBoxUpdate = false;
         }
     }
@@ -95,23 +134,23 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
                         Way merged = null;
 
                         if (hasFirst != null) {
-                            if (way.first() == hasFirst.last()) {
+                            if (way.first().equals(hasFirst.last())) {
                                 //Some way is before this way
                                 merged = Way.merge(hasFirst, way);
 
                             //Both ways have same node as their first
                             //So we need to reverse the way and add it AFTER hasFirst way
-                            } else if (way.first() == hasFirst.first()) {
+                            } else if (way.first().equals(hasFirst.first())) {
                                 merged = Way.reverseMerge(hasFirst, way);
                             }
                         } else if (hasLast != null) {
-                            if (way.last() == hasLast.first()) {
+                            if (way.last().equals(hasLast.first())) {
                                 //Some way is after this way
                                 merged = Way.merge(way, hasLast);
 
                             //Both ways have same node as their last
                             //So we need to reverse the way and add it AFTER hasLast way
-                            } else if (way.last() == hasLast.last()) {
+                            } else if (way.last().equals(hasLast.last())) {
                                 merged = Way.reverseMerge(hasLast, way);
                             }
                         }
@@ -132,7 +171,7 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
                 }
             }
             pieces.forEach((node, way) -> {
-                if (way.last() == node) {
+                if (way.last().equals(node)) {
                     mergedWayList.add(way);
                 }
             });
@@ -146,19 +185,16 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
         for (Way way : getWays()) {
             String role = way.getRole();
             if (role != null) {
-                List<Node> nodes = way.getNodes();
+                float[] coords = way.getCoords();
 
-                if (role.equals("outer")) {
-                    gc.moveTo(nodes.get(0).getX(), nodes.get(0).getY());
+                if (role.equals("outer") || role.equals("inner")) {
+                    gc.moveTo(coords[0], coords[1]);
 
-                    for (int i = 1; i < nodes.size(); i++) {
-                        gc.lineTo(nodes.get(i).getX(), nodes.get(i).getY());
-                    }
-                } else if (role.equals("inner")) {
-                    gc.moveTo(nodes.get(0).getX(), nodes.get(0).getY());
+                    for (int i = 2; i < way.getCoordsAmount(); i += 2) {
+                        float x = coords[i];
+                        float y = coords[i + 1];
 
-                    for (int i = 1; i < nodes.size(); i++) {
-                        gc.lineTo(nodes.get(i).getX(), nodes.get(i).getY());
+                        gc.lineTo(x, y);
                     }
                 }
             }

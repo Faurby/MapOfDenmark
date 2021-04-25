@@ -46,7 +46,7 @@ public class MapCanvas extends Canvas {
     private ColorMode colorMode = ColorMode.STANDARD;
     private Affine trans = new Affine();
 
-    private Node nearestNeighborNode;
+    private float[] nearestNeighborCoords;
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -140,8 +140,8 @@ public class MapCanvas extends Canvas {
                 }
             }
             drawGraph();
-            if (model.getMapData().destinationNode != null) {
-                drawPathTo(model.getMapData().destinationNode);
+            if (model.getMapData().destinationCoords != null) {
+                drawPathTo(model.getMapData().destinationCoords);
             }
         }
         gc.restore();
@@ -242,7 +242,7 @@ public class MapCanvas extends Canvas {
      * Draws a path from the origin node to the destination node.
      * Draws every path that dijkstra has investigated.
      */
-    public void drawPathTo(Node destination) {
+    public void drawPathTo(float[] destinationCoords) {
         if (displayOptions.getBool(DisplayOption.DISPLAY_DIJKSTRA)) {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
@@ -261,7 +261,7 @@ public class MapCanvas extends Canvas {
             gc.setStroke(Color.RED);
             gc.setLineWidth(0.0004 * widthModifier);
 
-            int destinationID = directedGraph.getVertexID(destination);
+            int destinationID = directedGraph.getVertexID(destinationCoords);
 
             Iterable<Edge> it = model.getMapData().getDijkstra().pathTo(destinationID);
             if (it != null) {
@@ -302,13 +302,13 @@ public class MapCanvas extends Canvas {
     }
 
     public void drawNeighborNodes() {
-        if (nearestNeighborNode != null) {
+        if (nearestNeighborCoords != null) {
             gc.setStroke(Color.RED);
             gc.setLineWidth(0.002 * widthModifier);
 
             gc.beginPath();
-            gc.moveTo(nearestNeighborNode.getX(), nearestNeighborNode.getY());
-            gc.lineTo(nearestNeighborNode.getX(), nearestNeighborNode.getY());
+            gc.moveTo(nearestNeighborCoords[0], nearestNeighborCoords[1]);
+            gc.lineTo(nearestNeighborCoords[0], nearestNeighborCoords[1]);
             gc.stroke();
         }
     }
@@ -318,7 +318,7 @@ public class MapCanvas extends Canvas {
      * Cancels the current nearest neighbor search task if it is running.
      * Repaints the MapCanvas when the task is finished.
      */
-    public void runNearestNeighborTask(Node queryNode) {
+    public void runNearestNeighborTask(float[] queryCoords) {
         if (nearestNeighborTask != null) {
             if (nearestNeighborTask.isRunning()) {
                 nearestNeighborTask.cancel();
@@ -327,7 +327,7 @@ public class MapCanvas extends Canvas {
         nearestNeighborTask = new Task<>() {
             @Override
             protected Void call() {
-                nearestNeighborNode = model.getMapData().kdTreeNearestNeighborSearch(queryNode);
+                nearestNeighborCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords);
                 return null;
             }
         };

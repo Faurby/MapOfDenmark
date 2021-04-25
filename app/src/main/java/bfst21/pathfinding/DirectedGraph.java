@@ -1,6 +1,6 @@
 package bfst21.pathfinding;
 
-import bfst21.osm.Node;
+import bfst21.models.Util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,36 +14,35 @@ public class DirectedGraph implements Serializable {
     private static final long serialVersionUID = -2665514385590129687L;
 
     private int vertexAmount;
-    private final HashMap<Node, Integer> coordsToIdMap = new HashMap<>();
-    private final TreeMap<Integer, Node> idToCoordsMap = new TreeMap<>();
+    private final HashMap<float[], Integer> coordsToIdMap = new HashMap<>();
+    private final TreeMap<Integer, float[]> idToCoordsMap = new TreeMap<>();
     private final TreeMap<Integer, List<Edge>> adjacentEdges = new TreeMap<>();
 
-    public void createVertex(float x, float y, int id) {
-        Node node = new Node(x, y, false);
-        coordsToIdMap.put(node, id);
-        idToCoordsMap.put(id, node);
+    public void createVertex(float[] coords, int id) {
+        coordsToIdMap.put(coords, id);
+        idToCoordsMap.put(id, coords);
         vertexAmount++;
     }
 
-    public int getVertexID(Node node) {
-        if (coordsToIdMap.containsKey(node)) {
-            return coordsToIdMap.get(node);
+    public int getVertexID(float[] coords) {
+        if (coordsToIdMap.containsKey(coords)) {
+            return coordsToIdMap.get(coords);
         }
         return -1;
     }
 
-    public Node getVertexNode(int id) {
+    public float[] getVertexNode(int id) {
         if (idToCoordsMap.containsKey(id)) {
             return idToCoordsMap.get(id);
         }
         return null;
     }
 
-    public void addEdge(Node fromNode, Node toNode, int maxSpeed, boolean oneWay) {
-        int fromID = getVertexID(fromNode);
-        int toID = getVertexID(toNode);
+    public void addEdge(float[] fromCoords, float[] toCoords, int maxSpeed, boolean oneWay) {
+        int fromID = getVertexID(fromCoords);
+        int toID = getVertexID(toCoords);
 
-        float distance = (float) fromNode.distTo(toNode);
+        float distance = (float) Util.distTo(fromCoords, toCoords);
         Edge edge1 = new Edge(fromID, toID, distance, maxSpeed);
 
         addEdge(toID, edge1);
