@@ -6,6 +6,10 @@ import java.util.Comparator;
 import java.util.List;
 
 
+/**
+ * ElementLongIndex contains a list of elements that must extend the Element class.
+ * Elements can then be found by their ID using binary search.
+ */
 public class ElementLongIndex<T extends Element> implements Serializable {
 
     private static final long serialVersionUID = 2352785882692399165L;

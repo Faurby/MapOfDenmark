@@ -2,7 +2,7 @@ package bfst21.models;
 
 import bfst21.address.TST;
 import bfst21.osm.*;
-import bfst21.pathfinding.Dijkstra;
+import bfst21.pathfinding.DijkstraPath;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdTree;
@@ -16,7 +16,7 @@ import java.util.*;
 public class MapData {
 
     private DirectedGraph directedGraph;
-    private Dijkstra dijkstra;
+    private DijkstraPath dijkstraPath;
 
     private HashMap<ElementGroup, KdTree<Way>> kdTreeMap;
     private final HashMap<ElementGroup, List<Way>> kdTreeSearchMap = new HashMap<>();
@@ -171,7 +171,7 @@ public class MapData {
      */
     public void runDijkstra() {
         if (originCoords != null && destinationCoords != null) {
-            dijkstra = new Dijkstra(directedGraph, originCoords, destinationCoords);
+            dijkstraPath = new DijkstraPath(directedGraph, originCoords, destinationCoords);
         }
     }
 
@@ -388,8 +388,8 @@ public class MapData {
         userNodes.add(userNode);
     }
 
-    public Dijkstra getDijkstra() {
-        return dijkstra;
+    public DijkstraPath getDijkstra() {
+        return dijkstraPath;
     }
 
     public TST<float[]> getAddressTries() {

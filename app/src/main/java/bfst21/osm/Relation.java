@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Relation is a group of elements.
+ * It may contain coordinates, Ways and/or other Relations.
+ */
 public class Relation extends BoundingBoxElement implements Serializable, Drawable {
 
     private static final long serialVersionUID = 4549832550595113105L;

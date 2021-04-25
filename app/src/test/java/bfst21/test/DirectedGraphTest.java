@@ -1,6 +1,6 @@
 package bfst21.test;
 
-import bfst21.pathfinding.Dijkstra;
+import bfst21.pathfinding.DijkstraPath;
 import bfst21.pathfinding.DirectedGraph;
 import org.junit.jupiter.api.Test;
 
@@ -33,11 +33,11 @@ public class DirectedGraphTest {
         directedGraph.addEdge(coords2, coords4, 10, false);
         directedGraph.addEdge(coords4, coords5, 10, false);
 
-        Dijkstra dijkstra = new Dijkstra(directedGraph, coords0, coords5);
-        assertTrue(dijkstra.hasPathTo(1));
-        assertTrue(dijkstra.hasPathTo(2));
-        assertTrue(dijkstra.hasPathTo(3));
-        assertTrue(dijkstra.hasPathTo(4));
-        assertTrue(dijkstra.hasPathTo(5));
+        DijkstraPath dijkstraPath = new DijkstraPath(directedGraph, coords0, coords5);
+        assertTrue(dijkstraPath.hasPathTo(1));
+        assertTrue(dijkstraPath.hasPathTo(2));
+        assertTrue(dijkstraPath.hasPathTo(3));
+        assertTrue(dijkstraPath.hasPathTo(4));
+        assertTrue(dijkstraPath.hasPathTo(5));
     }
 }

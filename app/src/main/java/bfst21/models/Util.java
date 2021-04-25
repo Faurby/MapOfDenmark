@@ -3,11 +3,17 @@ package bfst21.models;
 
 public class Util {
 
+    /**
+     * Calculate the distance between 2 float array coordinates.
+     */
     public static double distTo(float[] fromCoords, float[] toCoords) {
         return distTo(fromCoords[0], fromCoords[1], toCoords[0], toCoords[1]);
     }
 
-    //Distance between 2 nodes (lat, lon) by Haversine formula
+    /**
+     * Calculate the distance between 2 pairs of longitude and latitude values.
+     * This is calculated using the Haversine formula.
+     */
     public static double distTo(double lon1, double lat1, double lon2, double lat2) {
 
         int R = 6371; //Radius of Earth

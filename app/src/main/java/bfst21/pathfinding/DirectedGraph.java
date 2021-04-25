@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.TreeMap;
 
 
+/**
+ * DirectedGraph is an edge-weighted directed graph.
+ */
 public class DirectedGraph implements Serializable {
 
     private static final long serialVersionUID = -2665514385590129687L;
