@@ -40,6 +40,8 @@ public class XmlParser {
 
     public MapData loadOSM(InputStream input) throws XMLStreamException, FactoryConfigurationError {
 
+        long time = -System.nanoTime();
+
         DisplayOptions displayOptions = DisplayOptions.getInstance();
 
         InputFactoryProviderImpl iprovider = new InputFactoryProviderImpl();
@@ -322,6 +324,8 @@ public class XmlParser {
                     break;
             }
         }
+        time += System.nanoTime();
+        System.out.println("Parsed OSM data in: "+ time / 1_000_000+"ms");
         islands = mergeCoastLines(coastlines);
 
         return new MapData(
