@@ -39,7 +39,7 @@ public class Node implements Serializable {
     }
 
     public double distTo(Node other) {
-        return Util.distTo(x, getRealY(), other.getX(), other.getRealY());
+        return Util.distTo(x, y, other.getX(), other.getY());
     }
 
     public float[] getCoords() {
