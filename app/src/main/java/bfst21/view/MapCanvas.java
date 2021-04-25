@@ -239,7 +239,7 @@ public class MapCanvas extends Canvas {
     }
 
     /**
-     * Draws a path from the origin node to the destination node.
+     * Draws a path from the origin coords to the destination coords.
      * Draws every path that dijkstra has investigated.
      */
     public void drawPathTo(float[] destinationCoords) {

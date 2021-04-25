@@ -19,7 +19,6 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
 
     private ElementType elementType;
     private boolean multipolygon;
-    private boolean initialBoundingBoxUpdate = true;
 
     public Relation(long id) {
         super(id);
@@ -27,6 +26,9 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
         relations = new ArrayList<>();
     }
 
+    /**
+     * @return an array of coordinates for every Way in the relation.
+     */
     public float[] getCoords() {
         float[] relationCoords = new float[2];
 
@@ -39,11 +41,7 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
             int newAmount = relationCoordsAmount + wayCoordsSize;
 
             if (newAmount >= relationCoordsSize) {
-                float[] copy = new float[newAmount * 2];
-                for (int i = 0; i < coordsAmount; i++) {
-                    copy[i] = relationCoords[i];
-                }
-                relationCoords = copy;
+                relationCoords = resizeArray(relationCoords, coordsAmount, newAmount * 2);
             }
             for (int i = 0; i < wayCoordsSize; i++) {
                 relationCoords[i + relationCoordsAmount] = wayCoords[i];
@@ -53,6 +51,10 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
         return relationCoords;
     }
 
+    /**
+     * Add a Way to the list of Ways in the Relation.
+     * Update the bounding box values with every set of coordinates in the Way.
+     */
     public void addWay(Way way) {
         ways.add(way);
 
@@ -67,6 +69,13 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
         }
     }
 
+    /**
+     * Merge outer Ways of a Relation if it is a multipolygon.
+     * Some Ways may have first/last coordinates in common so they need to be merged.
+     *
+     * Some Ways have coordinates in the wrong order,
+     * so we need to reverse the list of coordinates before correctly merging.
+     */
     public void mergeOuterWays() {
         if (multipolygon) {
             List<Way> mergedWayList = new ArrayList<>();

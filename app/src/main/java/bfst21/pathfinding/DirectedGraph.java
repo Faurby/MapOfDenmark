@@ -31,7 +31,7 @@ public class DirectedGraph implements Serializable {
         return -1;
     }
 
-    public float[] getVertexNode(int id) {
+    public float[] getVertexCoords(int id) {
         if (idToCoordsMap.containsKey(id)) {
             return idToCoordsMap.get(id);
         }

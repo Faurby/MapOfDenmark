@@ -19,8 +19,8 @@ public class Edge implements Serializable {
     }
 
     public void draw(DirectedGraph directedGraph, GraphicsContext gc) {
-        float[] fromCoords = directedGraph.getVertexNode(from);
-        float[] toCoords = directedGraph.getVertexNode(to);
+        float[] fromCoords = directedGraph.getVertexCoords(from);
+        float[] toCoords = directedGraph.getVertexCoords(to);
 
         if (fromCoords != null && toCoords != null) {
             gc.moveTo(fromCoords[0], fromCoords[1]);

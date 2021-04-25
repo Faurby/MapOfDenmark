@@ -149,7 +149,10 @@ public class MapData {
                             float wX = coords[i + 2];
                             float wY = coords[i + 3];
 
-                            directedGraph.addEdge(new float[]{vX, vY}, new float[]{wX, wY}, maxSpeed, way.isOneWay());
+                            float[] fromCoords = new float[]{vX, vY};
+                            float[] toCoords = new float[]{wX, wY};
+
+                            directedGraph.addEdge(fromCoords, toCoords, maxSpeed, way.isOneWay());
                             idCount += 2;
                         }
                     }
@@ -161,7 +164,7 @@ public class MapData {
     }
 
     /**
-     * Run dijkstra path finding if nodes for origin and destination are present.
+     * Run dijkstra path finding if coords for origin and destination are present.
      */
     public void runDijkstra() {
         if (originCoords != null && destinationCoords != null) {
@@ -305,10 +308,10 @@ public class MapData {
     }
 
     /**
-     * Starts a nearest neighbor search for the kd-tree with the given query node.
+     * Starts a nearest neighbor search for the kd-tree with the given query coords.
      * Will only search in kd-trees with an ElementGroup where navigation is possible.
      * <p>
-     * When a list of nearby nodes are found, we will then find the closest node.
+     * When a list of nearby coords are found, we will then find the coords closest to the query.
      */
     public float[] kdTreeNearestNeighborSearch(float[] queryCoords) {
         float[] coordsList = new float[ElementGroup.values().size() * 2];
