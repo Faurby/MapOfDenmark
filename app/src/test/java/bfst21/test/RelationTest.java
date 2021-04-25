@@ -28,17 +28,17 @@ public class RelationTest {
         float[] coords3 = new float[]{12.575992f, -99.421005f};
         float[] coords4 = new float[]{12.575649f, -99.42077f};
 
-        way1.add(coords1);
-        way1.add(coords2);
+        way1.addNode(coords1);
+        way1.addNode(coords2);
 
-        way2.add(coords3);
-        way2.add(coords2);
+        way2.addNode(coords3);
+        way2.addNode(coords2);
 
-        way3.add(coords4);
-        way3.add(coords1);
+        way3.addNode(coords4);
+        way3.addNode(coords1);
 
-        way4.add(coords4);
-        way4.add(coords3);
+        way4.addNode(coords4);
+        way4.addNode(coords3);
 
         rel.addWay(way1);
         rel.addWay(way2);

@@ -246,17 +246,17 @@ public class MapCanvas extends Canvas {
         if (displayOptions.getBool(DisplayOption.DISPLAY_DIJKSTRA)) {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
-//            gc.setStroke(Color.DARKSLATEBLUE);
-//            gc.setLineWidth(0.0002 * widthModifier);
-//
-//            gc.beginPath();
-//            Edge[] edges = model.getMapData().getDijkstra().getEdgeTo();
-//            for (Edge edge : edges) {
-//                if (edge != null) {
-//                    edge.draw(directedGraph, gc);
-//                }
-//            }
-//            gc.stroke();
+            gc.setStroke(Color.DARKSLATEBLUE);
+            gc.setLineWidth(0.0002 * widthModifier);
+
+            gc.beginPath();
+            Edge[] edges = model.getMapData().getDijkstra().getEdgeTo();
+            for (Edge edge : edges) {
+                if (edge != null) {
+                    edge.draw(directedGraph, gc);
+                }
+            }
+            gc.stroke();
 
             gc.setStroke(Color.RED);
             gc.setLineWidth(0.0004 * widthModifier);

@@ -120,7 +120,7 @@ public class MapData {
                         int size = way.getCoordsAmount();
                         float[] coords = way.getCoords();
 
-                        for (int i = 0; i < size; i += 4) {
+                        for (int i = 0; i < (size - 2); i += 2) {
                             float vX = coords[i];
                             float vY = coords[i + 1];
                             float wX = coords[i + 2];
@@ -146,7 +146,7 @@ public class MapData {
                         int size = way.getCoordsAmount();
                         float[] coords = way.getCoords();
 
-                        for (int i = 0; i < size; i += 4) {
+                        for (int i = 0; i < (size - 2); i += 2) {
                             float vX = coords[i];
                             float vY = coords[i + 1];
                             float wX = coords[i + 2];
@@ -327,7 +327,7 @@ public class MapData {
 
                     coordsList[count] = coords[0];
                     coordsList[count + 1] = coords[1];
-                    count++;
+                    count += 2;
                 }
             }
         }
@@ -335,8 +335,8 @@ public class MapData {
         double minimumDistance = Double.MAX_VALUE;
 
         for (int i = 0; i < coordsList.length; i += 2) {
-            float x = coordsList[0];
-            float y = coordsList[1];
+            float x = coordsList[i];
+            float y = coordsList[i + 1];
 
             double distance = Util.distTo(queryCoords[0], queryCoords[1], x, y);
 

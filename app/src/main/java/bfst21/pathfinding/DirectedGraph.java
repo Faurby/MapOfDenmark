@@ -1,6 +1,7 @@
 package bfst21.pathfinding;
 
 import bfst21.models.Util;
+import bfst21.osm.Node;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,21 +17,25 @@ public class DirectedGraph implements Serializable {
 
     private static final long serialVersionUID = -2665514385590129687L;
 
-    private final HashMap<float[], Integer> coordsToIdMap = new HashMap<>();
+    private final HashMap<Node, Integer> coordsToIdMap = new HashMap<>();
     private final TreeMap<Integer, float[]> idToCoordsMap = new TreeMap<>();
     private final TreeMap<Integer, List<Edge>> adjacentEdges = new TreeMap<>();
 
     private int vertexAmount;
 
     public void createVertex(float[] coords, int id) {
-        coordsToIdMap.put(coords, id);
+        Node node = new Node(coords[0], coords[1], false);
+
+        coordsToIdMap.put(node, id);
         idToCoordsMap.put(id, coords);
         vertexAmount++;
     }
 
     public int getVertexID(float[] coords) {
-        if (coordsToIdMap.containsKey(coords)) {
-            return coordsToIdMap.get(coords);
+        Node node = new Node(coords[0], coords[1], false);
+
+        if (coordsToIdMap.containsKey(node)) {
+            return coordsToIdMap.get(node);
         }
         return -1;
     }
