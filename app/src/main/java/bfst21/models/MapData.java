@@ -26,7 +26,7 @@ public class MapData {
 
     private final float minX, minY, maxX, maxY;
 
-    private final TST<Node> addressTries;
+    private final TST<float[]> addressTries;
 
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
@@ -45,7 +45,7 @@ public class MapData {
             HashMap<ElementGroup, KdTree<Way>> kdTreeMap,
             KdTree<Relation> kdTreeRelations,
             DirectedGraph directedGraph,
-            TST<Node> addressTries,
+            TST<float[]> addressTries,
             float minX,
             float maxX,
             float minY,
@@ -371,7 +371,7 @@ public class MapData {
         return dijkstra;
     }
 
-    public TST<Node> getAddressTries() {
+    public TST<float[]> getAddressTries() {
         return addressTries;
     }
 }

@@ -10,6 +10,10 @@ public class OsmAddress {
         this.node = node;
     }
 
+    public float[] getNodeCoords() {
+        return new float[]{node.getX(), node.getY()};
+    }
+
     public Node getNode() {
         return node;
     }

@@ -21,6 +21,11 @@ public class Node implements Serializable {
         }
     }
 
+    public Node(float[] coords) {
+        this.x = coords[0];
+        this.y = coords[1];
+    }
+
     public float getX() {
         return x;
     }

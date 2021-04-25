@@ -28,7 +28,7 @@ public class BinaryFileManager {
                 (HashMap<ElementGroup, KdTree<Way>>) input.readObject(),
                 (KdTree<Relation>) input.readObject(),
                 (DirectedGraph) input.readObject(),
-                (TST<Node>) input.readObject(),
+                (TST<float[]>) input.readObject(),
                 input.readFloat(),
                 input.readFloat(),
                 input.readFloat(),

@@ -45,7 +45,7 @@ public class XmlParser {
         Node node = null;
         ElementType elementType = null;
         //TriesMap triesMap = new TriesMap();
-        TST<Node> addressTries = new TST<>();
+        TST<float[]> addressTries = new TST<>();
 
         ElementLongIndex<NodeID> nodeLongIndex = new ElementLongIndex<>();
         ElementLongIndex<Way> wayLongIndex = new ElementLongIndex<>();
@@ -280,7 +280,7 @@ public class XmlParser {
                         case "node":
                             if (osmAddress != null && osmAddress.isValid()) {
                                 //triesMap.addAddress(osmAddress);
-                                addressTries.put(osmAddress.toString(), osmAddress.getNode());
+                                addressTries.put(osmAddress.toString(), osmAddress.getNodeCoords());
                             }
                             break;
 

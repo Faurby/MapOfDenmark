@@ -38,7 +38,7 @@ public class NavigationBoxController extends SubController {
     @FXML
     private VBox navigationBox;
 
-    private TST<Node> addressTries;
+    private TST<float[]> addressTries;
 
     @FXML
     public void searchNavigationAddresses() {
@@ -57,12 +57,15 @@ public class NavigationBoxController extends SubController {
             }
 
             String originAddress = startingPoint.getText();
-            Node originNode = addressTries.get(originAddress);
+            float[] originCoords = addressTries.get(originAddress);
 
             String destinationAddress = destinationPoint.getText();
-            Node destinationNode = addressTries.get(destinationAddress);
+            float[] destinationCoords = addressTries.get(destinationAddress);
 
-            if (originNode != null && destinationNode != null) {
+            if (originCoords != null && destinationCoords != null) {
+
+                Node originNode = new Node(originCoords);
+                Node destinationNode = new Node(destinationCoords);
 
                 Node nearOrigin = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(originNode);
                 Node nearDestination = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(destinationNode);
