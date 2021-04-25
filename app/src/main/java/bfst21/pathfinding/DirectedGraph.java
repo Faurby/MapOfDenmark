@@ -13,10 +13,11 @@ public class DirectedGraph implements Serializable {
 
     private static final long serialVersionUID = -2665514385590129687L;
 
-    private int vertexAmount;
     private final HashMap<float[], Integer> coordsToIdMap = new HashMap<>();
     private final TreeMap<Integer, float[]> idToCoordsMap = new TreeMap<>();
     private final TreeMap<Integer, List<Edge>> adjacentEdges = new TreeMap<>();
+
+    private int vertexAmount;
 
     public void createVertex(float[] coords, int id) {
         coordsToIdMap.put(coords, id);

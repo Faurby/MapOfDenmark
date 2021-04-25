@@ -21,7 +21,17 @@ import org.codehaus.stax2.XMLInputFactory2;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-
+/**
+ * XmlParser is used to parse the XML data given by OpenStreetMaps.
+ * Nodes are parsed an added to the relevant Ways or Relations as a float array of coordinates.
+ *
+ * An ElementType can be found by looking at the tags of a Way or Relation.
+ *
+ * An OsmAddress is created by looking at the address tags of a Node.
+ * It is then placed in a ternary search tries for address searching.
+ *
+ * Coastlines will be merged.
+ */
 public class XmlParser {
 
     public MapData loadOSM(String fileName) throws FileNotFoundException, XMLStreamException, FactoryConfigurationError {

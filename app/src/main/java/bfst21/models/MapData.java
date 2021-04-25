@@ -10,6 +10,9 @@ import bfst21.tree.KdTree;
 import java.util.*;
 
 
+/**
+ * MapData contains all the relevant data structures and information used to draw the map.
+ */
 public class MapData {
 
     private DirectedGraph directedGraph;

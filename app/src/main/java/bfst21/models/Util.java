@@ -21,16 +21,4 @@ public class Util {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c;
     }
-
-    public static float[] reverseCoordsArray(float[] input, int size) {
-        float[] reversed = new float[size];
-
-        int count = size;
-        for (int i = 0; i < size; i += 2) {
-            reversed[i] = input[count - 2];
-            reversed[i + 1] = input[count - 1];
-            count -= 2;
-        }
-        return reversed;
-    }
 }
