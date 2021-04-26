@@ -239,6 +239,10 @@ public class MainController {
     public void loadNewFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Load new map segment");
+        fileChooser.setInitialDirectory(new File("./data"));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Obj file, OSM file, ZIP file", "*.obj; *.osm; *.zip")
+        );
         File file = fileChooser.showOpenDialog(new Stage());
 
         if (file != null) {
