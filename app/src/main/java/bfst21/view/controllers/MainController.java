@@ -1,5 +1,6 @@
 package bfst21.view.controllers;
 
+import bfst21.data.BinaryFileManager;
 import bfst21.exceptions.MapDataNotLoadedException;
 import bfst21.models.*;
 import bfst21.osm.Node;
@@ -26,6 +27,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
 
@@ -320,6 +322,7 @@ public class MainController {
             saveUserNode();
         } else if (keyEvent.getCode().getName().equals("Esc")) {
             userNodeVBox.setVisible(false);
+            scene.setCursor(userNodeCursorImage);
         }
     }
 
@@ -406,5 +409,22 @@ public class MainController {
 
     public void setSearchBoxAddressText(String address) {
         searchBoxController.transferAddressText(address);
+    }
+
+    @FXML
+    public void saveObjFile(ActionEvent actionEvent) {
+        try {
+            BinaryFileManager binaryFileManager = new BinaryFileManager();
+            String fileName = model.getFileName();
+            MapData mapData = model.getMapData();
+
+            long time = -System.nanoTime();
+            binaryFileManager.saveOBJ(fileName.split("\\.")[0] + ".obj", mapData);
+            time += System.nanoTime();
+            System.out.println("Saved .obj file in: "+time / 1_000_000+"ms");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }

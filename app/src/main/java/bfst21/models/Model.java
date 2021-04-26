@@ -36,6 +36,7 @@ public class Model {
     }
 
     public void load(String fileName) throws IOException, XMLStreamException, FactoryConfigurationError, ClassNotFoundException {
+        this.fileName = fileName;
 
         System.out.println("Model loading file: "+fileName);
         long totalTime = -System.nanoTime();
@@ -72,5 +73,9 @@ public class Model {
 
     public MapData getMapData() {
         return mapData;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 }

@@ -67,7 +67,7 @@
                     <CheckBox text="Display primary" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display building" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                     <CheckBox text="Display unknown" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-                    <CheckBox text="Save OBJ file" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+                    <CheckBox text="Save OBJ file" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
                 </VBox>
             </VBox>
             <AnchorPane maxHeight="10" maxWidth="10" minHeight="10" minWidth="10" StackPane.alignment="TOP_LEFT">
@@ -96,7 +96,7 @@
                     <Menu text="File">
                         <MenuItem text="Load default" onAction="#loadDefault"/>
                         <MenuItem text="Load new file" onAction="#loadNewFile"/>
-                        <MenuItem text="Save"/>
+                        <MenuItem text="Save" onAction="#saveObjFile"/>
                     </Menu>
                     <Menu text="View">
                         <MenuItem fx:id="zoomin" onAction="#zoomButtonClicked" text="Zoom in"/>

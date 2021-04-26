@@ -3,8 +3,9 @@ package bfst21.osm;
 import bfst21.view.Drawable;
 import javafx.scene.canvas.GraphicsContext;
 
+import java.io.Serializable;
 
-public class UserNode extends Node implements Drawable {
+public class UserNode extends Node implements Drawable, Serializable {
 
     private static final long serialVersionUID = -5801814520475467424L;
     private String description;

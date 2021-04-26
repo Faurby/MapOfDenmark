@@ -13,6 +13,7 @@ public class DisplayOptions {
         options.put(DisplayOption.DISPLAY_KD_TREE, false);
         options.put(DisplayOption.DISPLAY_GRAPH, false);
         options.put(DisplayOption.DISPLAY_DIJKSTRA, false);
+        options.put(DisplayOption.SAVE_OBJ_FILE, false);
     }
 
     //Returns the current value for a specific option
