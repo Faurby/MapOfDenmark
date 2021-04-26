@@ -3,7 +3,6 @@ package bfst21.test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import bfst21.models.Model;
-import bfst21.models.Util;
 import bfst21.osm.ElementGroup;
 import bfst21.osm.ElementSize;
 import bfst21.osm.ElementType;
@@ -11,6 +10,7 @@ import bfst21.osm.Node;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 

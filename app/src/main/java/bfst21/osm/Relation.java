@@ -1,6 +1,5 @@
 package bfst21.osm;
 
-import bfst21.tree.BoundingBoxElement;
 import bfst21.view.Drawable;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -11,75 +10,78 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Relation is a group of elements.
+ * It may contain coordinates, Ways and/or other Relations.
+ */
 public class Relation extends BoundingBoxElement implements Serializable, Drawable {
 
     private static final long serialVersionUID = 4549832550595113105L;
 
-    private final List<Node> nodes;
     private final List<Relation> relations;
     private List<Way> ways;
 
     private ElementType elementType;
     private boolean multipolygon;
-    private boolean initialBoundingBoxUpdate = true;
 
     public Relation(long id) {
         super(id);
-        nodes = new ArrayList<>();
         ways = new ArrayList<>();
         relations = new ArrayList<>();
     }
 
-    public boolean isMultipolygon() {
-        return multipolygon;
-    }
+    /**
+     * @return an array of coordinates for every Way in the relation.
+     */
+    public float[] getCoords() {
+        float[] relationCoords = new float[2];
 
-    public void setMultipolygon(boolean multipolygon) {
-        this.multipolygon = multipolygon;
-    }
-
-    public List<Node> getNodes() {
-        List<Node> list = new ArrayList<>(nodes);
+        int relationCoordsAmount = 0;
         for (Way way : ways) {
-            list.addAll(way.getNodes());
+
+            float[] wayCoords = way.getCoords();
+            int wayCoordsSize = wayCoords.length;
+            int relationCoordsSize = relationCoords.length;
+            int newAmount = relationCoordsAmount + wayCoordsSize;
+
+            if (newAmount >= relationCoordsSize) {
+                relationCoords = resizeArray(relationCoords, coordsAmount, newAmount * 2);
+            }
+            for (int i = 0; i < wayCoordsSize; i++) {
+                relationCoords[i + relationCoordsAmount] = wayCoords[i];
+            }
+            relationCoordsAmount = newAmount;
         }
-        return list;
+        return relationCoords;
     }
 
-    public List<Way> getWays() {
-        return ways;
-    }
-
-    public void addMember(Node node) {
-        nodes.add(node);
-
-        updateBoundingBox(node, initialBoundingBoxUpdate);
-        initialBoundingBoxUpdate = false;
-    }
-
-    public void addMember(Way way) {
+    /**
+     * Add a Way to the list of Ways in the Relation.
+     * Update the bounding box values with every set of coordinates in the Way.
+     */
+    public void addWay(Way way) {
         ways.add(way);
 
-        for (Node node : way.getNodes()) {
-            updateBoundingBox(node, initialBoundingBoxUpdate);
+        float[] coords = way.getCoords();
+        for (int i = 0; i < coords.length; i += 2) {
+
+            float x = coords[i];
+            float y = coords[i + 1];
+
+            updateBoundingBox(new float[]{x, y}, initialBoundingBoxUpdate);
             initialBoundingBoxUpdate = false;
         }
     }
 
-    public void addMember(Relation relation) {
-        relations.add(relation);
-    }
-
-    public void setType(ElementType elementType) {
-        this.elementType = elementType;
-    }
-
-    public ElementType getType() {
-        return elementType;
-    }
-
+    /**
+     * Merge outer Ways of a Relation if it is a multipolygon.
+     * Some Ways may have first/last coordinates in common so they need to be merged.
+     *
+     * Some Ways have coordinates in the wrong order,
+     * so we need to reverse the list of coordinates before correctly merging.
+     */
     public void mergeOuterWays() {
-        if (isMultipolygon()) {
+        if (multipolygon) {
             List<Way> mergedWayList = new ArrayList<>();
 
             Map<Node, Way> pieces = new HashMap<>();
@@ -95,24 +97,24 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
                         Way merged = null;
 
                         if (hasFirst != null) {
-                            if (way.first() == hasFirst.last()) {
+                            if (way.first().equals(hasFirst.last())) {
                                 //Some way is before this way
-                                merged = Way.merge(hasFirst, way);
+                                merged = Way.merge(hasFirst, way, false);
 
                             //Both ways have same node as their first
                             //So we need to reverse the way and add it AFTER hasFirst way
-                            } else if (way.first() == hasFirst.first()) {
-                                merged = Way.reverseMerge(hasFirst, way);
+                            } else if (way.first().equals(hasFirst.first())) {
+                                merged = Way.merge(hasFirst, way, true);
                             }
                         } else if (hasLast != null) {
-                            if (way.last() == hasLast.first()) {
+                            if (way.last().equals(hasLast.first())) {
                                 //Some way is after this way
-                                merged = Way.merge(way, hasLast);
+                                merged = Way.merge(way, hasLast, false);
 
                             //Both ways have same node as their last
                             //So we need to reverse the way and add it AFTER hasLast way
-                            } else if (way.last() == hasLast.last()) {
-                                merged = Way.reverseMerge(hasLast, way);
+                            } else if (way.last().equals(hasLast.last())) {
+                                merged = Way.merge(hasLast, way, true);
                             }
                         }
                         if (merged != null) {
@@ -132,7 +134,7 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
                 }
             }
             pieces.forEach((node, way) -> {
-                if (way.last() == node) {
+                if (way.last().equals(node)) {
                     mergedWayList.add(way);
                 }
             });
@@ -143,25 +145,50 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
     @Override
     public void trace(GraphicsContext gc, double zoomLevel) {
 
-        for (Way way : getWays()) {
+        for (Way way : ways) {
             String role = way.getRole();
             if (role != null) {
-                List<Node> nodes = way.getNodes();
+                float[] coords = way.getCoords();
 
-                if (role.equals("outer")) {
-                    gc.moveTo(nodes.get(0).getX(), nodes.get(0).getY());
+                if (role.equals("outer") || role.equals("inner")) {
+                    gc.moveTo(coords[0], coords[1]);
 
-                    for (int i = 1; i < nodes.size(); i++) {
-                        gc.lineTo(nodes.get(i).getX(), nodes.get(i).getY());
-                    }
-                } else if (role.equals("inner")) {
-                    gc.moveTo(nodes.get(0).getX(), nodes.get(0).getY());
+                    for (int i = 2; i < way.getCoordsAmount(); i += 2) {
+                        float x = coords[i];
+                        float y = coords[i + 1];
 
-                    for (int i = 1; i < nodes.size(); i++) {
-                        gc.lineTo(nodes.get(i).getX(), nodes.get(i).getY());
+                        gc.lineTo(x, y);
                     }
                 }
             }
         }
+    }
+
+    public boolean isMultipolygon() {
+        return multipolygon;
+    }
+
+    public void setMultipolygon(boolean multipolygon) {
+        this.multipolygon = multipolygon;
+    }
+
+    public List<Way> getWays() {
+        return ways;
+    }
+
+    public void addRelation(Relation relation) {
+        relations.add(relation);
+    }
+
+    public List<Relation> getRelations() {
+        return relations;
+    }
+
+    public void setType(ElementType elementType) {
+        this.elementType = elementType;
+    }
+
+    public ElementType getType() {
+        return elementType;
     }
 }

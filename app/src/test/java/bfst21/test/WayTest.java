@@ -3,8 +3,6 @@ package bfst21.test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
-
-import bfst21.osm.Node;
 import bfst21.osm.Way;
 
 
@@ -12,45 +10,50 @@ public class WayTest {
 
     @Test
     public void testCircleMerge() {
-        Node n1 = new Node(1, 1, true);
-        Node n2 = new Node(1, 2, true);
-        Node n3 = new Node(1, 3, true);
-        Node n4 = new Node(1, 4, true);
-        Node n5 = new Node(1, 5, true);
-        Node n6 = new Node(1, 6, true);
+        float[] coords1 = new float[]{1, 1};
+        float[] coords2 = new float[]{1, 2};
+        float[] coords3 = new float[]{1, 3};
+        float[] coords4 = new float[]{1, 4};
 
-        Way w1 = new Way(1);
-        w1.add(n1);
-        w1.add(n2);
-        w1.add(n3);
+        Way way1 = new Way(1);
+        way1.addNode(coords1);
+        way1.addNode(coords2);
+        way1.addNode(coords3);
 
-        Way w2 = new Way(2);
-        w2.add(n3);
-        w2.add(n4);
-        w2.add(n1);
+        Way way2 = new Way(2);
+        way2.addNode(coords3);
+        way2.addNode(coords4);
+        way2.addNode(coords1);
 
-        Way w3 = new Way(3);
-        w3.add(n1);
-        w3.add(n2);
-        w3.add(n3);
-        w3.add(n4);
-        w3.add(n1);
+        Way way3 = new Way(3);
+        way3.addNode(coords1);
+        way3.addNode(coords2);
+        way3.addNode(coords3);
+        way3.addNode(coords4);
+        way3.addNode(coords1);
 
-        assertEquals(w3, Way.merge(w1, w2));
+        Way merged = Way.merge(way1, way2, false);
+
+        float[] expectedCoords = way3.getCoords();
+        float[] mergedCoords = merged.getCoords();
+
+        for (int i = 0; i < way3.getCoordsAmount(); i++) {
+            assertEquals(expectedCoords[i], mergedCoords[i]);
+        }
     }
 
     @Test
     public void testNullWayMerge() {
-        Node n1 = new Node(1, 1, true);
-        Node n2 = new Node(1, 2, true);
-        Node n3 = new Node(1, 3, true);
+        float[] coords1 = new float[]{1, 1};
+        float[] coords2 = new float[]{1, 2};
+        float[] coords3 = new float[]{1, 3};
 
         Way w1 = new Way(1);
-        w1.add(n1);
-        w1.add(n2);
-        w1.add(n3);
+        w1.addNode(coords1);
+        w1.addNode(coords2);
+        w1.addNode(coords3);
 
-        assertEquals(w1, Way.merge(w1, null));
-        assertEquals(w1, Way.merge(null, w1));
+        assertEquals(w1, Way.merge(w1, null, false));
+        assertEquals(w1, Way.merge(null, w1, false));
     }
 }

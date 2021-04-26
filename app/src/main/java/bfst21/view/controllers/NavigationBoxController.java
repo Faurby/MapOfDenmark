@@ -6,7 +6,6 @@ import bfst21.models.MapData;
 import bfst21.models.Model;
 import bfst21.models.TransportOption;
 import bfst21.models.TransportOptions;
-import bfst21.osm.Node;
 import bfst21.view.MapCanvas;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -64,14 +63,11 @@ public class NavigationBoxController extends SubController {
 
             if (originCoords != null && destinationCoords != null) {
 
-                Node originNode = new Node(originCoords);
-                Node destinationNode = new Node(destinationCoords);
+                float[] nearOriginCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(originCoords);
+                float[] nearDestinationCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(destinationCoords);
 
-                Node nearOrigin = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(originNode);
-                Node nearDestination = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(destinationNode);
-
-                mainController.getCanvas().getModel().getMapData().originNode = nearOrigin;
-                mainController.getCanvas().getModel().getMapData().destinationNode = nearDestination;
+                mainController.getCanvas().getModel().getMapData().originCoords = nearOriginCoords;
+                mainController.getCanvas().getModel().getMapData().destinationCoords = nearDestinationCoords;
                 mainController.getCanvas().getModel().getMapData().runDijkstra();
 
             } else {

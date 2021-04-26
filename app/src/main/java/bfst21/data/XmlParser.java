@@ -21,7 +21,17 @@ import org.codehaus.stax2.XMLInputFactory2;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-
+/**
+ * XmlParser is used to parse the XML data given by OpenStreetMaps.
+ * Nodes are parsed an added to the relevant Ways or Relations as a float array of coordinates.
+ *
+ * An ElementType can be found by looking at the tags of a Way or Relation.
+ *
+ * An OsmAddress is created by looking at the address tags of a Node.
+ * It is then placed in a ternary search tries for address searching.
+ *
+ * Coastlines will be merged.
+ */
 public class XmlParser {
 
     public MapData loadOSM(String fileName) throws FileNotFoundException, XMLStreamException, FactoryConfigurationError {
@@ -29,6 +39,8 @@ public class XmlParser {
     }
 
     public MapData loadOSM(InputStream input) throws XMLStreamException, FactoryConfigurationError {
+
+        long time = -System.nanoTime();
 
         DisplayOptions displayOptions = DisplayOptions.getInstance();
 
@@ -99,7 +111,7 @@ public class XmlParser {
                                     if (type.equalsIgnoreCase("node")) {
                                         NodeID memNode = nodeLongIndex.get(Long.parseLong(memRef));
                                         if (memNode != null) {
-                                            relation.addMember(memNode.getNode());
+                                            relation.addNode(memNode.getNode().getCoords());
                                         }
                                     } else if (type.equalsIgnoreCase("way")) {
                                         Way memWay = wayLongIndex.get(Long.parseLong(memRef));
@@ -108,12 +120,12 @@ public class XmlParser {
                                             if (role != null && !role.isEmpty()) {
                                                 memWay.setRole(role);
                                             }
-                                            relation.addMember(memWay);
+                                            relation.addWay(memWay);
                                         }
                                     } else if (type.equalsIgnoreCase("relation")) {
                                         Relation memRelation = relationLongIndex.get(Long.parseLong(memRef));
                                         if (memRelation != null) {
-                                            relation.addMember(memRelation);
+                                            relation.addRelation(memRelation);
                                         }
                                     }
                                 }
@@ -128,16 +140,16 @@ public class XmlParser {
                                 switch (key) {
                                     case "addr:city":
                                         osmAddress = new OsmAddress(node);
-                                        osmAddress.setCity(value);
+                                        osmAddress.setCity(value.intern());
                                         break;
                                     case "addr:housenumber":
-                                        osmAddress.setHouseNumber(value);
+                                        osmAddress.setHouseNumber(value.intern());
                                         break;
                                     case "addr:postcode":
-                                        osmAddress.setPostcode(value);
+                                        osmAddress.setPostcode(Integer.parseInt(value));
                                         break;
                                     case "addr:street":
-                                        osmAddress.setStreet(value);
+                                        osmAddress.setStreet(value.intern());
                                         break;
                                     case "building":
                                         elementType = ElementType.BUILDING;
@@ -200,9 +212,9 @@ public class XmlParser {
                                         break;
                                     case "landuse":
                                         if (value.equals("grass") ||
-                                            value.equals("meadow") ||
-                                            value.equals("orchard") ||
-                                            value.equals("allotments")) {
+                                                value.equals("meadow") ||
+                                                value.equals("orchard") ||
+                                                value.equals("allotments")) {
                                             elementType = ElementType.LANDUSE;
 
                                         } else if (value.equals("forest")) {
@@ -269,7 +281,7 @@ public class XmlParser {
 
                         case "nd":
                             long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
-                            way.add(nodeLongIndex.get(ref).getNode());
+                            way.addNode(nodeLongIndex.get(ref).getNode().getCoords());
                             break;
                     }
                     break;
@@ -280,7 +292,7 @@ public class XmlParser {
                         case "node":
                             if (osmAddress != null && osmAddress.isValid()) {
                                 //triesMap.addAddress(osmAddress);
-                                addressTries.put(osmAddress.toString(), osmAddress.getNodeCoords());
+                                addressTries.put(osmAddress.toString().intern(), osmAddress.getNodeCoords());
                             }
                             break;
 
@@ -312,6 +324,8 @@ public class XmlParser {
                     break;
             }
         }
+        time += System.nanoTime();
+        System.out.println("Parsed OSM data in: "+ time / 1_000_000+"ms");
         islands = mergeCoastLines(coastlines);
 
         return new MapData(
@@ -344,7 +358,7 @@ public class XmlParser {
         }
         List<Way> merged = new ArrayList<>();
         pieces.forEach((node, way) -> {
-            if (way.last() == node) {
+            if (way.last().equals(node)) {
                 merged.add(way);
             }
         });

@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * ElementGroup is used to separate Ways into different categories.
+ * An ElementGroup is created for each ElementType, but Ways that are drawn
+ * using the fill method will have additional ElementGroups for different sizes.
+ */
 public class ElementGroup implements Serializable {
 
     private static final long serialVersionUID = -4246725919555317161L;

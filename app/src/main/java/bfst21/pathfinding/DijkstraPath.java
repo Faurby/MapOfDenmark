@@ -1,21 +1,29 @@
 package bfst21.pathfinding;
 
-import bfst21.osm.Node;
 import edu.princeton.cs.algs4.IndexMinPQ;
 import edu.princeton.cs.algs4.Stack;
 
 
-public class Dijkstra {
+/**
+ * DijkstraPath is based on the Dijkstra algorithm.
+ * It used to find the shortest path between the
+ * origin coordinates and the destination coordinates.
+ *
+ * The algorithm will stop once the destination has been located.
+ */
+public class DijkstraPath {
 
     private final double[] distTo;
     private final Edge[] edgeTo;
     private final IndexMinPQ<Double> pq;
     private boolean foundDestination;
 
-    public Dijkstra(DirectedGraph directedGraph, Node source, Node destination) {
+    public DijkstraPath(DirectedGraph directedGraph,
+                        float[] originCoords,
+                        float[] destinationCoords) {
 
-        int sourceID = directedGraph.getVertexID(source);
-        int destinationID = directedGraph.getVertexID(destination);
+        int sourceID = directedGraph.getVertexID(originCoords);
+        int destinationID = directedGraph.getVertexID(destinationCoords);
 
         int vertexAmount = directedGraph.getVertexAmount();
 

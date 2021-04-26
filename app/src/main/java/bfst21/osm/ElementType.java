@@ -5,6 +5,13 @@ import bfst21.models.DisplayOptions;
 import javafx.scene.paint.Color;
 
 
+/**
+ * ElementType is used to separate Ways and Relations into different
+ * type categories depending on their tag data in the given OSM data.
+ *
+ * Each ElementType has their own values for drawing size, required zoom level,
+ * possible line dashes and colors for the different color modes.
+ */
 public enum ElementType {
 
     //It is very important that each ElementType is declared in the correct drawing order

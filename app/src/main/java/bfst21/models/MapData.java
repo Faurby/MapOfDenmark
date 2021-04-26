@@ -2,7 +2,7 @@ package bfst21.models;
 
 import bfst21.address.TST;
 import bfst21.osm.*;
-import bfst21.pathfinding.Dijkstra;
+import bfst21.pathfinding.DijkstraPath;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdTree;
@@ -10,10 +10,13 @@ import bfst21.tree.KdTree;
 import java.util.*;
 
 
+/**
+ * MapData contains all the relevant data structures and information used to draw the map.
+ */
 public class MapData {
 
     private DirectedGraph directedGraph;
-    private Dijkstra dijkstra;
+    private DijkstraPath dijkstraPath;
 
     private HashMap<ElementGroup, KdTree<Way>> kdTreeMap;
     private final HashMap<ElementGroup, List<Way>> kdTreeSearchMap = new HashMap<>();
@@ -30,8 +33,8 @@ public class MapData {
 
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
-    public Node originNode;
-    public Node destinationNode;
+    public float[] originCoords;
+    public float[] destinationCoords;
 
     /**
      * MapData constructor.
@@ -114,16 +117,20 @@ public class MapData {
                 if (way.getType() != null) {
                     if (way.getType().canNavigate()) {
 
-                        int size = way.getNodes().size();
-                        for (int i = 0; i < (size - 1); i++) {
-                            Node v = way.getNodes().get(i);
-                            Node w = way.getNodes().get(i + 1);
+                        int size = way.getCoordsAmount();
+                        float[] coords = way.getCoords();
+
+                        for (int i = 0; i < (size - 2); i += 2) {
+                            float vX = coords[i];
+                            float vY = coords[i + 1];
+                            float wX = coords[i + 2];
+                            float wY = coords[i + 3];
 
                             int vID = idCount;
                             int wID = idCount + 1;
 
-                            directedGraph.createVertex(v.getX(), v.getY(), vID);
-                            directedGraph.createVertex(w.getX(), w.getY(), wID);
+                            directedGraph.createVertex(new float[]{vX, vY}, vID);
+                            directedGraph.createVertex(new float[]{wX, wY}, wID);
                             idCount += 2;
                         }
                     }
@@ -136,12 +143,19 @@ public class MapData {
 
                         int maxSpeed = way.getMaxSpeed();
 
-                        int size = way.getNodes().size();
-                        for (int i = 0; i < (size - 1); i++) {
-                            Node v = way.getNodes().get(i);
-                            Node w = way.getNodes().get(i + 1);
+                        int size = way.getCoordsAmount();
+                        float[] coords = way.getCoords();
 
-                            directedGraph.addEdge(v, w, maxSpeed, way.isOneWay());
+                        for (int i = 0; i < (size - 2); i += 2) {
+                            float vX = coords[i];
+                            float vY = coords[i + 1];
+                            float wX = coords[i + 2];
+                            float wY = coords[i + 3];
+
+                            float[] fromCoords = new float[]{vX, vY};
+                            float[] toCoords = new float[]{wX, wY};
+
+                            directedGraph.addEdge(fromCoords, toCoords, maxSpeed, way.isOneWay());
                             idCount += 2;
                         }
                     }
@@ -153,11 +167,11 @@ public class MapData {
     }
 
     /**
-     * Run dijkstra path finding if nodes for origin and destination are present.
+     * Run dijkstra path finding if coords for origin and destination are present.
      */
     public void runDijkstra() {
-        if (originNode != null && destinationNode != null) {
-            dijkstra = new Dijkstra(directedGraph, originNode, destinationNode);
+        if (originCoords != null && destinationCoords != null) {
+            dijkstraPath = new DijkstraPath(directedGraph, originCoords, destinationCoords);
         }
     }
 
@@ -297,31 +311,38 @@ public class MapData {
     }
 
     /**
-     * Starts a nearest neighbor search for the kd-tree with the given query node.
+     * Starts a nearest neighbor search for the kd-tree with the given query coords.
      * Will only search in kd-trees with an ElementGroup where navigation is possible.
      * <p>
-     * When a list of nearby nodes are found, we will then find the closest node.
+     * When a list of nearby coords are found, we will then find the coords closest to the query.
      */
-    public Node kdTreeNearestNeighborSearch(Node queryNode) {
-        List<Node> list = new ArrayList<>();
+    public float[] kdTreeNearestNeighborSearch(float[] queryCoords) {
+        float[] coordsList = new float[ElementGroup.values().size() * 2];
 
+        int count = 0;
         for (ElementGroup elementGroup : ElementGroup.values()) {
             if (elementGroup.getType().canNavigate()) {
                 if (kdTreeMap.containsKey(elementGroup)) {
-                    Node node = kdTreeMap.get(elementGroup).nearestNeighborSearch(queryNode);
-                    list.add(node);
+                    float[] coords = kdTreeMap.get(elementGroup).nearestNeighborSearch(queryCoords);
+
+                    coordsList[count] = coords[0];
+                    coordsList[count + 1] = coords[1];
+                    count += 2;
                 }
             }
         }
-        Node nearest = null;
+        float[] nearest = null;
         double minimumDistance = Double.MAX_VALUE;
 
-        for (Node node : list) {
-            double distance = queryNode.distTo(node);
+        for (int i = 0; i < coordsList.length; i += 2) {
+            float x = coordsList[i];
+            float y = coordsList[i + 1];
+
+            double distance = Util.distTo(queryCoords[0], queryCoords[1], x, y);
 
             if (distance < minimumDistance) {
                 minimumDistance = distance;
-                nearest = node;
+                nearest = new float[]{x, y};
             }
         }
         return nearest;
@@ -367,8 +388,8 @@ public class MapData {
         userNodes.add(userNode);
     }
 
-    public Dijkstra getDijkstra() {
-        return dijkstra;
+    public DijkstraPath getDijkstra() {
+        return dijkstraPath;
     }
 
     public TST<float[]> getAddressTries() {
