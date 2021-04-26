@@ -50,20 +50,22 @@ public class DijkstraPath {
     }
 
     public void relax(Edge edge) {
-        int v = edge.getFrom();
-        int w = edge.getTo();
+        if (edge.canNavigate()) {
+            int v = edge.getFrom();
+            int w = edge.getTo();
 
-        double weight = edge.getWeight();
+            double weight = edge.getWeight();
 
-        if (distTo[w] > distTo[v] + weight) {
-            distTo[w] = distTo[v] + weight;
-            edgeTo[w] = edge;
+            if (distTo[w] > distTo[v] + weight) {
+                distTo[w] = distTo[v] + weight;
+                edgeTo[w] = edge;
 
-            if (pq.contains(w)) {
-                pq.decreaseKey(w, distTo[w]);
+                if (pq.contains(w)) {
+                    pq.decreaseKey(w, distTo[w]);
 
-            } else {
-                pq.insert(w, distTo[w]);
+                } else {
+                    pq.insert(w, distTo[w]);
+                }
             }
         }
     }
