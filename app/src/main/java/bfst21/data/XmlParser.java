@@ -258,6 +258,13 @@ public class XmlParser {
                                             }
                                         }
                                         break;
+                                    case "junction":
+                                        if (value.equals("roundabout")) {
+                                            if (way != null) {
+                                                way.setOneWay(true);
+                                            }
+                                        }
+                                        break;
                                     case "oneway:bicycle":
                                         if (value.equals("yes")) {
                                             if (way != null) {
