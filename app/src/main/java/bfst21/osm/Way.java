@@ -185,11 +185,11 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
     }
 
     public Node first() {
-        return new Node(coords[0], coords[1], false);
+        return new Node(coords[0], coords[1]);
     }
 
     public Node last() {
-        return new Node(coords[coordsAmount - 2], coords[coordsAmount - 1], false);
+        return new Node(coords[coordsAmount - 2], coords[coordsAmount - 1]);
     }
 
     @Override

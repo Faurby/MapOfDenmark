@@ -86,7 +86,10 @@ public class XmlParser {
                             float lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
                             float lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
 
-                            node = new Node(lon, lat, true);
+                            //Convert latitude to ensure the map is drawn correctly.
+                            lat = -lat / 0.56f;
+
+                            node = new Node(lon, lat);
                             nodeLongIndex.put(new NodeID(nodeID, node));
                             break;
 

@@ -24,7 +24,7 @@ public class DirectedGraph implements Serializable {
     private int vertexAmount;
 
     public void createVertex(float[] coords, int id) {
-        Node node = new Node(coords[0], coords[1], false);
+        Node node = new Node(coords[0], coords[1]);
 
         coordsToIdMap.put(node, id);
         idToCoordsMap.put(id, coords);
@@ -32,7 +32,7 @@ public class DirectedGraph implements Serializable {
     }
 
     public int getVertexID(float[] coords) {
-        Node node = new Node(coords[0], coords[1], false);
+        Node node = new Node(coords[0], coords[1]);
 
         if (coordsToIdMap.containsKey(node)) {
             return coordsToIdMap.get(node);

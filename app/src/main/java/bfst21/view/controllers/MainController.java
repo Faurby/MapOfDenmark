@@ -148,7 +148,7 @@ public class MainController {
 
         if (model.getMapData() != null) {
             Point2D point = canvas.mouseToModelCoords(lastMouse);
-            Node nodeAtMouse = new Node((float) point.getX(), (float) point.getY(), false);
+            Node nodeAtMouse = new Node((float) point.getX(), (float) point.getY());
             UserNode closestNode = null;
 
             if (!model.getMapData().getUserNodes().isEmpty()) {

@@ -45,8 +45,8 @@ public class XmlParserTest {
 
     @Test
     public void getCorrectDistanceBetween2Coordinates() {
-        Node n1 = new Node(12.6224313f, 55.6571112f, false);
-        Node n2 = new Node(12.6238016f, 55.6573865f, false);
+        Node n1 = new Node(12.6224313f, 55.6571112f);
+        Node n2 = new Node(12.6238016f, 55.6573865f);
 
         double distance = n1.distTo(n2);
         assertEquals(0.09125, distance, 0.0001);

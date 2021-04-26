@@ -11,14 +11,9 @@ public class Node implements Serializable {
     private static final long serialVersionUID = -343957913094540189L;
     private final float x, y;
 
-    public Node(float lon, float lat, boolean convertLat) {
+    public Node(float lon, float lat) {
         this.x = lon;
-
-        if (convertLat) {
-            this.y = -lat / 0.56f;
-        } else {
-            this.y = lat;
-        }
+        this.y = lat;
     }
 
     public Node(float[] coords) {
@@ -32,10 +27,6 @@ public class Node implements Serializable {
 
     public float getY() {
         return y;
-    }
-
-    public float getRealY() {
-        return -y * 0.56f;
     }
 
     public double distTo(Node other) {
