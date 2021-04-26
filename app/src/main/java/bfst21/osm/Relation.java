@@ -34,23 +34,21 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
      * @return an array of coordinates for every Way in the relation.
      */
     public float[] getCoords() {
-        float[] relationCoords = new float[2];
+
+        int size = 0; //First we need to sum the amount of coordinates for every Way.
+        for (Way way : ways) {
+            size += way.getCoords().length;
+        }
+        float[] relationCoords = new float[size];
 
         int relationCoordsAmount = 0;
         for (Way way : ways) {
-
             float[] wayCoords = way.getCoords();
-            int wayCoordsSize = wayCoords.length;
-            int relationCoordsSize = relationCoords.length;
-            int newAmount = relationCoordsAmount + wayCoordsSize;
 
-            if (newAmount >= relationCoordsSize) {
-                relationCoords = resizeArray(relationCoords, coordsAmount, newAmount * 2);
-            }
-            for (int i = 0; i < wayCoordsSize; i++) {
+            for (int i = 0; i < wayCoords.length; i++) {
                 relationCoords[i + relationCoordsAmount] = wayCoords[i];
             }
-            relationCoordsAmount = newAmount;
+            relationCoordsAmount += wayCoords.length;
         }
         return relationCoords;
     }
@@ -68,8 +66,7 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
             float x = coords[i];
             float y = coords[i + 1];
 
-            updateBoundingBox(new float[]{x, y}, initialBoundingBoxUpdate);
-            initialBoundingBoxUpdate = false;
+            updateBoundingBox(x, y);
         }
     }
 
@@ -153,7 +150,7 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
                 if (role.equals("outer") || role.equals("inner")) {
                     gc.moveTo(coords[0], coords[1]);
 
-                    for (int i = 2; i < way.getCoordsAmount(); i += 2) {
+                    for (int i = 2; i < coords.length; i += 2) {
                         float x = coords[i];
                         float y = coords[i + 1];
 

@@ -117,10 +117,9 @@ public class MapData {
                 if (way.getType() != null) {
                     if (way.getType().canNavigate()) {
 
-                        int size = way.getCoordsAmount();
                         float[] coords = way.getCoords();
 
-                        for (int i = 0; i < (size - 2); i += 2) {
+                        for (int i = 0; i < (coords.length - 2); i += 2) {
                             float vX = coords[i];
                             float vY = coords[i + 1];
                             float wX = coords[i + 2];
@@ -142,11 +141,9 @@ public class MapData {
                     if (way.getType().canNavigate()) {
 
                         int maxSpeed = way.getMaxSpeed();
-
-                        int size = way.getCoordsAmount();
                         float[] coords = way.getCoords();
 
-                        for (int i = 0; i < (size - 2); i += 2) {
+                        for (int i = 0; i < (coords.length - 2); i += 2) {
                             float vX = coords[i];
                             float vY = coords[i + 1];
                             float wX = coords[i + 2];

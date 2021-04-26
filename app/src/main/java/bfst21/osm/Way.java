@@ -37,7 +37,7 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
     /**
      * Draw a Way by iterating through all the coordinates.
      * At certain zoom levels, nodes may be skipped to increase drawing performance.
-     * <p>
+     *
      * To avoid incorrect drawings, the first and last coordinate
      * will always be drawn, no matter the amount of nodes to skip.
      */
@@ -46,19 +46,21 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
         gc.moveTo(coords[0], coords[1]);
 
         int nodeSkipAmount = getNodeSkipAmount(zoomLevel);
-        for (int i = 2; i < (coordsAmount - 2); i += 2 * nodeSkipAmount) {
+        int size = coords.length;
+
+        for (int i = 2; i < (size - 2); i += 2 * nodeSkipAmount) {
             gc.lineTo(coords[i], coords[i + 1]);
         }
-        gc.lineTo(coords[coordsAmount - 2], coords[coordsAmount - 1]);
+        gc.lineTo(coords[size - 2], coords[size - 1]);
     }
 
     /**
      * Merge the coordinates of two Ways.
      * A Way may have the same first coordinate as the last coordinate of another Way.
-     * <p>
+     *
      * In that case it makes sense to merge them for ElementTypes
      * that needs to be drawn using the fill method.
-     * <p>
+     *
      * Some Relations have Ways with coordinates in the wrong order,
      * so we need to reverse the list of coordinates before correctly merging.
      */
@@ -69,27 +71,24 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
         if (second == null) {
             return first;
         }
-        int firstSize = first.getCoordsAmount();
-        int secondSize = second.getCoordsAmount();
+        int firstSize = first.coords.length;
+        int secondSize = second.coords.length;
         int mergedSize = firstSize + secondSize - 2;
         //mergedSize needs to be 2 less because we are removing a common node when merging.
 
-        float[] firstCoords = first.getCoords();
-        float[] secondCoords = second.getCoords();
         if (reverse) {
-            secondCoords = reverseCoordsArray(second.getCoords(), secondSize);
+            second.coords = reverseCoordsArray(second.coords);
         }
 
         Way merged = new Way(first.getID());
         merged.coords = new float[mergedSize];
-        merged.coordsAmount = mergedSize;
 
-        for (int i = 0; i < firstSize; i++) {
-            merged.coords[i] = firstCoords[i];
+        for (int i = 0; i < first.coords.length; i++) {
+            merged.coords[i] = first.coords[i];
         }
-        for (int i = 2; i < secondSize; i++) {
+        for (int i = 2; i < second.coords.length; i++) {
             int position = i - 2 + firstSize;
-            merged.coords[position] = secondCoords[i];
+            merged.coords[position] = second.coords[i];
         }
         return merged;
     }
@@ -102,10 +101,11 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
      * Reverse an array of coordinates.
      * The input coordinates are alternately positioned in the array: x1, y1, x2, y2, etc...
      * So x1 is at index 0 and y1 is at index 1 and so on.
-     * <p>
+     *
      * The output array contains the coordinate pairs in the correct reverse order.
      */
-    private static float[] reverseCoordsArray(float[] input, int size) {
+    private static float[] reverseCoordsArray(float[] input) {
+        int size = input.length;
         float[] reversed = new float[size];
 
         int count = size;
@@ -180,16 +180,12 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
         return coords;
     }
 
-    public int getCoordsAmount() {
-        return coordsAmount;
-    }
-
     public Node first() {
         return new Node(coords[0], coords[1]);
     }
 
     public Node last() {
-        return new Node(coords[coordsAmount - 2], coords[coordsAmount - 1]);
+        return new Node(coords[coords.length - 2], coords[coords.length - 1]);
     }
 
     @Override
