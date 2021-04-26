@@ -140,16 +140,16 @@ public class XmlParser {
                                 switch (key) {
                                     case "addr:city":
                                         osmAddress = new OsmAddress(node);
-                                        osmAddress.setCity(value);
+                                        osmAddress.setCity(value.intern());
                                         break;
                                     case "addr:housenumber":
-                                        osmAddress.setHouseNumber(value);
+                                        osmAddress.setHouseNumber(value.intern());
                                         break;
                                     case "addr:postcode":
-                                        osmAddress.setPostcode(value);
+                                        osmAddress.setPostcode(Integer.parseInt(value));
                                         break;
                                     case "addr:street":
-                                        osmAddress.setStreet(value);
+                                        osmAddress.setStreet(value.intern());
                                         break;
                                     case "building":
                                         elementType = ElementType.BUILDING;
@@ -292,7 +292,7 @@ public class XmlParser {
                         case "node":
                             if (osmAddress != null && osmAddress.isValid()) {
                                 //triesMap.addAddress(osmAddress);
-                                addressTries.put(osmAddress.toString(), osmAddress.getNodeCoords());
+                                addressTries.put(osmAddress.toString().intern(), osmAddress.getNodeCoords());
                             }
                             break;
 

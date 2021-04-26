@@ -3,7 +3,9 @@ package bfst21.osm;
 
 public class OsmAddress {
 
-    private String city, houseNumber, postcode, street;
+    private String city, houseNumber, street;
+    private int postcode = -1;
+
     private final Node node;
 
     public OsmAddress(Node node) {
@@ -26,7 +28,7 @@ public class OsmAddress {
         return houseNumber;
     }
 
-    public String getPostcode() {
+    public int getPostcode() {
         return postcode;
     }
 
@@ -42,7 +44,7 @@ public class OsmAddress {
         this.houseNumber = houseNumber;
     }
 
-    public void setPostcode(String postcode) {
+    public void setPostcode(int postcode) {
         this.postcode = postcode;
     }
 
@@ -60,7 +62,7 @@ public class OsmAddress {
         if (city == null) {
             return false;
         }
-        if (postcode == null) {
+        if (postcode != -1) {
             return false;
         }
         return node != null;
