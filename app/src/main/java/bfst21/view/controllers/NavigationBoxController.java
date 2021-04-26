@@ -38,6 +38,7 @@ public class NavigationBoxController extends SubController {
     private VBox navigationBox;
 
     private TST<float[]> addressTries;
+    private TransportOptions transOptions = TransportOptions.getInstance();
 
     @FXML
     public void searchNavigationAddresses() {
@@ -83,21 +84,19 @@ public class NavigationBoxController extends SubController {
     }
 
     public void transportationButtonPushed(ActionEvent actionEvent) {
-        TransportOptions transOptions = new TransportOptions();
-
         if (actionEvent.getSource().toString().contains("WALK")) {
-            transOptions.chooseType(TransportOption.WALK);
+            transOptions.setCurrentlyEnabled(TransportOption.WALK);
             WALK.setSelected(true);
 
         } else if (actionEvent.getSource().toString().contains("BIKE")) {
-            transOptions.chooseType(TransportOption.BIKE);
+            transOptions.setCurrentlyEnabled(TransportOption.BIKE);
             BIKE.setSelected(true);
 
         } else {
-            transOptions.chooseType(TransportOption.CAR);
+            transOptions.setCurrentlyEnabled(TransportOption.CAR);
             CAR.setSelected(true);
         }
-        System.out.println(transOptions.returnType().toString());
+        System.out.println(transOptions.getCurrentlyEnabled().toString());
     }
 
 

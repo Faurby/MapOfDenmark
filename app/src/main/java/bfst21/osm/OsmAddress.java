@@ -62,7 +62,7 @@ public class OsmAddress {
         if (city == null) {
             return false;
         }
-        if (postcode != -1) {
+        if (postcode == -1) {
             return false;
         }
         return node != null;

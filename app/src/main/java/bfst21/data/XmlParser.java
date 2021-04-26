@@ -63,6 +63,7 @@ public class XmlParser {
         ElementLongIndex<Way> wayLongIndex = new ElementLongIndex<>();
         ElementLongIndex<Relation> relationLongIndex = new ElementLongIndex<>();
 
+        List<Node> nodes = new ArrayList<>();
         List<Way> coastlines = new ArrayList<>();
         List<Way> islands;
 
@@ -96,6 +97,7 @@ public class XmlParser {
                         case "way":
                             long wayID = Long.parseLong(reader.getAttributeValue(null, "id"));
                             way = new Way(wayID);
+                            nodes = new ArrayList<>();
                             isCoastline = false;
                             break;
 
@@ -103,6 +105,7 @@ public class XmlParser {
                             if (displayOptions.getBool(DisplayOption.LOAD_RELATIONS)) {
                                 long relationID = Long.parseLong(reader.getAttributeValue(null, "id"));
                                 relation = new Relation(relationID);
+                                nodes = new ArrayList<>();
                             }
                             break;
 
@@ -114,7 +117,7 @@ public class XmlParser {
                                     if (type.equalsIgnoreCase("node")) {
                                         NodeID memNode = nodeLongIndex.get(Long.parseLong(memRef));
                                         if (memNode != null) {
-                                            relation.addNode(memNode.getNode().getCoords());
+                                            nodes.add(memNode.getNode());
                                         }
                                     } else if (type.equalsIgnoreCase("way")) {
                                         Way memWay = wayLongIndex.get(Long.parseLong(memRef));
@@ -291,7 +294,7 @@ public class XmlParser {
 
                         case "nd":
                             long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
-                            way.addNode(nodeLongIndex.get(ref).getNode().getCoords());
+                            nodes.add(nodeLongIndex.get(ref).getNode());
                             break;
                     }
                     break;
@@ -307,6 +310,7 @@ public class XmlParser {
                             break;
 
                         case "relation":
+                            relation.setNodes(nodes);
                             if (displayOptions.getBool(DisplayOption.LOAD_RELATIONS)) {
                                 if (elementType != null) {
                                     relation.setType(elementType);
@@ -318,6 +322,7 @@ public class XmlParser {
                             break;
 
                         case "way":
+                            way.setNodes(nodes);
                             wayLongIndex.put(way);
                             if (isCoastline) {
                                 coastlines.add(way);

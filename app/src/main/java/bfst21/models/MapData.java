@@ -117,10 +117,9 @@ public class MapData {
                 if (way.getType() != null) {
                     if (way.getType().canNavigate()) {
 
-                        int size = way.getCoordsAmount();
                         float[] coords = way.getCoords();
 
-                        for (int i = 0; i < (size - 2); i += 2) {
+                        for (int i = 0; i < (coords.length - 2); i += 2) {
                             float vX = coords[i];
                             float vY = coords[i + 1];
                             float wX = coords[i + 2];
@@ -142,11 +141,9 @@ public class MapData {
                     if (way.getType().canNavigate()) {
 
                         int maxSpeed = way.getMaxSpeed();
-
-                        int size = way.getCoordsAmount();
                         float[] coords = way.getCoords();
 
-                        for (int i = 0; i < (size - 2); i += 2) {
+                        for (int i = 0; i < (coords.length - 2); i += 2) {
                             float vX = coords[i];
                             float vY = coords[i + 1];
                             float wX = coords[i + 2];
@@ -155,7 +152,13 @@ public class MapData {
                             float[] fromCoords = new float[]{vX, vY};
                             float[] toCoords = new float[]{wX, wY};
 
-                            directedGraph.addEdge(fromCoords, toCoords, maxSpeed, way.isOneWay());
+                            ElementType type = way.getType();
+                            boolean canDrive = type.canDrive();
+                            boolean canBike = type.canBike();
+                            boolean canWalk = type.canWalk();
+                            boolean oneWay = way.isOneWay();
+
+                            directedGraph.addEdge(fromCoords, toCoords, maxSpeed, oneWay, canDrive, canBike, canWalk);
                             idCount += 2;
                         }
                     }
@@ -240,10 +243,10 @@ public class MapData {
             ElementType type = way.getType();
             if (type != null) {
 
+                ElementSize size = way.getElementSize();
+
                 for (ElementGroup elementGroup : ElementGroup.values()) {
                     if (elementGroup.getType() == type) {
-
-                        ElementSize size = way.getElementSize();
                         if (elementGroup.getSize() == size) {
 
                             List<Way> elementList = elementMap.get(elementGroup);
