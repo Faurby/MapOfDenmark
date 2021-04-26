@@ -1,7 +1,9 @@
 package bfst21.pathfinding;
 
 import bfst21.models.Util;
+import bfst21.osm.ElementType;
 import bfst21.osm.Node;
+import bfst21.osm.Way;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -47,18 +49,26 @@ public class DirectedGraph implements Serializable {
         return null;
     }
 
-    public void addEdge(float[] fromCoords, float[] toCoords, int maxSpeed, boolean oneWay) {
+    public void addEdge(
+            float[] fromCoords,
+            float[] toCoords,
+            int maxSpeed,
+            boolean oneWay,
+            boolean canDrive,
+            boolean canBike,
+            boolean canWalk) {
+
         int fromID = getVertexID(fromCoords);
         int toID = getVertexID(toCoords);
 
         float distance = (float) Util.distTo(fromCoords, toCoords);
-        Edge edge1 = new Edge(fromID, toID, distance, maxSpeed);
+        Edge edge1 = new Edge(fromID, toID, distance, maxSpeed, canDrive, canBike, canWalk);
 
         addEdge(toID, edge1);
         addEdge(fromID, edge1);
 
         if (!oneWay) {
-            Edge edge2 = new Edge(toID, fromID, distance, maxSpeed);
+            Edge edge2 = new Edge(toID, fromID, distance, maxSpeed, canDrive, canBike, canWalk);
             addEdge(toID, edge2);
             addEdge(fromID, edge2);
         }

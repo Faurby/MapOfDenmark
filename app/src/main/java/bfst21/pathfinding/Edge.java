@@ -12,9 +12,23 @@ public class Edge implements Serializable {
     private final float weight;
     private final int from, to;
 
-    public Edge(int from, int to, float distance, int maxSpeed) {
+    private boolean canDrive;
+    private boolean canBike;
+    private boolean canWalk;
+
+    public Edge(int from,
+                int to,
+                float distance,
+                int maxSpeed,
+                boolean canDrive,
+                boolean canBike,
+                boolean canWalk) {
+
         this.from = from;
         this.to = to;
+        this.canDrive = canDrive;
+        this.canBike = canBike;
+        this.canWalk = canWalk;
         this.weight = (distance * 60.0f / maxSpeed);
     }
 

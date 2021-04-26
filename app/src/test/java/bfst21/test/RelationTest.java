@@ -1,8 +1,11 @@
 package bfst21.test;
 
+import bfst21.osm.Node;
 import bfst21.osm.Relation;
 import bfst21.osm.Way;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,22 +26,15 @@ public class RelationTest {
         way3.setRole("outer");
         way4.setRole("outer");
 
-        float[] coords1 = new float[]{12.582717f, -99.42255f};
-        float[] coords2 = new float[]{12.582533f, -99.4223f};
-        float[] coords3 = new float[]{12.575992f, -99.421005f};
-        float[] coords4 = new float[]{12.575649f, -99.42077f};
+        Node node1 = new Node(12.582717f, -99.42255f);
+        Node node2 = new Node(12.582533f, -99.4223f);
+        Node node3 = new Node(12.575992f, -99.421005f);
+        Node node4 = new Node(12.575649f, -99.42077f);
 
-        way1.addNode(coords1);
-        way1.addNode(coords2);
-
-        way2.addNode(coords3);
-        way2.addNode(coords2);
-
-        way3.addNode(coords4);
-        way3.addNode(coords1);
-
-        way4.addNode(coords4);
-        way4.addNode(coords3);
+        way1.setNodes(Arrays.asList(node1, node2));
+        way2.setNodes(Arrays.asList(node3, node2));
+        way3.setNodes(Arrays.asList(node4, node1));
+        way4.setNodes(Arrays.asList(node4, node3));
 
         rel.addWay(way1);
         rel.addWay(way2);
