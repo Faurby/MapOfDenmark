@@ -149,17 +149,18 @@ public class MainController {
         canvas.runRangeSearchTask();
 
         if (model.getMapData() != null) {
-            Point2D point = canvas.mouseToModelCoords(lastMouse);
-            Node nodeAtMouse = new Node((float) point.getX(), (float) point.getY());
-            UserNode closestNode = null;
-
             if (!model.getMapData().getUserNodes().isEmpty()) {
+                Point2D point = canvas.mouseToModelCoords(lastMouse);
+                Node nodeAtMouse = new Node((float) point.getX(), (float) point.getY());
+                UserNode closestNode = null;
                 for (UserNode userNode : model.getMapData().getUserNodes()) {
+                    //If closestNode is null, any Node could be the closest node
                     if (closestNode == null || nodeAtMouse.distTo(userNode) < nodeAtMouse.distTo(closestNode)) {
                         closestNode = userNode;
                     }
                 }
                 if (closestNode != null) {
+                    // 300 is a number chosen by trial and error. It seems to fit perfectly.
                     if (nodeAtMouse.distTo(closestNode) < 300 * (1 / Math.sqrt(canvas.getTrans().determinant()))) {
                         userNodeClickedVBox.setVisible(true);
                         userNodeClickedText.setText((closestNode.getDescription().equals("") ? "No description entered" : closestNode.getDescription()));
