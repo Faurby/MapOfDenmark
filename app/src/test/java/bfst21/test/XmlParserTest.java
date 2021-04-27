@@ -32,15 +32,14 @@ public class XmlParserTest {
     @Test
     public void getBuildingsSize_correctAmount() {
         int actual = model.getMapData().getWays(ElementGroup.getElementGroup(ElementType.BUILDING, ElementSize.DEFAULT)).size();
-        assertEquals(67946, actual);
-        //der mangler cirka 650 buildings fordi ...
-        // der er relations med k="building", men lige nu ser vi slet ikke relations.
+        assertEquals(3452081, actual);
+        //buildings where k="building"
     }
 
     @Test
     public void getRelationsSize_correctAmount() {
         int actual = model.getMapData().getRelations().size();
-        assertEquals(1725, actual);
+        assertEquals(31727, actual);
     }
 
     @Test
