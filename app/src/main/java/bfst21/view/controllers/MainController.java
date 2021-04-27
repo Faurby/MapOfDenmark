@@ -417,19 +417,39 @@ public class MainController {
     }
 
     @FXML
-    public void saveObjFile(ActionEvent actionEvent) {
-        try {
-            BinaryFileManager binaryFileManager = new BinaryFileManager();
-            String fileName = model.getFileName();
-            MapData mapData = model.getMapData();
-
-            long time = -System.nanoTime();
-            binaryFileManager.saveOBJ(fileName.split("\\.")[0] + ".obj", mapData);
-            time += System.nanoTime();
-            System.out.println("Saved .obj file in: "+time / 1_000_000+"ms");
+    public void saveObjFile(ActionEvent actionEvent) throws Exception {
+        if(model.getFileName().endsWith(".obj")) {
+            String msg = "Cannot save OBJ file when the loaded file is OBJ";
+            System.out.println(msg);
+            throw new Exception(msg);
         }
-        catch(Exception e) {
-            e.printStackTrace();
+        else {
+            FileChooser fileSaver = new FileChooser();
+            fileSaver.setTitle("Save to OBJ");
+            fileSaver.setInitialDirectory(new File("./"));
+            fileSaver.getExtensionFilters().addAll((
+                    new FileChooser.ExtensionFilter("OBJ file", ".obj"))
+            );
+            File file = fileSaver.showSaveDialog(new Stage());
+            if(file != null) {
+                Task<Void> task = new Task<>() {
+                    @Override
+                    protected Void call() throws IOException {
+                        BinaryFileManager binaryFileManager = new BinaryFileManager();
+                        MapData mapData = model.getMapData();
+
+                        long time = -System.nanoTime();
+                        //TODO: Måske vi skal ændre i saveOBJ() metoden så man ikke skal give en tom String med
+                        binaryFileManager.saveOBJ(file.getAbsolutePath(), "", mapData);
+                        time += System.nanoTime();
+                        System.out.println("Saved .obj file in: " + time / 1_000_000 + "ms to " + file.getAbsolutePath());
+                        return null;
+                    }
+                };
+                task.setOnFailed(event -> task.getException().printStackTrace());
+                Thread thread = new Thread(task);
+                thread.start();
+            }
         }
     }
 }

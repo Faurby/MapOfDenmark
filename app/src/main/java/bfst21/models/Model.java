@@ -51,7 +51,8 @@ public class Model {
             loadZIP(fileName);
             if (displayOptions.getBool(DisplayOption.SAVE_OBJ_FILE)) {
                 long time = -System.nanoTime();
-                binaryFileManager.saveOBJ(fileName.split("\\.")[0] + ".obj", mapData);
+                //TODO: Måske vi skal ændre i saveOBJ() metoden så man ikke skal give en tom String med
+                binaryFileManager.saveOBJ("",fileName.split("\\.")[0] + ".obj", mapData);
                 time += System.nanoTime();
                 System.out.println("Saved .obj file in: "+time / 1_000_000+"ms");
             }
