@@ -232,9 +232,8 @@ public class MainController {
             }
         };
         task.setOnSucceeded(e -> {
-            //startBox.setVisible(false);
-            startBoxController.setVisible(false);
-            //startBox.setManaged(false);
+            startBox.setVisible(false);
+            startBox.setManaged(false);
             loadingText.setVisible(false);
             searchBoxController.setVisible(true);
             canvas.runRangeSearchTask();
