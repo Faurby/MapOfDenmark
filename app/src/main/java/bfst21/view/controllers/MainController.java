@@ -40,6 +40,8 @@ public class MainController {
     @FXML
     private VBox debugBox;
     @FXML
+    private VBox startBox;
+    @FXML
     private Scene scene;
     @FXML
     private VBox loadingText;
@@ -63,6 +65,8 @@ public class MainController {
     private NavigationBoxController navigationBoxController;
     @FXML
     private DebugBoxController debugBoxController;
+    @FXML
+    private StartBoxController startBoxController;
 
     private boolean resetDjikstra = true;
 
@@ -100,8 +104,10 @@ public class MainController {
         searchBoxController.setController(this);
         navigationBoxController.setController(this);
         debugBoxController.setController(this);
+        startBoxController.setController(this);
 
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
+        //StackPane.setAlignment(startBox, Pos.BOTTOM_RIGHT);
         progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
         updateZoomBox();
 
@@ -226,6 +232,9 @@ public class MainController {
             }
         };
         task.setOnSucceeded(e -> {
+            //startBox.setVisible(false);
+            startBoxController.setVisible(false);
+            //startBox.setManaged(false);
             loadingText.setVisible(false);
             searchBoxController.setVisible(true);
             canvas.runRangeSearchTask();
@@ -258,7 +267,10 @@ public class MainController {
                 }
             };
             task.setOnSucceeded(e -> {
+                startBox.setVisible(false);
+                startBox.setManaged(false);
                 loadingText.setVisible(false);
+                searchBoxController.setVisible(true);
                 canvas.runRangeSearchTask();
             });
             task.setOnFailed(e -> task.getException().printStackTrace());
@@ -441,8 +453,16 @@ public class MainController {
         }
     }
 
-    public void toggleDisplayOption(DisplayOption displayOption) {
-        displayOptions.toggle(displayOption);
-        canvas.repaint();
+    public void checkDebug(ActionEvent actionEvent){
+        String text = actionEvent.toString().toLowerCase();
+
+        for (DisplayOption displayOption : DisplayOption.values()) {
+            String optionText = displayOption.toString().toLowerCase().replaceAll("_", " ");
+            if (text.contains(optionText)) {
+                displayOptions.toggle(displayOption);
+                canvas.repaint();
+                break;
+            }
+        }
     }
 }

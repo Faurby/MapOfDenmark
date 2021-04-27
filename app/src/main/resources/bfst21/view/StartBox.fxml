@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+
+<VBox fx:id="startBox"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="bfst21.view.controllers.StartBoxController"
+      alignment="CENTER"
+      maxWidth="250" maxHeight="100"
+      style="-fx-padding: 20 20 20 20 ; -fx-background-color: #f6f6f6; -fx-border-color: #3E859B">
+    <Text text="Loading choices" style="-fx-font-size: 15" />
+    <CheckBox text="Save OBJ file" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+    <HBox style="-fx-padding: 10 0 0 0" spacing="10" alignment="CENTER">
+        <Button text="Load default" onAction="#loadDefault"/>
+        <Button text="Choose file" onAction="#loadFile"/>
+    </HBox>
+</VBox>
+

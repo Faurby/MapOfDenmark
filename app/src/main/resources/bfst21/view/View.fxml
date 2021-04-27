@@ -51,11 +51,14 @@
                 </StackPane.margin>
             </AnchorPane>
 
+            <fx:include fx:id="startBox" source="StartBox.fxml"/>
+
             <VBox fx:id="loadingText" minHeight="100" minWidth="100" visible="false"
                   style="-fx-background-color: WHITE; -fx-padding: 20;" alignment="CENTER">
                 <Text text="Loading" style="-fx-font-size: 24;"/>
                 <ProgressBar fx:id="progressBar" style="-fx-padding: 20;" minWidth="200"/>
             </VBox>
+
             <HBox fx:id="menuBarHBox" maxHeight="25" minHeight="25" minWidth="${scene.width}" StackPane.alignment="TOP_LEFT">
                 <MenuBar minWidth="${menuBarHBox.width}">
                     <Menu text="File">

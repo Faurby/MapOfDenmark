@@ -102,37 +102,33 @@ public class XmlParser {
                             break;
 
                         case "relation":
-                            if (displayOptions.getBool(DisplayOption.LOAD_RELATIONS)) {
-                                long relationID = Long.parseLong(reader.getAttributeValue(null, "id"));
-                                relation = new Relation(relationID);
-                                nodes = new ArrayList<>();
-                            }
+                            long relationID = Long.parseLong(reader.getAttributeValue(null, "id"));
+                            relation = new Relation(relationID);
+                            nodes = new ArrayList<>();
                             break;
 
                         case "member":
-                            if (displayOptions.getBool(DisplayOption.LOAD_RELATIONS)) {
-                                String type = reader.getAttributeValue(null, "type");
-                                String memRef = reader.getAttributeValue(null, "ref");
-                                if (type != null) {
-                                    if (type.equalsIgnoreCase("node")) {
-                                        NodeID memNode = nodeLongIndex.get(Long.parseLong(memRef));
-                                        if (memNode != null) {
-                                            nodes.add(memNode.getNode());
+                            String type = reader.getAttributeValue(null, "type");
+                            String memRef = reader.getAttributeValue(null, "ref");
+                            if (type != null) {
+                                if (type.equalsIgnoreCase("node")) {
+                                    NodeID memNode = nodeLongIndex.get(Long.parseLong(memRef));
+                                    if (memNode != null) {
+                                        nodes.add(memNode.getNode());
+                                    }
+                                } else if (type.equalsIgnoreCase("way")) {
+                                    Way memWay = wayLongIndex.get(Long.parseLong(memRef));
+                                    if (memWay != null) {
+                                        String role = reader.getAttributeValue(null, "role");
+                                        if (role != null && !role.isEmpty()) {
+                                            memWay.setRole(role);
                                         }
-                                    } else if (type.equalsIgnoreCase("way")) {
-                                        Way memWay = wayLongIndex.get(Long.parseLong(memRef));
-                                        if (memWay != null) {
-                                            String role = reader.getAttributeValue(null, "role");
-                                            if (role != null && !role.isEmpty()) {
-                                                memWay.setRole(role);
-                                            }
-                                            relation.addWay(memWay);
-                                        }
-                                    } else if (type.equalsIgnoreCase("relation")) {
-                                        Relation memRelation = relationLongIndex.get(Long.parseLong(memRef));
-                                        if (memRelation != null) {
-                                            relation.addRelation(memRelation);
-                                        }
+                                        relation.addWay(memWay);
+                                    }
+                                } else if (type.equalsIgnoreCase("relation")) {
+                                    Relation memRelation = relationLongIndex.get(Long.parseLong(memRef));
+                                    if (memRelation != null) {
+                                        relation.addRelation(memRelation);
                                     }
                                 }
                             }
@@ -311,14 +307,13 @@ public class XmlParser {
 
                         case "relation":
                             relation.setNodes(nodes);
-                            if (displayOptions.getBool(DisplayOption.LOAD_RELATIONS)) {
-                                if (elementType != null) {
-                                    relation.setType(elementType);
-                                    elementType = null;
-                                }
-                                relationLongIndex.put(relation);
-                                relation = null;
+                            if (elementType != null) {
+                                relation.setType(elementType);
+                                elementType = null;
                             }
+                            relationLongIndex.put(relation);
+                            relation = null;
+
                             break;
 
                         case "way":

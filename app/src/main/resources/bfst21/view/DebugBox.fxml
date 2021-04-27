@@ -10,7 +10,7 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="bfst21.view.controllers.DebugBoxController"
 
-      fx:id="debugBox" maxWidth="40" maxHeight="20" style="-fx-padding: 30">
+      fx:id="debugBox" maxWidth="40" maxHeight="20" style="-fx-padding: 30" visible="false">
     <Text text="zoomPercent" fx:id="zoomPercent"/>
     <Text text="zoomText" fx:id="zoomText"/>
     <Text text="repaintTime" fx:id="repaintTime"/>
@@ -23,7 +23,6 @@
             <Insets top="5" right="10" bottom="5" left="10"/>
         </padding>
         <Text text="Debug options:" style="-fx-padding: 2"/>
-        <CheckBox text="Load relations" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Use graph" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display KD tree" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display graph" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
@@ -45,6 +44,5 @@
         <CheckBox text="Display primary" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display building" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display unknown" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Save OBJ file" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
     </VBox>
 </VBox>
