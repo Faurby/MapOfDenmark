@@ -99,7 +99,6 @@ public class SearchBoxController extends SubController {
         for (String s : addressSuggestions) {
             if (count <= 50) {
                 Label b = new Label(s);
-                b.setPrefWidth(scrollPane.getWidth()-33.5);
                 b.setOnMouseClicked((event) -> {
                     addressArea.setText(b.getText());
                     suggestions.getChildren().clear();
