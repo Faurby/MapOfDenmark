@@ -6,9 +6,10 @@
 
 
 <StackPane fx:id="searchBox"
-      xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="bfst21.view.controllers.SearchBoxController">
+           xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="bfst21.view.controllers.SearchBoxController"
+           visible="false" managed="false">
 
     <VBox minWidth="175" style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B">
         <padding>
@@ -16,7 +17,8 @@
         </padding>
         <TextArea fx:id="addressArea" minHeight="20" prefHeight="25" promptText="Type an address..." wrapText="true"
                   onKeyPressed="#typingCheck"/>
-        <ScrollPane fx:id="scrollPane" minWidth="200" prefWidth="350" maxHeight="100" minHeight="0" style="-fx-padding: 0 10 0 10 ; -fx-background-color: WHITE"  fitToWidth="true">
+        <ScrollPane fx:id="scrollPane" minWidth="200" prefWidth="350" maxHeight="100" minHeight="0"
+                    style="-fx-padding: 0 10 0 10 ; -fx-background-color: WHITE" fitToWidth="true">
             <VBox fx:id="suggestions"
                   style="-fx-background-color: WHITE"
                   onKeyPressed="#typingCheck">

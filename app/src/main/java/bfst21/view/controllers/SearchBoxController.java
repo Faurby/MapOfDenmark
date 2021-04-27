@@ -31,8 +31,6 @@ public class SearchBoxController extends SubController {
     private StackPane searchBox;
     @FXML
     private VBox suggestions;
-    @FXML
-    private ScrollPane scrollPane;
 
     private TST<float[]> addressTries;
     private Task<Void> addressSuggestionTask;

@@ -40,16 +40,6 @@ public class MainController {
     @FXML
     private VBox debugBox;
     @FXML
-    private VBox debugOptions;
-    @FXML
-    private Text zoomText;
-    @FXML
-    private Text zoomPercent;
-    @FXML
-    private Text repaintTime;
-    @FXML
-    private Text nodeSkipAmount;
-    @FXML
     private Scene scene;
     @FXML
     private VBox loadingText;
@@ -71,6 +61,8 @@ public class MainController {
     private SearchBoxController searchBoxController;
     @FXML
     private NavigationBoxController navigationBoxController;
+    @FXML
+    private DebugBoxController debugBoxController;
 
     private boolean resetDjikstra = true;
 
@@ -83,18 +75,18 @@ public class MainController {
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
     public void updateZoomBox() {
-        zoomPercent.setText("Zoom percent: " + canvas.getZoomPercent());
-        zoomText.setText("Zoom level: " + canvas.getZoomLevelText());
+        debugBoxController.setZoomPercent("Zoom percent: " + canvas.getZoomPercent());
+        debugBoxController.setZoomText("Zoom level: " + canvas.getZoomLevelText());
         updateAverageRepaintTime();
         updateNodeSkipAmount();
     }
 
     public void updateNodeSkipAmount() {
-        nodeSkipAmount.setText("Node skip: " + Way.getNodeSkipAmount(canvas.getZoomLevel()));
+        debugBoxController.setNodeSkipAmount("Node skip: " + Way.getNodeSkipAmount(canvas.getZoomLevel()));
     }
 
     public void updateAverageRepaintTime() {
-        repaintTime.setText("Repaint time: " + canvas.getAverageRepaintTime());
+        debugBoxController.setRepaintTime("Repaint time: " + canvas.getAverageRepaintTime());
     }
 
     public MapCanvas getCanvas() {
@@ -107,6 +99,7 @@ public class MainController {
 
         searchBoxController.setController(this);
         navigationBoxController.setController(this);
+        debugBoxController.setController(this);
 
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
         progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
@@ -114,9 +107,14 @@ public class MainController {
 
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.D && event.isControlDown()) {
-                debugOptions.setVisible(!debugOptions.isVisible());
+                showHideDebug();
             }
         });
+    }
+
+    @FXML
+    private void showHideDebug() {
+        debugBox.setVisible(!debugBox.isVisible());
     }
 
     public void onWindowResize(Stage stage) {
@@ -229,6 +227,7 @@ public class MainController {
         };
         task.setOnSucceeded(e -> {
             loadingText.setVisible(false);
+            searchBoxController.setVisible(true);
             canvas.runRangeSearchTask();
         });
         task.setOnFailed(e -> task.getException().printStackTrace());
@@ -294,18 +293,7 @@ public class MainController {
         }
     }
 
-    public void onCheckDebug(ActionEvent actionEvent) {
-        String text = actionEvent.toString().toLowerCase();
 
-        for (DisplayOption displayOption : DisplayOption.values()) {
-            String optionText = displayOption.toString().toLowerCase().replaceAll("_", " ");
-            if (text.contains(optionText)) {
-                displayOptions.toggle(displayOption);
-                canvas.repaint();
-                break;
-            }
-        }
-    }
 
     @FXML
     public void userNodeButtonClicked() throws MapDataNotLoadedException {
@@ -431,5 +419,10 @@ public class MainController {
         catch(Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void toggleDisplayOption(DisplayOption displayOption) {
+        displayOptions.toggle(displayOption);
+        canvas.repaint();
     }
 }
