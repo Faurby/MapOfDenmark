@@ -418,7 +418,8 @@ public class MainController {
 
     @FXML
     public void saveObjFile(ActionEvent actionEvent) throws Exception {
-        if(model.getFileName().endsWith(".obj")) {
+        String fileName = model.getFileName().substring(5);
+        if(fileName.endsWith(".obj")) {
             String msg = "Cannot save OBJ file when the loaded file is OBJ";
             System.out.println(msg);
             throw new Exception(msg);
@@ -426,6 +427,7 @@ public class MainController {
         else {
             FileChooser fileSaver = new FileChooser();
             fileSaver.setTitle("Save to OBJ");
+            fileSaver.setInitialFileName(fileName.substring(0, fileName.length()-4));
             fileSaver.setInitialDirectory(new File("./"));
             fileSaver.getExtensionFilters().addAll((
                     new FileChooser.ExtensionFilter("OBJ file", ".obj"))
