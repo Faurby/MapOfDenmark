@@ -16,12 +16,12 @@
         </padding>
         <TextArea fx:id="addressArea" minHeight="20" prefHeight="25" promptText="Type an address..." wrapText="true"
                   onKeyPressed="#typingCheck"/>
-        <VBox fx:id="suggestions"
-              maxWidth="150"
-              maxHeight="50"
-              style="-fx-background-color: WHITE"
-              onKeyPressed="#typingCheck">
-        </VBox>
+        <ScrollPane fx:id="scrollPane" minWidth="200" prefWidth="350" maxHeight="100" minHeight="0" style="-fx-padding: 0 10 0 10 ; -fx-background-color: WHITE" >
+            <VBox fx:id="suggestions"
+                  style="-fx-background-color: WHITE"
+                  onKeyPressed="#typingCheck">
+            </VBox>
+        </ScrollPane>
         <HBox alignment="BASELINE_CENTER" prefWidth="198.0" style="-fx-padding: 10 0 5 0">
             <Button fx:id="navigateButton" onAction="#expandSearchView" text="Navigate" GridPane.columnIndex="0"
                     GridPane.rowIndex="0"/>

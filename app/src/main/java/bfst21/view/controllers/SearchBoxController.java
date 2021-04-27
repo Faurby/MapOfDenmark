@@ -10,6 +10,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -30,6 +31,8 @@ public class SearchBoxController extends SubController {
     private StackPane searchBox;
     @FXML
     private VBox suggestions;
+    @FXML
+    private ScrollPane scrollPane;
 
     private TST<float[]> addressTries;
     private Task<Void> addressSuggestionTask;
@@ -79,7 +82,7 @@ public class SearchBoxController extends SubController {
             searchSingleAddress();
             searchButton.requestFocus();
 
-        } else if (keyEvent.getCode() == KeyCode.BACK_SPACE && addressArea.getText().trim().length() <= 3) {
+        } else if (keyEvent.getCode() == KeyCode.BACK_SPACE && addressArea.getText().trim().length() <= 2) {
             suggestions.getChildren().clear();
 
         } else {
@@ -94,8 +97,9 @@ public class SearchBoxController extends SubController {
         int count = 0;
         suggestions.getChildren().clear();
         for (String s : addressSuggestions) {
-            if (count <= 10) {
+            if (count <= 50) {
                 Label b = new Label(s);
+                b.setPrefWidth(scrollPane.getWidth()-33.5);
                 b.setOnMouseClicked((event) -> {
                     addressArea.setText(b.getText());
                     suggestions.getChildren().clear();
