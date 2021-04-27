@@ -42,8 +42,9 @@ public class BinaryFileManager {
         );
     }
 
-    public void saveOBJ(String fileName, MapData mapData) throws IOException {
-        try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)))) {
+    public void saveOBJ(String path, String fileName, MapData mapData) throws IOException {
+        //TODO: Måske vi skal ændre i saveOBJ() metoden så man ikke skal give en tom String med
+        try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path + fileName)))) {
 
             output.writeObject(mapData.getWays(ElementGroup.getElementGroup(ElementType.ISLAND, ElementSize.DEFAULT)));
             output.writeObject(null);
