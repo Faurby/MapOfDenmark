@@ -3,6 +3,10 @@ package bfst21.address;
 import java.io.Serializable;
 
 
+/**
+ * Ternary search trie from the algs4 library by Robert Sedgewick and Kevin Wayne.
+ * Implements Serializable so it can be saved in an .obj file.
+ */
 public class TST<Value> implements Serializable {
 
     private static final long serialVersionUID = -3195198871698251378L;

@@ -31,11 +31,16 @@ public class BinaryFileManager {
                 (List<Way>) input.readObject(),
                 (ElementLongIndex<Way>) input.readObject(),
                 (ElementLongIndex<Relation>) input.readObject(),
+
+                (TST<List<OsmAddress>>) input.readObject(),
+
                 (HashMap<ElementGroup, KdTree<Way>>) input.readObject(),
                 (KdTree<Relation>) input.readObject(),
+
                 (DirectedGraph) input.readObject(),
-                (TST<List<OsmAddress>>) input.readObject(),
+
                 (List<UserNode>) input.readObject(),
+
                 input.readFloat(),
                 input.readFloat(),
                 input.readFloat(),
@@ -51,12 +56,12 @@ public class BinaryFileManager {
             output.writeObject(null);
             output.writeObject(null);
 
+            output.writeObject(mapData.getAddressTries());
+
             output.writeObject(mapData.getKdTreeMap());
             output.writeObject(mapData.getKdTreeRelations());
 
             output.writeObject(mapData.getDirectedGraph());
-
-            output.writeObject(mapData.getAddressTries());
 
             output.writeObject(mapData.getUserNodes());
 

@@ -38,17 +38,17 @@ public class XmlParser {
 
         long time = -System.nanoTime();
 
-        InputFactoryProviderImpl iprovider = new InputFactoryProviderImpl();
+        InputFactoryProviderImpl factoryProvider = new InputFactoryProviderImpl();
 
-        XMLInputFactory2 xmlif = iprovider.createInputFactory();
-        xmlif.configureForSpeed();
+        XMLInputFactory2 xmlFactory = factoryProvider.createInputFactory();
+        xmlFactory.configureForSpeed();
 
-        XMLStreamReader reader = xmlif.createXMLStreamReader(new BufferedInputStream(input));
+        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new BufferedInputStream(input));
 
+        Node node;
         Way way = null;
         Relation relation = null;
         OsmAddress osmAddress = null;
-        Node node = null;
         ElementType elementType = null;
         TST<List<OsmAddress>> addressTries = new TST<>();
 
@@ -344,10 +344,10 @@ public class XmlParser {
                 islands,
                 wayLongIndex,
                 relationLongIndex,
-                null,
-                null,
-                null,
                 addressTries,
+                null,
+                null,
+                null,
                 null,
                 minX,
                 maxX,

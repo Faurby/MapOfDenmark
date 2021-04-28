@@ -5,6 +5,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 
+/**
+ * Queue class from the algs4 library by Robert Sedgewick and Kevin Wayne.
+ * Implements Serializable so it can be saved in an .obj file.
+ */
 public class Queue<Item> implements Iterable<Item>, Serializable {
 
     private static final long serialVersionUID = 6191688388055061607L;
