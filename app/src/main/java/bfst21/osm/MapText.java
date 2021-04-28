@@ -32,28 +32,28 @@ public class MapText {
     }
 
     public boolean canDraw(double zoomLevel) {
-        if (zoomLevel >= 1000 && place.equals("city")) {
-            return true;
-        } else if (zoomLevel >= 10000 && place.equals("town")) {
-            return true;
-        } else if (zoomLevel >= 1200 && place.equals("village")) {
-            return true;
-        } else if (zoomLevel >= 8000 && place.equals("hamlet")) {
-            return true;
-        } else if (zoomLevel >= 1200 && place.equals("suburb")) {
-            return true;
-        } else if (zoomLevel >= 100 && place.equals("island")) {
-            return true;
-        } else if (zoomLevel >= 8000 && place.equals("neighbourhood")) {
-            return true;
-        } else if (zoomLevel >= 8000 && place.equals("city_block")) {
-            return true;
-        } else if (zoomLevel >= 1500 && place.equals("county")) {
-            return true;
-        } else if (zoomLevel >= 1500 && place.equals("plot")) {
-            return true;
-        }  else if (zoomLevel >= 1800 && place.equals("locality")) {
-            return true;
+        if (zoomLevel <= 50000) {
+            if (100 <= zoomLevel && zoomLevel <= 2000 && place.equals("island")) {
+                return true;
+            } else if (1000 <= zoomLevel && zoomLevel <= 25000 && place.equals("city")) {
+                return true;
+            } else if (2000 <= zoomLevel && place.equals("islet")) {
+                return true;
+            } else if (6000 <= zoomLevel && zoomLevel <= 8000 && place.equals("county")) {
+                return true;
+            }  else if (6000 <= zoomLevel && zoomLevel <= 10000 && place.equals("municipality")) {
+                return true;
+            }  else if (6000 <= zoomLevel && place.equals("region")) {
+                return true;
+            } else if (6000 <= zoomLevel && place.equals("town")) {
+                return true;
+            } else if (6000 <= zoomLevel && place.equals("village")) {
+                return true;
+            } else if (12000 <= zoomLevel && place.equals("suburb")) {
+                return true;
+            } else if (12000 <= zoomLevel && place.equals("hamlet")) {
+                return true;
+            }
         }
         return false;
     }

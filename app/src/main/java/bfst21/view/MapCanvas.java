@@ -147,17 +147,21 @@ public class MapCanvas extends Canvas {
             }
 
             for (MapText mapText : model.getMapData().getMapTexts()) {
-                    //System.out.println("Coords: " + mapText.getCoords()[0] + "," + mapText.getCoords()[1]);
-
+                    //System.out.println("Name:" + mapText.getName() + ", Place: " + mapText.getPlace() + ", Coords: " + mapText.getCoords()[0] + "," + mapText.getCoords()[1]);
                 if (mapText.canDraw(zoomLevel)){
-                    gc.setFill(Color.BLACK);
+                    gc.setFill(getTextColor());
                     gc.setTextAlign(TextAlignment.CENTER);
-                    gc.setFont(new Font("Times New Roman", 0.01 * widthModifier));
+                    String font = "Calibri";
+                    if (mapText.getPlace().equals("city") || mapText.getPlace().equals("island")){
+                        gc.setFont(new Font(font, 0.02 * widthModifier));
+                    } else if (mapText.getPlace().equals("hamlet")) {
+                        gc.setFont(new Font(font, 0.008 * widthModifier));
+                    } else {
+                        gc.setFont(new Font(font, 0.01 * widthModifier));
+                    }
                     gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
-                    gc.setFont(null);
                 }
             }
-
         }
         gc.restore();
 
@@ -481,6 +485,15 @@ public class MapCanvas extends Canvas {
             return elementType.getBlackWhite();
         }
         return elementType.getColor();
+    }
+
+    public Color getTextColor(){
+        if (colorMode == ColorMode.COLOR_BLIND) {
+            return Color.rgb(0,255,230);
+        } else if (colorMode == ColorMode.DARK_MODE) {
+            return Color.rgb(0,0,0);
+        }
+        return Color.rgb(4,1,10);
     }
 
     public void setColorMode(ColorMode colorMode) {

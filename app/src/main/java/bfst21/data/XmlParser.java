@@ -136,13 +136,16 @@ public class XmlParser {
                             String key = reader.getAttributeValue(null, "k");
                             String value = reader.getAttributeValue(null, "v");
 
-                            if (node != null) {
+                            if (node != null && relation == null && way == null) {
                                 switch (key) {
                                     case "name":
                                         name = value;
                                         break;
                                     case "place":
-                                        if (true) {
+                                        if (value.equals("island") || value.equals("city") || value.equals("town")
+                                                || value.equals("village") || value.equals("suburb") ||
+                                                value.equals("islet") || value.equals("hamlet") || value.equals("county") ||
+                                                value.equals("municipality") || value.equals("region")) {
                                             MapText mapText = new MapText(value.intern(), name, node.getCoords());
                                             mapTexts.add(mapText);
                                         }
