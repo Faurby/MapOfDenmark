@@ -146,16 +146,19 @@ public class MapCanvas extends Canvas {
                 drawPathTo(model.getMapData().destinationCoords);
             }
 
+            gc.setFill(getTextColor());
+            gc.setTextAlign(TextAlignment.CENTER);
+            String font = "Calibri";
             for (MapText mapText : model.getMapData().getMapTexts()) {
                     //System.out.println("Name:" + mapText.getName() + ", Place: " + mapText.getPlace() + ", Coords: " + mapText.getCoords()[0] + "," + mapText.getCoords()[1]);
-                if (mapText.canDraw(zoomLevel)){
-                    gc.setFill(getTextColor());
-                    gc.setTextAlign(TextAlignment.CENTER);
-                    String font = "Calibri";
+                if (0 <= zoomLevel && zoomLevel < 1000 && (mapText.getPlace().equals("city") || mapText.getPlace().equals("island"))){
+                    gc.setFont(new Font(font, 0.08 * widthModifier));
+                    gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
+                } else if (mapText.canDraw(zoomLevel)){
                     if (mapText.getPlace().equals("city") || mapText.getPlace().equals("island")){
                         gc.setFont(new Font(font, 0.02 * widthModifier));
                     } else if (mapText.getPlace().equals("hamlet")) {
-                        gc.setFont(new Font(font, 0.008 * widthModifier));
+                        gc.setFont(new Font(font, 0.007 * widthModifier));
                     } else {
                         gc.setFont(new Font(font, 0.01 * widthModifier));
                     }

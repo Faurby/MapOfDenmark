@@ -146,8 +146,7 @@ public class XmlParser {
                                                 || value.equals("village") || value.equals("suburb") ||
                                                 value.equals("islet") || value.equals("hamlet") || value.equals("county") ||
                                                 value.equals("municipality") || value.equals("region")) {
-                                            MapText mapText = new MapText(value.intern(), name, node.getCoords());
-                                            mapTexts.add(mapText);
+                                            mapTexts.add(new MapText(value.intern(), name, node.getCoords()));
                                         }
                                         break;
                                 }
