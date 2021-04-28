@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
 /**
  * ElementType is used to separate Ways and Relations into different
  * type categories depending on their tag data in the given OSM data.
- *
+ * <p>
  * Each ElementType has their own values for drawing size, required zoom level,
  * possible line dashes and colors for the different color modes.
  */
@@ -30,7 +30,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(172, 220, 180),
             Color.rgb(69, 80, 7),
-            Color.rgb(29,50,36)
+            Color.rgb(29, 50, 36)
     ),
     FOREST(
             1f,
@@ -38,7 +38,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(162, 210, 170),
             Color.rgb(59, 70, 0),
-            Color.rgb(19,40,26)
+            Color.rgb(19, 40, 26)
     ),
     WATER(
             1f,
@@ -46,7 +46,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(160, 196, 252),
             Color.rgb(0, 126, 170),
-            Color.rgb(52,66,93)
+            Color.rgb(52, 66, 93)
     ),
     WATERWAY(
             0.0002f,
@@ -54,7 +54,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(160, 196, 252),
             Color.rgb(0, 126, 170),
-            Color.rgb(52,66,93)
+            Color.rgb(52, 66, 93)
     ),
     CYCLEWAY(
             0.0001f,
@@ -62,7 +62,7 @@ public enum ElementType {
             0.0001D,
             Color.rgb(33, 33, 250),
             Color.rgb(33, 33, 250),
-            Color.rgb(52,66,130)
+            Color.rgb(52, 66, 130)
     ),
     FOOTWAY(
             0.0001f,
@@ -78,7 +78,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(223, 241, 242),
             Color.rgb(223, 241, 242),
-            Color.rgb(61,64,67)
+            Color.rgb(61, 64, 67)
     ),
     ROAD(
             0.0003f,
@@ -86,7 +86,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
-            Color.rgb(61,64,67)
+            Color.rgb(61, 64, 67)
     ),
     RESIDENTIAL(
             0.00015f,
@@ -94,7 +94,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
-            Color.rgb(61,64,67)
+            Color.rgb(61, 64, 67)
     ),
     RAILWAY(
             0.00006f,
@@ -110,7 +110,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
-            Color.rgb(61,64,67)
+            Color.rgb(61, 64, 67)
     ),
     MOTORWAY(
             0.0003f,
@@ -118,7 +118,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(248, 197, 81),
             Color.rgb(248, 198, 81),
-            Color.rgb(150,129,67)
+            Color.rgb(150, 129, 67)
     ),
     TERTIARY(
             0.0003f,
@@ -126,7 +126,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
-            Color.rgb(61,64,67)
+            Color.rgb(61, 64, 67)
     ),
     PRIMARY(
             0.0003f,
@@ -134,7 +134,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(236, 148, 164),
             Color.rgb(255, 140, 0),
-            Color.rgb(95,99,104)
+            Color.rgb(95, 99, 104)
     ),
     AEROWAY(
             0.002f,
@@ -142,7 +142,7 @@ public enum ElementType {
             0.0D,
             Color.rgb(200, 200, 200),
             Color.rgb(200, 200, 200),
-            Color.rgb(61,64,67)
+            Color.rgb(61, 64, 67)
     ),
     BUILDING(
             1f,
@@ -179,10 +179,10 @@ public enum ElementType {
      */
     public boolean doFillDraw() {
         return this == ElementType.BUILDING ||
-               this == ElementType.ISLAND ||
-               this == ElementType.LANDUSE ||
-               this == ElementType.FOREST ||
-               this == ElementType.WATER;
+                this == ElementType.ISLAND ||
+                this == ElementType.LANDUSE ||
+                this == ElementType.FOREST ||
+                this == ElementType.WATER;
     }
 
     /**

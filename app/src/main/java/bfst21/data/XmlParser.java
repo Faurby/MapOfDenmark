@@ -1,7 +1,6 @@
 package bfst21.data;
 
 import bfst21.address.TST;
-import bfst21.models.DisplayOptions;
 import bfst21.osm.*;
 import bfst21.models.MapData;
 
@@ -20,15 +19,16 @@ import org.codehaus.stax2.XMLInputFactory2;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+
 /**
  * XmlParser is used to parse the XML data given by OpenStreetMaps.
  * Nodes are parsed an added to the relevant Ways or Relations as a float array of coordinates.
- *
+ * <p>
  * An ElementType can be found by looking at the tags of a Way or Relation.
- *
+ * <p>
  * An OsmAddress is created by looking at the address tags of a Node.
  * It is then placed in a ternary search tries for address searching.
- *
+ * <p>
  * Coastlines will be merged.
  */
 public class XmlParser {
@@ -340,7 +340,7 @@ public class XmlParser {
             }
         }
         time += System.nanoTime();
-        System.out.println("Parsed OSM data in: "+ time / 1_000_000+"ms");
+        System.out.println("Parsed OSM data in: " + time / 1_000_000 + "ms");
         islands = mergeCoastLines(coastlines);
 
         return new MapData(

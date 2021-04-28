@@ -38,7 +38,7 @@ public class Model {
     public void load(String fileName) throws IOException, XMLStreamException, FactoryConfigurationError, ClassNotFoundException {
         this.fileName = fileName;
 
-        System.out.println("Model loading file: "+fileName);
+        System.out.println("Model loading file: " + fileName);
         long totalTime = -System.nanoTime();
         DisplayOptions displayOptions = DisplayOptions.getInstance();
 
@@ -52,9 +52,9 @@ public class Model {
             if (displayOptions.getBool(DisplayOption.SAVE_OBJ_FILE)) {
                 long time = -System.nanoTime();
                 //TODO: Måske vi skal ændre i saveOBJ() metoden så man ikke skal give en tom String med
-                binaryFileManager.saveOBJ("",fileName.split("\\.")[0] + ".obj", mapData);
+                binaryFileManager.saveOBJ("", fileName.split("\\.")[0] + ".obj", mapData);
                 time += System.nanoTime();
-                System.out.println("Saved .obj file in: "+time / 1_000_000+"ms");
+                System.out.println("Saved .obj file in: " + time / 1_000_000 + "ms");
             }
 
         } else if (fileName.endsWith(".obj")) {
@@ -62,7 +62,7 @@ public class Model {
             mapData = binaryFileManager.loadOBJ(fileName, jarFile);
         }
         totalTime += System.nanoTime();
-        System.out.println("Total load time: "+totalTime / 1_000_000+"ms");
+        System.out.println("Total load time: " + totalTime / 1_000_000 + "ms");
     }
 
     private void loadZIP(String filename) throws IOException, XMLStreamException, FactoryConfigurationError {

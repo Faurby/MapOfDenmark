@@ -37,7 +37,7 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
     /**
      * Draw a Way by iterating through all the coordinates.
      * At certain zoom levels, nodes may be skipped to increase drawing performance.
-     *
+     * <p>
      * To avoid incorrect drawings, the first and last coordinate
      * will always be drawn, no matter the amount of nodes to skip.
      */
@@ -57,10 +57,10 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
     /**
      * Merge the coordinates of two Ways.
      * A Way may have the same first coordinate as the last coordinate of another Way.
-     *
+     * <p>
      * In that case it makes sense to merge them for ElementTypes
      * that needs to be drawn using the fill method.
-     *
+     * <p>
      * Some Relations have Ways with coordinates in the wrong order,
      * so we need to reverse the list of coordinates before correctly merging.
      */
@@ -101,7 +101,7 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
      * Reverse an array of coordinates.
      * The input coordinates are alternately positioned in the array: x1, y1, x2, y2, etc...
      * So x1 is at index 0 and y1 is at index 1 and so on.
-     *
+     * <p>
      * The output array contains the coordinate pairs in the correct reverse order.
      */
     private static float[] reverseCoordsArray(float[] input) {

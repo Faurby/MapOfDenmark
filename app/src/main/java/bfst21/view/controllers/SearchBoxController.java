@@ -11,7 +11,6 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -39,7 +38,8 @@ public class SearchBoxController extends SubController {
 
     private TST<List<OsmAddress>> addressTries;
     private Task<Void> addressSuggestionTask;
-    private List<String> addressSuggestions = new ArrayList<>();
+    private List<String> allSuggestions = new ArrayList<>();
+    private List<String> shownSuggestions = new ArrayList<>();
 
     @FXML
     private void searchSingleAddress() {
@@ -99,7 +99,8 @@ public class SearchBoxController extends SubController {
     private void displayAddressSuggestions() {
         int count = 0;
         suggestions.getChildren().clear();
-        for (String s : addressSuggestions) {
+
+        for (String s : shownSuggestions) {
             if (count <= 50) {
                 Label b = new Label(s);
                 b.setOnMouseClicked((event) -> {
@@ -127,19 +128,31 @@ public class SearchBoxController extends SubController {
                     MapData mapData = model.getMapData();
                     addressTries = mapData.getAddressTries();
                 }
-                addressSuggestions.clear();
-                String addressInput = addressArea.getText().replace(" ", "").toLowerCase();
+                shownSuggestions = new ArrayList<>();
+
+                String input = addressArea.getText();
+                String addressInput = input.replace(" ", "").toLowerCase();
 
                 Iterator<String> it = addressTries.keysWithPrefix(addressInput).iterator();
                 if (it.hasNext()) {
 
+                    allSuggestions = new ArrayList<>();
                     List<OsmAddress> osmAddressList = addressTries.get(it.next());
 
-                    int count = 0;
                     for (OsmAddress osmAddress : osmAddressList) {
+                        allSuggestions.add(osmAddress.toString());
+                    }
+                }
+                if (allSuggestions.size() > 0) {
+
+                    int count = 0;
+                    for (String address : allSuggestions) {
                         if (count < 10) {
-                            addressSuggestions.add(osmAddress.toString());
-                            count++;
+
+                            if (address.toLowerCase().contains(input.toLowerCase())) {
+                                shownSuggestions.add(address);
+                                count++;
+                            }
                         }
                     }
                 }

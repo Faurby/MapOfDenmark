@@ -1,8 +1,5 @@
 package bfst21.address;
 
-// Code in this class was copied from the algs4 library. Credit to Sedgewick & Wayne.
-// Code was modified. Modifications: Implement Serializable
-
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -27,7 +24,7 @@ public class Queue<Item> implements Iterable<Item>, Serializable {
      */
     public Queue() {
         first = null;
-        last  = null;
+        last = null;
         n = 0;
     }
 
@@ -63,7 +60,7 @@ public class Queue<Item> implements Iterable<Item>, Serializable {
     /**
      * Adds the item to this queue.
      *
-     * @param  item the item to add
+     * @param item the item to add
      */
     public void enqueue(Item item) {
         Node<Item> oldlast = last;
@@ -71,7 +68,7 @@ public class Queue<Item> implements Iterable<Item>, Serializable {
         last.item = item;
         last.next = null;
         if (isEmpty()) first = last;
-        else           oldlast.next = last;
+        else oldlast.next = last;
         n++;
     }
 
@@ -109,7 +106,7 @@ public class Queue<Item> implements Iterable<Item>, Serializable {
      *
      * @return an iterator that iterates over the items in this queue in FIFO order
      */
-    public Iterator<Item> iterator()  {
+    public Iterator<Item> iterator() {
         return new LinkedIterator(first);
     }
 
@@ -121,8 +118,13 @@ public class Queue<Item> implements Iterable<Item>, Serializable {
             current = first;
         }
 
-        public boolean hasNext()  { return current != null;                     }
-        public void remove()      { throw new UnsupportedOperationException();  }
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
 
         public Item next() {
             if (!hasNext()) throw new NoSuchElementException();

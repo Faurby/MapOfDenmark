@@ -1,9 +1,7 @@
 package bfst21.address;
 
-// Code in this class was copied from the algs4 library. Credit to Sedgewick & Wayne.
-// Code was modified. Modifications: Implement Serializable
-
 import java.io.Serializable;
+
 
 public class TST<Value> implements Serializable {
 
@@ -28,6 +26,7 @@ public class TST<Value> implements Serializable {
 
     /**
      * Returns the number of key-value pairs in this symbol table.
+     *
      * @return the number of key-value pairs in this symbol table
      */
     public int size() {
@@ -36,9 +35,10 @@ public class TST<Value> implements Serializable {
 
     /**
      * Does this symbol table contain the given key?
+     *
      * @param key the key
      * @return {@code true} if this symbol table contains {@code key} and
-     *     {@code false} otherwise
+     * {@code false} otherwise
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
     public boolean contains(String key) {
@@ -50,9 +50,10 @@ public class TST<Value> implements Serializable {
 
     /**
      * Returns the value associated with the given key.
+     *
      * @param key the key
      * @return the value associated with the given key if the key is in the symbol table
-     *     and {@code null} if the key is not in the symbol table
+     * and {@code null} if the key is not in the symbol table
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
     public Value get(String key) {
@@ -70,16 +71,17 @@ public class TST<Value> implements Serializable {
         if (x == null) return null;
         if (key.length() == 0) throw new IllegalArgumentException("key must have length >= 1");
         char c = key.charAt(d);
-        if      (c < x.c)              return get(x.left,  key, d);
-        else if (c > x.c)              return get(x.right, key, d);
-        else if (d < key.length() - 1) return get(x.mid,   key, d+1);
-        else                           return x;
+        if (c < x.c) return get(x.left, key, d);
+        else if (c > x.c) return get(x.right, key, d);
+        else if (d < key.length() - 1) return get(x.mid, key, d + 1);
+        else return x;
     }
 
     /**
      * Inserts the key-value pair into the symbol table, overwriting the old value
      * with the new value if the key is already in the symbol table.
      * If the value is {@code null}, this effectively deletes the key from the symbol table.
+     *
      * @param key the key
      * @param val the value
      * @throws IllegalArgumentException if {@code key} is {@code null}
@@ -89,7 +91,7 @@ public class TST<Value> implements Serializable {
             throw new IllegalArgumentException("calls put() with null key");
         }
         if (!contains(key)) n++;
-        else if(val == null) n--;       // delete existing key
+        else if (val == null) n--;       // delete existing key
         root = put(root, key, val, 0);
     }
 
@@ -99,19 +101,20 @@ public class TST<Value> implements Serializable {
             x = new Node<>();
             x.c = c;
         }
-        if      (c < x.c)               x.left  = put(x.left,  key, val, d);
-        else if (c > x.c)               x.right = put(x.right, key, val, d);
-        else if (d < key.length() - 1)  x.mid   = put(x.mid,   key, val, d+1);
-        else                            x.val   = val;
+        if (c < x.c) x.left = put(x.left, key, val, d);
+        else if (c > x.c) x.right = put(x.right, key, val, d);
+        else if (d < key.length() - 1) x.mid = put(x.mid, key, val, d + 1);
+        else x.val = val;
         return x;
     }
 
     /**
      * Returns the string in the symbol table that is the longest prefix of {@code query},
      * or {@code null}, if no such string.
+     *
      * @param query the query string
      * @return the string in the symbol table that is the longest prefix of {@code query},
-     *     or {@code null} if no such string
+     * or {@code null} if no such string
      * @throws IllegalArgumentException if {@code query} is {@code null}
      */
     public String longestPrefixOf(String query) {
@@ -124,7 +127,7 @@ public class TST<Value> implements Serializable {
         int i = 0;
         while (x != null && i < query.length()) {
             char c = query.charAt(i);
-            if      (c < x.c) x = x.left;
+            if (c < x.c) x = x.left;
             else if (c > x.c) x = x.right;
             else {
                 i++;
@@ -139,6 +142,7 @@ public class TST<Value> implements Serializable {
      * Returns all keys in the symbol table as an {@code Iterable}.
      * To iterate over all of the keys in the symbol table named {@code st},
      * use the foreach notation: {@code for (Key key : st.keys())}.
+     *
      * @return all keys in the symbol table as an {@code Iterable}
      */
     public Iterable<String> keys() {
@@ -149,9 +153,10 @@ public class TST<Value> implements Serializable {
 
     /**
      * Returns all of the keys in the set that start with {@code prefix}.
+     *
      * @param prefix the prefix
      * @return all of the keys in the set that start with {@code prefix},
-     *     as an iterable
+     * as an iterable
      * @throws IllegalArgumentException if {@code prefix} is {@code null}
      */
     public Iterable<String> keysWithPrefix(String prefix) {
@@ -169,9 +174,9 @@ public class TST<Value> implements Serializable {
     // all keys in subtrie rooted at x with given prefix
     private void collect(Node<Value> x, StringBuilder prefix, Queue<String> queue) {
         if (x == null) return;
-        collect(x.left,  prefix, queue);
+        collect(x.left, prefix, queue);
         if (x.val != null) queue.enqueue(prefix.toString() + x.c);
-        collect(x.mid,   prefix.append(x.c), queue);
+        collect(x.mid, prefix.append(x.c), queue);
         prefix.deleteCharAt(prefix.length() - 1);
         collect(x.right, prefix, queue);
     }
@@ -180,9 +185,10 @@ public class TST<Value> implements Serializable {
     /**
      * Returns all of the keys in the symbol table that match {@code pattern},
      * where . symbol is treated as a wildcard character.
+     *
      * @param pattern the pattern
      * @return all of the keys in the symbol table that match {@code pattern},
-     *     as an iterable, where . is treated as a wildcard character.
+     * as an iterable, where . is treated as a wildcard character.
      */
     public Iterable<String> keysThatMatch(String pattern) {
         Queue<String> queue = new Queue<>();
@@ -197,7 +203,7 @@ public class TST<Value> implements Serializable {
         if (c == '.' || c == x.c) {
             if (i == pattern.length() - 1 && x.val != null) queue.enqueue(prefix.toString() + x.c);
             if (i < pattern.length() - 1) {
-                collect(x.mid, prefix.append(x.c), i+1, pattern, queue);
+                collect(x.mid, prefix.append(x.c), i + 1, pattern, queue);
                 prefix.deleteCharAt(prefix.length() - 1);
             }
         }

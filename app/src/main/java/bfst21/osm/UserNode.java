@@ -5,6 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 
 import java.io.Serializable;
 
+
 public class UserNode extends Node implements Drawable, Serializable {
 
     private static final long serialVersionUID = -5801814520475467424L;

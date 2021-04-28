@@ -4,7 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 
-public class DebugBoxController extends SubController{
+
+public class DebugBoxController extends SubController {
 
     @FXML
     private Text zoomText;

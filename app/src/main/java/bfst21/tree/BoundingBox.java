@@ -26,11 +26,11 @@ public class BoundingBox implements Drawable {
         if (otherMinX >= minX && otherMaxX <= maxX && otherMinY >= minY && otherMaxY <= maxY) {
             return true;
 
-        //Check if this box is inside other box
+            //Check if this box is inside other box
         } else if (otherMinX <= minX && otherMaxX >= maxX && otherMinY <= minY && otherMaxY >= maxY) {
             return true;
 
-        //Check if other min/max x is inside this box
+            //Check if other min/max x is inside this box
         } else if ((otherMinX >= minX && otherMinX <= maxX) || (otherMaxX >= minX && otherMaxX <= maxX)) {
             //Check if other min/max y is inside this box
             if ((otherMinY >= minY && otherMinY <= maxY) || (otherMaxY >= minY && otherMaxY <= maxY)) {
@@ -82,7 +82,7 @@ public class BoundingBox implements Drawable {
 
         gc.setStroke(Color.PURPLE);
         gc.setLineWidth(0.0005);
-        
+
         gc.moveTo(bMinX, bMinY);
         gc.lineTo(bMaxX, bMinY);
         gc.lineTo(bMaxX, bMaxY);

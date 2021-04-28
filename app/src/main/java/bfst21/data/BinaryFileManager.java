@@ -14,7 +14,7 @@ import java.util.List;
  * BinaryFileManager is used to save and load .obj files.
  * All the important data from the MapData is saved to an .obj file.
  * This heavily increases startup performance as we do not need to parse any OSM data.
- *
+ * <p>
  * All objects saved in the .obj file must implement Serializable.
  */
 public class BinaryFileManager {

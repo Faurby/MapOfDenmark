@@ -2,6 +2,7 @@ package bfst21.view;
 
 import java.io.Serializable;
 import java.util.Locale;
+
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 

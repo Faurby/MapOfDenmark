@@ -10,8 +10,6 @@ import bfst21.view.ColorMode;
 import bfst21.view.MapCanvas;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -247,13 +245,7 @@ public class MainController {
                 return null;
             }
         };
-        task.setOnSucceeded(e -> {
-            startBox.setVisible(false);
-            startBox.setManaged(false);
-            loadingText.setVisible(false);
-            searchBoxController.setVisible(true);
-            canvas.runRangeSearchTask();
-        });
+        task.setOnSucceeded(e -> finishedLoadingFile());
         task.setOnFailed(e -> task.getException().printStackTrace());
         Thread thread = new Thread(task);
         thread.start();
@@ -281,17 +273,19 @@ public class MainController {
                     return null;
                 }
             };
-            task.setOnSucceeded(e -> {
-                startBox.setVisible(false);
-                startBox.setManaged(false);
-                loadingText.setVisible(false);
-                searchBoxController.setVisible(true);
-                canvas.runRangeSearchTask();
-            });
+            task.setOnSucceeded(e -> finishedLoadingFile());
             task.setOnFailed(e -> task.getException().printStackTrace());
             Thread thread = new Thread(task);
             thread.start();
         }
+    }
+
+    public void finishedLoadingFile() {
+        startBox.setVisible(false);
+        startBox.setManaged(false);
+        loadingText.setVisible(false);
+        searchBoxController.setVisible(true);
+        canvas.runRangeSearchTask();
     }
 
     @FXML
@@ -319,7 +313,6 @@ public class MainController {
             }
         }
     }
-
 
 
     @FXML
@@ -432,9 +425,9 @@ public class MainController {
     }
 
     @FXML
-    public void saveObjFile(ActionEvent actionEvent) throws Exception {
+    public void saveObjFile() {
         String fileName = model.getFileName();
-        if(fileName.endsWith(".obj")) {
+        if (fileName.endsWith(".obj")) {
             PopupControl popupBox = new PopupControl();
             Text warningText = new Text("You're currently using an OBJ file. Are you sure you want to save another OBJ file?");
             Button continueButton = new Button("Continue");
@@ -443,9 +436,7 @@ public class MainController {
 
             String msg = "Cannot save OBJ file when the loaded file is OBJ";
             System.out.println(msg);
-            //throw new Exception(msg);
-        }
-        else {
+        } else {
             FileChooser fileSaver = new FileChooser();
             fileSaver.setTitle("Save to OBJ");
             fileSaver.setInitialDirectory(new File("./"));
@@ -453,7 +444,7 @@ public class MainController {
                     new FileChooser.ExtensionFilter("OBJ file", ".obj"))
             );
             File file = fileSaver.showSaveDialog(new Stage());
-            if(file != null) {
+            if (file != null) {
                 Task<Void> task = new Task<>() {
                     @Override
                     protected Void call() throws IOException {
@@ -475,7 +466,7 @@ public class MainController {
         }
     }
 
-    public void checkDebug(ActionEvent actionEvent){
+    public void checkDebug(ActionEvent actionEvent) {
         String text = actionEvent.toString().toLowerCase();
 
         for (DisplayOption displayOption : DisplayOption.values()) {

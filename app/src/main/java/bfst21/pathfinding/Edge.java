@@ -14,7 +14,7 @@ public class Edge implements Serializable {
     private final float weight;
     private final int from, to;
 
-    private boolean canDrive, canBike, canWalk;
+    private final boolean canDrive, canBike, canWalk;
 
     public Edge(int from,
                 int to,
@@ -47,12 +47,11 @@ public class Edge implements Serializable {
 
         if (canDrive && transportOption == TransportOption.CAR) {
             return true;
+
         } else if (canBike && transportOption == TransportOption.BIKE) {
             return true;
-        } else if (canWalk && transportOption == TransportOption.WALK) {
-            return true;
-        }
-        return false;
+
+        } else return canWalk && transportOption == TransportOption.WALK;
     }
 
     public int getFrom() {

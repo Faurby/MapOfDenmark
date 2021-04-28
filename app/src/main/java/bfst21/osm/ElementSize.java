@@ -4,7 +4,7 @@ package bfst21.osm;
 /**
  * ElementSize is used to separate Ways into different size categories.
  * This is only used for Ways that are drawn using the fill method.
- *
+ * <p>
  * Each ElementSize has a required area size and a required zoom level.
  * Ways with a larger area will be drawn before Ways with a small area.
  */

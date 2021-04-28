@@ -73,7 +73,7 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
     /**
      * Merge outer Ways of a Relation if it is a multipolygon.
      * Some Ways may have first/last coordinates in common so they need to be merged.
-     *
+     * <p>
      * Some Ways have coordinates in the wrong order,
      * so we need to reverse the list of coordinates before correctly merging.
      */
@@ -98,8 +98,8 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
                                 //Some way is before this way
                                 merged = Way.merge(hasFirst, way, false);
 
-                            //Both ways have same node as their first
-                            //So we need to reverse the way and add it AFTER hasFirst way
+                                //Both ways have same node as their first
+                                //So we need to reverse the way and add it AFTER hasFirst way
                             } else if (way.first().equals(hasFirst.first())) {
                                 merged = Way.merge(hasFirst, way, true);
                             }
@@ -108,8 +108,8 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
                                 //Some way is after this way
                                 merged = Way.merge(way, hasLast, false);
 
-                            //Both ways have same node as their last
-                            //So we need to reverse the way and add it AFTER hasLast way
+                                //Both ways have same node as their last
+                                //So we need to reverse the way and add it AFTER hasLast way
                             } else if (way.last().equals(hasLast.last())) {
                                 merged = Way.merge(hasLast, way, true);
                             }
