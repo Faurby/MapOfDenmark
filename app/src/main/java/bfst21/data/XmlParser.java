@@ -7,10 +7,7 @@ import bfst21.models.MapData;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 import com.ctc.wstx.osgi.InputFactoryProviderImpl;
@@ -55,7 +52,7 @@ public class XmlParser {
         ElementType elementType = null;
         TST<List<OsmAddress>> addressTries = new TST<>();
 
-        ElementLongIndex<NodeID> nodeLongIndex = new ElementLongIndex<>();
+        ElementLongIndex<NodeWithID> nodeLongIndex = new ElementLongIndex<>();
         ElementLongIndex<Way> wayLongIndex = new ElementLongIndex<>();
         ElementLongIndex<Relation> relationLongIndex = new ElementLongIndex<>();
 
@@ -87,7 +84,7 @@ public class XmlParser {
                             lat = -lat / 0.56f;
 
                             node = new Node(lon, lat);
-                            nodeLongIndex.put(new NodeID(nodeID, node));
+                            nodeLongIndex.put(new NodeWithID(nodeID, node));
 
                             osmAddress = new OsmAddress(node);
                             break;
@@ -110,7 +107,7 @@ public class XmlParser {
                             String memRef = reader.getAttributeValue(null, "ref");
                             if (type != null) {
                                 if (type.equalsIgnoreCase("node")) {
-                                    NodeID memNode = nodeLongIndex.get(Long.parseLong(memRef));
+                                    NodeWithID memNode = nodeLongIndex.get(Long.parseLong(memRef));
                                     if (memNode != null) {
                                         nodes.add(memNode.getNode());
                                     }
@@ -379,5 +376,26 @@ public class XmlParser {
             }
         });
         return merged;
+    }
+
+    /**
+     * Helper class used to parse Nodes from OSM data.
+     * <p>
+     * The ID is used to assign Nodes to a Way.
+     * We no longer need the ID when parsing is complete.
+     */
+    private static class NodeWithID extends Element {
+
+        private static final long serialVersionUID = -5720053995520236497L;
+        private final Node node;
+
+        public NodeWithID(long id, Node node) {
+            super(id);
+            this.node = node;
+        }
+
+        public Node getNode() {
+            return node;
+        }
     }
 }
