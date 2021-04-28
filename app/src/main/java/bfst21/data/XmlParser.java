@@ -45,7 +45,7 @@ public class XmlParser {
 
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new BufferedInputStream(input));
 
-        Node node;
+        Node node = null;
         Way way = null;
         Relation relation = null;
         OsmAddress osmAddress = null;
@@ -62,6 +62,9 @@ public class XmlParser {
 
         float minX = 0, minY = 0, maxX = 0, maxY = 0;
         boolean isCoastline = false;
+
+        String name = null;
+        List<MapText> mapTexts = new ArrayList<>();
 
         while (reader.hasNext()) {
             switch (reader.next()) {
@@ -132,6 +135,20 @@ public class XmlParser {
                         case "tag":
                             String key = reader.getAttributeValue(null, "k");
                             String value = reader.getAttributeValue(null, "v");
+
+                            if (node != null) {
+                                switch (key) {
+                                    case "name":
+                                        name = value;
+                                        break;
+                                    case "place":
+                                        if (true) {
+                                            MapText mapText = new MapText(value.intern(), name, node.getCoords());
+                                            mapTexts.add(mapText);
+                                        }
+                                        break;
+                                }
+                            }
 
                             if (way != null || relation != null || key.contains("addr:")) {
                                 switch (key) {
@@ -340,11 +357,17 @@ public class XmlParser {
         System.out.println("Parsed OSM data in: " + time / 1_000_000 + "ms");
         islands = mergeCoastLines(coastlines);
 
+        /* for (MapText mapText : mapTexts) {
+            System.out.println("Name: " + mapText.getName() + ", Place: " + mapText.getPlace() + ", Coords: " + mapText.getCoords()[0] + "," + mapText.getCoords()[1]);
+        }*/
+
+
         return new MapData(
                 islands,
                 wayLongIndex,
                 relationLongIndex,
                 addressTries,
+                mapTexts,
                 null,
                 null,
                 null,

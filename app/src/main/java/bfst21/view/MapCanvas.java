@@ -17,6 +17,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
@@ -143,6 +145,19 @@ public class MapCanvas extends Canvas {
             if (model.getMapData().destinationCoords != null) {
                 drawPathTo(model.getMapData().destinationCoords);
             }
+
+            for (MapText mapText : model.getMapData().getMapTexts()) {
+                    //System.out.println("Coords: " + mapText.getCoords()[0] + "," + mapText.getCoords()[1]);
+
+                if (mapText.canDraw(zoomLevel)){
+                    gc.setFill(Color.BLACK);
+                    gc.setTextAlign(TextAlignment.CENTER);
+                    gc.setFont(new Font("Times New Roman", 0.01 * widthModifier));
+                    gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
+                    gc.setFont(null);
+                }
+            }
+
         }
         gc.restore();
 

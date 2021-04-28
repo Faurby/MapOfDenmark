@@ -30,6 +30,7 @@ public class MapData {
     private final float minX, minY, maxX, maxY;
 
     private final TST<List<OsmAddress>> addressTries;
+    private final List<MapText> mapTexts;
 
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
@@ -46,6 +47,7 @@ public class MapData {
             ElementLongIndex<Way> wayLongIndex,
             ElementLongIndex<Relation> relationLongIndex,
             TST<List<OsmAddress>> addressTries,
+            List<MapText> mapTexts,
             HashMap<ElementGroup, KdTree<Way>> kdTreeMap,
             KdTree<Relation> kdTreeRelations,
             DirectedGraph directedGraph,
@@ -61,6 +63,7 @@ public class MapData {
         this.islands = islands;
         this.addressTries = addressTries;
         this.userNodes = userNodes;
+        this.mapTexts = mapTexts;
         this.minX = minX;
         this.minY = minY;
         this.maxX = maxX;
@@ -381,4 +384,6 @@ public class MapData {
     public TST<List<OsmAddress>> getAddressTries() {
         return addressTries;
     }
+
+    public List<MapText> getMapTexts() { return mapTexts; }
 }
