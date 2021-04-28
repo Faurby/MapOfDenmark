@@ -127,13 +127,13 @@ public class SearchBoxController extends SubController {
                     MapData mapData = model.getMapData();
                     addressTries = mapData.getAddressTries();
                 }
+                addressSuggestions.clear();
                 String addressInput = addressArea.getText().replace(" ", "").toLowerCase();
 
                 Iterator<String> it = addressTries.keysWithPrefix(addressInput).iterator();
                 if (it.hasNext()) {
 
                     List<OsmAddress> osmAddressList = addressTries.get(it.next());
-                    addressSuggestions.clear();
 
                     int count = 0;
                     for (OsmAddress osmAddress : osmAddressList) {
