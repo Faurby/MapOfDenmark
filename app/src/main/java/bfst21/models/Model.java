@@ -40,22 +40,16 @@ public class Model {
 
         System.out.println("Model loading file: " + fileName);
         long totalTime = -System.nanoTime();
-        DisplayOptions displayOptions = DisplayOptions.getInstance();
 
         if (fileName.endsWith(".osm")) {
             XmlParser xmlParser = new XmlParser();
             mapData = xmlParser.loadOSM(fileName);
 
         } else if (fileName.endsWith(".zip")) {
-            BinaryFileManager binaryFileManager = new BinaryFileManager();
-            loadZIP(fileName);
-            if (displayOptions.getBool(DisplayOption.SAVE_OBJ_FILE)) {
-                long time = -System.nanoTime();
-                //TODO: Måske vi skal ændre i saveOBJ() metoden så man ikke skal give en tom String med
-                binaryFileManager.saveOBJ("", fileName.split("\\.")[0] + ".obj", mapData);
-                time += System.nanoTime();
-                System.out.println("Saved .obj file in: " + time / 1_000_000 + "ms");
-            }
+            ZipInputStream zip = new ZipInputStream(new FileInputStream(fileName));
+            zip.getNextEntry();
+            XmlParser xmlParser = new XmlParser();
+            mapData = xmlParser.loadOSM(zip);
 
         } else if (fileName.endsWith(".obj")) {
             BinaryFileManager binaryFileManager = new BinaryFileManager();
@@ -63,13 +57,6 @@ public class Model {
         }
         totalTime += System.nanoTime();
         System.out.println("Total load time: " + totalTime / 1_000_000 + "ms");
-    }
-
-    private void loadZIP(String filename) throws IOException, XMLStreamException, FactoryConfigurationError {
-        ZipInputStream zip = new ZipInputStream(new FileInputStream(filename));
-        zip.getNextEntry();
-        XmlParser xmlParser = new XmlParser();
-        mapData = xmlParser.loadOSM(zip);
     }
 
     public MapData getMapData() {

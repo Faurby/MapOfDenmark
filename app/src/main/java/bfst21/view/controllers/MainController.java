@@ -97,8 +97,10 @@ public class MainController {
     public void updateMouseCoords(Point2D currentMousePos) {
         double currentPosX = canvas.mouseToModelCoords(currentMousePos).getX();
         double currentPosY = canvas.mouseToModelCoords(currentMousePos).getY();
+
         String xFormatted = String.format(Locale.ENGLISH, "%.5f", currentPosX);
         String yFormatted = String.format(Locale.ENGLISH, "%.5f", currentPosY);
+
         debugBoxController.setMouseCoords("Mouse coords: " + xFormatted + ", " + yFormatted);
     }
 
@@ -116,7 +118,6 @@ public class MainController {
         startBoxController.setController(this);
 
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
-        //StackPane.setAlignment(startBox, Pos.BOTTOM_RIGHT);
         progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
         updateZoomBox();
 
@@ -125,7 +126,6 @@ public class MainController {
                 showHideDebug();
             }
         });
-
         scene.setOnMouseMoved(event -> {
             Point2D currentMousePos = new Point2D(event.getX(), event.getY());
             updateMouseCoords(currentMousePos);
@@ -168,9 +168,11 @@ public class MainController {
 
         if (model.getMapData() != null) {
             if (!model.getMapData().getUserNodes().isEmpty()) {
+
                 Point2D point = canvas.mouseToModelCoords(lastMouse);
                 Node nodeAtMouse = new Node((float) point.getX(), (float) point.getY());
                 UserNode closestNode = null;
+
                 for (UserNode userNode : model.getMapData().getUserNodes()) {
                     //If closestNode is null, any Node could be the closest node
                     if (closestNode == null || nodeAtMouse.distTo(userNode) < nodeAtMouse.distTo(closestNode)) {
@@ -211,7 +213,7 @@ public class MainController {
             canvas.runNearestNeighborTask(queryCoords);
         }
 
-        if (userNodeToggle && mouseEvent.isSecondaryButtonDown()) {
+        if (userNodeToggle && mouseEvent.isPrimaryButtonDown()) {
             userNodeVBox.setVisible(true);
             userNodeTextField.requestFocus();
             scene.setCursor(Cursor.DEFAULT);
@@ -236,6 +238,7 @@ public class MainController {
 
     @FXML
     public void loadDefault() {
+
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() throws Exception {
@@ -256,20 +259,23 @@ public class MainController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Load new map segment");
         fileChooser.setInitialDirectory(new File("./"));
+
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Obj file, OSM file, ZIP file", "*.obj; *.osm; *.zip")
+            new FileChooser.ExtensionFilter("OBJ file, OSM file, ZIP file", "*.obj; *.osm; *.zip")
         );
         File file = fileChooser.showOpenDialog(new Stage());
 
         if (file != null) {
             String filename = file.getAbsolutePath();
             model.setFileName(filename);
+
             Task<Void> task = new Task<>() {
                 @Override
                 protected Void call() throws Exception {
                     loadingText.setVisible(true);
                     canvas.load(false);
                     updateZoomBox();
+
                     return null;
                 }
             };
@@ -306,6 +312,7 @@ public class MainController {
 
         for (ColorMode colorMode : ColorMode.values()) {
             String optionText = colorMode.toString().toLowerCase().replaceAll("_", "");
+
             if (text.contains(optionText)) {
                 canvas.setColorMode(colorMode);
                 canvas.repaint();
@@ -313,7 +320,6 @@ public class MainController {
             }
         }
     }
-
 
     @FXML
     public void userNodeButtonClicked() throws MapDataNotLoadedException {
@@ -333,6 +339,7 @@ public class MainController {
     public void userNodeTextFieldKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode().getName().equals("Enter")) {
             saveUserNode();
+
         } else if (keyEvent.getCode().getName().equals("Esc")) {
             userNodeVBox.setVisible(false);
             scene.setCursor(userNodeCursorImage);
@@ -427,6 +434,7 @@ public class MainController {
     @FXML
     public void saveObjFile() {
         String fileName = model.getFileName();
+
         if (fileName.endsWith(".obj")) {
             PopupControl popupBox = new PopupControl();
             Text warningText = new Text("You're currently using an OBJ file. Are you sure you want to save another OBJ file?");
@@ -436,29 +444,35 @@ public class MainController {
 
             String msg = "Cannot save OBJ file when the loaded file is OBJ";
             System.out.println(msg);
+
         } else {
             FileChooser fileSaver = new FileChooser();
             fileSaver.setTitle("Save to OBJ");
             fileSaver.setInitialDirectory(new File("./"));
             fileSaver.getExtensionFilters().addAll((
-                    new FileChooser.ExtensionFilter("OBJ file", ".obj"))
-            );
+                    new FileChooser.ExtensionFilter("OBJ file", ".obj")));
+
             File file = fileSaver.showSaveDialog(new Stage());
+
             if (file != null) {
                 Task<Void> task = new Task<>() {
+
                     @Override
                     protected Void call() throws IOException {
                         BinaryFileManager binaryFileManager = new BinaryFileManager();
                         MapData mapData = model.getMapData();
 
                         long time = -System.nanoTime();
-                        //TODO: Måske vi skal ændre i saveOBJ() metoden så man ikke skal give en tom String med
-                        binaryFileManager.saveOBJ(file.getAbsolutePath(), "", mapData);
+                        binaryFileManager.saveOBJ(file.getAbsolutePath(), mapData);
                         time += System.nanoTime();
                         System.out.println("Saved .obj file in: " + time / 1_000_000 + "ms to " + file.getAbsolutePath());
+
                         return null;
                     }
                 };
+                task.setOnSucceeded(event -> {
+                    //TODO: Show a popup confirming that file has been successfully saved now
+                });
                 task.setOnFailed(event -> task.getException().printStackTrace());
                 Thread thread = new Thread(task);
                 thread.start();
@@ -471,6 +485,7 @@ public class MainController {
 
         for (DisplayOption displayOption : DisplayOption.values()) {
             String optionText = displayOption.toString().toLowerCase().replaceAll("_", " ");
+
             if (text.contains(optionText)) {
                 displayOptions.toggle(displayOption);
                 canvas.repaint();

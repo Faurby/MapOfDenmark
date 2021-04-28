@@ -1,7 +1,12 @@
 package bfst21.osm;
 
 
-public class OsmAddress {
+import java.io.Serializable;
+
+
+public class OsmAddress implements Serializable {
+
+    private static final long serialVersionUID = -377246689553287254L;
 
     private String city, postcode, houseNumber, street;
 

@@ -6,23 +6,29 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.geometry.Insets?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="bfst21.view.controllers.DebugBoxController"
 
-      fx:id="debugBox" maxWidth="40" maxHeight="20" style="-fx-padding: 30" visible="false">
+<VBox xmlns="https://javafx.com/javafx"
+      xmlns:fx="https://javafx.com/fxml"
+      fx:controller="bfst21.view.controllers.DebugBoxController"
+      maxWidth="40"
+      maxHeight="20"
+      visible="false"
+      style="-fx-padding: 30">
+
     <Text text="zoomPercent" fx:id="zoomPercent"/>
     <Text text="zoomText" fx:id="zoomText"/>
     <Text text="repaintTime" fx:id="repaintTime"/>
     <Text text="nodeSkipAmount" fx:id="nodeSkipAmount"/>
 
-    <VBox fx:id="debugOptions"
-          minWidth="150"
+    <VBox minWidth="150"
           style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B;">
+
         <padding>
             <Insets top="5" right="10" bottom="5" left="10"/>
         </padding>
+
         <Text text="Debug options:" style="-fx-padding: 2"/>
+
         <CheckBox text="Use graph" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display KD tree" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display graph" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
@@ -44,6 +50,7 @@
         <CheckBox text="Display primary" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display building" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display unknown" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+
     </VBox>
     <Text text="mouseCoords" fx:id="mouseCoords"/>
 </VBox>
