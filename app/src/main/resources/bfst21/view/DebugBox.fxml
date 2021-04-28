@@ -45,4 +45,5 @@
         <CheckBox text="Display building" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display unknown" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
     </VBox>
+    <Text text="mouseCoords" fx:id="mouseCoords"/>
 </VBox>

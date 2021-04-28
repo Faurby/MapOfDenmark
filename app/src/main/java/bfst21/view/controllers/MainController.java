@@ -10,6 +10,7 @@ import bfst21.view.ColorMode;
 import bfst21.view.MapCanvas;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
@@ -29,6 +30,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
 
 
@@ -94,6 +96,14 @@ public class MainController {
         debugBoxController.setRepaintTime("Repaint time: " + canvas.getAverageRepaintTime());
     }
 
+    public void updateMouseCoords(Point2D currentMousePos) {
+        double currentPosX = canvas.mouseToModelCoords(currentMousePos).getX();
+        double currentPosY = canvas.mouseToModelCoords(currentMousePos).getY();
+        String xFormatted = String.format(Locale.ENGLISH, "%.5f", currentPosX);
+        String yFormatted = String.format(Locale.ENGLISH, "%.5f", currentPosY);
+        debugBoxController.setMouseCoords("Mouse coords: " + xFormatted + ", " + yFormatted);
+    }
+
     public MapCanvas getCanvas() {
         return canvas;
     }
@@ -116,6 +126,11 @@ public class MainController {
             if (event.getCode() == KeyCode.D && event.isControlDown()) {
                 showHideDebug();
             }
+        });
+
+        scene.setOnMouseMoved(event -> {
+            Point2D currentMousePos = new Point2D(event.getX(), event.getY());
+            updateMouseCoords(currentMousePos);
         });
     }
 
