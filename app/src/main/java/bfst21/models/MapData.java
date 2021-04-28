@@ -29,7 +29,7 @@ public class MapData {
 
     private final float minX, minY, maxX, maxY;
 
-    private final TST<float[]> addressTries;
+    private final TST<List<OsmAddress>> addressTries;
 
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
@@ -48,7 +48,7 @@ public class MapData {
             HashMap<ElementGroup, KdTree<Way>> kdTreeMap,
             KdTree<Relation> kdTreeRelations,
             DirectedGraph directedGraph,
-            TST<float[]> addressTries,
+            TST<List<OsmAddress>> addressTries,
             List<UserNode> userNodes,
             float minX,
             float maxX,
@@ -102,7 +102,7 @@ public class MapData {
             if (kdTreeRelations == null) {
                 buildSearchTreesForRelations(relationList);
             }
-            if(userNodes == null) {
+            if (userNodes == null) {
                 this.userNodes = new ArrayList<>();
             }
         }
@@ -117,30 +117,6 @@ public class MapData {
             long time = -System.nanoTime();
             directedGraph = new DirectedGraph();
 
-            int idCount = 0;
-            for (Way way : wayList) {
-                if (way.getType() != null) {
-                    if (way.getType().canNavigate()) {
-
-                        float[] coords = way.getCoords();
-
-                        for (int i = 0; i < (coords.length - 2); i += 2) {
-                            float vX = coords[i];
-                            float vY = coords[i + 1];
-                            float wX = coords[i + 2];
-                            float wY = coords[i + 3];
-
-                            int vID = idCount;
-                            int wID = idCount + 1;
-
-                            directedGraph.createVertex(new float[]{vX, vY}, vID);
-                            directedGraph.createVertex(new float[]{wX, wY}, wID);
-                            idCount += 2;
-                        }
-                    }
-                }
-            }
-            idCount = 0;
             for (Way way : wayList) {
                 if (way.getType() != null) {
                     if (way.getType().canNavigate()) {
@@ -157,6 +133,9 @@ public class MapData {
                             float[] fromCoords = new float[]{vX, vY};
                             float[] toCoords = new float[]{wX, wY};
 
+                            directedGraph.createVertex(fromCoords);
+                            directedGraph.createVertex(toCoords);
+
                             ElementType type = way.getType();
                             boolean canDrive = type.canDrive();
                             boolean canBike = type.canBike();
@@ -164,7 +143,6 @@ public class MapData {
                             boolean oneWay = way.isOneWay();
 
                             directedGraph.addEdge(fromCoords, toCoords, maxSpeed, oneWay, canDrive, canBike, canWalk);
-                            idCount += 2;
                         }
                     }
                 }
@@ -400,7 +378,7 @@ public class MapData {
         return dijkstraPath;
     }
 
-    public TST<float[]> getAddressTries() {
+    public TST<List<OsmAddress>> getAddressTries() {
         return addressTries;
     }
 }

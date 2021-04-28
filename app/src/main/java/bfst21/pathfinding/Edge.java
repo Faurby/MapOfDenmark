@@ -13,16 +13,13 @@ public class Edge implements Serializable {
 
     private final float weight;
     private final int from, to;
-    private boolean canDrive;
-    private boolean canBike;
-    private boolean canWalk;
-    private boolean oneWay;
+
+    private boolean canDrive, canBike, canWalk;
 
     public Edge(int from,
                 int to,
                 float distance,
                 int maxSpeed,
-                boolean oneWay,
                 boolean canDrive,
                 boolean canBike,
                 boolean canWalk) {
@@ -32,7 +29,6 @@ public class Edge implements Serializable {
         this.canDrive = canDrive;
         this.canBike = canBike;
         this.canWalk = canWalk;
-        this.oneWay = oneWay;
         this.weight = (distance * 60.0f / maxSpeed);
     }
 
@@ -51,18 +47,12 @@ public class Edge implements Serializable {
 
         if (canDrive && transportOption == TransportOption.CAR) {
             return true;
-
         } else if (canBike && transportOption == TransportOption.BIKE) {
             return true;
-
         } else if (canWalk && transportOption == TransportOption.WALK) {
             return true;
         }
         return false;
-    }
-
-    public boolean isOneWay() {
-        return oneWay;
     }
 
     public int getFrom() {
@@ -75,9 +65,5 @@ public class Edge implements Serializable {
 
     public float getWeight() {
         return weight;
-    }
-
-    public boolean canWalk() {
-        return canWalk;
     }
 }

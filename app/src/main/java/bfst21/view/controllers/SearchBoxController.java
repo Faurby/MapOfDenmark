@@ -5,6 +5,7 @@ import bfst21.address.TST;
 import bfst21.exceptions.IllegalInputException;
 import bfst21.models.MapData;
 import bfst21.models.Model;
+import bfst21.osm.OsmAddress;
 import bfst21.view.MapCanvas;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -17,6 +18,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class SearchBoxController extends SubController {
@@ -32,9 +37,9 @@ public class SearchBoxController extends SubController {
     @FXML
     private VBox suggestions;
 
-    private TST<float[]> addressTries;
+    private TST<List<OsmAddress>> addressTries;
     private Task<Void> addressSuggestionTask;
-    private Iterable<String> addressSuggestions;
+    private List<String> addressSuggestions = new ArrayList<>();
 
     @FXML
     private void searchSingleAddress() {
@@ -122,7 +127,22 @@ public class SearchBoxController extends SubController {
                     MapData mapData = model.getMapData();
                     addressTries = mapData.getAddressTries();
                 }
-                addressSuggestions = addressTries.keysWithPrefix(addressArea.getText());
+                addressSuggestions.clear();
+                String addressInput = addressArea.getText().replace(" ", "").toLowerCase();
+
+                Iterator<String> it = addressTries.keysWithPrefix(addressInput).iterator();
+                if (it.hasNext()) {
+
+                    List<OsmAddress> osmAddressList = addressTries.get(it.next());
+
+                    int count = 0;
+                    for (OsmAddress osmAddress : osmAddressList) {
+                        if (count < 10) {
+                            addressSuggestions.add(osmAddress.toString());
+                            count++;
+                        }
+                    }
+                }
                 return null;
             }
         };

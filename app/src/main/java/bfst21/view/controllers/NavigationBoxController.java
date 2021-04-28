@@ -6,6 +6,7 @@ import bfst21.models.MapData;
 import bfst21.models.Model;
 import bfst21.models.TransportOption;
 import bfst21.models.TransportOptions;
+import bfst21.osm.OsmAddress;
 import bfst21.view.MapCanvas;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,6 +17,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.util.List;
 
 
 public class NavigationBoxController extends SubController {
@@ -37,7 +40,7 @@ public class NavigationBoxController extends SubController {
     @FXML
     private VBox navigationBox;
 
-    private TST<float[]> addressTries;
+    private TST<List<OsmAddress>> addressTries;
     private TransportOptions transOptions = TransportOptions.getInstance();
 
     @FXML
@@ -56,24 +59,24 @@ public class NavigationBoxController extends SubController {
                 addressTries = mapData.getAddressTries();
             }
 
-            String originAddress = startingPoint.getText();
-            float[] originCoords = addressTries.get(originAddress);
-
-            String destinationAddress = destinationPoint.getText();
-            float[] destinationCoords = addressTries.get(destinationAddress);
-
-            if (originCoords != null && destinationCoords != null) {
-
-                float[] nearOriginCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(originCoords);
-                float[] nearDestinationCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(destinationCoords);
-
-                mainController.getCanvas().getModel().getMapData().originCoords = nearOriginCoords;
-                mainController.getCanvas().getModel().getMapData().destinationCoords = nearDestinationCoords;
-                mainController.getCanvas().getModel().getMapData().runDijkstra();
-
-            } else {
-                System.out.println("Invalid address");
-            }
+//            String originAddress = startingPoint.getText();
+//            float[] originCoords = addressTries.get(originAddress);
+//
+//            String destinationAddress = destinationPoint.getText();
+//            float[] destinationCoords = addressTries.get(destinationAddress);
+//
+//            if (originCoords != null && destinationCoords != null) {
+//
+//                float[] nearOriginCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(originCoords);
+//                float[] nearDestinationCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(destinationCoords);
+//
+//                mainController.getCanvas().getModel().getMapData().originCoords = nearOriginCoords;
+//                mainController.getCanvas().getModel().getMapData().destinationCoords = nearDestinationCoords;
+//                mainController.getCanvas().getModel().getMapData().runDijkstra();
+//
+//            } else {
+//                System.out.println("Invalid address");
+//            }
         }
     }
 
