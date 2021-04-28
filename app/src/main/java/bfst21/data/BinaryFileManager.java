@@ -35,6 +35,7 @@ public class BinaryFileManager {
                 (KdTree<Relation>) input.readObject(),
                 (DirectedGraph) input.readObject(),
                 (TST<float[]>) input.readObject(),
+                (List<UserNode>) input.readObject(),
                 input.readFloat(),
                 input.readFloat(),
                 input.readFloat(),
@@ -56,6 +57,8 @@ public class BinaryFileManager {
             output.writeObject(mapData.getDirectedGraph());
 
             output.writeObject(mapData.getAddressTries());
+
+            output.writeObject(mapData.getUserNodes());
 
             output.writeFloat(mapData.getMinX());
             output.writeFloat(mapData.getMaxX());

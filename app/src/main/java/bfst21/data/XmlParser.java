@@ -346,6 +346,7 @@ public class XmlParser {
                 null,
                 null,
                 addressTries,
+                null,
                 minX,
                 maxX,
                 minY,

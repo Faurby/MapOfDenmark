@@ -10,6 +10,7 @@ import bfst21.view.ColorMode;
 import bfst21.view.MapCanvas;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -419,9 +420,15 @@ public class MainController {
     public void saveObjFile(ActionEvent actionEvent) throws Exception {
         String fileName = model.getFileName();
         if(fileName.endsWith(".obj")) {
+            PopupControl popupBox = new PopupControl();
+            Text warningText = new Text("You're currently using an OBJ file. Are you sure you want to save another OBJ file?");
+            Button continueButton = new Button("Continue");
+            Button cancelButton = new Button("Cancel");
+            popupBox.show(new Stage());
+
             String msg = "Cannot save OBJ file when the loaded file is OBJ";
             System.out.println(msg);
-            throw new Exception(msg);
+            //throw new Exception(msg);
         }
         else {
             FileChooser fileSaver = new FileChooser();

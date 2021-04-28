@@ -24,7 +24,7 @@ public class MapData {
     private KdTree<Relation> kdTreeRelations;
     private List<Relation> kdTreeRelationSearchList = new ArrayList<>();
 
-    private final List<UserNode> userNodes = new ArrayList<>();
+    private List<UserNode> userNodes;
     private final List<Way> islands;
 
     private final float minX, minY, maxX, maxY;
@@ -49,6 +49,7 @@ public class MapData {
             KdTree<Relation> kdTreeRelations,
             DirectedGraph directedGraph,
             TST<float[]> addressTries,
+            List<UserNode> userNodes,
             float minX,
             float maxX,
             float minY,
@@ -59,6 +60,7 @@ public class MapData {
         this.kdTreeRelations = kdTreeRelations;
         this.islands = islands;
         this.addressTries = addressTries;
+        this.userNodes = userNodes;
         this.minX = minX;
         this.minY = minY;
         this.maxX = maxX;
@@ -99,6 +101,9 @@ public class MapData {
             }
             if (kdTreeRelations == null) {
                 buildSearchTreesForRelations(relationList);
+            }
+            if(userNodes == null) {
+                this.userNodes = new ArrayList<>();
             }
         }
     }
