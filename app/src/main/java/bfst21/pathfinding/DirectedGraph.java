@@ -1,9 +1,7 @@
 package bfst21.pathfinding;
 
 import bfst21.models.Util;
-import bfst21.osm.ElementType;
 import bfst21.osm.Node;
-import bfst21.osm.Way;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,12 +23,14 @@ public class DirectedGraph implements Serializable {
 
     private int vertexAmount;
 
-    public void createVertex(float[] coords, int id) {
+    public void createVertex(float[] coords) {
         Node node = new Node(coords[0], coords[1]);
 
-        coordsToIdMap.put(node, id);
-        idToCoordsMap.put(id, coords);
-        vertexAmount++;
+        if (!coordsToIdMap.containsKey(node)) {
+            coordsToIdMap.put(node, vertexAmount);
+            idToCoordsMap.put(vertexAmount, coords);
+            vertexAmount++;
+        }
     }
 
     public int getVertexID(float[] coords) {
@@ -62,10 +62,16 @@ public class DirectedGraph implements Serializable {
         int toID = getVertexID(toCoords);
 
         float distance = (float) Util.distTo(fromCoords, toCoords);
-        Edge edge1 = new Edge(fromID, toID, distance, maxSpeed, oneWay, canDrive, canBike, canWalk);
+        Edge edge1 = new Edge(fromID, toID, distance, maxSpeed, canDrive, canBike, canWalk);
 
         addEdge(toID, edge1);
         addEdge(fromID, edge1);
+
+        if (!oneWay) {
+            Edge edge2 = new Edge(toID, fromID, distance, maxSpeed, canDrive, canBike, canWalk);
+            addEdge(toID, edge2);
+            addEdge(fromID, edge2);
+        }
     }
 
     private void addEdge(int vertexID, Edge edge) {

@@ -37,7 +37,6 @@ public class DijkstraPath {
 
         pq = new IndexMinPQ<>(vertexAmount);
         pq.insert(sourceID, distTo[sourceID]);
-
         while (!pq.isEmpty() && !foundDestination) {
             int vertexID = pq.delMin();
 
@@ -45,32 +44,28 @@ public class DijkstraPath {
                 foundDestination = true;
             }
             for (Edge edge : directedGraph.getAdjacentEdges(vertexID)) {
-                if (edge.canNavigate()) {
-                    int v = edge.getFrom();
-                    int w = edge.getTo();
-
-                    relax(edge, v, w);
-
-                    if (!edge.isOneWay()) {
-                        relax(edge, w, v);
-                    }
-                }
+                relax(edge);
             }
         }
     }
 
-    public void relax(Edge edge, int v, int w) {
-        double weight = edge.getWeight();
+    public void relax(Edge edge) {
+        if (edge.canNavigate()) {
+            int v = edge.getFrom();
+            int w = edge.getTo();
 
-        if (distTo[w] > distTo[v] + weight) {
-            distTo[w] = distTo[v] + weight;
-            edgeTo[w] = edge;
+            double weight = edge.getWeight();
 
-            if (pq.contains(w)) {
-                pq.decreaseKey(w, distTo[w]);
+            if (distTo[w] > distTo[v] + weight) {
+                distTo[w] = distTo[v] + weight;
+                edgeTo[w] = edge;
 
-            } else {
-                pq.insert(w, distTo[w]);
+                if (pq.contains(w)) {
+                    pq.decreaseKey(w, distTo[w]);
+
+                } else {
+                    pq.insert(w, distTo[w]);
+                }
             }
         }
     }
