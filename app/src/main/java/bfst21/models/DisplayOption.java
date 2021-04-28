@@ -4,8 +4,6 @@ package bfst21.models;
 public enum DisplayOption {
     USE_GRAPH,
 
-    SAVE_OBJ_FILE,
-
     DISPLAY_KD_TREE,
     DISPLAY_GRAPH,
     DISPLAY_DIJKSTRA,
