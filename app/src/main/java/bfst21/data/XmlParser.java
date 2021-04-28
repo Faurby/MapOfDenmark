@@ -1,7 +1,6 @@
 package bfst21.data;
 
 import bfst21.address.TST;
-import bfst21.models.DisplayOption;
 import bfst21.models.DisplayOptions;
 import bfst21.osm.*;
 import bfst21.models.MapData;
@@ -42,8 +41,6 @@ public class XmlParser {
 
         long time = -System.nanoTime();
 
-        DisplayOptions displayOptions = DisplayOptions.getInstance();
-
         InputFactoryProviderImpl iprovider = new InputFactoryProviderImpl();
 
         XMLInputFactory2 xmlif = iprovider.createInputFactory();
@@ -56,8 +53,7 @@ public class XmlParser {
         OsmAddress osmAddress = null;
         Node node = null;
         ElementType elementType = null;
-        //TriesMap triesMap = new TriesMap();
-        TST<float[]> addressTries = new TST<>();
+        TST<List<OsmAddress>> addressTries = new TST<>();
 
         ElementLongIndex<NodeID> nodeLongIndex = new ElementLongIndex<>();
         ElementLongIndex<Way> wayLongIndex = new ElementLongIndex<>();
@@ -92,6 +88,8 @@ public class XmlParser {
 
                             node = new Node(lon, lat);
                             nodeLongIndex.put(new NodeID(nodeID, node));
+
+                            osmAddress = new OsmAddress(node);
                             break;
 
                         case "way":
@@ -141,14 +139,13 @@ public class XmlParser {
                             if (way != null || relation != null || key.contains("addr:")) {
                                 switch (key) {
                                     case "addr:city":
-                                        osmAddress = new OsmAddress(node);
                                         osmAddress.setCity(value.intern());
                                         break;
                                     case "addr:housenumber":
                                         osmAddress.setHouseNumber(value.intern());
                                         break;
                                     case "addr:postcode":
-                                        osmAddress.setPostcode(Integer.parseInt(value));
+                                        osmAddress.setPostcode(value.intern());
                                         break;
                                     case "addr:street":
                                         osmAddress.setStreet(value.intern());
@@ -300,8 +297,16 @@ public class XmlParser {
 
                         case "node":
                             if (osmAddress != null && osmAddress.isValid()) {
-                                //triesMap.addAddress(osmAddress);
-                                addressTries.put(osmAddress.toString().intern(), osmAddress.getNodeCoords());
+
+                                String inputAddress = osmAddress.getStreet().trim().replace(" ", "").toLowerCase() + osmAddress.getPostcode();
+
+                                List<OsmAddress> addresses = new ArrayList<>();
+                                if (addressTries.contains(inputAddress)) {
+                                    addresses = addressTries.get(inputAddress);
+                                }
+                                addresses.add(osmAddress);
+
+                                addressTries.put(inputAddress, addresses);
                             }
                             break;
 
