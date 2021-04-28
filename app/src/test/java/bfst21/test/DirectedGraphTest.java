@@ -25,13 +25,13 @@ public class DirectedGraphTest {
         float[] coords5 = new float[]{3, 3};
         float[] coords6 = new float[]{9, 9};
 
-        directedGraph.createVertex(coords0, 0);
-        directedGraph.createVertex(coords1, 1);
-        directedGraph.createVertex(coords2, 2);
-        directedGraph.createVertex(coords3, 3);
-        directedGraph.createVertex(coords4, 4);
-        directedGraph.createVertex(coords5, 5);
-        directedGraph.createVertex(coords6, 6);
+        directedGraph.createVertex(coords0);
+        directedGraph.createVertex(coords1);
+        directedGraph.createVertex(coords2);
+        directedGraph.createVertex(coords3);
+        directedGraph.createVertex(coords4);
+        directedGraph.createVertex(coords5);
+        directedGraph.createVertex(coords6);
 
         directedGraph.addEdge(coords0, coords3, 10, false, true, true, true);
         directedGraph.addEdge(coords2, coords1, 10, false, true, true, true);
@@ -60,12 +60,12 @@ public class DirectedGraphTest {
         float[] coords4 = new float[]{4, 1};
         float[] coords5 = new float[]{4, 2};
 
-        directedGraph.createVertex(coords0, 0);
-        directedGraph.createVertex(coords1, 1);
-        directedGraph.createVertex(coords2, 2);
-        directedGraph.createVertex(coords3, 3);
-        directedGraph.createVertex(coords4, 4);
-        directedGraph.createVertex(coords5, 5);
+        directedGraph.createVertex(coords0);
+        directedGraph.createVertex(coords1);
+        directedGraph.createVertex(coords2);
+        directedGraph.createVertex(coords3);
+        directedGraph.createVertex(coords4);
+        directedGraph.createVertex(coords5);
 
         directedGraph.addEdge(coords0, coords1, 10, false, true, true, true);
         directedGraph.addEdge(coords1, coords2, 10, false, true, true, true);
@@ -76,7 +76,7 @@ public class DirectedGraphTest {
 
         DijkstraPath dijkstraPath = new DijkstraPath(directedGraph, coords0, coords5);
         int counter = 0;
-        for (Edge edge : dijkstraPath.pathTo(5)) {
+        for (Edge ignored : dijkstraPath.pathTo(5)) {
             counter++;
         }
         boolean actualEdge = counter == 5;
@@ -95,12 +95,12 @@ public class DirectedGraphTest {
         float[] coords4 = new float[]{4, 1};
         float[] coords5 = new float[]{4, 2};
 
-        directedGraph.createVertex(coords0, 0);
-        directedGraph.createVertex(coords1, 1);
-        directedGraph.createVertex(coords2, 2);
-        directedGraph.createVertex(coords3, 3);
-        directedGraph.createVertex(coords4, 4);
-        directedGraph.createVertex(coords5, 5);
+        directedGraph.createVertex(coords0);
+        directedGraph.createVertex(coords1);
+        directedGraph.createVertex(coords2);
+        directedGraph.createVertex(coords3);
+        directedGraph.createVertex(coords4);
+        directedGraph.createVertex(coords5);
 
         directedGraph.addEdge(coords0, coords1, 100, false, true, true, true);
         directedGraph.addEdge(coords1, coords2, 100, false, true, true, true);
@@ -111,7 +111,7 @@ public class DirectedGraphTest {
 
         DijkstraPath dijkstraPath = new DijkstraPath(directedGraph, coords0, coords5);
         int counter = 0;
-        for (Edge edge : dijkstraPath.pathTo(5)) {
+        for (Edge ignored : dijkstraPath.pathTo(5)) {
             counter++;
         }
         boolean actualEdge = counter == 5;
@@ -131,12 +131,12 @@ public class DirectedGraphTest {
         float[] coords4 = new float[]{4, 1};
         float[] coords5 = new float[]{4, 2};
 
-        directedGraph.createVertex(coords0, 0);
-        directedGraph.createVertex(coords1, 1);
-        directedGraph.createVertex(coords2, 2);
-        directedGraph.createVertex(coords3, 3);
-        directedGraph.createVertex(coords4, 4);
-        directedGraph.createVertex(coords5, 5);
+        directedGraph.createVertex(coords0);
+        directedGraph.createVertex(coords1);
+        directedGraph.createVertex(coords2);
+        directedGraph.createVertex(coords3);
+        directedGraph.createVertex(coords4);
+        directedGraph.createVertex(coords5);
 
         directedGraph.addEdge(coords0, coords1, 10, false, true, true, true);
         directedGraph.addEdge(coords1, coords2, 10, false, true, true, true);
@@ -147,7 +147,7 @@ public class DirectedGraphTest {
 
         DijkstraPath dijkstraPath = new DijkstraPath(directedGraph, coords0, coords5);
         int counter = 0;
-        for (Edge edge : dijkstraPath.pathTo(5)) {
+        for (Edge ignored : dijkstraPath.pathTo(5)) {
             counter++;
         }
         boolean actualEdge = counter == 5;
