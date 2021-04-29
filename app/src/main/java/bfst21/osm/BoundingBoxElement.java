@@ -1,5 +1,6 @@
 package bfst21.osm;
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -10,7 +11,7 @@ import java.util.List;
  * This is to increase drawing performance as the values are calculated
  * while parsing OSM data instead of when navigating the map.
  */
-public abstract class BoundingBoxElement extends Element {
+public abstract class BoundingBoxElement implements Serializable {
 
     private static final long serialVersionUID = 8229695993958002260L;
 
@@ -18,10 +19,6 @@ public abstract class BoundingBoxElement extends Element {
     protected float minX, maxX, minY, maxY;
 
     protected float[] coords = new float[2];
-
-    public BoundingBoxElement(long id) {
-        super(id);
-    }
 
     /**
      * Create the coords array with the given list of Nodes.

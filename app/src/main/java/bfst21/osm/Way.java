@@ -17,10 +17,6 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
     private boolean oneWay;
     private boolean oneWayBike;
 
-    public Way(long id) {
-        super(id);
-    }
-
     /**
      * Calculate and return the ElementSize of Way by getting the area of its bounding box.
      */
@@ -80,7 +76,7 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
             second.coords = reverseCoordsArray(second.coords);
         }
 
-        Way merged = new Way(first.getID());
+        Way merged = new Way();
         merged.coords = new float[mergedSize];
 
         for (int i = 0; i < first.coords.length; i++) {

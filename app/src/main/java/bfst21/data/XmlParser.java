@@ -45,16 +45,16 @@ public class XmlParser {
 
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new BufferedInputStream(input));
 
-        Node node;
+        Node node = null;
         Way way = null;
         Relation relation = null;
         OsmAddress osmAddress = null;
         ElementType elementType = null;
         TST<List<OsmAddress>> addressTries = new TST<>();
 
-        ElementLongIndex<NodeWithID> nodeLongIndex = new ElementLongIndex<>();
-        ElementLongIndex<Way> wayLongIndex = new ElementLongIndex<>();
-        ElementLongIndex<Relation> relationLongIndex = new ElementLongIndex<>();
+        ElementLongIndex<Element<Node>> nodeLongIndex = new ElementLongIndex<>();
+        ElementLongIndex<Element<Way>> wayLongIndex = new ElementLongIndex<>();
+        ElementLongIndex<Element<Relation>> relationLongIndex = new ElementLongIndex<>();
 
         List<Node> nodes = new ArrayList<>();
         List<Way> coastlines = new ArrayList<>();
@@ -62,6 +62,9 @@ public class XmlParser {
 
         float minX = 0, minY = 0, maxX = 0, maxY = 0;
         boolean isCoastline = false;
+
+        String name = null;
+        List<MapText> mapTexts = new ArrayList<>();
 
         while (reader.hasNext()) {
             switch (reader.next()) {
@@ -84,22 +87,24 @@ public class XmlParser {
                             lat = -lat / 0.56f;
 
                             node = new Node(lon, lat);
-                            nodeLongIndex.put(new NodeWithID(nodeID, node));
+                            nodeLongIndex.put(new Element<>(nodeID, node));
 
                             osmAddress = new OsmAddress(node);
                             break;
 
                         case "way":
                             long wayID = Long.parseLong(reader.getAttributeValue(null, "id"));
-                            way = new Way(wayID);
+                            way = new Way();
                             nodes = new ArrayList<>();
                             isCoastline = false;
+                            wayLongIndex.put(new Element<>(wayID, way));
                             break;
 
                         case "relation":
                             long relationID = Long.parseLong(reader.getAttributeValue(null, "id"));
-                            relation = new Relation(relationID);
+                            relation = new Relation();
                             nodes = new ArrayList<>();
+                            relationLongIndex.put(new Element<>(relationID, relation));
                             break;
 
                         case "member":
@@ -107,13 +112,14 @@ public class XmlParser {
                             String memRef = reader.getAttributeValue(null, "ref");
                             if (type != null) {
                                 if (type.equalsIgnoreCase("node")) {
-                                    NodeWithID memNode = nodeLongIndex.get(Long.parseLong(memRef));
-                                    if (memNode != null) {
-                                        nodes.add(memNode.getNode());
+                                    Element<Node> element = nodeLongIndex.get(Long.parseLong(memRef));
+                                    if (element != null) {
+                                        nodes.add(element.getInnerElement());
                                     }
                                 } else if (type.equalsIgnoreCase("way")) {
-                                    Way memWay = wayLongIndex.get(Long.parseLong(memRef));
-                                    if (memWay != null) {
+                                    Element<Way> element = wayLongIndex.get(Long.parseLong(memRef));
+                                    if (element != null) {
+                                        Way memWay = element.getInnerElement();
                                         String role = reader.getAttributeValue(null, "role");
                                         if (role != null && !role.isEmpty()) {
                                             memWay.setRole(role);
@@ -121,9 +127,9 @@ public class XmlParser {
                                         relation.addWay(memWay);
                                     }
                                 } else if (type.equalsIgnoreCase("relation")) {
-                                    Relation memRelation = relationLongIndex.get(Long.parseLong(memRef));
-                                    if (memRelation != null) {
-                                        relation.addRelation(memRelation);
+                                    Element<Relation> element = relationLongIndex.get(Long.parseLong(memRef));
+                                    if (element != null) {
+                                        relation.addRelation(element.getInnerElement());
                                     }
                                 }
                             }
@@ -132,6 +138,28 @@ public class XmlParser {
                         case "tag":
                             String key = reader.getAttributeValue(null, "k");
                             String value = reader.getAttributeValue(null, "v");
+
+                            if (node != null && relation == null && way == null) {
+                                switch (key) {
+                                    case "name":
+                                        name = value;
+                                        break;
+                                    case "place":
+                                        switch (value) {
+                                            case "island":
+                                            case "city":
+                                            case "village":
+                                            case "suburb":
+                                            case "islet":
+                                            case "hamlet":
+                                            case "town":
+                                            case "municipality":
+                                                mapTexts.add(new MapText(name, value.intern(), node.getCoords()));
+                                                break;
+                                        }
+                                        break;
+                                }
+                            }
 
                             if (way != null || relation != null || key.contains("addr:")) {
                                 switch (key) {
@@ -292,7 +320,7 @@ public class XmlParser {
 
                         case "nd":
                             long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
-                            nodes.add(nodeLongIndex.get(ref).getNode());
+                            nodes.add(nodeLongIndex.get(ref).getInnerElement());
                             break;
                     }
                     break;
@@ -302,7 +330,6 @@ public class XmlParser {
 
                         case "node":
                             if (osmAddress != null && osmAddress.isValid()) {
-
                                 String inputAddress = osmAddress.getStreet().trim().replace(" ", "").toLowerCase() + osmAddress.getPostcode();
 
                                 List<OsmAddress> addresses = new ArrayList<>();
@@ -321,14 +348,12 @@ public class XmlParser {
                                 relation.setType(elementType);
                                 elementType = null;
                             }
-                            relationLongIndex.put(relation);
                             relation = null;
 
                             break;
 
                         case "way":
                             way.setNodes(nodes);
-                            wayLongIndex.put(way);
                             if (isCoastline) {
                                 coastlines.add(way);
 
@@ -348,11 +373,22 @@ public class XmlParser {
         System.out.println("Parsed OSM data in: " + time / 1_000_000 + "ms");
         islands = mergeCoastLines(coastlines);
 
+        List<Way> wayList = new ArrayList<>();
+        List<Relation> relationList = new ArrayList<>();
+
+        for (Element<Way> element : wayLongIndex.getElements()) {
+            wayList.add(element.getInnerElement());
+        }
+        for (Element<Relation> element : relationLongIndex.getElements()) {
+            relationList.add(element.getInnerElement());
+        }
         return new MapData(
                 islands,
-                wayLongIndex,
-                relationLongIndex,
+                wayList,
+                relationList,
+                mapTexts,
                 addressTries,
+                null,
                 null,
                 null,
                 null,
@@ -384,26 +420,5 @@ public class XmlParser {
             }
         });
         return merged;
-    }
-
-    /**
-     * Helper class used to parse Nodes from OSM data.
-     * <p>
-     * The ID is used to assign Nodes to a Way.
-     * We no longer need the ID when parsing is complete.
-     */
-    private static class NodeWithID extends Element {
-
-        private static final long serialVersionUID = -5720053995520236497L;
-        private final Node node;
-
-        public NodeWithID(long id, Node node) {
-            super(id);
-            this.node = node;
-        }
-
-        public Node getNode() {
-            return node;
-        }
     }
 }

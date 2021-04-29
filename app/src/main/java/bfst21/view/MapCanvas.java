@@ -17,12 +17,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 
@@ -121,6 +124,7 @@ public class MapCanvas extends Canvas {
             }
             drawUserNodes();
             drawNeighborNodes();
+            drawMapText();
 
             //Display the kd-tree if option is enabled
             if (displayOptions.getBool(DisplayOption.DISPLAY_KD_TREE)) {
@@ -180,6 +184,35 @@ public class MapCanvas extends Canvas {
                     rel.fill(gc, zoomLevel);
                 }
                 gc.setFillRule(FillRule.NON_ZERO);
+            }
+        }
+    }
+
+    public void drawMapText() {
+        if (displayOptions.getBool(DisplayOption.DISPLAY_TEXT)) {
+            List<MapText> list = model.getMapData().getMapTexts();
+
+            if (list.size() > 0) {
+
+                gc.setFill(getTextColor());
+                gc.setTextAlign(TextAlignment.CENTER);
+                String font = "Calibri";
+
+                for (MapText mapText : model.getMapData().getMapTexts()) {
+
+                    if (mapText.canDraw(zoomLevel)) {
+                        if (mapText.getPlace().equals("city") || mapText.getPlace().equals("island")) {
+                            gc.setFont(new Font(font, 0.02 * widthModifier));
+
+                        } else if (mapText.getPlace().equals("hamlet")) {
+                            gc.setFont(new Font(font, 0.007 * widthModifier));
+
+                        } else {
+                            gc.setFont(new Font(font, 0.01 * widthModifier));
+                        }
+                        gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
+                    }
+                }
             }
         }
     }
@@ -418,7 +451,7 @@ public class MapCanvas extends Canvas {
             gc.setLineWidth(lineWidth);
             gc.beginPath();
 
-            lineWidth *= 0.8D;
+            lineWidth *= 0.7D;
 
             if (depth % 2 == 0) {
                 gc.moveTo(kMinX, maxY);
@@ -471,6 +504,15 @@ public class MapCanvas extends Canvas {
             return elementType.getBlackWhite();
         }
         return elementType.getColor();
+    }
+
+    public Color getTextColor(){
+        if (colorMode == ColorMode.COLOR_BLIND) {
+            return Color.rgb(0,255,230);
+        } else if (colorMode == ColorMode.DARK_MODE) {
+            return Color.rgb(0,0,0);
+        }
+        return Color.rgb(4,1,10);
     }
 
     public void setColorMode(ColorMode colorMode) {

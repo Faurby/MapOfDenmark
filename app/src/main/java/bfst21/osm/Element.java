@@ -1,15 +1,24 @@
 package bfst21.osm;
 
-import java.io.Serializable;
 
+/**
+ * Helper class used to parse elements from OSM data.
+ * <p>
+ * The ID is used to retrive Elements from ElementLongIndex
+ * We no longer need the ID when parsing is complete.
+ */
+public class Element<T> {
 
-public abstract class Element implements Serializable {
+    private transient final long id;
+    private final T innerElement;
 
-    private static final long serialVersionUID = -2234832342114559254L;
-    protected final transient long id;
-
-    public Element(long id) {
+    public Element(long id, T innerElement) {
         this.id = id;
+        this.innerElement = innerElement;
+    }
+
+    public T getInnerElement() {
+        return innerElement;
     }
 
     public long getID() {

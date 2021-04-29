@@ -24,6 +24,9 @@ public class MapData {
     private KdTree<Relation> kdTreeRelations;
     private List<Relation> kdTreeRelationSearchList = new ArrayList<>();
 
+    private KdTree<MapText> kdTreeMapTexts;
+    private List<MapText> kdTreeMapTextSearchList = new ArrayList<>();
+
     private List<UserNode> userNodes;
     private final List<Way> islands;
 
@@ -43,11 +46,13 @@ public class MapData {
      */
     public MapData(
             List<Way> islands,
-            ElementLongIndex<Way> wayLongIndex,
-            ElementLongIndex<Relation> relationLongIndex,
+            List<Way> wayList,
+            List<Relation> relationList,
+            List<MapText> mapTexts,
             TST<List<OsmAddress>> addressTries,
             HashMap<ElementGroup, KdTree<Way>> kdTreeMap,
             KdTree<Relation> kdTreeRelations,
+            KdTree<MapText> kdTreeMapTexts,
             DirectedGraph directedGraph,
             List<UserNode> userNodes,
             float minX,
@@ -58,6 +63,7 @@ public class MapData {
         this.directedGraph = directedGraph;
         this.kdTreeMap = kdTreeMap;
         this.kdTreeRelations = kdTreeRelations;
+        this.kdTreeMapTexts = kdTreeMapTexts;
         this.islands = islands;
         this.addressTries = addressTries;
         this.userNodes = userNodes;
@@ -72,12 +78,12 @@ public class MapData {
             kdTreeSearchMap.put(elementGroup, new ArrayList<>());
         }
 
-        if (wayLongIndex != null && relationLongIndex != null) {
-            List<Relation> relationList = new ArrayList<>();
+        if (wayList != null && relationList != null) {
+            List<Relation> finalRelationList = new ArrayList<>();
 
             //Use relation to set Way type if no type is present.
             //Otherwise add it to relationList.
-            for (Relation relation : relationLongIndex.getElements()) {
+            for (Relation relation : relationList) {
                 if (!relation.isMultipolygon()) {
                     if (relation.getType() != null) {
                         for (Way way : relation.getWays()) {
@@ -88,19 +94,22 @@ public class MapData {
                     }
                 } else {
                     relation.mergeOuterWays();
-                    relationList.add(relation);
+                    finalRelationList.add(relation);
                 }
             }
 
             //Build the data structures if none is present.
             if (directedGraph == null) {
-                buildDirectedGraph(wayLongIndex.getElements());
+                buildDirectedGraph(wayList);
             }
             if (kdTreeMap == null) {
-                buildSearchTreesForWays(wayLongIndex.getElements());
+                buildKdTreeForWays(wayList);
             }
             if (kdTreeRelations == null) {
-                buildSearchTreesForRelations(relationList);
+                buildKdTreeForRelations(finalRelationList);
+            }
+            if (kdTreeMapTexts == null) {
+                buildKdTreeForMapText(mapTexts);
             }
             if (userNodes == null) {
                 this.userNodes = new ArrayList<>();
@@ -162,12 +171,30 @@ public class MapData {
     }
 
     /**
+     * Builds a kd-tree for MapText
+     * <p>
+     * The tree is only built if no tree is given in the constructor of this class.
+     * There is no need to build any tree if we loaded an .obj file.
+     */
+    public void buildKdTreeForMapText(List<MapText> mapTexts) {
+        if (kdTreeMapTexts == null) {
+            long time = -System.nanoTime();
+
+            kdTreeMapTexts = new KdTree<>();
+            kdTreeMapTexts.build(mapTexts);
+
+            time += System.nanoTime();
+            System.out.println("Built kd-tree for map texts in " + time / 1_000_000 + "ms with depth: " + kdTreeMapTexts.getMaxDepth());
+        }
+    }
+
+    /**
      * Builds a kd-tree for Relations
      * <p>
      * The tree is only built if no tree is given in the constructor of this class.
      * There is no need to build any tree if we loaded an .obj file.
      */
-    public void buildSearchTreesForRelations(List<Relation> relationList) {
+    public void buildKdTreeForRelations(List<Relation> relationList) {
         if (kdTreeRelations == null) {
             long time = -System.nanoTime();
 
@@ -187,7 +214,7 @@ public class MapData {
      * The trees are only built if no trees are given in the constructor of this class.
      * There is no need to build any trees if we loaded an .obj file.
      */
-    public void buildSearchTreesForWays(List<Way> wayList) {
+    public void buildKdTreeForWays(List<Way> wayList) {
 
         if (kdTreeMap == null) {
             kdTreeMap = new HashMap<>();
@@ -265,6 +292,13 @@ public class MapData {
     }
 
     /**
+     * @return list of MapTexts found by the kd-tree range search.
+     */
+    public List<MapText> getMapTexts() {
+        return kdTreeMapTextSearchList;
+    }
+
+    /**
      * Returns a list of Ways with the specific ElementGroup.
      * List is retrieved from search map filled by the kd-tree range search.
      *
@@ -292,8 +326,9 @@ public class MapData {
                 }
             }
         }
-        //Search relation kd-tree
+        //Search relation kd-tree and maptext kd-tree
         kdTreeRelationSearchList = kdTreeRelations.preRangeSearch(boundingBox);
+        kdTreeMapTextSearchList = kdTreeMapTexts.preRangeSearch(boundingBox);
     }
 
     /**
@@ -340,6 +375,10 @@ public class MapData {
 
     public KdTree<Relation> getKdTreeRelations() {
         return kdTreeRelations;
+    }
+
+    public KdTree<MapText> getKdTreeMapTexts() {
+        return kdTreeMapTexts;
     }
 
     public KdTree<Way> getKdTree(ElementGroup elementGroup) {

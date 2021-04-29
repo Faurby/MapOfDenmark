@@ -28,5 +28,5 @@ public enum DisplayOption {
     DISPLAY_RAILWAY,
     DISPLAY_AEROWAY,
     DISPLAY_FERRY,
-    DISPLAY_CITY
+    DISPLAY_TEXT
 }

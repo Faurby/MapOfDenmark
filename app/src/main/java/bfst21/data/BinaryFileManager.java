@@ -29,16 +29,16 @@ public class BinaryFileManager {
         }
         return new MapData(
                 (List<Way>) input.readObject(),
-                (ElementLongIndex<Way>) input.readObject(),
-                (ElementLongIndex<Relation>) input.readObject(),
+                null,
+                null,
+                null,
 
                 (TST<List<OsmAddress>>) input.readObject(),
 
                 (HashMap<ElementGroup, KdTree<Way>>) input.readObject(),
                 (KdTree<Relation>) input.readObject(),
-
+                (KdTree<MapText>) input.readObject(),
                 (DirectedGraph) input.readObject(),
-
                 (List<UserNode>) input.readObject(),
 
                 input.readFloat(),
@@ -55,14 +55,14 @@ public class BinaryFileManager {
             output.writeObject(mapData.getWays(ElementGroup.getElementGroup(ElementType.ISLAND, ElementSize.DEFAULT)));
             output.writeObject(null);
             output.writeObject(null);
+            output.writeObject(null);
 
             output.writeObject(mapData.getAddressTries());
 
             output.writeObject(mapData.getKdTreeMap());
             output.writeObject(mapData.getKdTreeRelations());
-
+            output.writeObject(mapData.getKdTreeMapTexts());
             output.writeObject(mapData.getDirectedGraph());
-
             output.writeObject(mapData.getUserNodes());
 
             output.writeFloat(mapData.getMinX());
