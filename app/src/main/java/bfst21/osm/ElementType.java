@@ -57,12 +57,12 @@ public enum ElementType {
             Color.rgb(52, 66, 93)
     ),
     FERRY(
-            0.003f,
-            1500.0f,
-            0.0002D,
-            Color.rgb(255, 0, 0),
-            Color.rgb(255, 0, 0),
-            Color.rgb(255, 0, 0)
+            0.0002f,
+            10000.0f,
+            0.0001D,
+            Color.rgb(126, 142, 244),
+            Color.rgb(126, 142, 244),
+            Color.rgb(126, 142, 244)
     ),
     CYCLEWAY(
             0.0001f,
