@@ -48,18 +48,30 @@ public class MainController {
     private VBox loadingText;
     @FXML
     private ProgressBar progressBar;
+
     @FXML
     private VBox userNodeVBox;
     @FXML
-    private TextField userNodeTextField;
+    private TextField userNodeNameTextField;
+    @FXML
+    private TextField userNodeDescriptionTextField;
     @FXML
     private VBox userNodeClickedVBox;
     @FXML
-    private Text userNodeClickedText;
+    private Text userNodeClickedCoords;
+    @FXML
+    private Text userNodeClickedName;
+    @FXML
+    private Text userNodeClickedDescription;
+    @FXML
+    private VBox userNodeNewNameVBox;
+    @FXML
+    private TextField userNodeNewNameTextField;
     @FXML
     private VBox userNodeNewDescriptionVBox;
     @FXML
     private TextField userNodeNewDescriptionTextField;
+
     @FXML
     private SearchBoxController searchBoxController;
     @FXML
@@ -98,10 +110,13 @@ public class MainController {
         double currentPosX = canvas.mouseToModelCoords(currentMousePos).getX();
         double currentPosY = canvas.mouseToModelCoords(currentMousePos).getY();
 
-        String xFormatted = String.format(Locale.ENGLISH, "%.5f", currentPosX);
-        String yFormatted = String.format(Locale.ENGLISH, "%.5f", currentPosY);
+        String xFormatted = String.format(Locale.ENGLISH, "%.7f", currentPosX);
+        String yFormatted = String.format(Locale.ENGLISH, "%.7f", currentPosY);
 
         debugBoxController.setMouseCoords("Mouse coords: " + xFormatted + ", " + yFormatted);
+
+        String yFormattedRealWorld = String.format(Locale.ENGLISH, "%.7f", -1 * currentPosY * 0.56);
+        debugBoxController.setMouseCoordsRealWorld("Real coords: " + xFormatted + ", " + yFormattedRealWorld);
     }
 
     public MapCanvas getCanvas() {
@@ -183,7 +198,11 @@ public class MainController {
                     // 300 is a number chosen by trial and error. It seems to fit perfectly.
                     if (nodeAtMouse.distTo(closestNode) < 300 * (1 / Math.sqrt(canvas.getTrans().determinant()))) {
                         userNodeClickedVBox.setVisible(true);
-                        userNodeClickedText.setText((closestNode.getDescription().equals("") ? "No description entered" : closestNode.getDescription()));
+                        userNodeClickedName.setText(closestNode.getName());
+                        userNodeClickedDescription.setText((closestNode.getDescription().equals("") ? "No description entered" : closestNode.getDescription()));
+                        String x = String.format(Locale.ENGLISH, "%.6f", closestNode.getX());
+                        String y = String.format(Locale.ENGLISH, "%.6f", (-1 * closestNode.getY() * 0.56));
+                        userNodeClickedCoords.setText(x + ", " + y);
                         currentUserNode = closestNode;
                     }
                 }
@@ -215,7 +234,7 @@ public class MainController {
 
         if (userNodeToggle && mouseEvent.isPrimaryButtonDown()) {
             userNodeVBox.setVisible(true);
-            userNodeTextField.requestFocus();
+            userNodeNameTextField.requestFocus();
             scene.setCursor(Cursor.DEFAULT);
         }
 
@@ -338,8 +357,15 @@ public class MainController {
     @FXML
     public void userNodeTextFieldKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode().getName().equals("Enter")) {
-            saveUserNode();
-
+            if(userNodeNameTextField.getText().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("");
+                alert.setContentText("A name is required");
+                alert.showAndWait();
+            } else {
+                saveUserNode();
+            }
         } else if (keyEvent.getCode().getName().equals("Esc")) {
             userNodeVBox.setVisible(false);
             scene.setCursor(userNodeCursorImage);
@@ -354,12 +380,20 @@ public class MainController {
 
     @FXML
     public void userNodeSaveClicked() {
-        saveUserNode();
+        if(userNodeNameTextField.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("");
+            alert.setContentText("A name is required");
+            alert.showAndWait();
+        } else {
+            saveUserNode();
+        }
     }
 
     private void saveUserNode() {
         Point2D point = canvas.mouseToModelCoords(lastMouse);
-        UserNode userNode = new UserNode((float) point.getX(), (float) point.getY(), userNodeTextField.getText());
+        UserNode userNode = new UserNode((float) point.getX(), (float) point.getY(), userNodeNameTextField.getText(), userNodeDescriptionTextField.getText());
 
         model.getMapData().addUserNode(userNode);
         scene.setCursor(Cursor.DEFAULT);
@@ -372,7 +406,6 @@ public class MainController {
     public void userNodeDeleteClicked() {
         if (currentUserNode == null) {
             throw new NullPointerException("currentUserNode is null");
-
         } else {
             model.getMapData().getUserNodes().remove(currentUserNode);
             currentUserNode = null;
@@ -388,20 +421,48 @@ public class MainController {
     }
 
     @FXML
+    public void userNodeChangeNameClicked(ActionEvent actionEvent) {
+        userNodeNewNameVBox.setVisible(true);
+        userNodeNewNameTextField.requestFocus();
+    }
+
+    @FXML
     public void userNodeChangeDescriptionClicked() {
         userNodeNewDescriptionVBox.setVisible(true);
         userNodeNewDescriptionTextField.requestFocus();
     }
 
     @FXML
+    public void userNodeNewNameTextFieldKeyPressed(KeyEvent keyEvent) {
+        if (keyEvent.getCode().getName().equals("Enter")) {
+            if(userNodeNameTextField.getText().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("");
+                alert.setContentText("A name is required");
+                alert.showAndWait();
+            } else {
+                currentUserNode.setName(userNodeNewNameTextField.getText());
+                userNodeNewNameVBox.setVisible(false);
+            }
+        } else if (keyEvent.getCode().getName().equals("Esc")) {
+            userNodeNewNameVBox.setVisible(false);
+        }
+    }
+
+    @FXML
     public void userNodeNewDescTextFieldKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode().getName().equals("Enter")) {
-            currentUserNode.changeDescription(userNodeNewDescriptionTextField.getText());
+            currentUserNode.setDescription(userNodeNewDescriptionTextField.getText());
             userNodeNewDescriptionVBox.setVisible(false);
-
         } else if (keyEvent.getCode().getName().equals("Esc")) {
             userNodeNewDescriptionVBox.setVisible(false);
         }
+    }
+
+    @FXML
+    public void userNodeNewNameCancelClicked() {
+        userNodeNewNameVBox.setVisible(false);
     }
 
     @FXML
@@ -410,8 +471,14 @@ public class MainController {
     }
 
     @FXML
+    public void userNodeNewNameSaveClicked() {
+        currentUserNode.setName(userNodeNewNameTextField.getText());
+        userNodeNewNameVBox.setVisible(false);
+    }
+
+    @FXML
     public void userNodeNewDescSaveClicked() {
-        currentUserNode.changeDescription(userNodeNewDescriptionTextField.getText());
+        currentUserNode.setDescription(userNodeNewDescriptionTextField.getText());
         userNodeNewDescriptionVBox.setVisible(false);
     }
 

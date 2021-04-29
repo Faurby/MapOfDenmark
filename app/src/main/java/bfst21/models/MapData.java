@@ -150,8 +150,9 @@ public class MapData {
                             boolean canBike = type.canBike();
                             boolean canWalk = type.canWalk();
                             boolean oneWay = way.isOneWay();
+                            boolean canSail = type.canSail();
 
-                            directedGraph.addEdge(fromCoords, toCoords, maxSpeed, oneWay, canDrive, canBike, canWalk);
+                            directedGraph.addEdge(fromCoords, toCoords, maxSpeed, oneWay, canDrive, canBike, canWalk, canSail);
                         }
                     }
                 }

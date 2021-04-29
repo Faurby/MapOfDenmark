@@ -57,9 +57,9 @@ public enum ElementType {
             Color.rgb(52, 66, 93)
     ),
     FERRY(
-            0.0002f,
+            0.0004f,
             1000.0f,
-            0.0001D,
+            0.0003D,
             Color.rgb(126, 142, 244),
             Color.rgb(126, 142, 244),
             Color.rgb(126, 142, 244)
@@ -236,6 +236,10 @@ public enum ElementType {
                 this == ElementType.RESIDENTIAL ||
                 this == ElementType.ROAD ||
                 this == ElementType.FOOTWAY;
+    }
+
+    public boolean canSail() {
+        return this == ElementType.FERRY;
     }
 
     public boolean isDisplayOptionEnabled() {

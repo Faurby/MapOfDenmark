@@ -122,23 +122,31 @@
 
         <VBox fx:id="userNodeVBox"
               visible="false"
-              maxWidth="150"
-              prefWidth="150"
-              maxHeight="100"
-              prefHeight="100"
+              maxWidth="220"
+              prefWidth="220"
+              maxHeight="190"
+              prefHeight="190"
               alignment="CENTER"
               spacing="8"
               style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;">
 
-            <Text text="New Point of Interest"/>
+            <Text text="New Point of Interest" style="-fx-font-size: large;"/>
 
-            <TextField fx:id="userNodeTextField"
+            <Text text="Name:"/>
+            <TextField fx:id="userNodeNameTextField"
+                       onKeyPressed="#userNodeTextFieldKeyPressed"
+                       promptText="Name"
+                       maxWidth="150"
+                       prefWidth="150"/>
+
+            <Text text="Description:"/>
+            <TextField fx:id="userNodeDescriptionTextField"
                        onKeyPressed="#userNodeTextFieldKeyPressed"
                        promptText="Description"
-                       maxWidth="140"
-                       prefWidth="140"/>
+                       maxWidth="150"
+                       prefWidth="150"/>
 
-            <HBox maxWidth="140" alignment="BASELINE_CENTER">
+            <HBox maxWidth="150" alignment="BASELINE_CENTER">
 
                 <Button text="Cancel"
                         onAction="#userNodeCancelClicked"
@@ -157,20 +165,26 @@
               visible="false"
               maxWidth="200"
               prefWidth="200"
-              maxHeight="100"
-              prefHeight="100"
+              maxHeight="185"
+              prefHeight="185"
               alignment="CENTER"
               spacing="8"
-              style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;">
+              style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0; -fx-border-style: round;">
 
-            <Text text="Failed to load description" fx:id="userNodeClickedText"/>
+            <Text text="Failed to load name" fx:id="userNodeClickedName" style="-fx-font-size: large;"/>
 
+            <Text text="Failed to load description" fx:id="userNodeClickedDescription"/>
+
+            <Text text="Failed to load coordinates" fx:id="userNodeClickedCoords"/>
+
+            <Button text="Change name"
+                    onAction="#userNodeChangeNameClicked"
+                    maxWidth="150"/>
             <Button text="Change description"
                     onAction="#userNodeChangeDescriptionClicked"
-                    maxWidth="130"/>
+                    maxWidth="150"/>
 
-            <HBox maxWidth="130" alignment="BASELINE_CENTER">
-
+            <HBox maxWidth="150" alignment="BASELINE_CENTER">
                 <Button text="Close"
                         onAction="#userNodeCloseClicked"
                         maxWidth="90"
@@ -183,17 +197,49 @@
                         prefWidth="90"/>
             </HBox>
         </VBox>
-        <VBox fx:id="userNodeNewDescriptionVBox"
+        <VBox fx:id="userNodeNewNameVBox"
               visible="false"
-              maxWidth="150"
-              prefWidth="150"
-              maxHeight="90"
-              prefHeight="90"
+              maxWidth="160"
+              prefWidth="160"
+              maxHeight="130"
+              prefHeight="130"
               alignment="CENTER"
-              spacing="7"
+              spacing="10"
               style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;">
 
-            <Text text="Enter new description"/>
+            <Text text="Enter new name" style="-fx-font-size: large;"/>
+
+            <TextField fx:id="userNodeNewNameTextField"
+                       onKeyPressed="#userNodeNewNameTextFieldKeyPressed"
+                       promptText="New name"
+                       maxWidth="140"
+                       prefWidth="140"/>
+
+            <HBox maxWidth="140" alignment="BASELINE_CENTER">
+                <Button text="Cancel"
+                        onAction="#userNodeNewNameCancelClicked"
+                        maxWidth="90"
+                        prefWidth="90"/>
+
+                <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
+
+                <Button text="Save"
+                        onAction="#userNodeNewNameSaveClicked"
+                        maxWidth="90"
+                        prefWidth="90"/>
+            </HBox>
+        </VBox>
+        <VBox fx:id="userNodeNewDescriptionVBox"
+              visible="false"
+              maxWidth="160"
+              prefWidth="160"
+              maxHeight="130"
+              prefHeight="130"
+              alignment="CENTER"
+              spacing="10"
+              style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;">
+
+            <Text text="Enter new description" style="-fx-font-size: large;"/>
 
             <TextField fx:id="userNodeNewDescriptionTextField"
                        onKeyPressed="#userNodeNewDescTextFieldKeyPressed"
