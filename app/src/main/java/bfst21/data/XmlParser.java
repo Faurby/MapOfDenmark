@@ -147,6 +147,14 @@ public class XmlParser {
                                     case "addr:street":
                                         osmAddress.setStreet(value.intern());
                                         break;
+                                    /*case "place":
+                                        if(value.equals("city")) {
+                                            elementType = ElementType.CITY;
+                                        }
+                                        break;
+                                    case "ferry":
+                                        elementType = ElementType.FERRY;
+                                        break;*/
                                     case "building":
                                         elementType = ElementType.BUILDING;
                                         break;

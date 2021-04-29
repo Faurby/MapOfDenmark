@@ -24,7 +24,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
+import org.checkerframework.checker.units.qual.A;
 
 import java.io.File;
 import java.io.IOException;
@@ -286,7 +288,7 @@ public class MainController {
         }
     }
 
-    public void finishedLoadingFile() {
+    private void finishedLoadingFile() {
         startBox.setVisible(false);
         startBox.setManaged(false);
         loadingText.setVisible(false);
@@ -432,51 +434,55 @@ public class MainController {
     }
 
     @FXML
-    public void saveObjFile() {
+    public void preSaveObjFile() {
         String fileName = model.getFileName();
 
         if (fileName.endsWith(".obj")) {
-            PopupControl popupBox = new PopupControl();
-            Text warningText = new Text("You're currently using an OBJ file. Are you sure you want to save another OBJ file?");
-            Button continueButton = new Button("Continue");
-            Button cancelButton = new Button("Cancel");
-            popupBox.show(new Stage());
-
-            String msg = "Cannot save OBJ file when the loaded file is OBJ";
-            System.out.println(msg);
-
-        } else {
-            FileChooser fileSaver = new FileChooser();
-            fileSaver.setTitle("Save to OBJ");
-            fileSaver.setInitialDirectory(new File("./"));
-            fileSaver.getExtensionFilters().addAll((
-                    new FileChooser.ExtensionFilter("OBJ file", ".obj")));
-
-            File file = fileSaver.showSaveDialog(new Stage());
-
-            if (file != null) {
-                Task<Void> task = new Task<>() {
-
-                    @Override
-                    protected Void call() throws IOException {
-                        BinaryFileManager binaryFileManager = new BinaryFileManager();
-                        MapData mapData = model.getMapData();
-
-                        long time = -System.nanoTime();
-                        binaryFileManager.saveOBJ(file.getAbsolutePath(), mapData);
-                        time += System.nanoTime();
-                        System.out.println("Saved .obj file in: " + time / 1_000_000 + "ms to " + file.getAbsolutePath());
-
-                        return null;
-                    }
-                };
-                task.setOnSucceeded(event -> {
-                    //TODO: Show a popup confirming that file has been successfully saved now
-                });
-                task.setOnFailed(event -> task.getException().printStackTrace());
-                Thread thread = new Thread(task);
-                thread.start();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation");
+            alert.setHeaderText("");
+            alert.setContentText("You're currently using an OBJ file. Are you sure you want to save another OBJ file?");
+            alert.showAndWait();
+            if(alert.getResult() == ButtonType.OK) {
+                saveObjFile();
             }
+        } else {
+            saveObjFile();
+        }
+    }
+
+    private void saveObjFile() {
+        FileChooser fileSaver = new FileChooser();
+        fileSaver.setTitle("Save to OBJ");
+        fileSaver.setInitialDirectory(new File("./"));
+        fileSaver.getExtensionFilters().addAll((
+                new FileChooser.ExtensionFilter("OBJ file", ".obj")));
+        File file = fileSaver.showSaveDialog(new Stage());
+        if (file != null) {
+            Task<Void> task = new Task<>() {
+                @Override
+                protected Void call() throws IOException {
+                    BinaryFileManager binaryFileManager = new BinaryFileManager();
+                    MapData mapData = model.getMapData();
+
+                    long time = -System.nanoTime();
+                    binaryFileManager.saveOBJ(file.getAbsolutePath(), mapData);
+                    time += System.nanoTime();
+                    System.out.println("Saved .obj file in: " + time / 1_000_000 + "ms to " + file.getAbsolutePath());
+                    return null;
+                }
+            };
+            task.setOnSucceeded(event -> {
+                Alert confirmationPopup = new Alert(Alert.AlertType.INFORMATION);
+                confirmationPopup.setContentText("Successfully saved OBJ");
+                confirmationPopup.setTitle("Success");
+                confirmationPopup.setHeaderText("");
+                //confirmationPopup.setGraphic(null);
+                confirmationPopup.showAndWait();
+            });
+            task.setOnFailed(event -> task.getException().printStackTrace());
+            Thread thread = new Thread(task);
+            thread.start();
         }
     }
 

@@ -113,6 +113,11 @@ public class MapCanvas extends Canvas {
                     System.out.println("Failed to draw " + elementGroup);
                     System.out.println("There is no DISPLAY_" + elementType + " in the Option class!");
                 }
+
+                if(elementType.equals(ElementType.CITY)) {
+                    drawOrFill(elementGroup);
+                    // ????
+                }
             }
             drawUserNodes();
             drawNeighborNodes();

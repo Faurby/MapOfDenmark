@@ -49,6 +49,7 @@
         <CheckBox text="Display tertiary" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display primary" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display building" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+        <CheckBox text="Display ferry" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display unknown" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
 
     </VBox>

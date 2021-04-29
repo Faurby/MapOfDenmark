@@ -89,7 +89,7 @@
                 <Menu text="File">
                     <MenuItem text="Load default" onAction="#loadDefault"/>
                     <MenuItem text="Load new file" onAction="#loadNewFile"/>
-                    <MenuItem text="Save OBJ file" onAction="#saveObjFile"/>
+                    <MenuItem text="Save OBJ file" onAction="#preSaveObjFile"/>
                 </Menu>
 
                 <Menu text="View">
