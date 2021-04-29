@@ -25,6 +25,7 @@ import javafx.scene.transform.NonInvertibleTransformException;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 
@@ -118,6 +119,7 @@ public class MapCanvas extends Canvas {
             }
             drawUserNodes();
             drawNeighborNodes();
+            drawMapText();
 
             //Display the kd-tree if option is enabled
             if (displayOptions.getBool(DisplayOption.DISPLAY_KD_TREE)) {
@@ -181,49 +183,56 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    /**
-     * Draws or fills every Way with the ElementGroup to display at the current zoom level.
-     * Retrieves values for colors, size and line dashes from the ElementType.
-     */
-    public void drawOrFill(ElementGroup elementGroup) {
-        if (elementGroup.doShowElement(zoomLevel)) {
-            if(elementGroup.getType().toString().equals("TEXT")) {
-                gc.setFill(getColor(ElementType.TEXT));
+    public void drawMapText() {
+        if (displayOptions.getBool(DisplayOption.DISPLAY_TEXT)) {
+            List<MapText> list = model.getMapData().getMapTexts();
+
+            if (list.size() > 0) {
+
+                gc.setFill(getTextColor());
                 gc.setTextAlign(TextAlignment.CENTER);
                 String font = "Calibri";
+
                 for (MapText mapText : model.getMapData().getMapTexts()) {
-                    //System.out.println("Name:" + mapText.getName() + ", Place: " + mapText.getPlace() + ", Coords: " + mapText.getCoords()[0] + "," + mapText.getCoords()[1]);
-                    if (0 <= zoomLevel && zoomLevel < 1000 && (mapText.getPlace().equals("city") || mapText.getPlace().equals("island"))){
-                        gc.setFont(new Font(font, 0.08 * widthModifier));
-                        gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
-                    } else if (mapText.canDraw(zoomLevel)){
-                        if (mapText.getPlace().equals("city") || mapText.getPlace().equals("island")){
+
+                    if (mapText.canDraw(zoomLevel)) {
+                        if (mapText.getPlace().equals("city") || mapText.getPlace().equals("island")) {
                             gc.setFont(new Font(font, 0.02 * widthModifier));
+
                         } else if (mapText.getPlace().equals("hamlet")) {
                             gc.setFont(new Font(font, 0.007 * widthModifier));
+
                         } else {
                             gc.setFont(new Font(font, 0.01 * widthModifier));
                         }
                         gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * Draws or fills every Way with the ElementGroup to display at the current zoom level.
+     * Retrieves values for colors, size and line dashes from the ElementType.
+     */
+    public void drawOrFill(ElementGroup elementGroup) {
+        if (elementGroup.doShowElement(zoomLevel)) {
+            ElementType elementType = elementGroup.getType();
+            gc.setLineDashes(elementType.getLineDashes());
+
+            if (elementType.doFillDraw()) {
+                gc.setFill(getColor(elementType));
+                for (Way way : model.getMapData().getWays(elementGroup)) {
+                    way.fill(gc, zoomLevel);
+                }
             } else {
-                ElementType elementType = elementGroup.getType();
-                gc.setLineDashes(elementType.getLineDashes());
+                double size = elementType.getDrawSize() * widthModifier;
 
-                if (elementType.doFillDraw()) {
-                    gc.setFill(getColor(elementType));
-                    for (Way way : model.getMapData().getWays(elementGroup)) {
-                        way.fill(gc, zoomLevel);
-                    }
-                } else {
-                    double size = elementType.getDrawSize() * widthModifier;
-
-                    gc.setStroke(getColor(elementType));
-                    gc.setLineWidth(size);
-                    for (Way line : model.getMapData().getWays(elementGroup)) {
-                        line.draw(gc, zoomLevel);
-                    }
+                gc.setStroke(getColor(elementType));
+                gc.setLineWidth(size);
+                for (Way line : model.getMapData().getWays(elementGroup)) {
+                    line.draw(gc, zoomLevel);
                 }
             }
         }
@@ -490,6 +499,15 @@ public class MapCanvas extends Canvas {
             return elementType.getBlackWhite();
         }
         return elementType.getColor();
+    }
+
+    public Color getTextColor(){
+        if (colorMode == ColorMode.COLOR_BLIND) {
+            return Color.rgb(0,255,230);
+        } else if (colorMode == ColorMode.DARK_MODE) {
+            return Color.rgb(0,0,0);
+        }
+        return Color.rgb(4,1,10);
     }
 
     public void setColorMode(ColorMode colorMode) {

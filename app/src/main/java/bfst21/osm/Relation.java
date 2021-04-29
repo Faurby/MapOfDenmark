@@ -24,8 +24,7 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
     private ElementType elementType;
     private boolean multipolygon;
 
-    public Relation(long id) {
-        super(id);
+    public Relation() {
         ways = new ArrayList<>();
         relations = new ArrayList<>();
     }

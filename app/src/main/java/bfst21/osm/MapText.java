@@ -1,31 +1,27 @@
 package bfst21.osm;
 
-import bfst21.view.Drawable;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 
-public class MapText extends BoundingBoxElement{
+public class MapText extends BoundingBoxElement {
 
-    private String place;
-    private String name;
-    private float[] coords;
+    private static final long serialVersionUID = -2287560037258388900L;
 
-    public MapText(String place, String name, float[] coords) {
-        super();
-        this.place = place;
+    private final String name;
+    private final String place;
+    private final float[] coords;
+
+    public MapText(String name, String place, float[] coords) {
         this.name = name;
+        this.place = place;
         this.coords = coords;
-    }
-
-    public String getPlace() {
-        return place;
+        updateBoundingBox(coords[0], coords[1]);
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getPlace() {
+        return place;
     }
 
     public float[] getCoords() {
@@ -33,25 +29,27 @@ public class MapText extends BoundingBoxElement{
     }
 
     public boolean canDraw(double zoomLevel) {
-        if (zoomLevel <= 50000) {
-            if (zoomLevel <= 2000 && place.equals("island")) {
-                return true;
-            } else if (1000 <= zoomLevel && zoomLevel <= 25000 && place.equals("city")) {
-                return true;
-            } else if (2000 <= zoomLevel && place.equals("islet")) {
-                return true;
-            }  else if (3500 <= zoomLevel && zoomLevel <= 10000 && place.equals("municipality")) {
-                return true;
-            } else if (3500 <= zoomLevel && place.equals("town")) {
-                return true;
-            } else if (6000 <= zoomLevel && place.equals("village")) {
-                return true;
-            } else if (12000 <= zoomLevel && place.equals("suburb")) {
-                return true;
-            } else if (12000 <= zoomLevel && place.equals("hamlet")) {
-                return true;
-            }
-        }
-        return false;
+        if (zoomLevel >= 500 && place.equals("island")) {
+            return true;
+
+        } else if (zoomLevel >= 1_000 && place.equals("city")) {
+            return true;
+
+        } else if (zoomLevel >= 2_000 && place.equals("islet")) {
+            return true;
+
+        } else if (zoomLevel >= 3_500 && place.equals("municipality")) {
+            return true;
+
+        } else if (zoomLevel >= 3_500 && place.equals("town")) {
+            return true;
+
+        } else if (zoomLevel >= 6_000 && place.equals("village")) {
+            return true;
+
+        } else if (zoomLevel >= 12_000 && place.equals("suburb")) {
+            return true;
+
+        } else return zoomLevel >= 12_000 && place.equals("hamlet");
     }
 }
