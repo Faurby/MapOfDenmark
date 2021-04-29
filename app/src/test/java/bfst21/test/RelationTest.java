@@ -14,12 +14,12 @@ public class RelationTest {
 
     @Test
     public void mergeRelation_correctMerge() {
-        Relation rel = new Relation(1337);
+        Relation rel = new Relation();
 
-        Way way1 = new Way(1);
-        Way way2 = new Way(2);
-        Way way3 = new Way(3);
-        Way way4 = new Way(4);
+        Way way1 = new Way();
+        Way way2 = new Way();
+        Way way3 = new Way();
+        Way way4 = new Way();
 
         way1.setRole("outer");
         way2.setRole("outer");

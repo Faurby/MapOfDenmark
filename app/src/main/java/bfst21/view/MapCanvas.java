@@ -116,11 +116,6 @@ public class MapCanvas extends Canvas {
                     System.out.println("Failed to draw " + elementGroup);
                     System.out.println("There is no DISPLAY_" + elementType + " in the Option class!");
                 }
-
-                if(elementType.equals(ElementType.CITY)) {
-                    drawOrFill(elementGroup);
-                    // ????
-                }
             }
             drawUserNodes();
             drawNeighborNodes();
@@ -506,13 +501,13 @@ public class MapCanvas extends Canvas {
         return elementType.getColor();
     }
 
-    public Color getTextColor(){
+    public Color getTextColor() {
         if (colorMode == ColorMode.COLOR_BLIND) {
-            return Color.rgb(0,255,230);
+            return Color.rgb(0, 255, 230);
         } else if (colorMode == ColorMode.DARK_MODE) {
-            return Color.rgb(0,0,0);
+            return Color.rgb(0, 0, 0);
         }
-        return Color.rgb(4,1,10);
+        return Color.rgb(4, 1, 10);
     }
 
     public void setColorMode(ColorMode colorMode) {

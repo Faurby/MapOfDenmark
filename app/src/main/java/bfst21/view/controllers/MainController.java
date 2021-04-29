@@ -24,9 +24,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
-import org.checkerframework.checker.units.qual.A;
 
 import java.io.File;
 import java.io.IOException;
@@ -263,7 +261,7 @@ public class MainController {
         fileChooser.setInitialDirectory(new File("./"));
 
         fileChooser.getExtensionFilters().addAll(
-            new FileChooser.ExtensionFilter("OBJ file, OSM file, ZIP file", "*.obj; *.osm; *.zip")
+                new FileChooser.ExtensionFilter("OBJ file, OSM file, ZIP file", "*.obj; *.osm; *.zip")
         );
         File file = fileChooser.showOpenDialog(new Stage());
 
@@ -443,7 +441,7 @@ public class MainController {
             alert.setHeaderText("");
             alert.setContentText("You're currently using an OBJ file. Are you sure you want to save another OBJ file?");
             alert.showAndWait();
-            if(alert.getResult() == ButtonType.OK) {
+            if (alert.getResult() == ButtonType.OK) {
                 saveObjFile();
             }
         } else {

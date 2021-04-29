@@ -18,13 +18,13 @@ public class WayTest {
         Node node3 = new Node(1, 3);
         Node node4 = new Node(1, 4);
 
-        Way way1 = new Way(1);
+        Way way1 = new Way();
         way1.setNodes(Arrays.asList(node1, node2, node3));
 
-        Way way2 = new Way(2);
+        Way way2 = new Way();
         way2.setNodes(Arrays.asList(node3, node4, node1));
 
-        Way way3 = new Way(3);
+        Way way3 = new Way();
         way3.setNodes(Arrays.asList(node1, node2, node3, node4, node1));
 
         Way merged = Way.merge(way1, way2, false);
@@ -43,7 +43,7 @@ public class WayTest {
         Node node2 = new Node(1, 2);
         Node node3 = new Node(1, 3);
 
-        Way way1 = new Way(1);
+        Way way1 = new Way();
         way1.setNodes(Arrays.asList(node1, node2, node3));
 
         assertEquals(way1, Way.merge(way1, null, false));

@@ -56,6 +56,14 @@ public enum ElementType {
             Color.rgb(0, 126, 170),
             Color.rgb(52, 66, 93)
     ),
+    FERRY(
+            0.003f,
+            1500.0f,
+            0.0002D,
+            Color.rgb(255, 0, 0),
+            Color.rgb(255, 0, 0),
+            Color.rgb(255, 0, 0)
+    ),
     CYCLEWAY(
             0.0001f,
             50000.0f,
@@ -159,32 +167,7 @@ public enum ElementType {
             Color.rgb(255, 0, 0),
             Color.rgb(255, 0, 0),
             Color.rgb(255, 0, 0)
-    ),
-    FERRY(
-            0.003f,
-            1500.0f,
-            0.0002D,
-            Color.rgb(255, 0, 0),
-            Color.rgb(255, 0, 0),
-            Color.rgb(255, 0, 0)
-    ),
-    CITY(
-            0.005f,
-            1000.0f,
-            0.0D,
-            Color.rgb(255, 0, 0),
-            Color.rgb(255, 0, 0),
-            Color.rgb(255, 0, 0)
     );
-//    TEXT(
-//            1f,
-//            100.0f,
-//            0.0D,
-//            Color.rgb(4,1,10),
-//            Color.rgb(0, 0, 0),
-//            Color.rgb(0,255,230)
-//    );
-
 
     private final Color color, colorBlind, blackWhite;
     private final float drawSize, zoomLevelRequired;
