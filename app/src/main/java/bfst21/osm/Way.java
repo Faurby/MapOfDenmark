@@ -22,8 +22,8 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
      */
     public ElementSize getElementSize() {
         if (elementType.hasMultipleSizes()) {
-            double xLength = maxX - minX;
-            double yLength = maxY - minY;
+            double xLength = Math.abs(maxX - minX);
+            double yLength = Math.abs(maxY - minY);
             double areaSize = (xLength * yLength * Math.pow(10.0D, 9.0D));
             return ElementSize.getSize(areaSize);
         }

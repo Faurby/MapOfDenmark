@@ -145,6 +145,7 @@ public class XmlParser {
                                         break;
                                     case "place":
                                         switch (value) {
+                                            case "peninsula":
                                             case "island":
                                             case "city":
                                             case "village":
@@ -372,6 +373,12 @@ public class XmlParser {
 
                                 float[] coords = new float[]{midX, midY};
                                 mapText.setCoords(coords);
+
+                                float xLength = Math.abs(maxX - minX);
+                                float yLength = Math.abs(maxY - minY);
+                                float areaSize = (float) ((xLength * yLength) * Math.pow(10.0D, 7.0D));
+                                mapText.setAreaSize(areaSize);
+
                                 mapTexts.add(mapText);
                                 mapText = null;
                             }

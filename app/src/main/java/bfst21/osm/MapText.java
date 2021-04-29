@@ -9,6 +9,7 @@ public class MapText extends BoundingBoxElement {
     private final String place;
 
     private float[] coords;
+    private float areaSize = 1.0f;
 
     public MapText(String name, String place) {
         this.name = name;
@@ -18,6 +19,10 @@ public class MapText extends BoundingBoxElement {
     public void setCoords(float[] coords) {
         this.coords = coords;
         updateBoundingBox(coords[0], coords[1]);
+    }
+
+    public void setAreaSize(float areaSize) {
+        this.areaSize = areaSize;
     }
 
     public String getName() {
@@ -33,7 +38,10 @@ public class MapText extends BoundingBoxElement {
     }
 
     public boolean canDraw(double zoomLevel) {
-        if (zoomLevel >= 500 && place.equals("island")) {
+        if (zoomLevel >= 100 && place.equals("peninsula")) {
+            return true;
+
+        } else if (zoomLevel >= 500 && place.equals("island")) {
             return true;
 
         } else if (zoomLevel >= 1_000 && place.equals("city")) {

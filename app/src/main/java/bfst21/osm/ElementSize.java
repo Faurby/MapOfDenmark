@@ -9,6 +9,9 @@ package bfst21.osm;
  * Ways with a larger area will be drawn before Ways with a small area.
  */
 public enum ElementSize {
+
+    //TODO: The areaSizeRequired values may need to be changed
+    // We need to test the area sizes of different Ways to see if it is still correct
     MASSIVE(500_000.0f, 500.0f),
     LARGE(100_000.0f, 1_000.0f),
     MEDIUM(70_000.0f, 2_000.0f),
