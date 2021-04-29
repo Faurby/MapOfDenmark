@@ -23,6 +23,10 @@ public abstract class BoundingBoxElement extends Element {
         super(id);
     }
 
+    public BoundingBoxElement() {
+        super();
+    }
+
     /**
      * Create the coords array with the given list of Nodes.
      * The coords array is double the size of the Nodes array as we need a spot for each x and y.

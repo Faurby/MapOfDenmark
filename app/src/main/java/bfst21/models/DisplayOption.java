@@ -27,4 +27,6 @@ public enum DisplayOption {
     DISPLAY_UNKNOWN,
     DISPLAY_RAILWAY,
     DISPLAY_AEROWAY,
+
+    DISPLAY_TEXT,
 }

@@ -159,6 +159,14 @@ public enum ElementType {
             Color.rgb(255, 0, 0),
             Color.rgb(255, 0, 0),
             Color.rgb(255, 0, 0)
+    ),
+    TEXT(
+            1f,
+            100.0f,
+            0.0D,
+            Color.rgb(4,1,10),
+            Color.rgb(0, 0, 0),
+            Color.rgb(0,255,230)
     );
 
     private final Color color, colorBlind, blackWhite;

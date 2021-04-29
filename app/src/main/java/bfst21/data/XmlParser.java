@@ -142,10 +142,10 @@ public class XmlParser {
                                         name = value;
                                         break;
                                     case "place":
-                                        if (value.equals("island") || value.equals("city") || value.equals("town")
-                                                || value.equals("village") || value.equals("suburb") ||
-                                                value.equals("islet") || value.equals("hamlet") || value.equals("county") ||
-                                                value.equals("municipality") || value.equals("region")) {
+                                        if (value.equals("island") || value.equals("city")
+                                                || value.equals("village") || value.equals("suburb")
+                                                || value.equals("islet") || value.equals("hamlet")
+                                                || value.equals("town") || value.equals("municipality")) {
                                             mapTexts.add(new MapText(value.intern(), name, node.getCoords()));
                                         }
                                         break;
