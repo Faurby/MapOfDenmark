@@ -7,11 +7,15 @@ public class MapText extends BoundingBoxElement {
 
     private final String name;
     private final String place;
-    private final float[] coords;
 
-    public MapText(String name, String place, float[] coords) {
+    private float[] coords;
+
+    public MapText(String name, String place) {
         this.name = name;
         this.place = place;
+    }
+
+    public void setCoords(float[] coords) {
         this.coords = coords;
         updateBoundingBox(coords[0], coords[1]);
     }

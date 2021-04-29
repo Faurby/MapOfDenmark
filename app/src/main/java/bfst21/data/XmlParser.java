@@ -60,10 +60,11 @@ public class XmlParser {
         List<Way> coastlines = new ArrayList<>();
         List<Way> islands;
 
-        float minX = 0, minY = 0, maxX = 0, maxY = 0;
+        float mapMinX = 0, mapMinY = 0, mapMaxX = 0, mapMaxY = 0;
         boolean isCoastline = false;
 
         String name = null;
+        MapText mapText = null;
         List<MapText> mapTexts = new ArrayList<>();
 
         while (reader.hasNext()) {
@@ -72,10 +73,10 @@ public class XmlParser {
                     switch (reader.getLocalName()) {
 
                         case "bounds":
-                            minX = Float.parseFloat(reader.getAttributeValue(null, "minlon"));
-                            maxX = Float.parseFloat(reader.getAttributeValue(null, "maxlon"));
-                            maxY = Float.parseFloat(reader.getAttributeValue(null, "minlat")) / -0.56f;
-                            minY = Float.parseFloat(reader.getAttributeValue(null, "maxlat")) / -0.56f;
+                            mapMinX = Float.parseFloat(reader.getAttributeValue(null, "minlon"));
+                            mapMaxX = Float.parseFloat(reader.getAttributeValue(null, "maxlon"));
+                            mapMaxY = Float.parseFloat(reader.getAttributeValue(null, "minlat")) / -0.56f;
+                            mapMinY = Float.parseFloat(reader.getAttributeValue(null, "maxlat")) / -0.56f;
                             break;
 
                         case "node":
@@ -88,8 +89,6 @@ public class XmlParser {
 
                             node = new Node(lon, lat);
                             nodeLongIndex.put(new Element<>(nodeID, node));
-
-                            osmAddress = new OsmAddress(node);
                             break;
 
                         case "way":
@@ -139,7 +138,7 @@ public class XmlParser {
                             String key = reader.getAttributeValue(null, "k");
                             String value = reader.getAttributeValue(null, "v");
 
-                            if (node != null && relation == null && way == null) {
+                            if (node != null || relation != null) {
                                 switch (key) {
                                     case "name":
                                         name = value;
@@ -154,7 +153,7 @@ public class XmlParser {
                                             case "hamlet":
                                             case "town":
                                             case "municipality":
-                                                mapTexts.add(new MapText(name, value.intern(), node.getCoords()));
+                                                mapText = new MapText(name, value.intern());
                                                 break;
                                         }
                                         break;
@@ -164,15 +163,27 @@ public class XmlParser {
                             if (way != null || relation != null || key.contains("addr:")) {
                                 switch (key) {
                                     case "addr:city":
+                                        if (osmAddress == null) {
+                                            osmAddress = new OsmAddress(node);
+                                        }
                                         osmAddress.setCity(value.intern());
                                         break;
                                     case "addr:housenumber":
+                                        if (osmAddress == null) {
+                                            osmAddress = new OsmAddress(node);
+                                        }
                                         osmAddress.setHouseNumber(value.intern());
                                         break;
                                     case "addr:postcode":
+                                        if (osmAddress == null) {
+                                            osmAddress = new OsmAddress(node);
+                                        }
                                         osmAddress.setPostcode(value.intern());
                                         break;
                                     case "addr:street":
+                                        if (osmAddress == null) {
+                                            osmAddress = new OsmAddress(node);
+                                        }
                                         osmAddress.setStreet(value.intern());
                                         break;
                                     /*
@@ -337,6 +348,11 @@ public class XmlParser {
 
                                 addressTries.put(inputAddress, addresses);
                             }
+                            if (mapText != null) {
+                                mapText.setCoords(node.getCoords());
+                                mapTexts.add(mapText);
+                                mapText = null;
+                            }
                             break;
 
                         case "relation":
@@ -345,8 +361,21 @@ public class XmlParser {
                                 relation.setType(elementType);
                                 elementType = null;
                             }
-                            relation = null;
+                            if (mapText != null) {
+                                float minX = relation.getMinX();
+                                float maxX = relation.getMaxX();
+                                float minY = relation.getMinY();
+                                float maxY = relation.getMaxY();
 
+                                float midX = (minX + maxX / 2);
+                                float midY = (minY + maxY / 2);
+
+                                float[] coords = new float[]{midX, midY};
+                                mapText.setCoords(coords);
+                                mapTexts.add(mapText);
+                                mapText = null;
+                            }
+                            relation = null;
                             break;
 
                         case "way":
@@ -390,10 +419,10 @@ public class XmlParser {
                 null,
                 null,
                 null,
-                minX,
-                maxX,
-                minY,
-                maxY
+                mapMinX,
+                mapMaxX,
+                mapMinY,
+                mapMaxY
         );
     }
 
