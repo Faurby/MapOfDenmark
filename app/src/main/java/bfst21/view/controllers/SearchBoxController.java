@@ -5,8 +5,10 @@ import bfst21.address.TST;
 import bfst21.exceptions.IllegalInputException;
 import bfst21.models.MapData;
 import bfst21.models.Model;
+import bfst21.osm.Node;
 import bfst21.osm.OsmAddress;
 import bfst21.view.MapCanvas;
+import edu.princeton.cs.algs4.StdOut;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -38,19 +40,52 @@ public class SearchBoxController extends SubController {
 
     private TST<List<OsmAddress>> addressTries;
     private Task<Void> addressSuggestionTask;
-    private List<String> allSuggestions = new ArrayList<>();
+    private List<OsmAddress> allSuggestions = new ArrayList<>();
     private List<String> shownSuggestions = new ArrayList<>();
+    private float x,y;
 
     @FXML
     private void searchSingleAddress() {
-        if (!addressArea.getText().trim().isEmpty()) {
-            String address = addressArea.getText();
-            Address parsed = Address.parse(address);
-            System.out.println(parsed);
+        String address = addressArea.getText().trim().toLowerCase();
+        if (!address.isEmpty()) {
+
+            if (addressTries == null) {
+                activateTries();
+            }
+
+            for (OsmAddress osmAddress : allSuggestions) {
+                if (osmAddress.toString().toLowerCase().contains(address)) {
+                    mainController.getCanvas().changeView(osmAddress.getNode().getX(),osmAddress.getNode().getY());
+                }
+            }
+            //addressTries.get
+
+            if(false){
+                for (OsmAddress osmA : addressTries.get(address)){
+                    x = osmA.getNode().getX();
+                    y = osmA.getNode().getY();
+                };
+                System.out.println("Finally:')");
+                mainController.getCanvas().pan(x,y);
+
+            } else {
+
+            //String address = addressArea.getText();
+            //Address parsed = Address.parse(address);
+            //System.out.println(parsed);
+                System.out.println("Search field contains: " + address);
+            }
 
         } else {
             throw new IllegalInputException("Search field is empty");
         }
+    }
+
+    private void activateTries() {
+        MapCanvas mapCanvas = mainController.getCanvas();
+        Model model = mapCanvas.getModel();
+        MapData mapData = model.getMapData();
+        addressTries = mapData.getAddressTries();
     }
 
     @Override
@@ -123,10 +158,7 @@ public class SearchBoxController extends SubController {
             @Override
             protected Void call() {
                 if (addressTries == null) {
-                    MapCanvas mapCanvas = mainController.getCanvas();
-                    Model model = mapCanvas.getModel();
-                    MapData mapData = model.getMapData();
-                    addressTries = mapData.getAddressTries();
+                    activateTries();
                 }
                 shownSuggestions = new ArrayList<>();
 
@@ -135,20 +167,16 @@ public class SearchBoxController extends SubController {
 
                 Iterator<String> it = addressTries.keysWithPrefix(addressInput).iterator();
                 if (it.hasNext()) {
-
                     allSuggestions = new ArrayList<>();
-                    List<OsmAddress> osmAddressList = addressTries.get(it.next());
-
-                    for (OsmAddress osmAddress : osmAddressList) {
-                        allSuggestions.add(osmAddress.toString());
-                    }
+                    allSuggestions = addressTries.get(it.next());
                 }
                 if (allSuggestions.size() > 0) {
 
                     int count = 0;
-                    for (String address : allSuggestions) {
+                    for (OsmAddress osmAddress : allSuggestions) {
                         if (count < 10) {
 
+                            String address = osmAddress.toString();
                             if (address.toLowerCase().contains(input.toLowerCase())) {
                                 shownSuggestions.add(address);
                                 count++;
