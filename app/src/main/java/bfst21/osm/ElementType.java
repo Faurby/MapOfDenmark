@@ -220,14 +220,16 @@ public enum ElementType {
                 this == ElementType.MOTORWAY ||
                 this == ElementType.RESIDENTIAL ||
                 this == ElementType.TERTIARY ||
-                this == ElementType.TRUNK;
+                this == ElementType.TRUNK ||
+                this == ElementType.FERRY;
     }
 
     public boolean canBike() {
         return this == ElementType.TERTIARY ||
                 this == ElementType.CYCLEWAY ||
                 this == ElementType.ROAD ||
-                this == ElementType.RESIDENTIAL;
+                this == ElementType.RESIDENTIAL ||
+                this == ElementType.FERRY;
     }
 
     public boolean canWalk() {
@@ -235,11 +237,8 @@ public enum ElementType {
                 this == ElementType.CYCLEWAY ||
                 this == ElementType.RESIDENTIAL ||
                 this == ElementType.ROAD ||
-                this == ElementType.FOOTWAY;
-    }
-
-    public boolean canSail() {
-        return this == ElementType.FERRY;
+                this == ElementType.FOOTWAY ||
+                this == ElementType.FERRY;
     }
 
     public boolean isDisplayOptionEnabled() {
