@@ -42,21 +42,21 @@ public class MapText extends BoundingBoxElement {
         if (zoomLevel <= 50_000) {
 
             if (zoomLevel >= 1 && place.equals("peninsula")) {
-                return true; //TODO make it so municipalities and peninsula are registered
-
-            } else if (zoomLevel >= 1 && place.equals("island")) {
-                return true;
+                return true; //TODO make it so municipalities and peninsula are registered correctly
 
             } else if (zoomLevel >= 50 && place.equals("city")) {
+                return true;
+
+            } else if (zoomLevel >= 1_000 && place.equals("island")) {
+                return true;
+
+            } else if (zoomLevel >= 1_000 && place.equals("town")) {
                 return true;
 
             } else if (zoomLevel >= 2_000 && place.equals("islet")) {
                 return true;
 
-            } else if (zoomLevel >= 2_500 && place.equals("town")) {
-                return true;
-
-            } else if (zoomLevel >= 5_000 && place.equals("village")) {
+            } else if (zoomLevel >= 2_500 && place.equals("village")) {
                 return true;
 
             } else if (zoomLevel >= 12_000 && place.equals("suburb")) {
