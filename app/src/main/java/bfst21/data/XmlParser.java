@@ -352,6 +352,7 @@ public class XmlParser {
                                 addresses.add(osmAddress);
 
                                 addressTries.put(inputAddress, addresses);
+                                osmAddress = null;
                             }
                             if (mapText != null) {
                                 mapText.setCoords(node.getCoords());
