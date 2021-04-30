@@ -38,30 +38,33 @@ public class MapText extends BoundingBoxElement {
     }
 
     public boolean canDraw(double zoomLevel) {
-        if (zoomLevel >= 100 && place.equals("peninsula")) {
-            return true;
 
-        } else if (zoomLevel >= 500 && place.equals("island")) {
-            return true;
+        if (zoomLevel <= 50_000) {
 
-        } else if (zoomLevel >= 1_000 && place.equals("city")) {
-            return true;
+            if (zoomLevel >= 100 && place.equals("peninsula")) {
+                return true;
 
-        } else if (zoomLevel >= 2_000 && place.equals("islet")) {
-            return true;
+            } else if (zoomLevel >= 500 && place.equals("island")) {
+                return true;
 
-        } else if (zoomLevel >= 3_500 && place.equals("municipality")) {
-            return true;
+            } else if (zoomLevel >= 1_000 && place.equals("city")) {
+                return true;
 
-        } else if (zoomLevel >= 3_500 && place.equals("town")) {
-            return true;
+            } else if (zoomLevel >= 2_000 && place.equals("islet")) {
+                return true;
 
-        } else if (zoomLevel >= 6_000 && place.equals("village")) {
-            return true;
+            } else if (zoomLevel >= 2_500 && place.equals("town")) {
+                return true;
 
-        } else if (zoomLevel >= 12_000 && place.equals("suburb")) {
-            return true;
+            } else if (zoomLevel >= 5_000 && place.equals("village")) {
+                return true;
 
-        } else return zoomLevel >= 12_000 && place.equals("hamlet");
+            } else if (zoomLevel >= 12_000 && place.equals("suburb")) {
+                return true;
+
+            } else return zoomLevel >= 12_000 && place.equals("hamlet");
+        } else {
+            return false;
+        }
     }
 }
