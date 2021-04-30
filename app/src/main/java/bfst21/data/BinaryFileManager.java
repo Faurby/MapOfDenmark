@@ -7,6 +7,7 @@ import bfst21.tree.KdTree;
 import bfst21.models.MapData;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,9 +30,9 @@ public class BinaryFileManager {
         }
         return new MapData(
                 (List<Way>) input.readObject(),
-                null,
-                null,
-                null,
+                (List<Way>) input.readObject(),
+                (List<Relation>) input.readObject(),
+                (List<MapText>) input.readObject(),
 
                 (TST<List<OsmAddress>>) input.readObject(),
 
@@ -53,9 +54,9 @@ public class BinaryFileManager {
         try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) {
 
             output.writeObject(mapData.getWays(ElementGroup.getElementGroup(ElementType.ISLAND, ElementSize.DEFAULT)));
-            output.writeObject(null);
-            output.writeObject(null);
-            output.writeObject(null);
+            output.writeObject(new ArrayList<Way>());
+            output.writeObject(new ArrayList<Relation>());
+            output.writeObject(new ArrayList<MapText>());
 
             output.writeObject(mapData.getAddressTries());
 
