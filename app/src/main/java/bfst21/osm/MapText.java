@@ -47,7 +47,7 @@ public class MapText extends BoundingBoxElement {
             } else if (zoomLevel >= 500 && place.equals("island")) {
                 return true;
 
-            } else if (zoomLevel >= 1_000 && place.equals("city")) {
+            } else if (zoomLevel >= 500 && place.equals("city")) {
                 return true;
 
             } else if (zoomLevel >= 2_000 && place.equals("islet")) {
@@ -63,6 +63,7 @@ public class MapText extends BoundingBoxElement {
                 return true;
 
             } else return zoomLevel >= 12_000 && place.equals("hamlet");
+
         } else {
             return false;
         }
