@@ -58,23 +58,6 @@ public class SearchBoxController extends SubController {
                     mainController.getCanvas().changeView(osmAddress.getNode().getX(),osmAddress.getNode().getY());
                 }
             }
-            //addressTries.get
-
-            if(false){
-                for (OsmAddress osmA : addressTries.get(address)){
-                    x = osmA.getNode().getX();
-                    y = osmA.getNode().getY();
-                };
-                System.out.println("Finally:')");
-                mainController.getCanvas().pan(x,y);
-
-            } else {
-
-            //String address = addressArea.getText();
-            //Address parsed = Address.parse(address);
-            //System.out.println(parsed);
-                System.out.println("Search field contains: " + address);
-            }
 
         } else {
             throw new IllegalInputException("Search field is empty");
