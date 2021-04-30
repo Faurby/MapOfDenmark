@@ -29,7 +29,7 @@ public class MapText extends BoundingBoxElement {
         return name;
     }
 
-    public MapTextType getPlace() {
+    public MapTextType getMapTextType() {
         return mapTextType;
     }
 
@@ -39,5 +39,10 @@ public class MapText extends BoundingBoxElement {
 
     public boolean canDraw(double zoomLevel) {
         return mapTextType.zoomLevelRequired <= zoomLevel;
+    }
+
+    public boolean canDrawFarAway(MapTextType mapTextType){
+        return (this.mapTextType == MapTextType.CITY
+                || this.mapTextType == MapTextType.PENINSULA);
     }
 }

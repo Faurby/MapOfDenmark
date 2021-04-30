@@ -6,36 +6,48 @@ package bfst21.osm;
 
 public enum MapTextType {
     PENINSULA(
-1
+            1,
+            0.02D
     ),
     CITY(
-50
+            50,
+            0.02D
     ),
     ISLAND(
-1_000
+            1_000,
+            0.02D
     ),
     TOWN(
-1_000
+            1_000,
+            0.01D
     ),
     VILLAGE(
-2_500
+            2_500,
+            0.01D
     ),
     ISLET(
-2_000
+            2_000,
+            0.01D
     ),
     SUBURB(
-12_000
+            12_000,
+            0.01D
     ),
     HAMLET(
-12_000
+            12_000,
+            0.07D
     );
 
     float zoomLevelRequired;
+    double standardModifier;
 
-    MapTextType(float zoomLevelRequired){
+    MapTextType(float zoomLevelRequired, double standardModifier){
         this.zoomLevelRequired = zoomLevelRequired;
+        this.standardModifier = standardModifier;
     }
 
-
+    public double getStandardModifier(){
+        return standardModifier;
+    }
 
 }

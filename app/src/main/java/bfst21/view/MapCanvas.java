@@ -195,24 +195,15 @@ public class MapCanvas extends Canvas {
 
                 for (MapText mapText : model.getMapData().getMapTexts()) {
 
-                    if (zoomLevel < 1000 && (mapText.getPlace().equals("city") || mapText.getPlace().equals("peninsula"))) {
+                    if (zoomLevel < 1000 && mapText.canDrawFarAway(mapText.getMapTextType())) {
                         gc.setFont(new Font(font, 0.08 * widthModifier));
                         gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
 
-                    } else if (mapText.canDraw(zoomLevel)) {
-
-                        if (mapText.getPlace().equals("city") || mapText.getPlace().equals("island") || mapText.getPlace().equals("peninsula")) {
-                            gc.setFont(new Font(font, 0.02 * widthModifier));
-
-                        } else if (mapText.getPlace().equals("hamlet")) {
-                            gc.setFont(new Font(font, 0.007 * widthModifier));
-
-                        } else {
-                            gc.setFont(new Font(font, 0.01 * widthModifier));
-                        }
+                    } else if (zoomLevel < 40_000 && mapText.canDraw(zoomLevel)) {
+                        gc.setFont(new Font(font, mapText.getMapTextType().getStandardModifier() * widthModifier));
                         gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
 
-                    } else if (zoomLevel > 40_000) {
+                    } else if (zoomLevel >= 40_000) {
                         gc.setFont(new Font(font, 0.002 * widthModifier));
                         gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
                     }
