@@ -186,6 +186,11 @@ public class XmlParser {
                                         }
                                         osmAddress.setStreet(value.intern());
                                         break;
+                                    case "ferry":
+                                        if (value.equals("yes")) {
+                                            elementType = ElementType.FERRY;
+                                        }
+                                        break;
                                     case "route":
                                         if (value.equals("ferry")) {
                                             elementType = ElementType.FERRY;
