@@ -51,6 +51,7 @@ public class MapCanvas extends Canvas {
     private Affine trans = new Affine();
 
     private float[] nearestNeighborCoords;
+    //private float[] searchAddressCoords;
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -120,6 +121,7 @@ public class MapCanvas extends Canvas {
             }
             drawUserNodes();
             drawNeighborNodes();
+            //drawSearchAddress();
             drawMapText();
 
             //Display the kd-tree if option is enabled
@@ -321,6 +323,55 @@ public class MapCanvas extends Canvas {
         repaint();
     }
 
+    public void changeView(float newX, float newY){
+        double x1 = trans.getTx() / Math.sqrt(trans.determinant());
+        double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
+        double x2 = getWidth() - x1;
+        double y2 = getHeight() - y1;
+
+        Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
+        Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
+
+        double oldX = (p1.getX() + p2.getX()) / 2;
+        double oldY = (p1.getY() + p2.getY()) / 2;
+
+        double dx = newX - oldX;
+        double dy = newY - oldY;
+
+        dx *= zoomLevel;
+        dy *= zoomLevel;
+        pan(-dx, -dy);
+        rangeSearch();
+        repaint();
+    }
+
+
+    //TEST method that draws a dot at the searchAddressCoords-coordinates and at the middle of the screen
+//    public void drawSearchAddress() {
+//        if (searchAddressCoords != null) {
+//            double x1 = trans.getTx() / Math.sqrt(trans.determinant());
+//            double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
+//            double x2 = getWidth() - x1;
+//            double y2 = getHeight() - y1;
+//
+//            Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
+//            Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
+//
+//            double oldX = (p1.getX() + p2.getX()) / 2;
+//            double oldY = (p1.getY() + p2.getY()) / 2;
+//
+//            gc.setStroke(Color.GREEN);
+//            gc.setLineWidth(0.004 * widthModifier);
+//
+//            gc.beginPath();
+//            gc.moveTo(searchAddressCoords[0], searchAddressCoords[1]);
+//            gc.lineTo(searchAddressCoords[0], searchAddressCoords[1]);
+//            gc.moveTo(oldX, oldY);
+//            gc.lineTo(oldX, oldY);
+//            gc.stroke();
+//        }
+//    }
+
     /**
      * Zooms and repaints the MapCanvas with the given zoom factor.
      * Runs a range search task unless it is the initial zoom after loading the map.
@@ -341,6 +392,7 @@ public class MapCanvas extends Canvas {
 
     public void drawNeighborNodes() {
         if (nearestNeighborCoords != null) {
+
             gc.setStroke(Color.RED);
             gc.setLineWidth(0.002 * widthModifier);
 
@@ -580,4 +632,5 @@ public class MapCanvas extends Canvas {
     public Affine getTrans() {
         return trans;
     }
+
 }
