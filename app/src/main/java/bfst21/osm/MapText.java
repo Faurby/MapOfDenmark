@@ -6,14 +6,14 @@ public class MapText extends BoundingBoxElement {
     private static final long serialVersionUID = -2287560037258388900L;
 
     private final String name;
-    private final String place;
+    MapTextType mapTextType;
 
     private float[] coords;
     private float areaSize = 1.0f;
 
-    public MapText(String name, String place) {
+    public MapText(String name, MapTextType mapTextType) {
         this.name = name;
-        this.place = place;
+        this.mapTextType = mapTextType;
     }
 
     public void setCoords(float[] coords) {
@@ -29,8 +29,8 @@ public class MapText extends BoundingBoxElement {
         return name;
     }
 
-    public String getPlace() {
-        return place;
+    public MapTextType getPlace() {
+        return mapTextType;
     }
 
     public float[] getCoords() {
@@ -38,34 +38,6 @@ public class MapText extends BoundingBoxElement {
     }
 
     public boolean canDraw(double zoomLevel) {
-
-        if (zoomLevel <= 50_000) {
-
-            if (zoomLevel >= 1 && place.equals("peninsula")) {
-                return true; //TODO make it so municipalities and peninsula are registered correctly
-
-            } else if (zoomLevel >= 50 && place.equals("city")) {
-                return true;
-
-            } else if (zoomLevel >= 1_000 && place.equals("island")) {
-                return true;
-
-            } else if (zoomLevel >= 1_000 && place.equals("town")) {
-                return true;
-
-            } else if (zoomLevel >= 2_000 && place.equals("islet")) {
-                return true;
-
-            } else if (zoomLevel >= 2_500 && place.equals("village")) {
-                return true;
-
-            } else if (zoomLevel >= 12_000 && place.equals("suburb")) {
-                return true;
-
-            } else return zoomLevel >= 12_000 && place.equals("hamlet");
-
-        } else {
-            return false;
-        }
+        return mapTextType.zoomLevelRequired <= zoomLevel;
     }
 }

@@ -153,7 +153,7 @@ public class XmlParser {
                                             case "islet":
                                             case "hamlet":
                                             case "town":
-                                                mapText = new MapText(name, value.intern());
+                                                mapText = new MapText(name, MapTextType.valueOf(value.toUpperCase()));
                                                 break;
                                         }
                                         break;
