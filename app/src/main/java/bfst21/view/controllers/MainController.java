@@ -442,6 +442,7 @@ public class MainController {
         if (keyEvent.getCode().getName().equals("Enter")) {
             currentUserNode.setDescription(userNodeNewDescriptionTextField.getText());
             userNodeNewDescriptionVBox.setVisible(false);
+            userNodeNewDescriptionTextField.setText("");
         } else if (keyEvent.getCode().getName().equals("Esc")) {
             userNodeNewDescriptionVBox.setVisible(false);
         }
@@ -472,6 +473,7 @@ public class MainController {
         } else {
             currentUserNode.setName(userNodeNewNameTextField.getText());
             userNodeNewNameVBox.setVisible(false);
+            userNodeNewNameTextField.setText("");
         }
     }
 
