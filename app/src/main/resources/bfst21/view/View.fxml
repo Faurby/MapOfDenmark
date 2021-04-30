@@ -169,7 +169,7 @@
               prefHeight="185"
               alignment="CENTER"
               spacing="8"
-              style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0; -fx-border-style: round;">
+              style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;">
 
             <Text text="Failed to load name" fx:id="userNodeClickedName" style="-fx-font-size: large;"/>
 
