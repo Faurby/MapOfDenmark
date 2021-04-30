@@ -19,12 +19,13 @@
 <?import javafx.scene.control.TextField?>
 
 
+<?import javafx.scene.control.ListView?>
 <Scene xmlns="https://javafx.com/javafx"
        xmlns:fx="https://javafx.com/fxml"
        fx:controller="bfst21.view.controllers.MainController"
        fx:id="scene">
 
-    <StackPane fx:id="stackPane" minHeight="480" minWidth="640" >
+    <StackPane fx:id="stackPane" minHeight="480" minWidth="640">
 
         <MapCanvas fx:id="canvas"
                    height="${stackPane.height}"
@@ -32,7 +33,8 @@
                    onMouseDragged="#onMouseDragged"
                    onMousePressed="#onMousePressed"
                    onMouseReleased="#onMouseReleased"
-                   onScroll="#onScroll">
+                   onScroll="#onScroll"
+                   onMouseEntered="#onMouseEntered">
         </MapCanvas>
         <fx:include fx:id="debugBox" source="DebugBox.fxml"/>
 
@@ -95,11 +97,7 @@
                 <Menu text="View">
                     <MenuItem fx:id="zoomin" onAction="#zoomButtonClicked" text="Zoom in"/>
                     <MenuItem onAction="#zoomButtonClicked" text="Zoom out"/>
-                </Menu>
-
-                <Menu text="Accessibility">
                     <Menu text="Color modes">
-
                         <MenuItem fx:id="standard"
                                   onAction="#changeColorMode"
                                   text="Standard"/>
@@ -110,8 +108,6 @@
                                   onAction="#changeColorMode"
                                   text="Color blind"/>
                     </Menu>
-                    <MenuItem onAction="#userNodeButtonClicked"
-                              text="Add point of interest"/>
                 </Menu>
                 <Menu text="Help">
                     <MenuItem onAction="#showHideDebug"
@@ -120,7 +116,7 @@
             </MenuBar>
         </HBox>
 
-        <VBox fx:id="userNodeVBox"
+        <VBox fx:id="newUserNodeVBox"
               visible="false"
               maxWidth="220"
               prefWidth="220"
@@ -260,6 +256,20 @@
                         maxWidth="90"
                         prefWidth="90"/>
             </HBox>
+        </VBox>
+        <VBox fx:id="userNodeVBox"
+              maxWidth="150"
+              maxHeight="100"
+              StackPane.alignment="BOTTOM_RIGHT"
+              spacing="8">
+            <padding>
+                <Insets bottom="15"/>
+            </padding>
+            <Button fx:id="newUserNodeButton"
+                    onAction="#userNodeButtonClicked"
+                    text="Add point of interest"/>
+            <ListView fx:id="userNodeListView"
+                      maxWidth="${newUserNodeButton.width}"/>
         </VBox>
     </StackPane>
 </Scene>

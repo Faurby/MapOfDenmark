@@ -8,6 +8,10 @@ import bfst21.osm.UserNode;
 import bfst21.osm.Way;
 import bfst21.view.ColorMode;
 import bfst21.view.MapCanvas;
+import javafx.beans.InvalidationListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,8 +32,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 
 public class MainController {
@@ -51,6 +54,11 @@ public class MainController {
 
     @FXML
     private VBox userNodeVBox;
+    @FXML
+    private ListView<String> userNodeListView;
+    private ObservableList<UserNode> userNodeListItems = FXCollections.observableArrayList();
+    @FXML
+    private VBox newUserNodeVBox;
     @FXML
     private TextField userNodeNameTextField;
     @FXML
@@ -86,10 +94,12 @@ public class MainController {
     private boolean userNodeToggle = false;
     ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
     UserNode currentUserNode = null;
+    List<UserNode> userNodes = new ArrayList<>();
 
     private Model model;
     private Point2D lastMouse;
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
+
 
     public void updateZoomBox() {
         debugBoxController.setZoomPercent("Zoom percent: " + canvas.getZoomPercent());
@@ -145,6 +155,8 @@ public class MainController {
             Point2D currentMousePos = new Point2D(event.getX(), event.getY());
             updateMouseCoords(currentMousePos);
         });
+
+        //userNodeVBox.setOnMouseMoved(event -> userNodeListView.setItems(userNodeListItems.));
     }
 
     @FXML
@@ -233,7 +245,7 @@ public class MainController {
         }
 
         if (userNodeToggle && mouseEvent.isPrimaryButtonDown()) {
-            userNodeVBox.setVisible(true);
+            newUserNodeVBox.setVisible(true);
             userNodeNameTextField.requestFocus();
             scene.setCursor(Cursor.DEFAULT);
         }
@@ -253,6 +265,21 @@ public class MainController {
                 resetDjikstra = true;
             }
         }
+    }
+
+    @FXML
+    public void onMouseEntered(MouseEvent mouseEvent) {
+        /*
+        if(model.getMapData() != null) {
+            userNodeListItems.addAll(userNodes);
+            ObservableList<String> tempList = FXCollections.observableArrayList();
+            for(UserNode userNode : userNodeListItems) {
+                tempList.add(userNode.getName());
+            }
+            userNodeListView.setItems(tempList);
+        }
+
+         */
     }
 
     @FXML
@@ -359,7 +386,7 @@ public class MainController {
         if (keyEvent.getCode().getName().equals("Enter")) {
             newUserNodeCheckEmptyNameAndSave();
         } else if (keyEvent.getCode().getName().equals("Esc")) {
-            userNodeVBox.setVisible(false);
+            newUserNodeVBox.setVisible(false);
             scene.setCursor(userNodeCursorImage);
         }
     }
@@ -383,7 +410,7 @@ public class MainController {
 
     @FXML
     public void userNodeCancelClicked() {
-        userNodeVBox.setVisible(false);
+        newUserNodeVBox.setVisible(false);
         scene.setCursor(userNodeCursorImage);
     }
 
@@ -392,9 +419,10 @@ public class MainController {
         UserNode userNode = new UserNode((float) point.getX(), (float) point.getY(), userNodeNameTextField.getText(), userNodeDescriptionTextField.getText());
 
         model.getMapData().addUserNode(userNode);
+
         scene.setCursor(Cursor.DEFAULT);
         userNodeToggle = false;
-        userNodeVBox.setVisible(false);
+        newUserNodeVBox.setVisible(false);
         canvas.repaint();
     }
 
