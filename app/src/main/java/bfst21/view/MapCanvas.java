@@ -335,11 +335,9 @@ public class MapCanvas extends Canvas {
         double oldX = (p1.getX() + p2.getX()) / 2;
         double oldY = (p1.getY() + p2.getY()) / 2;
 
-        double dx = newX - oldX;
-        double dy = newY - oldY;
+        double dx = (newX - oldX) * zoomLevel;
+        double dy = (newY - oldY) * zoomLevel;
 
-        dx *= zoomLevel;
-        dy *= zoomLevel;
         pan(-dx, -dy);
         rangeSearch();
         repaint();
