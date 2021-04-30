@@ -41,13 +41,13 @@ public class MapText extends BoundingBoxElement {
 
         if (zoomLevel <= 50_000) {
 
-            if (zoomLevel >= 100 && place.equals("peninsula")) {
+            if (zoomLevel >= 1 && place.equals("peninsula")) {
                 return true;
 
-            } else if (zoomLevel >= 500 && place.equals("island")) {
+            } else if (zoomLevel >= 1 && place.equals("island")) {
                 return true;
 
-            } else if (zoomLevel >= 500 && place.equals("city")) {
+            } else if (zoomLevel >= 50 && place.equals("city")) {
                 return true;
 
             } else if (zoomLevel >= 2_000 && place.equals("islet")) {
