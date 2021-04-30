@@ -200,7 +200,7 @@ public class MapCanvas extends Canvas {
                         gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
 
                     } else if (zoomLevel < 40_000 && mapText.canDraw(zoomLevel)) {
-                        gc.setFont(new Font(font, mapText.getMapTextType().getStandardModifier() * widthModifier));
+                        gc.setFont(new Font(font, mapText.getMapTextType().getStandardMultiplier() * widthModifier));
                         gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
 
                     } else if (zoomLevel >= 40_000) {
@@ -503,7 +503,7 @@ public class MapCanvas extends Canvas {
 
     public Color getTextColor() {
         if (colorMode == ColorMode.COLOR_BLIND) {
-            return Color.rgb(200, 255, 255);
+            return Color.rgb(220, 255, 255);
         } else if (colorMode == ColorMode.DARK_MODE) {
             return Color.rgb(180, 180, 180);
         }

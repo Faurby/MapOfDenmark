@@ -41,12 +41,12 @@ public enum MapTextType {
     float zoomLevelRequired;
     double standardModifier;
 
-    MapTextType(float zoomLevelRequired, double standardModifier){
+    MapTextType(float zoomLevelRequired, double standardMultiplier){
         this.zoomLevelRequired = zoomLevelRequired;
-        this.standardModifier = standardModifier;
+        this.standardModifier = standardMultiplier;
     }
 
-    public double getStandardModifier(){
+    public double getStandardMultiplier(){
         return standardModifier;
     }
 
