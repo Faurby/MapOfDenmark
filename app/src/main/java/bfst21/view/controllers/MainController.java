@@ -270,6 +270,7 @@ public class MainController {
     @FXML
     public void onMouseEntered(MouseEvent mouseEvent) {
         if(model.getMapData() != null) {
+            //TODO: få det her til at ske kun når man gemmer og sletter nodes eller loader kortet
             userNodeListItems.setAll(model.getMapData().getUserNodes());
             ObservableList<String> tempList = FXCollections.observableArrayList();
             for(UserNode userNode : userNodeListItems) {
