@@ -24,6 +24,61 @@ public class DirectedGraph implements Serializable {
     private int vertexAmount;
     private int edgeAmount;
 
+    public void cleanUp() {
+
+        int actualVertexAmount = 0;
+        int actualEdgeAmount = 0;
+
+        for (int i = 0; i < vertices.length; i++) {
+            Vertex vertex = vertices[i];
+
+            if (vertex != null) {
+                actualVertexAmount++;
+            }
+        }
+        for (int i = 0; i < edges.length; i++) {
+            Edge edge = edges[i];
+
+            if (edge != null) {
+                actualEdgeAmount++;
+            }
+        }
+        Vertex[] verticesCopy = new Vertex[actualVertexAmount];
+        Edge[] edgesCopy = new Edge[actualEdgeAmount];
+
+        int vertexCount = 0;
+        for (int i = 0; i < vertices.length; i++) {
+            Vertex vertex = vertices[i];
+            if (vertex != null) {
+                verticesCopy[vertexCount] = vertex;
+                vertexCount++;
+            }
+        }
+        int edgeCount = 0;
+        for (int i = 0; i < edges.length; i++) {
+            Edge edge = edges[i];
+            if (edge != null) {
+                edgesCopy[edgeCount] = edge;
+                edgeCount++;
+            }
+        }
+        vertices = verticesCopy;
+        edges = edgesCopy;
+
+        vertexAmount = actualVertexAmount;
+        edgeAmount = actualEdgeAmount;
+    }
+
+    public void removeVertex(int vertexID) {
+        Vertex vertex = vertices[vertexID];
+        if (vertex != null) {
+            for (int id : vertex.getEdges()) {
+                edges[id] = null;
+            }
+        }
+        vertices[vertexID] = null;
+    }
+
     public void createVertex(float[] coords) {
         Node node = new Node(coords[0], coords[1]);
 
@@ -81,7 +136,7 @@ public class DirectedGraph implements Serializable {
         }
     }
 
-    private void addEdge(
+    public void addEdge(
             int fromID,
             int toID,
             int maxSpeed,
@@ -125,7 +180,9 @@ public class DirectedGraph implements Serializable {
         if (vertex != null) {
             for (int id : vertex.getEdges()) {
                 Edge edge = edges[id];
-                edgeList.add(edge);
+                if (edge != null) {
+                    edgeList.add(edge);
+                }
             }
         }
         return edgeList;

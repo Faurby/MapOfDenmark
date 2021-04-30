@@ -1,8 +1,11 @@
 package bfst21.pathfinding;
 
 
-public class Vertex {
+import java.io.Serializable;
 
+public class Vertex implements Serializable {
+
+    private static final long serialVersionUID = 5389761446007729723L;
     private final float x, y;
 
     private int[] edges = new int[0];
