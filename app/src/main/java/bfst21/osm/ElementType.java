@@ -238,10 +238,6 @@ public enum ElementType {
                 this == ElementType.FOOTWAY;
     }
 
-    public boolean canSail() {
-        return this == ElementType.FERRY;
-    }
-
     public boolean isDisplayOptionEnabled() {
         return DisplayOptions.getInstance().getBool(DisplayOption.valueOf("DISPLAY_" + this));
     }

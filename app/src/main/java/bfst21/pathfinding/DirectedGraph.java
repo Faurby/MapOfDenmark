@@ -56,20 +56,19 @@ public class DirectedGraph implements Serializable {
             boolean oneWay,
             boolean canDrive,
             boolean canBike,
-            boolean canWalk,
-            boolean canSail) {
+            boolean canWalk) {
 
         int fromID = getVertexID(fromCoords);
         int toID = getVertexID(toCoords);
 
         float distance = (float) Util.distTo(fromCoords, toCoords);
-        Edge edge1 = new Edge(fromID, toID, distance, maxSpeed, canDrive, canBike, canWalk, canSail);
+        Edge edge1 = new Edge(fromID, toID, distance, maxSpeed, canDrive, canBike, canWalk);
 
         addEdge(toID, edge1);
         addEdge(fromID, edge1);
 
         if (!oneWay) {
-            Edge edge2 = new Edge(toID, fromID, distance, maxSpeed, canDrive, canBike, canWalk, canSail);
+            Edge edge2 = new Edge(toID, fromID, distance, maxSpeed, canDrive, canBike, canWalk);
             addEdge(toID, edge2);
             addEdge(fromID, edge2);
         }

@@ -22,8 +22,7 @@ public class Edge implements Serializable {
                 int maxSpeed,
                 boolean canDrive,
                 boolean canBike,
-                boolean canWalk,
-                boolean canSail) {
+                boolean canWalk) {
 
         this.from = from;
         this.to = to;
