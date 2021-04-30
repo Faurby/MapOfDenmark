@@ -5,6 +5,7 @@ import bfst21.models.DisplayOption;
 import bfst21.osm.*;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.pathfinding.Edge;
+import bfst21.pathfinding.Vertex;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
 import bfst21.models.Model;
@@ -195,24 +196,15 @@ public class MapCanvas extends Canvas {
 
                 for (MapText mapText : model.getMapData().getMapTexts()) {
 
-                    if (zoomLevel < 1000 && (mapText.getPlace().equals("city") || mapText.getPlace().equals("peninsula"))) {
+                    if (zoomLevel < 1000 && mapText.canDrawFarAway(mapText.getMapTextType())) {
                         gc.setFont(new Font(font, 0.08 * widthModifier));
                         gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
 
-                    } else if (mapText.canDraw(zoomLevel)) {
-
-                        if (mapText.getPlace().equals("city") || mapText.getPlace().equals("island") || mapText.getPlace().equals("peninsula")) {
-                            gc.setFont(new Font(font, 0.02 * widthModifier));
-
-                        } else if (mapText.getPlace().equals("hamlet")) {
-                            gc.setFont(new Font(font, 0.007 * widthModifier));
-
-                        } else {
-                            gc.setFont(new Font(font, 0.01 * widthModifier));
-                        }
+                    } else if (zoomLevel < 40_000 && mapText.canDraw(zoomLevel)) {
+                        gc.setFont(new Font(font, mapText.getMapTextType().getStandardMultiplier() * widthModifier));
                         gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
 
-                    } else if (zoomLevel > 40_000) {
+                    } else if (zoomLevel >= 40_000) {
                         gc.setFont(new Font(font, 0.002 * widthModifier));
                         gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
                     }
@@ -270,10 +262,14 @@ public class MapCanvas extends Canvas {
             gc.setLineWidth(0.0002 * widthModifier);
             gc.beginPath();
 
-            TreeMap<Integer, List<Edge>> adj = directedGraph.getAdjacentEdges();
-            for (Integer vertexID : adj.keySet()) {
-                for (Edge edge : adj.get(vertexID)) {
-                    edge.draw(directedGraph, gc);
+            Vertex[] vertices = directedGraph.getVertices();
+
+            for (Vertex vertex : vertices) {
+                if (vertex != null) {
+                    for (int id : vertex.getEdges()) {
+                        Edge edge = directedGraph.getEdge(id);
+                        edge.draw(directedGraph, gc);
+                    }
                 }
             }
             gc.stroke();
@@ -512,7 +508,7 @@ public class MapCanvas extends Canvas {
 
     public Color getTextColor() {
         if (colorMode == ColorMode.COLOR_BLIND) {
-            return Color.rgb(200, 255, 255);
+            return Color.rgb(220, 255, 255);
         } else if (colorMode == ColorMode.DARK_MODE) {
             return Color.rgb(180, 180, 180);
         }

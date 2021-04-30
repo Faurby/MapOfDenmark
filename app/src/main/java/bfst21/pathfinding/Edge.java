@@ -32,6 +32,21 @@ public class Edge implements Serializable {
         this.weight = (distance * 60.0f / maxSpeed);
     }
 
+    public Edge(int from,
+                int to,
+                float weight,
+                boolean canDrive,
+                boolean canBike,
+                boolean canWalk) {
+
+        this.from = from;
+        this.to = to;
+        this.canDrive = canDrive;
+        this.canBike = canBike;
+        this.canWalk = canWalk;
+        this.weight = weight;
+    }
+
     public void draw(DirectedGraph directedGraph, GraphicsContext gc) {
         float[] fromCoords = directedGraph.getVertexCoords(from);
         float[] toCoords = directedGraph.getVertexCoords(to);
@@ -52,6 +67,18 @@ public class Edge implements Serializable {
             return true;
 
         } else return canWalk && transportOption == TransportOption.WALK;
+    }
+
+    public boolean canWalk() {
+        return canWalk;
+    }
+
+    public boolean canBike() {
+        return canBike;
+    }
+
+    public boolean canDrive() {
+        return canDrive;
     }
 
     public int getFrom() {

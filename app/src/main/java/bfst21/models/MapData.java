@@ -4,6 +4,7 @@ import bfst21.address.TST;
 import bfst21.osm.*;
 import bfst21.pathfinding.DijkstraPath;
 import bfst21.pathfinding.DirectedGraph;
+import bfst21.pathfinding.Edge;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdTree;
 
@@ -156,6 +157,60 @@ public class MapData {
                     }
                 }
             }
+            directedGraph.cleanUp();
+
+            DirectedGraph directedGraph2 = new DirectedGraph();
+
+            for (int i = 0; i < directedGraph.getVertexAmount(); i++) {
+                List<Edge> edges = directedGraph.getAdjacentEdges(i);
+                int size = edges.size();
+
+                if (size == 4 || size == 2) {
+
+                    int toThisVertex = 0;
+                    int fromThisVertex = 0;
+
+                    int toID = 0;
+                    int fromID = 0;
+
+                    float totalWeight = 0.0f;
+
+                    boolean canDrive = true;
+                    boolean canBike = true;
+                    boolean canWalk = true;
+
+                    for (Edge edge : edges) {
+
+                        canDrive = edge.canDrive();
+                        canBike = edge.canBike();
+                        canWalk = edge.canWalk();
+
+                        totalWeight += edge.getWeight();
+
+                        if (edge.getTo() == i) {
+                            toThisVertex++;
+
+                        } else if (edge.getFrom() == i) {
+                            fromThisVertex++;
+
+                        } else if (edge.getTo() != i) {
+                            toID = edge.getTo();
+
+                        } else if (edge.getFrom() != i) {
+                            fromID = edge.getFrom();
+                        }
+                    }
+                    if ((toThisVertex == 2 && fromThisVertex == 2) ||
+                        (toThisVertex == 1 && fromThisVertex == 1)) {
+
+                        directedGraph.removeVertex(i);
+
+
+
+                    }
+                }
+            }
+
             time += System.nanoTime();
             System.out.println("Built directed graph for path finding in " + time / 1_000_000 + "ms");
         }
