@@ -269,17 +269,14 @@ public class MainController {
 
     @FXML
     public void onMouseEntered(MouseEvent mouseEvent) {
-        /*
         if(model.getMapData() != null) {
-            userNodeListItems.addAll(userNodes);
+            userNodeListItems.setAll(model.getMapData().getUserNodes());
             ObservableList<String> tempList = FXCollections.observableArrayList();
             for(UserNode userNode : userNodeListItems) {
                 tempList.add(userNode.getName());
             }
             userNodeListView.setItems(tempList);
         }
-
-         */
     }
 
     @FXML
