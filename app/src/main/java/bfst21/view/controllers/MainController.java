@@ -357,15 +357,7 @@ public class MainController {
     @FXML
     public void userNodeTextFieldKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode().getName().equals("Enter")) {
-            if(userNodeNameTextField.getText().isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Error");
-                alert.setHeaderText("");
-                alert.setContentText("A name is required");
-                alert.showAndWait();
-            } else {
-                saveUserNode();
-            }
+            newUserNodeCheckEmptyNameAndSave();
         } else if (keyEvent.getCode().getName().equals("Esc")) {
             userNodeVBox.setVisible(false);
             scene.setCursor(userNodeCursorImage);
@@ -373,13 +365,11 @@ public class MainController {
     }
 
     @FXML
-    public void userNodeCancelClicked() {
-        userNodeVBox.setVisible(false);
-        scene.setCursor(userNodeCursorImage);
+    public void userNodeSaveClicked() {
+        newUserNodeCheckEmptyNameAndSave();
     }
 
-    @FXML
-    public void userNodeSaveClicked() {
+    private void newUserNodeCheckEmptyNameAndSave() {
         if(userNodeNameTextField.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
@@ -389,6 +379,12 @@ public class MainController {
         } else {
             saveUserNode();
         }
+    }
+
+    @FXML
+    public void userNodeCancelClicked() {
+        userNodeVBox.setVisible(false);
+        scene.setCursor(userNodeCursorImage);
     }
 
     private void saveUserNode() {
@@ -435,16 +431,7 @@ public class MainController {
     @FXML
     public void userNodeNewNameTextFieldKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode().getName().equals("Enter")) {
-            if(userNodeNameTextField.getText().isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Error");
-                alert.setHeaderText("");
-                alert.setContentText("A name is required");
-                alert.showAndWait();
-            } else {
-                currentUserNode.setName(userNodeNewNameTextField.getText());
-                userNodeNewNameVBox.setVisible(false);
-            }
+            userNodeNewNameCheckEmptyNameAndSave();
         } else if (keyEvent.getCode().getName().equals("Esc")) {
             userNodeNewNameVBox.setVisible(false);
         }
@@ -472,8 +459,20 @@ public class MainController {
 
     @FXML
     public void userNodeNewNameSaveClicked() {
-        currentUserNode.setName(userNodeNewNameTextField.getText());
-        userNodeNewNameVBox.setVisible(false);
+        userNodeNewNameCheckEmptyNameAndSave();
+    }
+
+    private void userNodeNewNameCheckEmptyNameAndSave() {
+        if(userNodeNewNameTextField.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("");
+            alert.setContentText("A name is required");
+            alert.showAndWait();
+        } else {
+            currentUserNode.setName(userNodeNewNameTextField.getText());
+            userNodeNewNameVBox.setVisible(false);
+        }
     }
 
     @FXML

@@ -514,7 +514,7 @@ public class MapCanvas extends Canvas {
         if (colorMode == ColorMode.COLOR_BLIND) {
             return Color.rgb(200, 255, 255);
         } else if (colorMode == ColorMode.DARK_MODE) {
-            return Color.rgb(48, 240, 240);
+            return Color.rgb(180, 180, 180);
         }
         return Color.rgb(4, 1, 10);
     }
