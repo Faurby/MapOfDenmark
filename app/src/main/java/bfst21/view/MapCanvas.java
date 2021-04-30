@@ -196,7 +196,7 @@ public class MapCanvas extends Canvas {
                 for (MapText mapText : model.getMapData().getMapTexts()) {
 
                     if (mapText.canDraw(zoomLevel)) {
-                        if (mapText.getPlace().equals("city") || mapText.getPlace().equals("island")) {
+                        if (mapText.getPlace().equals("city") || mapText.getPlace().equals("island") || mapText.getPlace().equals("peninsula")) {
                             gc.setFont(new Font(font, 0.02 * widthModifier));
 
                         } else if (mapText.getPlace().equals("hamlet")) {
