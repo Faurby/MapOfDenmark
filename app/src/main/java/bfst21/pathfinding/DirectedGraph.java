@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
 
 
 /**
@@ -18,17 +17,28 @@ public class DirectedGraph implements Serializable {
     private static final long serialVersionUID = -2665514385590129687L;
 
     private final HashMap<Node, Integer> coordsToIdMap = new HashMap<>();
-    private final TreeMap<Integer, float[]> idToCoordsMap = new TreeMap<>();
-    private final TreeMap<Integer, List<Edge>> adjacentEdges = new TreeMap<>();
+
+    private Vertex[] vertices = new Vertex[1];
+    private Edge[] edges = new Edge[1];
 
     private int vertexAmount;
+    private int edgeAmount;
 
     public void createVertex(float[] coords) {
         Node node = new Node(coords[0], coords[1]);
 
         if (!coordsToIdMap.containsKey(node)) {
+            if (vertexAmount == vertices.length) {
+                Vertex[] copy = new Vertex[vertices.length * 2];
+
+                for (int i = 0; i < vertices.length; i++) {
+                    copy[i] = vertices[i];
+                }
+                vertices = copy;
+            }
+            vertices[vertexAmount] = new Vertex(coords[0], coords[1]);
             coordsToIdMap.put(node, vertexAmount);
-            idToCoordsMap.put(vertexAmount, coords);
+
             vertexAmount++;
         }
     }
@@ -43,8 +53,10 @@ public class DirectedGraph implements Serializable {
     }
 
     public float[] getVertexCoords(int id) {
-        if (idToCoordsMap.containsKey(id)) {
-            return idToCoordsMap.get(id);
+        Vertex vertex = vertices[id];
+
+        if (vertex != null) {
+            return vertex.getCoords();
         }
         return null;
     }
@@ -60,27 +72,46 @@ public class DirectedGraph implements Serializable {
 
         int fromID = getVertexID(fromCoords);
         int toID = getVertexID(toCoords);
-
         float distance = (float) Util.distTo(fromCoords, toCoords);
-        Edge edge1 = new Edge(fromID, toID, distance, maxSpeed, canDrive, canBike, canWalk);
 
-        addEdge(toID, edge1);
-        addEdge(fromID, edge1);
+        addEdge(fromID, toID, maxSpeed, distance, canDrive, canBike, canWalk);
 
         if (!oneWay) {
-            Edge edge2 = new Edge(toID, fromID, distance, maxSpeed, canDrive, canBike, canWalk);
-            addEdge(toID, edge2);
-            addEdge(fromID, edge2);
+            addEdge(toID, fromID, maxSpeed, distance, canDrive, canBike, canWalk);
         }
     }
 
-    private void addEdge(int vertexID, Edge edge) {
-        List<Edge> edges = new ArrayList<>();
-        if (adjacentEdges.containsKey(vertexID)) {
-            edges = adjacentEdges.get(vertexID);
+    private void addEdge(
+            int fromID,
+            int toID,
+            int maxSpeed,
+            float distance,
+            boolean canDrive,
+            boolean canBike,
+            boolean canWalk) {
+
+        Edge edge = new Edge(fromID, toID, distance, maxSpeed, canDrive, canBike, canWalk);
+
+        if (edgeAmount == edges.length) {
+            Edge[] copy = new Edge[edges.length * 2];
+
+            for (int i = 0; i < edges.length; i++) {
+                copy[i] = edges[i];
+            }
+            edges = copy;
         }
-        edges.add(edge);
-        adjacentEdges.put(vertexID, edges);
+        edges[edgeAmount] = edge;
+
+        Vertex vertexFrom = vertices[fromID];
+        Vertex vertexTo = vertices[toID];
+
+        if (vertexFrom != null) {
+            vertexFrom.addEdge(edgeAmount);
+        }
+        if (vertexTo != null) {
+            vertexTo.addEdge(edgeAmount);
+        }
+        edgeAmount++;
     }
 
     public int getVertexAmount() {
@@ -88,13 +119,23 @@ public class DirectedGraph implements Serializable {
     }
 
     public List<Edge> getAdjacentEdges(int vertexID) {
-        if (adjacentEdges.containsKey(vertexID)) {
-            return adjacentEdges.get(vertexID);
+        List<Edge> edgeList = new ArrayList<>();
+
+        Vertex vertex = vertices[vertexID];
+        if (vertex != null) {
+            for (int id : vertex.getEdges()) {
+                Edge edge = edges[id];
+                edgeList.add(edge);
+            }
         }
-        return new ArrayList<>();
+        return edgeList;
     }
 
-    public TreeMap<Integer, List<Edge>> getAdjacentEdges() {
-        return adjacentEdges;
+    public Edge getEdge(int id) {
+        return edges[id];
+    }
+
+    public Vertex[] getVertices() {
+        return vertices;
     }
 }

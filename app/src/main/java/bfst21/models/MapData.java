@@ -4,6 +4,7 @@ import bfst21.address.TST;
 import bfst21.osm.*;
 import bfst21.pathfinding.DijkstraPath;
 import bfst21.pathfinding.DirectedGraph;
+import bfst21.pathfinding.Edge;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdTree;
 
@@ -155,7 +156,42 @@ public class MapData {
                         }
                     }
                 }
+//
+//                DirectedGraph directedGraph2 = new DirectedGraph();
+//
+//                for (int i = 0; i < directedGraph.getVertexAmount(); i++) {
+//                    List<Edge> edges = directedGraph.getAdjacentEdges(i);
+//
+//                    if (edges.size() == 4 || edges.size() == 2) {
+//
+//                        int toThisVertex = 0;
+//                        int fromThisVertex = 0;
+//
+//                        for (Edge edge : edges) {
+//                            if (edge.getTo() == i) {
+//                                toThisVertex++;
+//                            } else if (edge.getFrom() == i) {
+//                                fromThisVertex++;
+//                            }
+//                        }
+//                        if ((toThisVertex == 2 && fromThisVertex == 2) ||
+//                            (toThisVertex == 1 && fromThisVertex == 1)) {
+//
+//                            //This vertex needs to be removed
+//                        }
+//                    }
+//                }
             }
+
+
+
+
+
+
+
+
+
+
             time += System.nanoTime();
             System.out.println("Built directed graph for path finding in " + time / 1_000_000 + "ms");
         }

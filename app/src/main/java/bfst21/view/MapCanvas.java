@@ -5,6 +5,7 @@ import bfst21.models.DisplayOption;
 import bfst21.osm.*;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.pathfinding.Edge;
+import bfst21.pathfinding.Vertex;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
 import bfst21.models.Model;
@@ -261,10 +262,14 @@ public class MapCanvas extends Canvas {
             gc.setLineWidth(0.0002 * widthModifier);
             gc.beginPath();
 
-            TreeMap<Integer, List<Edge>> adj = directedGraph.getAdjacentEdges();
-            for (Integer vertexID : adj.keySet()) {
-                for (Edge edge : adj.get(vertexID)) {
-                    edge.draw(directedGraph, gc);
+            Vertex[] vertices = directedGraph.getVertices();
+
+            for (Vertex vertex : vertices) {
+                if (vertex != null) {
+                    for (int id : vertex.getEdges()) {
+                        Edge edge = directedGraph.getEdge(id);
+                        edge.draw(directedGraph, gc);
+                    }
                 }
             }
             gc.stroke();
