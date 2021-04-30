@@ -42,7 +42,7 @@ public class MapText extends BoundingBoxElement {
         if (zoomLevel <= 50_000) {
 
             if (zoomLevel >= 1 && place.equals("peninsula")) {
-                return true;
+                return true; //TODO make it so municipalities and peninsula are registered
 
             } else if (zoomLevel >= 1 && place.equals("island")) {
                 return true;

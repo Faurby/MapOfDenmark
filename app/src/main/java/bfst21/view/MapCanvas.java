@@ -212,8 +212,8 @@ public class MapCanvas extends Canvas {
                         }
                         gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
 
-                    } else if (zoomLevel > 50_000) {
-                        gc.setFont(new Font(font, 0.005 * widthModifier));
+                    } else if (zoomLevel > 40_000) {
+                        gc.setFont(new Font(font, 0.002 * widthModifier));
                         gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
                     }
                 }
