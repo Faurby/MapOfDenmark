@@ -521,7 +521,7 @@ public class MainController {
             alert.setHeaderText("");
             alert.setContentText("A name is required");
             alert.showAndWait();
-        } else if(userNodesMap.containsKey(userNodeNameTextField.getText())) {
+        } else if(userNodesMap.containsKey(userNodeNewNameTextField.getText())) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
             alert.setHeaderText("");
