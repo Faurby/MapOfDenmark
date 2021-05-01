@@ -2,8 +2,6 @@ package bfst21.models;
 
 
 public enum DisplayOption {
-    USE_GRAPH,
-
     DISPLAY_KD_TREE,
     DISPLAY_GRAPH,
     DISPLAY_DIJKSTRA,

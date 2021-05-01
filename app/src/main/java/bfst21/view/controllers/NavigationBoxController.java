@@ -46,9 +46,13 @@ public class NavigationBoxController extends SubController {
     @FXML
     public void searchNavigationAddresses() {
         if (startingPoint.getText().trim().equals("")) {
+            //TODO: Why not inform the user instead of throwing an exception?
+            // No reason to output stacktraces in the console
             throw new IllegalInputException("Search field is empty", startingPoint.getId());
 
         } else if (destinationPoint.getText().trim().equals("")) {
+            //TODO: Why not inform the user instead of throwing an exception?
+            // No reason to output stacktraces in the console
             throw new IllegalInputException("Search field is empty", destinationPoint.getId());
 
         } else {

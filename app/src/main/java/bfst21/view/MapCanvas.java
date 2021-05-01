@@ -26,8 +26,6 @@ import javafx.scene.transform.NonInvertibleTransformException;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 
 public class MapCanvas extends Canvas {
@@ -342,7 +340,6 @@ public class MapCanvas extends Canvas {
         rangeSearch();
         repaint();
     }
-
 
     //TEST method that draws a dot at the searchAddressCoords-coordinates and at the middle of the screen
 //    public void drawSearchAddress() {

@@ -1,14 +1,11 @@
 package bfst21.view.controllers;
 
-import bfst21.address.Address;
 import bfst21.address.TST;
 import bfst21.exceptions.IllegalInputException;
 import bfst21.models.MapData;
 import bfst21.models.Model;
-import bfst21.osm.Node;
 import bfst21.osm.OsmAddress;
 import bfst21.view.MapCanvas;
-import edu.princeton.cs.algs4.StdOut;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -42,7 +39,6 @@ public class SearchBoxController extends SubController {
     private Task<Void> addressSuggestionTask;
     private List<OsmAddress> allSuggestions = new ArrayList<>();
     private List<String> shownSuggestions = new ArrayList<>();
-    private float x,y;
 
     @FXML
     private void searchSingleAddress() {
@@ -52,14 +48,16 @@ public class SearchBoxController extends SubController {
             if (addressTries == null) {
                 activateTries();
             }
-
             for (OsmAddress osmAddress : allSuggestions) {
                 if (osmAddress.toString().toLowerCase().contains(address)) {
-                    mainController.getCanvas().changeView(osmAddress.getNode().getX(),osmAddress.getNode().getY());
+                    mainController.getCanvas().changeView(osmAddress.getNode().getX(), osmAddress.getNode().getY());
+                    break;
                 }
             }
 
         } else {
+            //TODO: Why not inform the user instead of throwing an exception?
+            // No reason to output stacktraces in the console
             throw new IllegalInputException("Search field is empty");
         }
     }
@@ -76,6 +74,7 @@ public class SearchBoxController extends SubController {
         super.setVisible(visible);
         searchBox.setVisible(visible);
         searchBox.setManaged(visible);
+
         if (visible) {
             searchBox.requestFocus();
         }

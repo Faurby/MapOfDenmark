@@ -261,7 +261,8 @@
               maxWidth="150"
               maxHeight="120"
               StackPane.alignment="BOTTOM_RIGHT"
-              spacing="8">
+              spacing="8"
+              visible="false">
             <padding>
                 <Insets bottom="15"/>
             </padding>

@@ -29,14 +29,13 @@ public class MapData {
     private List<MapText> kdTreeMapTextSearchList = new ArrayList<>();
 
     private List<UserNode> userNodes;
-    private HashMap<String, UserNode> userNodesMap;
+    private final HashMap<String, UserNode> userNodesMap;
+
     private final List<Way> islands;
 
     private final float minX, minY, maxX, maxY;
 
     private final TST<List<OsmAddress>> addressTries;
-
-    private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
     public float[] originCoords;
     public float[] destinationCoords;
@@ -126,98 +125,95 @@ public class MapData {
      * Builds a directed graph used for path finding if option is enabled.
      */
     public void buildDirectedGraph(List<Way> wayList) {
-        if (displayOptions.getBool(DisplayOption.USE_GRAPH)) {
 
-            long time = -System.nanoTime();
-            directedGraph = new DirectedGraph();
+        long time = -System.nanoTime();
+        directedGraph = new DirectedGraph();
 
-            for (Way way : wayList) {
-                if (way.getType() != null) {
-                    if (way.getType().canNavigate()) {
+        for (Way way : wayList) {
+            if (way.getType() != null) {
+                if (way.getType().canNavigate()) {
 
-                        int maxSpeed = way.getMaxSpeed();
-                        float[] coords = way.getCoords();
+                    int maxSpeed = way.getMaxSpeed();
+                    float[] coords = way.getCoords();
 
-                        for (int i = 0; i < (coords.length - 2); i += 2) {
-                            float vX = coords[i];
-                            float vY = coords[i + 1];
-                            float wX = coords[i + 2];
-                            float wY = coords[i + 3];
+                    for (int i = 0; i < (coords.length - 2); i += 2) {
+                        float vX = coords[i];
+                        float vY = coords[i + 1];
+                        float wX = coords[i + 2];
+                        float wY = coords[i + 3];
 
-                            float[] fromCoords = new float[]{vX, vY};
-                            float[] toCoords = new float[]{wX, wY};
+                        float[] fromCoords = new float[]{vX, vY};
+                        float[] toCoords = new float[]{wX, wY};
 
-                            directedGraph.createVertex(fromCoords);
-                            directedGraph.createVertex(toCoords);
+                        directedGraph.createVertex(fromCoords);
+                        directedGraph.createVertex(toCoords);
 
-                            ElementType type = way.getType();
-                            boolean canDrive = type.canDrive();
-                            boolean canBike = type.canBike();
-                            boolean canWalk = type.canWalk();
-                            boolean oneWay = way.isOneWay();
+                        ElementType type = way.getType();
+                        boolean canDrive = type.canDrive();
+                        boolean canBike = type.canBike();
+                        boolean canWalk = type.canWalk();
+                        boolean oneWay = way.isOneWay();
 
-                            directedGraph.addEdge(fromCoords, toCoords, maxSpeed, oneWay, canDrive, canBike, canWalk);
-                        }
+                        directedGraph.addEdge(fromCoords, toCoords, maxSpeed, oneWay, canDrive, canBike, canWalk);
                     }
                 }
             }
-            directedGraph.cleanUp();
+        }
+        directedGraph.cleanUp();
 
-            DirectedGraph directedGraph2 = new DirectedGraph();
+        DirectedGraph directedGraph2 = new DirectedGraph();
 
-            for (int i = 0; i < directedGraph.getVertexAmount(); i++) {
-                List<Edge> edges = directedGraph.getAdjacentEdges(i);
-                int size = edges.size();
+        for (int i = 0; i < directedGraph.getVertexAmount(); i++) {
+            List<Edge> edges = directedGraph.getAdjacentEdges(i);
+            int size = edges.size();
 
-                if (size == 4 || size == 2) {
+            if (size == 4 || size == 2) {
 
-                    int toThisVertex = 0;
-                    int fromThisVertex = 0;
+                int toThisVertex = 0;
+                int fromThisVertex = 0;
 
-                    int toID = 0;
-                    int fromID = 0;
+                int toID = 0;
+                int fromID = 0;
 
-                    float totalWeight = 0.0f;
+                float totalWeight = 0.0f;
 
-                    boolean canDrive = true;
-                    boolean canBike = true;
-                    boolean canWalk = true;
+                boolean canDrive = true;
+                boolean canBike = true;
+                boolean canWalk = true;
 
-                    for (Edge edge : edges) {
+                for (Edge edge : edges) {
 
-                        canDrive = edge.canDrive();
-                        canBike = edge.canBike();
-                        canWalk = edge.canWalk();
+                    canDrive = edge.canDrive();
+                    canBike = edge.canBike();
+                    canWalk = edge.canWalk();
 
-                        totalWeight += edge.getWeight();
+                    totalWeight += edge.getWeight();
 
-                        if (edge.getTo() == i) {
-                            toThisVertex++;
+                    if (edge.getTo() == i) {
+                        toThisVertex++;
 
-                        } else if (edge.getFrom() == i) {
-                            fromThisVertex++;
+                    } else if (edge.getFrom() == i) {
+                        fromThisVertex++;
 
-                        } else if (edge.getTo() != i) {
-                            toID = edge.getTo();
+                    } else if (edge.getTo() != i) {
+                        toID = edge.getTo();
 
-                        } else if (edge.getFrom() != i) {
-                            fromID = edge.getFrom();
-                        }
+                    } else if (edge.getFrom() != i) {
+                        fromID = edge.getFrom();
                     }
-                    if ((toThisVertex == 2 && fromThisVertex == 2) ||
+                }
+                if ((toThisVertex == 2 && fromThisVertex == 2) ||
                         (toThisVertex == 1 && fromThisVertex == 1)) {
 
-                        directedGraph.removeVertex(i);
+                    directedGraph.removeVertex(i);
 
 
-
-                    }
                 }
             }
-
-            time += System.nanoTime();
-            System.out.println("Built directed graph for path finding in " + time / 1_000_000 + "ms");
         }
+
+        time += System.nanoTime();
+        System.out.println("Built directed graph for path finding in " + time / 1_000_000 + "ms");
     }
 
     /**
@@ -478,7 +474,7 @@ public class MapData {
 
     public void updateUserNodesMap() {
         userNodesMap.clear();
-        for(UserNode userNode : userNodes) {
+        for (UserNode userNode : userNodes) {
             userNodesMap.put(userNode.getName(), userNode);
         }
     }

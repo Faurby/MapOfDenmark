@@ -8,8 +8,6 @@ import bfst21.osm.UserNode;
 import bfst21.osm.Way;
 import bfst21.view.ColorMode;
 import bfst21.view.MapCanvas;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -160,7 +158,7 @@ public class MainController {
     }
 
     private void userNodeClickedInListView(String userNodeName) {
-        if(userNodeName != null) {
+        if (userNodeName != null) {
             UserNode clickedUserNode = userNodesMap.get(userNodeName);
             canvas.changeView(clickedUserNode.getX(), clickedUserNode.getY());
             userNodeListView.getSelectionModel().clearSelection();
@@ -277,7 +275,7 @@ public class MainController {
 
     @FXML
     public void onMouseEntered(MouseEvent mouseEvent) {
-        if(model.getMapData() != null) {
+        if (model.getMapData() != null) {
             updateUserNodeList();
         }
     }
@@ -337,6 +335,7 @@ public class MainController {
         startBox.setManaged(false);
         loadingText.setVisible(false);
         searchBoxController.setVisible(true);
+        userNodeVBox.setVisible(true);
         canvas.runRangeSearchTask();
     }
 
@@ -370,6 +369,8 @@ public class MainController {
     @FXML
     public void userNodeButtonClicked() throws MapDataNotLoadedException {
         if (model.getMapData() == null) {
+            //TODO: Why not inform the user instead of throwing an exception?
+            // No reason to output stacktraces in the console
             throw new MapDataNotLoadedException("No MapData has been loaded. MapData is null.");
         }
         if (userNodeToggle) {
@@ -397,13 +398,13 @@ public class MainController {
     }
 
     private void newUserNodeCheckNameAndSave() {
-        if(userNodeNameTextField.getText().isEmpty()) {
+        if (userNodeNameTextField.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
             alert.setHeaderText("");
             alert.setContentText("A name is required");
             alert.showAndWait();
-        } else if(userNodesMap.containsKey(userNodeNameTextField.getText())) {
+        } else if (userNodesMap.containsKey(userNodeNameTextField.getText())) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
             alert.setHeaderText("");
@@ -440,17 +441,20 @@ public class MainController {
 
         userNodesMap = model.getMapData().getUserNodesMap();
 
-        for(UserNode userNode : userNodeListItems) {
-            tempList.add(userNode.getName());
+        for (UserNode userNode : userNodeListItems) {
+            String name = userNode.getName();
+            if (name.length() >= 12) {
+                name = name.substring(0, 12) + "...";
+            }
+            tempList.add(name);
         }
         userNodeListView.setItems(tempList);
     }
 
     @FXML
     public void userNodeDeleteClicked() {
-        if (currentUserNode == null) {
-            throw new NullPointerException("currentUserNode is null");
-        } else {
+        if (currentUserNode != null) {
+
             model.getMapData().getUserNodes().remove(currentUserNode);
             model.getMapData().updateUserNodesMap();
             currentUserNode = null;
@@ -467,7 +471,7 @@ public class MainController {
     }
 
     @FXML
-    public void userNodeChangeNameClicked(ActionEvent actionEvent) {
+    public void userNodeChangeNameClicked() {
         userNodeNewNameVBox.setVisible(true);
         userNodeNewNameTextField.requestFocus();
     }
@@ -482,6 +486,7 @@ public class MainController {
     public void userNodeNewNameTextFieldKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ENTER) {
             userNodeNewNameCheckNameAndSave();
+
         } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
             userNodeNewNameVBox.setVisible(false);
         }
@@ -494,6 +499,7 @@ public class MainController {
             userNodeNewDescriptionVBox.setVisible(false);
             userNodeNewDescriptionTextField.setText("");
             userNodeClickedDescription.setText(currentUserNode.getDescription());
+
         } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
             userNodeNewDescriptionVBox.setVisible(false);
         }
@@ -515,18 +521,20 @@ public class MainController {
     }
 
     private void userNodeNewNameCheckNameAndSave() {
-        if(userNodeNewNameTextField.getText().isEmpty()) {
+        if (userNodeNewNameTextField.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
             alert.setHeaderText("");
             alert.setContentText("A name is required");
             alert.showAndWait();
-        } else if(userNodesMap.containsKey(userNodeNewNameTextField.getText())) {
+
+        } else if (userNodesMap.containsKey(userNodeNewNameTextField.getText())) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
             alert.setHeaderText("");
             alert.setContentText("Point of Interest names must be unique");
             alert.showAndWait();
+
         } else {
             currentUserNode.setName(userNodeNewNameTextField.getText());
             userNodeNewNameVBox.setVisible(false);
@@ -585,6 +593,7 @@ public class MainController {
         fileSaver.setInitialDirectory(new File("./"));
         fileSaver.getExtensionFilters().addAll((
                 new FileChooser.ExtensionFilter("OBJ file", ".obj")));
+
         File file = fileSaver.showSaveDialog(new Stage());
         if (file != null) {
             Task<Void> task = new Task<>() {
@@ -605,7 +614,6 @@ public class MainController {
                 confirmationPopup.setContentText("Successfully saved OBJ");
                 confirmationPopup.setTitle("Success");
                 confirmationPopup.setHeaderText("");
-                //confirmationPopup.setGraphic(null);
                 confirmationPopup.showAndWait();
             });
             task.setOnFailed(event -> task.getException().printStackTrace());
