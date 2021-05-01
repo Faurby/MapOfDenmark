@@ -196,7 +196,7 @@ public class MapCanvas extends Canvas {
 
                 for (MapText mapText : model.getMapData().getMapTexts()) {
 
-                    if (zoomLevel < 1000 && mapText.canDrawFarAway(mapText.getMapTextType())) {
+                    if (zoomLevel < 1000 && mapText.canDrawFarAway()) {
                         gc.setFont(new Font(font, 0.08 * widthModifier));
                         gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
 
