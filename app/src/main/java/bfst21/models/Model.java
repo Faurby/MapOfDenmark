@@ -38,6 +38,10 @@ public class Model {
     public void load(String fileName) throws IOException, XMLStreamException, FactoryConfigurationError, ClassNotFoundException {
         this.fileName = fileName;
 
+        //TODO: Check if file at fileName is actually present
+        // Present an error to the user if it doesn't exist.
+        // No need for a NullPointerException in the console.
+
         System.out.println("Model loading file: " + fileName);
         long totalTime = -System.nanoTime();
 
