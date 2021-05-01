@@ -8,9 +8,9 @@ import bfst21.osm.UserNode;
 import bfst21.osm.Way;
 import bfst21.view.ColorMode;
 import bfst21.view.MapCanvas;
-import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -56,7 +56,6 @@ public class MainController {
     private VBox userNodeVBox;
     @FXML
     private ListView<String> userNodeListView;
-    private ObservableList<UserNode> userNodeListItems = FXCollections.observableArrayList();
     @FXML
     private VBox newUserNodeVBox;
     @FXML
@@ -89,12 +88,13 @@ public class MainController {
     @FXML
     private StartBoxController startBoxController;
 
-    private boolean resetDjikstra = true;
+    private boolean resetDijkstra = true;
 
     private boolean userNodeToggle = false;
-    ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
-    UserNode currentUserNode = null;
-    List<UserNode> userNodes = new ArrayList<>();
+    private final ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
+    private UserNode currentUserNode = null;
+    private ObservableList<UserNode> userNodeListItems = FXCollections.observableArrayList();
+    private HashMap<String, UserNode> userNodesMap = new HashMap<>();
 
     private Model model;
     private Point2D lastMouse;
@@ -156,7 +156,15 @@ public class MainController {
             updateMouseCoords(currentMousePos);
         });
 
-        //userNodeVBox.setOnMouseMoved(event -> userNodeListView.setItems(userNodeListItems.));
+        userNodeListView.setOnMouseClicked(event -> userNodeClickedInListView(userNodeListView.getSelectionModel().getSelectedItem()));
+    }
+
+    private void userNodeClickedInListView(String userNodeName) {
+        if(userNodeName != null) {
+            UserNode clickedUserNode = userNodesMap.get(userNodeName);
+            canvas.changeView(clickedUserNode.getX(), clickedUserNode.getY());
+            userNodeListView.getSelectionModel().clearSelection();
+        }
     }
 
     @FXML
@@ -255,14 +263,14 @@ public class MainController {
             float[] queryCoords = new float[]{(float) point.getX(), (float) point.getY()};
             float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords);
 
-            if (resetDjikstra) {
-                resetDjikstra = false;
+            if (resetDijkstra) {
+                resetDijkstra = false;
                 model.getMapData().originCoords = nearestCoords;
                 model.getMapData().destinationCoords = null;
             } else {
                 model.getMapData().destinationCoords = nearestCoords;
                 model.getMapData().runDijkstra();
-                resetDjikstra = true;
+                resetDijkstra = true;
             }
         }
     }
@@ -270,13 +278,7 @@ public class MainController {
     @FXML
     public void onMouseEntered(MouseEvent mouseEvent) {
         if(model.getMapData() != null) {
-            //TODO: få det her til at ske kun når man gemmer og sletter nodes eller loader kortet
-            userNodeListItems.setAll(model.getMapData().getUserNodes());
-            ObservableList<String> tempList = FXCollections.observableArrayList();
-            for(UserNode userNode : userNodeListItems) {
-                tempList.add(userNode.getName());
-            }
-            userNodeListView.setItems(tempList);
+            updateUserNodeList();
         }
     }
 
@@ -381,9 +383,9 @@ public class MainController {
 
     @FXML
     public void userNodeTextFieldKeyPressed(KeyEvent keyEvent) {
-        if (keyEvent.getCode().getName().equals("Enter")) {
-            newUserNodeCheckEmptyNameAndSave();
-        } else if (keyEvent.getCode().getName().equals("Esc")) {
+        if (keyEvent.getCode() == KeyCode.ENTER) {
+            newUserNodeCheckNameAndSave();
+        } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
             newUserNodeVBox.setVisible(false);
             scene.setCursor(userNodeCursorImage);
         }
@@ -391,15 +393,21 @@ public class MainController {
 
     @FXML
     public void userNodeSaveClicked() {
-        newUserNodeCheckEmptyNameAndSave();
+        newUserNodeCheckNameAndSave();
     }
 
-    private void newUserNodeCheckEmptyNameAndSave() {
+    private void newUserNodeCheckNameAndSave() {
         if(userNodeNameTextField.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
             alert.setHeaderText("");
             alert.setContentText("A name is required");
+            alert.showAndWait();
+        } else if(userNodesMap.containsKey(userNodeNameTextField.getText())) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("");
+            alert.setContentText("Point of Interest names must be unique");
             alert.showAndWait();
         } else {
             saveUserNode();
@@ -417,11 +425,25 @@ public class MainController {
         UserNode userNode = new UserNode((float) point.getX(), (float) point.getY(), userNodeNameTextField.getText(), userNodeDescriptionTextField.getText());
 
         model.getMapData().addUserNode(userNode);
+        model.getMapData().updateUserNodesMap();
 
         scene.setCursor(Cursor.DEFAULT);
         userNodeToggle = false;
         newUserNodeVBox.setVisible(false);
+        updateUserNodeList();
         canvas.repaint();
+    }
+
+    private void updateUserNodeList() {
+        userNodeListItems.setAll(model.getMapData().getUserNodes());
+        ObservableList<String> tempList = FXCollections.observableArrayList();
+
+        userNodesMap = model.getMapData().getUserNodesMap();
+
+        for(UserNode userNode : userNodeListItems) {
+            tempList.add(userNode.getName());
+        }
+        userNodeListView.setItems(tempList);
     }
 
     @FXML
@@ -430,8 +452,10 @@ public class MainController {
             throw new NullPointerException("currentUserNode is null");
         } else {
             model.getMapData().getUserNodes().remove(currentUserNode);
+            model.getMapData().updateUserNodesMap();
             currentUserNode = null;
             userNodeClickedVBox.setVisible(false);
+            updateUserNodeList();
             canvas.repaint();
         }
     }
@@ -456,20 +480,21 @@ public class MainController {
 
     @FXML
     public void userNodeNewNameTextFieldKeyPressed(KeyEvent keyEvent) {
-        if (keyEvent.getCode().getName().equals("Enter")) {
-            userNodeNewNameCheckEmptyNameAndSave();
-        } else if (keyEvent.getCode().getName().equals("Esc")) {
+        if (keyEvent.getCode() == KeyCode.ENTER) {
+            userNodeNewNameCheckNameAndSave();
+        } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
             userNodeNewNameVBox.setVisible(false);
         }
     }
 
     @FXML
     public void userNodeNewDescTextFieldKeyPressed(KeyEvent keyEvent) {
-        if (keyEvent.getCode().getName().equals("Enter")) {
+        if (keyEvent.getCode() == KeyCode.ENTER) {
             currentUserNode.setDescription(userNodeNewDescriptionTextField.getText());
             userNodeNewDescriptionVBox.setVisible(false);
             userNodeNewDescriptionTextField.setText("");
-        } else if (keyEvent.getCode().getName().equals("Esc")) {
+            userNodeClickedDescription.setText(currentUserNode.getDescription());
+        } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
             userNodeNewDescriptionVBox.setVisible(false);
         }
     }
@@ -486,20 +511,29 @@ public class MainController {
 
     @FXML
     public void userNodeNewNameSaveClicked() {
-        userNodeNewNameCheckEmptyNameAndSave();
+        userNodeNewNameCheckNameAndSave();
     }
 
-    private void userNodeNewNameCheckEmptyNameAndSave() {
+    private void userNodeNewNameCheckNameAndSave() {
         if(userNodeNewNameTextField.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
             alert.setHeaderText("");
             alert.setContentText("A name is required");
             alert.showAndWait();
+        } else if(userNodesMap.containsKey(userNodeNameTextField.getText())) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("");
+            alert.setContentText("Point of Interest names must be unique");
+            alert.showAndWait();
         } else {
             currentUserNode.setName(userNodeNewNameTextField.getText());
             userNodeNewNameVBox.setVisible(false);
             userNodeNewNameTextField.setText("");
+            userNodeClickedName.setText(currentUserNode.getName());
+            updateUserNodeList();
+            model.getMapData().getUserNodesMap().put(currentUserNode.getName(), currentUserNode);
         }
     }
 
@@ -507,6 +541,8 @@ public class MainController {
     public void userNodeNewDescSaveClicked() {
         currentUserNode.setDescription(userNodeNewDescriptionTextField.getText());
         userNodeNewDescriptionVBox.setVisible(false);
+        userNodeNewDescriptionTextField.setText("");
+        userNodeClickedDescription.setText(currentUserNode.getDescription());
     }
 
     public void setNavigationBoxVisible(boolean visible) {

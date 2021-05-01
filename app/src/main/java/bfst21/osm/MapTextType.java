@@ -36,6 +36,10 @@ public enum MapTextType {
     HAMLET(
             12_000,
             0.07D
+    ),
+    USERNODE(
+            1,
+            0.02D
     );
 
     float zoomLevelRequired;

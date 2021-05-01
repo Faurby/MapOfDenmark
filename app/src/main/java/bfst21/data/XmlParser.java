@@ -430,7 +430,7 @@ public class XmlParser {
                 null,
                 null,
                 null,
-                null,
+                new ArrayList<>(),
                 mapMinX,
                 mapMaxX,
                 mapMinY,

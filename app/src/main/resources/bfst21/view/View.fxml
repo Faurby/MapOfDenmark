@@ -167,7 +167,7 @@
               spacing="8"
               style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;">
 
-            <Text text="Failed to load name" fx:id="userNodeClickedName" style="-fx-font-size: large;"/>
+            <Text text="Failed to load name" fx:id="userNodeClickedName" style="-fx-font-size: x-large;"/>
 
             <Text text="Failed to load description" fx:id="userNodeClickedDescription"/>
 
@@ -259,7 +259,7 @@
         </VBox>
         <VBox fx:id="userNodeVBox"
               maxWidth="150"
-              maxHeight="100"
+              maxHeight="120"
               StackPane.alignment="BOTTOM_RIGHT"
               spacing="8">
             <padding>
@@ -269,7 +269,9 @@
                     onAction="#userNodeButtonClicked"
                     text="Add point of interest"/>
             <ListView fx:id="userNodeListView"
-                      maxWidth="${newUserNodeButton.width}"/>
+                      maxWidth="${newUserNodeButton.width}"
+                      maxHeight="65"
+                      prefHeight="65"/>
         </VBox>
     </StackPane>
 </Scene>

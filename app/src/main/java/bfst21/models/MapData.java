@@ -29,6 +29,7 @@ public class MapData {
     private List<MapText> kdTreeMapTextSearchList = new ArrayList<>();
 
     private List<UserNode> userNodes;
+    private HashMap<String, UserNode> userNodesMap;
     private final List<Way> islands;
 
     private final float minX, minY, maxX, maxY;
@@ -68,10 +69,13 @@ public class MapData {
         this.islands = islands;
         this.addressTries = addressTries;
         this.userNodes = userNodes;
+        this.userNodesMap = new HashMap<>();
         this.minX = minX;
         this.minY = minY;
         this.maxX = maxX;
         this.maxY = maxY;
+
+        updateUserNodesMap();
 
         //We need to initially fill the search HashMap with empty Lists.
         //This is to avoid issues when accessing the search map before a range search.
@@ -466,6 +470,17 @@ public class MapData {
 
     public void addUserNode(UserNode userNode) {
         userNodes.add(userNode);
+    }
+
+    public HashMap<String, UserNode> getUserNodesMap() {
+        return userNodesMap;
+    }
+
+    public void updateUserNodesMap() {
+        userNodesMap.clear();
+        for(UserNode userNode : userNodes) {
+            userNodesMap.put(userNode.getName(), userNode);
+        }
     }
 
     public DijkstraPath getDijkstra() {
