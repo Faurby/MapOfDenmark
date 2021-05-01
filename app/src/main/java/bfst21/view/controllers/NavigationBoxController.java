@@ -10,6 +10,7 @@ import bfst21.osm.OsmAddress;
 import bfst21.view.MapCanvas;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
@@ -46,14 +47,18 @@ public class NavigationBoxController extends SubController {
     @FXML
     public void searchNavigationAddresses() {
         if (startingPoint.getText().trim().equals("")) {
-            //TODO: Why not inform the user instead of throwing an exception?
-            // No reason to output stacktraces in the console
-            throw new IllegalInputException("Search field is empty", startingPoint.getId());
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("");
+            alert.setContentText("Starting point search field is empty.");
+            alert.showAndWait();
 
         } else if (destinationPoint.getText().trim().equals("")) {
-            //TODO: Why not inform the user instead of throwing an exception?
-            // No reason to output stacktraces in the console
-            throw new IllegalInputException("Search field is empty", destinationPoint.getId());
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("");
+            alert.setContentText("Destination point search field is empty.");
+            alert.showAndWait();
 
         } else {
             if (addressTries == null) {

@@ -1,13 +1,13 @@
 package bfst21.view.controllers;
 
 import bfst21.address.TST;
-import bfst21.exceptions.IllegalInputException;
 import bfst21.models.MapData;
 import bfst21.models.Model;
 import bfst21.osm.OsmAddress;
 import bfst21.view.MapCanvas;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -56,9 +56,11 @@ public class SearchBoxController extends SubController {
             }
 
         } else {
-            //TODO: Why not inform the user instead of throwing an exception?
-            // No reason to output stacktraces in the console
-            throw new IllegalInputException("Search field is empty");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("");
+            alert.setContentText("Search field is empty.");
+            alert.showAndWait();
         }
     }
 

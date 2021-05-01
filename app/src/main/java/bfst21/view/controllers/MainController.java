@@ -1,7 +1,6 @@
 package bfst21.view.controllers;
 
 import bfst21.data.BinaryFileManager;
-import bfst21.exceptions.MapDataNotLoadedException;
 import bfst21.models.*;
 import bfst21.osm.Node;
 import bfst21.osm.UserNode;
@@ -367,11 +366,13 @@ public class MainController {
     }
 
     @FXML
-    public void userNodeButtonClicked() throws MapDataNotLoadedException {
+    public void userNodeButtonClicked() {
         if (model.getMapData() == null) {
-            //TODO: Why not inform the user instead of throwing an exception?
-            // No reason to output stacktraces in the console
-            throw new MapDataNotLoadedException("No MapData has been loaded. MapData is null.");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("ERROR: MapData is null");
+            alert.setContentText("No MapData has been loaded.");
+            alert.showAndWait();
         }
         if (userNodeToggle) {
             userNodeToggle = false;
