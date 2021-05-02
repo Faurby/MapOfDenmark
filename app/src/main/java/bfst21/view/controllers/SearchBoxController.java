@@ -107,6 +107,8 @@ public class SearchBoxController extends SubController {
         } else if (keyEvent.getCode() == KeyCode.BACK_SPACE && addressArea.getText().trim().length() <= 2) {
             suggestions.getChildren().clear();
 
+        } else if (keyEvent.getCode() == KeyCode.DOWN && shownSuggestions.size() > 0){
+            suggestions.requestFocus();
         } else {
             int textLength = addressArea.getText().trim().length();
             if (textLength >= 2) {
@@ -125,6 +127,7 @@ public class SearchBoxController extends SubController {
                 b.setOnMouseClicked((event) -> {
                     addressArea.setText(b.getText());
                     suggestions.getChildren().clear();
+                    addressArea.requestFocus();
                 });
                 suggestions.getChildren().add(b);
                 count++;
@@ -184,4 +187,5 @@ public class SearchBoxController extends SubController {
     public void transferAddressText(String address) {
         addressArea.setText(address);
     }
+
 }

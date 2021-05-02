@@ -14,6 +14,8 @@ import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.StrokeLineCap;
@@ -26,6 +28,7 @@ import javafx.scene.transform.NonInvertibleTransformException;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 
 public class MapCanvas extends Canvas {
@@ -49,7 +52,11 @@ public class MapCanvas extends Canvas {
     private Affine trans = new Affine();
 
     private float[] nearestNeighborCoords;
-    //private float[] searchAddressCoords;
+    private boolean showAddressMarker;
+    private float[] searchAddressCoords;
+    //private final ImageView locationPin = new ImageView(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("locationPin.png"))));
+    private final Image locationPin = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("locationPin.png")));
+
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -119,8 +126,8 @@ public class MapCanvas extends Canvas {
             }
             drawUserNodes();
             drawNeighborNodes();
-            //drawSearchAddress();
             drawMapText();
+            if (showAddressMarker) { showSearchAddress();}
 
             //Display the kd-tree if option is enabled
             if (displayOptions.getBool(DisplayOption.DISPLAY_KD_TREE)) {
@@ -324,6 +331,8 @@ public class MapCanvas extends Canvas {
     }
 
     public void changeView(float newX, float newY){
+        searchAddressCoords = new float[]{newX, newY};
+
         double x1 = trans.getTx() / Math.sqrt(trans.determinant());
         double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
         double x2 = getWidth() - x1;
@@ -340,34 +349,29 @@ public class MapCanvas extends Canvas {
 
         pan(-dx, -dy);
         rangeSearch();
+        showAddressMarker = true;
         repaint();
     }
 
-    //TEST method that draws a dot at the searchAddressCoords-coordinates and at the middle of the screen
+    //Method that shows a pin at the searchAddressCoords-coordinates
+    public void showSearchAddress() {
+        if (searchAddressCoords != null) {
+            gc.drawImage(locationPin, searchAddressCoords[0] - (10 / zoomLevel), searchAddressCoords[1] - (30 / zoomLevel), 20 / zoomLevel, 30 / zoomLevel);
+            System.out.println(searchAddressCoords[0] + ", " + searchAddressCoords[1]);
+        }
+    }
+
+    //TEST method that draws a dot at the searchAddressCoords-coordinates
 //    public void drawSearchAddress() {
 //        if (searchAddressCoords != null) {
-//            double x1 = trans.getTx() / Math.sqrt(trans.determinant());
-//            double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
-//            double x2 = getWidth() - x1;
-//            double y2 = getHeight() - y1;
-//
-//            Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
-//            Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
-//
-//            double oldX = (p1.getX() + p2.getX()) / 2;
-//            double oldY = (p1.getY() + p2.getY()) / 2;
-//
 //            gc.setStroke(Color.GREEN);
 //            gc.setLineWidth(0.004 * widthModifier);
-//
 //            gc.beginPath();
 //            gc.moveTo(searchAddressCoords[0], searchAddressCoords[1]);
 //            gc.lineTo(searchAddressCoords[0], searchAddressCoords[1]);
-//            gc.moveTo(oldX, oldY);
-//            gc.lineTo(oldX, oldY);
 //            gc.stroke();
-//        }
-//    }
+ //       }
+ //   }
 
     /**
      * Zooms and repaints the MapCanvas with the given zoom factor.
