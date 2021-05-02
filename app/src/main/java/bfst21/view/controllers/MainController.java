@@ -20,7 +20,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -189,7 +188,12 @@ public class MainController {
             deltaY = -32.0D;
         }
         double factor = Math.pow(1.01D, deltaY);
-        Point2D point = new Point2D(scrollEvent.getX(), scrollEvent.getY());
+
+        //Point2D point = new Point2D(scrollEvent.getX(), scrollEvent.getY());
+
+        float[] middleCoords = canvas.getMiddleMouseCoords();
+        Point2D point = new Point2D(middleCoords[0], middleCoords[1]);
+        System.out.println(middleCoords[0] + ", " + middleCoords[1]);
 
         canvas.zoom(factor, point, false);
         updateZoomBox();

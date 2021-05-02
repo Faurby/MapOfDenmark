@@ -330,6 +330,15 @@ public class MapCanvas extends Canvas {
         repaint();
     }
 
+    public float[] getMiddleMouseCoords(){
+        double x1 = trans.getTx() / Math.sqrt(trans.determinant());
+        double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
+        double x2 = getWidth() - x1;
+        double y2 = getHeight() - y1;
+
+        return new float[]{(float)((x1+x2)/2), (float)((y1+y2)/2)};
+    }
+
     public void changeView(float newX, float newY){
         searchAddressCoords = new float[]{newX, newY};
 
