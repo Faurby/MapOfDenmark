@@ -154,14 +154,12 @@ public class MapData {
                         boolean canWalk = type.canWalk();
                         boolean oneWay = way.isOneWay();
 
-                        directedGraph.addEdge(fromCoords, toCoords, maxSpeed, oneWay, canDrive, canBike, canWalk);
+                        directedGraph.addEdge(way, fromCoords, toCoords, maxSpeed, oneWay, canDrive, canBike, canWalk);
                     }
                 }
             }
         }
         directedGraph.cleanUp();
-
-        DirectedGraph directedGraph2 = new DirectedGraph();
 
         for (int i = 0; i < directedGraph.getVertexAmount(); i++) {
             List<Edge> edges = directedGraph.getAdjacentEdges(i);
@@ -172,8 +170,8 @@ public class MapData {
                 int toThisVertex = 0;
                 int fromThisVertex = 0;
 
-                int toID = 0;
-                int fromID = 0;
+                int toID = -1;
+                int fromID = -1;
 
                 float totalWeight = 0.0f;
 
@@ -181,12 +179,21 @@ public class MapData {
                 boolean canBike = true;
                 boolean canWalk = true;
 
+                Way way = null;
+
                 for (Edge edge : edges) {
 
-                    canDrive = edge.canDrive();
-                    canBike = edge.canBike();
-                    canWalk = edge.canWalk();
+                    if (!edge.canDrive()) {
+                        canDrive = false;
+                    }
+                    if (!edge.canBike()) {
+                        canBike = false;
+                    }
+                    if (!edge.canWalk()) {
+                        canWalk = false;
+                    }
 
+                    way = edge.getWay(); //Test if different Way?
                     totalWeight += edge.getWeight();
 
                     if (edge.getTo() == i) {
@@ -194,23 +201,31 @@ public class MapData {
 
                     } else if (edge.getFrom() == i) {
                         fromThisVertex++;
-
-                    } else if (edge.getTo() != i) {
+                    }
+                    if (edge.getTo() != i && edge.getTo() != fromID) {
                         toID = edge.getTo();
 
-                    } else if (edge.getFrom() != i) {
+                    } else if (edge.getFrom() != i && edge.getFrom() != toID) {
                         fromID = edge.getFrom();
                     }
                 }
                 if ((toThisVertex == 2 && fromThisVertex == 2) ||
-                        (toThisVertex == 1 && fromThisVertex == 1)) {
+                    (toThisVertex == 1 && fromThisVertex == 1)) {
 
-                    directedGraph.removeVertex(i);
+                    if (fromID != -1 && toID != -1) {
 
+                        directedGraph.removeVertex(i);
+                        directedGraph.addEdge(way, fromID, toID, totalWeight, canDrive, canBike, canWalk);
 
+                        if (size == 4) {
+                            directedGraph.addEdge(way, toID, fromID, totalWeight, canDrive, canBike, canWalk);
+                        }
+                    }
                 }
             }
         }
+        //Some vertices point to non-existing edge IDs
+        //directedGraph.cleanUp();
 
         time += System.nanoTime();
         System.out.println("Built directed graph for path finding in " + time / 1_000_000 + "ms");

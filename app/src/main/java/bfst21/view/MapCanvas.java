@@ -268,7 +268,9 @@ public class MapCanvas extends Canvas {
                 if (vertex != null) {
                     for (int id : vertex.getEdges()) {
                         Edge edge = directedGraph.getEdge(id);
-                        edge.draw(directedGraph, gc);
+                        if (edge != null) {
+                            edge.draw(directedGraph, gc);
+                        }
                     }
                 }
             }
