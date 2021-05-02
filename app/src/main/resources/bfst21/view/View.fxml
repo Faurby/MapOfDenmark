@@ -272,7 +272,7 @@
             <ListView fx:id="userNodeListView"
                       maxWidth="${newUserNodeButton.width}"
                       maxHeight="65"
-                      prefHeight="65"/>
+                      minHeight="0" />
         </VBox>
     </StackPane>
 </Scene>

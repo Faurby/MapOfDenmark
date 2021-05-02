@@ -5,24 +5,24 @@ package bfst21.osm;
 //TODO maybe give different text types different colors?
 
 public enum MapTextType {
-    PENINSULA(
+    PENINSULA( //TODO delete peninsula and island if this information is still not used later on
             1,
             40D
     ),
     CITY(
             50,
-            40D
+            30D
     ),
     ISLAND(
             1_000,
-            40D
+            30D
     ),
     TOWN(
             1_000,
             20D
     ),
     VILLAGE(
-            2_000,
+            1_500,
             20D
     ),
     ISLET(

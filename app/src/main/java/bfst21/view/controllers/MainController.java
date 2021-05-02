@@ -190,7 +190,6 @@ public class MainController {
         double factor = Math.pow(1.01D, deltaY);
 
         //Point2D point = new Point2D(scrollEvent.getX(), scrollEvent.getY());
-
         Point2D point = new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2);
 
         canvas.zoom(factor, point, false);

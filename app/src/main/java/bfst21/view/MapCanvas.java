@@ -204,7 +204,7 @@ public class MapCanvas extends Canvas {
 
                     if (mapText.canDraw(zoomLevel)) {
                         if (zoomLevel <= 200) {
-                            gc.setFont(new Font(font, mapText.getMapTextType().getStandardMultiplier() / 300));
+                            gc.setFont(new Font(font, mapText.getMapTextType().getStandardMultiplier() / 220));
                         } else {
                             gc.setFont(new Font(font, mapText.getMapTextType().getStandardMultiplier() / zoomLevel));
                         }
