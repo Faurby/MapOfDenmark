@@ -191,9 +191,7 @@ public class MainController {
 
         //Point2D point = new Point2D(scrollEvent.getX(), scrollEvent.getY());
 
-        float[] middleCoords = canvas.getMiddleMouseCoords();
-        Point2D point = new Point2D(middleCoords[0], middleCoords[1]);
-        System.out.println(middleCoords[0] + ", " + middleCoords[1]);
+        Point2D point = new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2);
 
         canvas.zoom(factor, point, false);
         updateZoomBox();
