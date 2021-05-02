@@ -202,13 +202,15 @@ public class MapCanvas extends Canvas {
 
                 for (MapText mapText : model.getMapData().getMapTexts()) {
 
-                    if (zoomLevel <= 200 && mapText.canDraw(zoomLevel)) {
-                        gc.setFont(new Font(font, mapText.getMapTextType().getStandardMultiplier() / 300));
+                    if (mapText.canDraw(zoomLevel)) {
+                        if (zoomLevel <= 200) {
+                            gc.setFont(new Font(font, mapText.getMapTextType().getStandardMultiplier() / 300));
+                        } else {
+                            gc.setFont(new Font(font, mapText.getMapTextType().getStandardMultiplier() / zoomLevel));
+                        }
                         gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
-                    } else if (mapText.canDraw(zoomLevel)) {
-                        gc.setFont(new Font(font, mapText.getMapTextType().getStandardMultiplier() / zoomLevel));
-                        gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
-                }}
+                    }
+                }
             }
         }
     }
