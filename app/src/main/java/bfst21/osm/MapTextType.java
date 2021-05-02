@@ -7,39 +7,39 @@ package bfst21.osm;
 public enum MapTextType {
     PENINSULA(
             1,
-            0.02D
+            40D
     ),
     CITY(
             50,
-            0.02D
+            40D
     ),
     ISLAND(
             1_000,
-            0.02D
+            40D
     ),
     TOWN(
             1_000,
-            0.01D
+            20D
     ),
     VILLAGE(
-            2_500,
-            0.01D
+            2_000,
+            20D
     ),
     ISLET(
             2_000,
             0.01D
     ),
     SUBURB(
-            12_000,
-            0.01D
+            10_000,
+            20D
     ),
     HAMLET(
-            12_000,
-            0.07D
+            10_000,
+            20D
     ),
     USERNODE(
             1,
-            0.02D
+            40D
     );
 
     float zoomLevelRequired;

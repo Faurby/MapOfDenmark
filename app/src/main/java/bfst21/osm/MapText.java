@@ -41,7 +41,4 @@ public class MapText extends BoundingBoxElement {
         return mapTextType.zoomLevelRequired <= zoomLevel;
     }
 
-    public boolean canDrawFarAway() {
-        return (mapTextType == MapTextType.CITY || mapTextType == MapTextType.PENINSULA);
-    }
 }

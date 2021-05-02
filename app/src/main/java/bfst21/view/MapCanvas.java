@@ -54,7 +54,6 @@ public class MapCanvas extends Canvas {
     private float[] nearestNeighborCoords;
     private boolean showAddressMarker;
     private float[] searchAddressCoords;
-    //private final ImageView locationPin = new ImageView(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("locationPin.png"))));
     private final Image locationPin = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("locationPin.png")));
 
 
@@ -203,19 +202,10 @@ public class MapCanvas extends Canvas {
 
                 for (MapText mapText : model.getMapData().getMapTexts()) {
 
-                    if (zoomLevel < 1000 && mapText.canDrawFarAway()) {
-                        gc.setFont(new Font(font, 0.08 * widthModifier));
+                    if (mapText.canDraw(zoomLevel)) {
+                        gc.setFont(new Font(font, mapText.getMapTextType().getStandardMultiplier() / zoomLevel));
                         gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
-
-                    } else if (zoomLevel < 40_000 && mapText.canDraw(zoomLevel)) {
-                        gc.setFont(new Font(font, mapText.getMapTextType().getStandardMultiplier() * widthModifier));
-                        gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
-
-                    } else if (zoomLevel >= 40_000) {
-                        gc.setFont(new Font(font, 0.002 * widthModifier));
-                        gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
-                    }
-                }
+                }}
             }
         }
     }
