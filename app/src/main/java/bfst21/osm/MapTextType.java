@@ -18,16 +18,16 @@ public enum MapTextType {
             30D
     ),
     TOWN(
-            1_000,
-            20D
-    ),
-    VILLAGE(
             1_500,
             20D
     ),
     ISLET(
             2_000,
             0.01D
+    ),
+    VILLAGE(
+            4_000,
+            20D
     ),
     SUBURB(
             10_000,
