@@ -43,13 +43,15 @@ public class SearchBoxController extends SubController {
     @FXML
     private void searchSingleAddress() {
         String address = addressArea.getText().trim().toLowerCase();
+        suggestions.getChildren().clear();
+
         if (!address.isEmpty()) {
 
             if (addressTries == null) {
                 activateTries();
             }
             for (OsmAddress osmAddress : allSuggestions) {
-                if (osmAddress.toString().toLowerCase().contains(address)) {
+                if (osmAddress.toString().toLowerCase().contains(address) || osmAddress.omitHouseNumberToString().toLowerCase().contains(address)) {
                     mainController.getCanvas().changeView(osmAddress.getNode().getX(), osmAddress.getNode().getY());
                     break;
                 }
@@ -101,6 +103,7 @@ public class SearchBoxController extends SubController {
             }
         } else if (keyEvent.getCode() == KeyCode.ENTER) {
             addressArea.setText(addressArea.getText().trim());
+            suggestions.getChildren().clear();
             searchSingleAddress();
             searchButton.requestFocus();
 
@@ -124,10 +127,17 @@ public class SearchBoxController extends SubController {
         for (String s : shownSuggestions) {
             if (count <= 50) {
                 Label b = new Label(s);
+                b.setPrefWidth(800);
                 b.setOnMouseClicked((event) -> {
                     addressArea.setText(b.getText());
                     suggestions.getChildren().clear();
                     addressArea.requestFocus();
+                });
+                b.setOnMouseEntered((event) -> {
+                    b.setStyle("-fx-background-color:#dae7f3;");
+                });
+                b.setOnMouseExited((event) -> {
+                    b.setStyle("-fx-background-color: transparent;");
                 });
                 suggestions.getChildren().add(b);
                 count++;
@@ -154,49 +164,75 @@ public class SearchBoxController extends SubController {
 
                 Iterator<String> it = addressTries.keysWithPrefix(addressInput).iterator();
 
-                if (it.hasNext()) {
-                    allSuggestions = new ArrayList<>();
-                    allSuggestions = addressTries.get(it.next());
+                //If the string doesn't return matches, find a substring that does
+                if (!it.hasNext()) {
+                    addressInput = longestSubstringWithMatches(addressInput);
+                    it = addressTries.keysWithPrefix(addressInput).iterator();
+                }
 
-                } else {
-                    Iterator<String> givesHits;
-                    boolean hasResults = true;
-                    int counter = 1;
+                //A check to see whether a valid street name has been typed
+                //This determines whether the suggested addresses are of streets or house numbers
+                String streetName = null;
+                if (it.hasNext()){
+                    String streetInfo = addressTries.keysWithPrefix(addressInput).iterator().next();
+                    streetName = streetInfo.substring(0, streetInfo.length()-4);
+                }
 
-                    while (hasResults && counter < addressInput.length()) {
-                        givesHits = addressTries.keysWithPrefix(addressInput.substring(0, counter)).iterator();
-                        if(!givesHits.hasNext()){
-                            hasResults = false;
-                        } else {
-                            counter++;
-                        }
-                    }
+                if (addressInput.equals(streetName)) {
 
-                    it = addressTries.keysWithPrefix(addressInput.substring(0, counter-1)).iterator();
                     if (it.hasNext()) {
                         allSuggestions = new ArrayList<>();
                         allSuggestions = addressTries.get(it.next());
                     }
-                }
 
-                if (allSuggestions.size() > 0) {
-
-                    int count = 0;
-                    for (OsmAddress osmAddress : allSuggestions) {
-                        if (count < 10) {
+                    if (allSuggestions.size() > 0) {
+                        int count = 0;
+                        for (OsmAddress osmAddress : allSuggestions) {
+                            if (count < 20) {
                             String address = osmAddress.toString();
                             shownSuggestions.add(address);
-                            count++;
+                                count++;
+                            }
                         }
+                    }
+                } else {
+
+                    allSuggestions = new ArrayList<>();
+
+                    while (it.hasNext()) {
+                        allSuggestions.add(addressTries.get(it.next()).get(0));
+                    }
+                    for (OsmAddress osmAddress : allSuggestions) {
+                        String address = osmAddress.omitHouseNumberToString();
+                        shownSuggestions.add(address);
                     }
                 }
                 return null;
             }
         };
+
         addressSuggestionTask.setOnSucceeded(e -> displayAddressSuggestions());
         addressSuggestionTask.setOnFailed(e -> addressSuggestionTask.getException().printStackTrace());
         Thread thread = new Thread(addressSuggestionTask);
         thread.start();
+    }
+
+    public String longestSubstringWithMatches(String addressInput){
+        Iterator<String> modifiedIt;
+        boolean hasResults = true;
+        int counter = 1;
+
+        while (hasResults && counter < addressInput.length()) {
+            modifiedIt = addressTries.keysWithPrefix(addressInput.substring(0, counter)).iterator();
+            if(!modifiedIt.hasNext()){
+                hasResults = false;
+                counter--;
+            } else {
+                counter++;
+            }
+        }
+
+        return addressInput.substring(0, counter);
     }
 
     public void onWindowResize(Stage stage) {

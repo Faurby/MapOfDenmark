@@ -560,7 +560,7 @@ public class MapCanvas extends Canvas {
         } else if (colorMode == ColorMode.DARK_MODE) {
             return Color.rgb(180, 180, 180);
         }
-        return Color.rgb(4, 1, 10);
+        return Color.rgb(12, 12, 15);
     }
 
     public void setColorMode(ColorMode colorMode) {
