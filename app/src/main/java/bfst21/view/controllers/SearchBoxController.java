@@ -153,21 +153,40 @@ public class SearchBoxController extends SubController {
                 String addressInput = input.replace(" ", "").toLowerCase();
 
                 Iterator<String> it = addressTries.keysWithPrefix(addressInput).iterator();
+
                 if (it.hasNext()) {
                     allSuggestions = new ArrayList<>();
                     allSuggestions = addressTries.get(it.next());
+
+                } else {
+                    Iterator<String> givesHits;
+                    boolean hasResults = true;
+                    int counter = 1;
+
+                    while (hasResults && counter < addressInput.length()) {
+                        givesHits = addressTries.keysWithPrefix(addressInput.substring(0, counter)).iterator();
+                        if(!givesHits.hasNext()){
+                            hasResults = false;
+                        } else {
+                            counter++;
+                        }
+                    }
+
+                    it = addressTries.keysWithPrefix(addressInput.substring(0, counter-1)).iterator();
+                    if (it.hasNext()) {
+                        allSuggestions = new ArrayList<>();
+                        allSuggestions = addressTries.get(it.next());
+                    }
                 }
+
                 if (allSuggestions.size() > 0) {
 
                     int count = 0;
                     for (OsmAddress osmAddress : allSuggestions) {
                         if (count < 10) {
-
                             String address = osmAddress.toString();
-                            if (address.toLowerCase().contains(input.toLowerCase())) {
-                                shownSuggestions.add(address);
-                                count++;
-                            }
+                            shownSuggestions.add(address);
+                            count++;
                         }
                     }
                 }
