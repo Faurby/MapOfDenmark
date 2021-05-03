@@ -2,7 +2,6 @@ package bfst21.pathfinding;
 
 import bfst21.models.TransportOption;
 import bfst21.models.TransportOptions;
-import bfst21.osm.Way;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.Serializable;
@@ -14,11 +13,11 @@ public class Edge implements Serializable {
 
     private final float weight;
     private final int from, to;
-    private final Way way;
+    private String name;
 
     private final boolean canDrive, canBike, canWalk;
 
-    public Edge(Way way,
+    public Edge(String name,
                 int from,
                 int to,
                 float weight,
@@ -26,7 +25,9 @@ public class Edge implements Serializable {
                 boolean canBike,
                 boolean canWalk) {
 
-        this.way = way;
+        if (name != null) {
+            this.name = name.intern();
+        }
         this.from = from;
         this.to = to;
         this.weight = weight;
@@ -44,35 +45,6 @@ public class Edge implements Serializable {
             gc.lineTo(toCoords[0], toCoords[1]);
         }
     }
-
-//    public void draw(DirectedGraph directedGraph, GraphicsContext gc) {
-//        float[] fromCoords = directedGraph.getVertexCoords(from);
-//        float[] toCoords = directedGraph.getVertexCoords(to);
-//
-//        float[] wayCoords = way.getCoords();
-//
-//        if (fromCoords != null && toCoords != null && wayCoords != null) {
-//
-//            gc.moveTo(fromCoords[0], fromCoords[1]);
-//            boolean foundStartingPoint = false;
-//
-//            for (int i = 2; i < (wayCoords.length - 2); i += 2) {
-//                float x = wayCoords[i];
-//                float y = wayCoords[i + 1];
-//
-//                if (toCoords[0] == x && toCoords[1] == y) {
-//                    break;
-//
-//                } else if (fromCoords[0] == x && fromCoords[1] == y) {
-//                    foundStartingPoint = true;
-//
-//                } else if (foundStartingPoint) {
-//                    gc.lineTo(x, y);
-//                }
-//            }
-//            gc.lineTo(toCoords[0], toCoords[1]);
-//        }
-//    }
 
     public boolean canNavigate() {
         TransportOption transportOption = TransportOptions.getInstance().getCurrentlyEnabled();
@@ -110,7 +82,7 @@ public class Edge implements Serializable {
         return weight;
     }
 
-    public Way getWay() {
-        return way;
+    public String getName() {
+        return name;
     }
 }

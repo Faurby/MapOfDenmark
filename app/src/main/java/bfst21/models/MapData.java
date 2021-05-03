@@ -154,7 +154,7 @@ public class MapData {
                         boolean canWalk = type.canWalk();
                         boolean oneWay = way.isOneWay();
 
-                        directedGraph.addEdge(way, fromCoords, toCoords, maxSpeed, oneWay, canDrive, canBike, canWalk);
+                        directedGraph.addEdge(way.getName(), fromCoords, toCoords, maxSpeed, oneWay, canDrive, canBike, canWalk);
                     }
                 }
             }

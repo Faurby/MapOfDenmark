@@ -16,6 +16,7 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
     private int maxSpeed = 1;
     private boolean oneWay;
     private boolean oneWayBike;
+    private String name;
 
     /**
      * Calculate and return the ElementSize of Way by getting the area of its bounding box.
@@ -162,6 +163,14 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
 
     public void setType(ElementType elementType) {
         this.elementType = elementType;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setRole(String role) {

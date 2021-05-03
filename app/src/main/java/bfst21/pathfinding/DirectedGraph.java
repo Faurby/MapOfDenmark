@@ -118,7 +118,7 @@ public class DirectedGraph implements Serializable {
     }
 
     public void addEdge(
-            Way way,
+            String name,
             float[] fromCoords,
             float[] toCoords,
             int maxSpeed,
@@ -132,15 +132,15 @@ public class DirectedGraph implements Serializable {
         float distance = (float) Util.distTo(fromCoords, toCoords);
         float weight = (distance * 60.0f / maxSpeed);
 
-        addEdge(way, fromID, toID, weight, canDrive, canBike, canWalk);
+        addEdge(name, fromID, toID, weight, canDrive, canBike, canWalk);
 
         if (!oneWay) {
-            addEdge(way, toID, fromID, weight, canDrive, canBike, canWalk);
+            addEdge(name, toID, fromID, weight, canDrive, canBike, canWalk);
         }
     }
 
     public void addEdge(
-            Way way,
+            String name,
             int fromID,
             int toID,
             float weight,
@@ -148,7 +148,7 @@ public class DirectedGraph implements Serializable {
             boolean canBike,
             boolean canWalk) {
 
-        Edge edge = new Edge(way, fromID, toID, weight, canDrive, canBike, canWalk);
+        Edge edge = new Edge(name, fromID, toID, weight, canDrive, canBike, canWalk);
 
         if (edgeAmount == edges.length) {
             Edge[] copy = new Edge[edges.length * 2];

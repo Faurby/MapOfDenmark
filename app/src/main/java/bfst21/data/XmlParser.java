@@ -121,7 +121,7 @@ public class XmlParser {
                                         Way memWay = element.getInnerElement();
                                         String role = reader.getAttributeValue(null, "role");
                                         if (role != null && !role.isEmpty()) {
-                                            memWay.setRole(role);
+                                            memWay.setRole(role.intern());
                                         }
                                         relation.addWay(memWay);
                                     }
@@ -294,6 +294,11 @@ public class XmlParser {
                                             case "wood":
                                                 elementType = ElementType.FOREST;
                                                 break;
+                                        }
+                                        break;
+                                    case "name":
+                                        if (way != null) {
+                                            way.setName(value.intern());
                                         }
                                         break;
                                     case "oneway":
