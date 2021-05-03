@@ -33,11 +33,11 @@ public class DirectedGraphTest {
         directedGraph.createVertex(coords5);
         directedGraph.createVertex(coords6);
 
-        directedGraph.addEdge(null, coords0, coords3, 10, false, true, true, true);
-        directedGraph.addEdge(null, coords2, coords1, 10, false, true, true, true);
-        directedGraph.addEdge(null, coords2, coords3, 10, false, true, true, true);
-        directedGraph.addEdge(null, coords2, coords4, 10, false, true, true, true);
-        directedGraph.addEdge(null, coords4, coords5, 10, false, true, true, true);
+        directedGraph.addEdge(null, coords0, coords3, 10, false, false, true, true, true);
+        directedGraph.addEdge(null, coords2, coords1, 10, false, false, true, true, true);
+        directedGraph.addEdge(null, coords2, coords3, 10, false, false, true, true, true);
+        directedGraph.addEdge(null, coords2, coords4, 10, false, false, true, true, true);
+        directedGraph.addEdge(null, coords4, coords5, 10, false, false, true, true, true);
 
         DijkstraPath dijkstraPath = new DijkstraPath(directedGraph, coords0, coords5);
         assertTrue(dijkstraPath.hasPathTo(1));
@@ -67,12 +67,12 @@ public class DirectedGraphTest {
         directedGraph.createVertex(coords4);
         directedGraph.createVertex(coords5);
 
-        directedGraph.addEdge(null, coords0, coords1, 10, false, true, true, true);
-        directedGraph.addEdge(null, coords1, coords2, 10, false, true, true, true);
-        directedGraph.addEdge(null, coords2, coords3, 10, false, true, true, true);
-        directedGraph.addEdge(null, coords3, coords4, 10, false, true, true, true);
-        directedGraph.addEdge(null, coords4, coords5, 10, false, true, true, true);
-        directedGraph.addEdge(null, coords5, coords2, 10, true, true, true, true);
+        directedGraph.addEdge(null, coords0, coords1, 10, false, false, true, true, true);
+        directedGraph.addEdge(null, coords1, coords2, 10, false, false, true, true, true);
+        directedGraph.addEdge(null, coords2, coords3, 10, false, false, true, true, true);
+        directedGraph.addEdge(null, coords3, coords4, 10, false, false, true, true, true);
+        directedGraph.addEdge(null, coords4, coords5, 10, false, false, true, true, true);
+        directedGraph.addEdge(null, coords5, coords2, 10, true, false, true, true, true);
 
         DijkstraPath dijkstraPath = new DijkstraPath(directedGraph, coords0, coords5);
         int counter = 0;
@@ -102,12 +102,12 @@ public class DirectedGraphTest {
         directedGraph.createVertex(coords4);
         directedGraph.createVertex(coords5);
 
-        directedGraph.addEdge(null, coords0, coords1, 100, false, true, true, true);
-        directedGraph.addEdge(null, coords1, coords2, 100, false, true, true, true);
-        directedGraph.addEdge(null, coords2, coords3, 100, false, true, true, true);
-        directedGraph.addEdge(null, coords3, coords4, 100, false, true, true, true);
-        directedGraph.addEdge(null, coords4, coords5, 100, false, true, true, true);
-        directedGraph.addEdge(null, coords5, coords2, 10, false, true, true, true);
+        directedGraph.addEdge(null, coords0, coords1, 100, false, false, true, true, true);
+        directedGraph.addEdge(null, coords1, coords2, 100, false, false, true, true, true);
+        directedGraph.addEdge(null, coords2, coords3, 100, false, false, true, true, true);
+        directedGraph.addEdge(null, coords3, coords4, 100, false, false, true, true, true);
+        directedGraph.addEdge(null, coords4, coords5, 100, false, false, true, true, true);
+        directedGraph.addEdge(null, coords5, coords2, 10, false, false, true, true, true);
 
         DijkstraPath dijkstraPath = new DijkstraPath(directedGraph, coords0, coords5);
         int counter = 0;
@@ -138,12 +138,12 @@ public class DirectedGraphTest {
         directedGraph.createVertex(coords4);
         directedGraph.createVertex(coords5);
 
-        directedGraph.addEdge(null, coords0, coords1, 10, false, true, true, true);
-        directedGraph.addEdge(null, coords1, coords2, 10, false, true, true, true);
-        directedGraph.addEdge(null, coords2, coords3, 10, false, true, true, true);
-        directedGraph.addEdge(null, coords3, coords4, 10, false, true, true, true);
-        directedGraph.addEdge(null, coords4, coords5, 10, false, true, true, true);
-        directedGraph.addEdge(null, coords5, coords2, 10, false, false, true, true);
+        directedGraph.addEdge(null, coords0, coords1, 10, false, false, true, true, true);
+        directedGraph.addEdge(null, coords1, coords2, 10, false, false, true, true, true);
+        directedGraph.addEdge(null, coords2, coords3, 10, false, false, true, true, true);
+        directedGraph.addEdge(null, coords3, coords4, 10, false, false, true, true, true);
+        directedGraph.addEdge(null, coords4, coords5, 10, false, false, true, true, true);
+        directedGraph.addEdge(null, coords5, coords2, 10, false, false, false, true, true);
 
         DijkstraPath dijkstraPath = new DijkstraPath(directedGraph, coords0, coords5);
         int counter = 0;

@@ -4,7 +4,6 @@ import bfst21.address.TST;
 import bfst21.osm.*;
 import bfst21.pathfinding.DijkstraPath;
 import bfst21.pathfinding.DirectedGraph;
-import bfst21.pathfinding.Edge;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdTree;
 
@@ -133,7 +132,15 @@ public class MapData {
             if (way.getType() != null) {
                 if (way.getType().canNavigate()) {
 
+                    ElementType type = way.getType();
+                    boolean canDrive = type.canDrive();
+                    boolean canBike = type.canBike();
+                    boolean canWalk = type.canWalk();
+                    boolean oneWay = way.isOneWay();
+                    boolean oneWayBike = way.isOneWayBike();
                     int maxSpeed = way.getMaxSpeed();
+                    String name = way.getName();
+
                     float[] coords = way.getCoords();
 
                     for (int i = 0; i < (coords.length - 2); i += 2) {
@@ -148,13 +155,15 @@ public class MapData {
                         directedGraph.createVertex(fromCoords);
                         directedGraph.createVertex(toCoords);
 
-                        ElementType type = way.getType();
-                        boolean canDrive = type.canDrive();
-                        boolean canBike = type.canBike();
-                        boolean canWalk = type.canWalk();
-                        boolean oneWay = way.isOneWay();
-
-                        directedGraph.addEdge(way.getName(), fromCoords, toCoords, maxSpeed, oneWay, canDrive, canBike, canWalk);
+                        directedGraph.addEdge(name,
+                                fromCoords,
+                                toCoords,
+                                maxSpeed,
+                                oneWay,
+                                oneWayBike,
+                                canDrive,
+                                canBike,
+                                canWalk);
                     }
                 }
             }

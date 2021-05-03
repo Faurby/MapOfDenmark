@@ -149,6 +149,10 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
         return oneWay;
     }
 
+    public boolean isOneWayBike() {
+        return oneWayBike;
+    }
+
     public void setMaxSpeed(int maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
