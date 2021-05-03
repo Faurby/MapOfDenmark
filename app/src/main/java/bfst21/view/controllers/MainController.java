@@ -190,7 +190,6 @@ public class MainController {
         double factor = Math.pow(1.01D, deltaY);
 
         Point2D point = new Point2D(scrollEvent.getX(), scrollEvent.getY());
-        //Point2D point = new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2);
 
         canvas.zoom(factor, point, false);
         updateZoomBox();
@@ -275,7 +274,7 @@ public class MainController {
     }
 
     @FXML
-    public void onMouseEntered(MouseEvent mouseEvent) {
+    public void onMouseEntered() {
         if (model.getMapData() != null) {
             updateUserNodeList();
         }
@@ -283,11 +282,10 @@ public class MainController {
 
     @FXML
     public void loadDefault() {
-
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() throws Exception {
-                loadingText.setVisible(true);
+                startLoadingFile();
                 canvas.load(true);
                 updateZoomBox();
                 return null;
@@ -317,10 +315,9 @@ public class MainController {
             Task<Void> task = new Task<>() {
                 @Override
                 protected Void call() throws Exception {
-                    loadingText.setVisible(true);
+                    startLoadingFile();
                     canvas.load(false);
                     updateZoomBox();
-
                     return null;
                 }
             };
@@ -329,6 +326,11 @@ public class MainController {
             Thread thread = new Thread(task);
             thread.start();
         }
+    }
+
+    private void startLoadingFile() {
+        userNodeVBox.setVisible(false);
+        loadingText.setVisible(true);
     }
 
     private void finishedLoadingFile() {
