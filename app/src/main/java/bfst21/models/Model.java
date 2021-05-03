@@ -3,6 +3,7 @@ package bfst21.models;
 import bfst21.data.BinaryFileManager;
 import bfst21.data.XmlParser;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.zip.ZipInputStream;
@@ -38,26 +39,29 @@ public class Model {
     public void load(String fileName) throws IOException, XMLStreamException, FactoryConfigurationError, ClassNotFoundException {
         this.fileName = fileName;
 
-        //TODO: Check if file at fileName is actually present
-        // Present an error to the user if it doesn't exist.
-        // No need for a NullPointerException in the console.
-
         System.out.println("Model loading file: " + fileName);
         long totalTime = -System.nanoTime();
 
-        if (fileName.endsWith(".osm")) {
-            XmlParser xmlParser = new XmlParser();
-            mapData = xmlParser.loadOSM(fileName);
+        File file = new File(fileName);
+        if (file.exists()) {
 
-        } else if (fileName.endsWith(".zip")) {
-            ZipInputStream zip = new ZipInputStream(new FileInputStream(fileName));
-            zip.getNextEntry();
-            XmlParser xmlParser = new XmlParser();
-            mapData = xmlParser.loadOSM(zip);
+            if (fileName.endsWith(".osm")) {
+                XmlParser xmlParser = new XmlParser();
+                mapData = xmlParser.loadOSM(fileName);
 
-        } else if (fileName.endsWith(".obj")) {
-            BinaryFileManager binaryFileManager = new BinaryFileManager();
-            mapData = binaryFileManager.loadOBJ(fileName, jarFile);
+            } else if (fileName.endsWith(".zip")) {
+                ZipInputStream zip = new ZipInputStream(new FileInputStream(fileName));
+                zip.getNextEntry();
+                XmlParser xmlParser = new XmlParser();
+                mapData = xmlParser.loadOSM(zip);
+
+            } else if (fileName.endsWith(".obj")) {
+                BinaryFileManager binaryFileManager = new BinaryFileManager();
+                mapData = binaryFileManager.loadOBJ(fileName, jarFile);
+            }
+        } else {
+            System.out.println("File does not exist: "+fileName);
+            //TODO: Present an error to the user if the file doesn't exist.
         }
         totalTime += System.nanoTime();
         System.out.println("Total load time: " + totalTime / 1_000_000 + "ms");

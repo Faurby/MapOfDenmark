@@ -15,7 +15,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.StrokeLineCap;
@@ -75,12 +74,14 @@ public class MapCanvas extends Canvas {
         model.load(loadDefaultFile);
         trans = new Affine();
 
-        pan(-model.getMapData().getMinX(), -model.getMapData().getMinY());
+        if (model.getMapData() != null) {
+            pan(-model.getMapData().getMinX(), -model.getMapData().getMinY());
 
-        zoomLevel = 1.0D;
-        double zoomFactor = getWidth() / (model.getMapData().getMaxX() - model.getMapData().getMinX());
+            zoomLevel = 1.0D;
+            double zoomFactor = getWidth() / (model.getMapData().getMaxX() - model.getMapData().getMinX());
 
-        zoom(zoomFactor, new Point2D(0, 0), true);
+            zoom(zoomFactor, new Point2D(0, 0), true);
+        }
     }
 
     /**
