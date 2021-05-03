@@ -29,7 +29,6 @@
 
         <Text text="Debug options:" style="-fx-padding: 2"/>
 
-        <CheckBox text="Use graph" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display KD tree" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display graph" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display dijkstra" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
