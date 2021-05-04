@@ -176,10 +176,13 @@ public class MainController {
     public void onKeyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.D && event.isControlDown()) {
             showHideDebug();
+            System.out.println("works!");
         }
         else if (event.getCode() == KeyCode.ESCAPE) {
             if(userNodeToggle) {
                 userNodeToggle = false;
+                scene.setCursor(Cursor.DEFAULT);
+                System.out.println("works!!!");
             }
         }
     }
