@@ -111,8 +111,7 @@ public abstract class NavigationSubController extends SubController {
                     it = addressTries.keysWithPrefix(addressInput).iterator();
                 }
 
-                //A check to see whether a valid street name has been typed
-                //This determines whether the suggested addresses are of streets or house numbers
+                //Has a valid street name been typed? Either street names or house numbers are then suggested
                 String streetName = null;
                 if (it.hasNext()) {
                     String streetInfo = addressTries.keysWithPrefix(addressInput).iterator().next();
@@ -122,7 +121,6 @@ public abstract class NavigationSubController extends SubController {
                 if (addressInput.equals(streetName)) {
 
                     if (it.hasNext()) {
-                        localAllSuggestions = new ArrayList<>();
                         localAllSuggestions = addressTries.get(it.next());
                     }
 

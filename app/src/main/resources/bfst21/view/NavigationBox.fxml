@@ -163,7 +163,7 @@
 
     <HBox alignment="BASELINE_CENTER" style="-fx-padding: 10 0 5 0">
 
-        <Button onAction="#expandSearchView"
+        <Button onAction="#minimizeSearchView"
                 text="Minimize" GridPane.columnIndex="0"
                 GridPane.rowIndex="0"/>
 

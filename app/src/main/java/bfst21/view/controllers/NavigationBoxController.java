@@ -191,7 +191,7 @@ public class NavigationBoxController extends NavigationSubController {
     }
 
     @FXML
-    public void expandSearchView() {
+    public void minimizeSearchView() {
         mainController.setNavigationBoxVisible(false);
         mainController.setSearchBoxVisible(true);
 
@@ -201,6 +201,9 @@ public class NavigationBoxController extends NavigationSubController {
         } else if (!startingPoint.getText().isEmpty()) {
             mainController.setSearchBoxAddressText(startingPoint.getText());
         }
+
+        mainController.getCanvas().setRedPinVisible(false);
+        mainController.getCanvas().setGreyPinVisible(false);
     }
 
     @Override
@@ -220,6 +223,6 @@ public class NavigationBoxController extends NavigationSubController {
     }
 
     public void onWindowResize(Stage stage) {
-        navigationBox.setMaxWidth(stage.getWidth() * 0.30D);
+        navigationBox.setMaxWidth(stage.getWidth() * 0.25D);
     }
 }

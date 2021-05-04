@@ -81,6 +81,7 @@ public class SearchBoxController extends NavigationSubController {
 
         if (addressArea.getText() != null) {
             mainController.setNavigationBoxAddressText(addressArea.getText());
+            setAllSuggestionsDestSpecific(getAllSuggestions());
         }
     }
 

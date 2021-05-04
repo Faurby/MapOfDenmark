@@ -129,8 +129,8 @@ public class MapCanvas extends Canvas {
             drawUserNodes();
             drawNeighborNodes();
             drawMapText();
-            if (redPinVisible) { setRedPinVisible();}
-            if (greyPinVisible) { setGreyPinVisible();}
+            if (redPinVisible) { drawRedPin();}
+            if (greyPinVisible) { drawGreyPin();}
 
             //Display the kd-tree if option is enabled
             if (displayOptions.getBool(DisplayOption.DISPLAY_KD_TREE)) {
@@ -369,15 +369,15 @@ public class MapCanvas extends Canvas {
     }
 
     //Method that shows a pin at the searchAddressCoords-coordinates
-    public void setRedPinVisible() {
+    public void drawRedPin() {
         if (redPinCoords != null) {
             gc.drawImage(redPin, redPinCoords[0] - (10 / zoomLevel), redPinCoords[1] - (30 / zoomLevel), 20 / zoomLevel, 30 / zoomLevel);
         }
     }
 
-    public void setGreyPinVisible() {
+    public void drawGreyPin() {
         if (greyPinCoords != null) {
-            gc.drawImage(greyPin, greyPinCoords[0] - (10 / zoomLevel), greyPinCoords[1] - (30 / zoomLevel), 20 / zoomLevel, 30 / zoomLevel);
+            gc.drawImage(greyPin, greyPinCoords[0] - (7.5 / zoomLevel), greyPinCoords[1] - (22.5 / zoomLevel), 15 / zoomLevel, 22.5 / zoomLevel);
         }
     }
 
