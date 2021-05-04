@@ -51,10 +51,12 @@ public class MapCanvas extends Canvas {
     private Affine trans = new Affine();
 
     private float[] nearestNeighborCoords;
-    private boolean showAddressMarker;
-    private float[] searchAddressCoords;
-    private final Image locationPin = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("locationPin.png")));
-
+    private float[] redPinCoords;
+    private float[] greyPinCoords;
+    private final Image redPin = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("redPin.png")));
+    private final Image greyPin = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("greyPin.png")));
+    private boolean redPinVisible;
+    private boolean greyPinVisible;
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -127,7 +129,8 @@ public class MapCanvas extends Canvas {
             drawUserNodes();
             drawNeighborNodes();
             drawMapText();
-            if (showAddressMarker) { showSearchAddress();}
+            if (redPinVisible) { setRedPinVisible();}
+            if (greyPinVisible) { setGreyPinVisible();}
 
             //Display the kd-tree if option is enabled
             if (displayOptions.getBool(DisplayOption.DISPLAY_KD_TREE)) {
@@ -327,7 +330,6 @@ public class MapCanvas extends Canvas {
     }
 
     public void changeView(float newX, float newY){
-        searchAddressCoords = new float[]{newX, newY};
 
         double x1 = trans.getTx() / Math.sqrt(trans.determinant());
         double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
@@ -345,15 +347,37 @@ public class MapCanvas extends Canvas {
 
         pan(-dx, -dy);
         rangeSearch();
-        showAddressMarker = true;
         repaint();
     }
 
+    public void setRedPinVisible(boolean b){
+        redPinVisible = b;
+        repaint();
+    }
+
+    public void setGreyPinVisible(boolean b){
+        greyPinVisible = b;
+        repaint();
+    }
+
+    public void setGreyPinCoords(float x, float y) {
+        greyPinCoords = new float[]{x, y};
+    }
+
+    public void setRedPinCoords(float x, float y) {
+        redPinCoords = new float[]{x, y};
+    }
+
     //Method that shows a pin at the searchAddressCoords-coordinates
-    public void showSearchAddress() {
-        if (searchAddressCoords != null) {
-            gc.drawImage(locationPin, searchAddressCoords[0] - (10 / zoomLevel), searchAddressCoords[1] - (30 / zoomLevel), 20 / zoomLevel, 30 / zoomLevel);
-            System.out.println(searchAddressCoords[0] + ", " + searchAddressCoords[1]);
+    public void setRedPinVisible() {
+        if (redPinCoords != null) {
+            gc.drawImage(redPin, redPinCoords[0] - (10 / zoomLevel), redPinCoords[1] - (30 / zoomLevel), 20 / zoomLevel, 30 / zoomLevel);
+        }
+    }
+
+    public void setGreyPinVisible() {
+        if (greyPinCoords != null) {
+            gc.drawImage(greyPin, greyPinCoords[0] - (10 / zoomLevel), greyPinCoords[1] - (30 / zoomLevel), 20 / zoomLevel, 30 / zoomLevel);
         }
     }
 

@@ -11,7 +11,7 @@
            fx:controller="bfst21.view.controllers.SearchBoxController"
            visible="false" managed="false">
 
-    <VBox minWidth="175" style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B">
+    <VBox minWidth="200" style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B">
 
         <padding>
             <Insets bottom="5"
@@ -27,7 +27,7 @@
                   wrapText="true"
                   onKeyPressed="#typingCheck"/>
 
-        <ScrollPane minWidth="200"
+        <ScrollPane minWidth="250"
                     prefWidth="350"
                     maxHeight="100"
                     minHeight="0"

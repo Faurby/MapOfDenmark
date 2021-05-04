@@ -46,6 +46,8 @@ public class SearchBoxController extends NavigationSubController {
 
             for (OsmAddress osmAddress : getAllSuggestions()) {
                 if (osmAddress.toString().toLowerCase().contains(address) || osmAddress.omitHouseNumberToString().toLowerCase().contains(address)) {
+                    mainController.getCanvas().setRedPinCoords(osmAddress.getNode().getX(), osmAddress.getNode().getY());
+                    mainController.getCanvas().setRedPinVisible(true);
                     mainController.getCanvas().changeView(osmAddress.getNode().getX(), osmAddress.getNode().getY());
                     break;
                 }
@@ -75,6 +77,7 @@ public class SearchBoxController extends NavigationSubController {
     public void expandSearchView() {
         mainController.setSearchBoxVisible(false);
         mainController.setNavigationBoxVisible(true);
+        mainController.getCanvas().setRedPinVisible(false);
 
         if (addressArea.getText() != null) {
             mainController.setNavigationBoxAddressText(addressArea.getText());
@@ -102,7 +105,7 @@ public class SearchBoxController extends NavigationSubController {
         } else {
             int textLength = addressArea.getText().trim().length();
             if (textLength >= 2) {
-                runAddressSuggestionTask(suggestions, addressArea);
+                runAddressSuggestionTask(suggestions, addressArea, false);
             }
         }
     }

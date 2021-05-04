@@ -39,8 +39,11 @@ public class NavigationBoxController extends NavigationSubController {
     private Button searchButtonExpanded;
     @FXML
     private VBox navigationBox;
+    @FXML
+    private VBox startingSuggestions;
+    @FXML
+    private VBox destinationSuggestions;
 
-    private TST<List<OsmAddress>> addressTries;
     private TransportOptions transOptions = TransportOptions.getInstance();
 
     @FXML
@@ -60,12 +63,51 @@ public class NavigationBoxController extends NavigationSubController {
             alert.showAndWait();
 
         } else {
-            if (addressTries == null) {
-                MapCanvas mapCanvas = mainController.getCanvas();
-                Model model = mapCanvas.getModel();
-                MapData mapData = model.getMapData();
-                addressTries = mapData.getAddressTries();
+            String startingAddress = startingPoint.getText().trim().toLowerCase();
+            String destinationAddress = destinationPoint.getText().trim().toLowerCase();
+
+            startingSuggestions.getChildren().clear();
+            destinationSuggestions.getChildren().clear();
+
+            checkTries();
+
+            float[] sCoords = null;
+            float[] dCoords = null;
+
+            for (OsmAddress osmAddressS : getAllSuggestions()) {
+                if (osmAddressS.toString().toLowerCase().contains(startingAddress)
+                        || osmAddressS.omitHouseNumberToString().toLowerCase().contains(startingAddress)) {
+                    sCoords = new float[]{osmAddressS.getNode().getX(), osmAddressS.getNode().getY()};
+                    break;
+                }
             }
+
+            for (OsmAddress osmAddressD : getAllDestinationSuggestions()) {
+                System.out.println("Destination, address check: " + osmAddressD.toString());
+                if (osmAddressD.toString().toLowerCase().contains(destinationAddress)
+                        || osmAddressD.omitHouseNumberToString().toLowerCase().contains(destinationAddress)) {
+                    dCoords = new float[]{osmAddressD.getNode().getX(), osmAddressD.getNode().getY()};
+                    break;
+                }
+            }
+
+            if (sCoords != null && dCoords != null){
+                mainController.getCanvas().setRedPinCoords(sCoords[0], sCoords[1]);
+                mainController.getCanvas().setRedPinVisible(true);
+
+                mainController.getCanvas().setGreyPinCoords(dCoords[0], dCoords[1]);
+                mainController.getCanvas().setGreyPinVisible(true);
+
+                float avgX = (sCoords[0]+dCoords[0])/2;
+                float avgY = (sCoords[1]+dCoords[1])/2;
+
+                mainController.getCanvas().changeView(avgX, avgY);
+                //TODO while(rangeSearch(getBoundingBox))
+            }
+
+
+            //mainController.getCanvas().changeView(osmAddress.getNode().getX(), osmAddress.getNode().getY());
+
 
 //            String originAddress = startingPoint.getText();
 //            float[] originCoords = addressTries.get(originAddress);
@@ -127,7 +169,24 @@ public class NavigationBoxController extends NavigationSubController {
             searchButtonExpanded.requestFocus();
             startingPoint.setText(startingPoint.getText().trim());
             destinationPoint.setText(destinationPoint.getText().trim());
+            startingSuggestions.getChildren().clear();
+            destinationSuggestions.getChildren().clear();
             searchNavigationAddresses();
+        } else {
+            if(keyEvent.getSource().toString().contains("startingPoint")){
+                int textLength = startingPoint.getText().trim().length();
+                if (textLength >= 2) {
+                    runAddressSuggestionTask(startingSuggestions, startingPoint, false);
+                }
+            } else if (keyEvent.getSource().toString().contains("destinationPoint")) {
+                int textLength = destinationPoint.getText().trim().length();
+                if (textLength >= 2) {
+                    runAddressSuggestionTask(destinationSuggestions, destinationPoint, true);
+                }
+            }
+
+
+
         }
     }
 

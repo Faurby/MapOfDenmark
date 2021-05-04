@@ -19,7 +19,9 @@ public abstract class NavigationSubController extends SubController {
     protected boolean isVisible;
 
     private List<OsmAddress> allSuggestions = new ArrayList<>();
+    private List<OsmAddress> allDestinationSuggestions = new ArrayList<>();
     private List<String> shownSuggestions = new ArrayList<>();
+    private List<String> shownDestinationSuggestions = new ArrayList<>();
     private TST<List<OsmAddress>> addressTries;
     private Task<Void> addressSuggestionTask;
 
@@ -31,11 +33,18 @@ public abstract class NavigationSubController extends SubController {
         return isVisible;
     }
 
-    protected void displayAddressSuggestions(VBox suggestions, TextArea textArea) {
+    protected void displayAddressSuggestions(VBox suggestions, TextArea textArea, boolean extended) {
         int count = 0;
         suggestions.getChildren().clear();
 
-        for (String s : shownSuggestions) {
+        List<String> localShownSuggestions;
+        if (extended){
+            localShownSuggestions = shownDestinationSuggestions;
+        } else {
+            localShownSuggestions = shownSuggestions;
+        }
+
+        for (String s : localShownSuggestions) {
             if (count <= 500) {
                 Label b = new Label(s);
                 b.setPrefWidth(800);
@@ -69,7 +78,7 @@ public abstract class NavigationSubController extends SubController {
         addressTries = mapData.getAddressTries();
     }
 
-    protected void runAddressSuggestionTask(VBox suggestions, TextArea textArea) {
+    protected void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended) {
         if (addressSuggestionTask != null) {
             if (addressSuggestionTask.isRunning()) {
                 addressSuggestionTask.cancel();
@@ -81,7 +90,15 @@ public abstract class NavigationSubController extends SubController {
                 if (addressTries == null) {
                     activateTries();
                 }
-                shownSuggestions = new ArrayList<>();
+
+                List<OsmAddress> localAllSuggestions;
+                if (extended) {
+                    shownDestinationSuggestions = new ArrayList<>();
+                    localAllSuggestions = allDestinationSuggestions;
+                } else {
+                    shownSuggestions = new ArrayList<>();
+                    localAllSuggestions = allSuggestions;
+                }
 
                 String input = textArea.getText();
                 String addressInput = input.replace(" ", "").toLowerCase();
@@ -105,33 +122,48 @@ public abstract class NavigationSubController extends SubController {
                 if (addressInput.equals(streetName)) {
 
                     if (it.hasNext()) {
-                        allSuggestions = new ArrayList<>();
-                        allSuggestions = addressTries.get(it.next());
+                        localAllSuggestions = new ArrayList<>();
+                        localAllSuggestions = addressTries.get(it.next());
                     }
 
-                    if (allSuggestions.size() > 0) {
-                        for (OsmAddress osmAddress : allSuggestions) {
+                    if (localAllSuggestions.size() > 0) {
+                        for (OsmAddress osmAddress : localAllSuggestions) {
                             String address = osmAddress.toString();
-                            shownSuggestions.add(address);
+
+                            if (extended) {
+                                shownDestinationSuggestions.add(address);
+                            } else {
+                                shownSuggestions.add(address);
+                            }
                         }
                     }
                 } else {
 
-                    allSuggestions = new ArrayList<>();
+                    localAllSuggestions = new ArrayList<>();
 
                     while (it.hasNext()) {
-                        allSuggestions.add(addressTries.get(it.next()).get(0));
+                        localAllSuggestions.add(addressTries.get(it.next()).get(0));
                     }
-                    for (OsmAddress osmAddress : allSuggestions) {
+                    for (OsmAddress osmAddress : localAllSuggestions) {
                         String address = osmAddress.omitHouseNumberToString();
-                        shownSuggestions.add(address);
+
+                        if (extended) {
+                            shownDestinationSuggestions.add(address);
+                        } else {
+                            shownSuggestions.add(address);
+                        }
                     }
+                }
+                if (extended) {
+                    allDestinationSuggestions = localAllSuggestions;
+                } else {
+                    allSuggestions = localAllSuggestions;
                 }
                 return null;
             }
         };
 
-        addressSuggestionTask.setOnSucceeded(e -> displayAddressSuggestions(suggestions, textArea));
+        addressSuggestionTask.setOnSucceeded(e -> displayAddressSuggestions(suggestions, textArea, extended));
         addressSuggestionTask.setOnFailed(e -> addressSuggestionTask.getException().printStackTrace());
         Thread thread = new Thread(addressSuggestionTask);
         thread.start();
@@ -161,5 +193,8 @@ public abstract class NavigationSubController extends SubController {
 
     public List<OsmAddress> getAllSuggestions() {
         return allSuggestions;
+    }
+    public List<OsmAddress> getAllDestinationSuggestions() {
+        return allDestinationSuggestions;
     }
 }

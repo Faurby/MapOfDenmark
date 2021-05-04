@@ -154,6 +154,8 @@ public class MainController {
     private void userNodeClickedInListView(String userNodeName) {
         if (userNodeName != null) {
             UserNode clickedUserNode = userNodesMap.get(userNodeName);
+            canvas.setRedPinCoords(clickedUserNode.getX(), clickedUserNode.getY());
+            canvas.setRedPinVisible(true);
             canvas.changeView(clickedUserNode.getX(), clickedUserNode.getY());
             userNodeListView.getSelectionModel().clearSelection();
         }
