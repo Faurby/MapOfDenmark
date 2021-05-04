@@ -97,6 +97,9 @@ public class MainController extends BaseController {
     @FXML
     private Text nearestRoadText;
 
+    private int counter;
+    String nameWithHighestCount = "";
+
     private boolean resetDijkstra = true;
 
     private boolean userNodeToggle = false;
@@ -108,6 +111,7 @@ public class MainController extends BaseController {
     private Model model;
     private Point2D lastMouse;
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
+    private Task<Void> roadTask;
 
 
     public void updateZoomBox() {
@@ -690,5 +694,61 @@ public class MainController extends BaseController {
                 break;
             }
         }
+    }
+
+    public void onMouseMoved(MouseEvent mouseEvent) {
+        if (model.getMapData() != null) {
+            lastMouse = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+            if (counter == 5) {
+                updateRoadTask();
+            }
+            counter++;
+        }
+    }
+
+    public void updateRoadTask() {
+        if (roadTask != null) {
+            if (roadTask.isRunning()) {
+                roadTask.cancel();
+            }
+        }
+        roadTask = new Task<>() {
+            @Override
+            protected Void call() {
+                Point2D point = canvas.mouseToModelCoords(lastMouse);
+                float[] queryCoords = new float[]{(float) point.getX(), (float) point.getY()};
+                float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords);
+
+                DirectedGraph graph = canvas.getModel().getMapData().getDirectedGraph();
+                int nearestVertex = graph.getVertexID(nearestCoords);
+                List<Edge> edgeList = graph.getAdjacentEdges(nearestVertex);
+                Map<String, Integer> countMap = new HashMap<>();
+                for (Edge edge : edgeList) {
+                    if (edge.getName() != null) {
+                        int count = 0;
+                        if (countMap.containsKey(edge.getName())) {
+                            count = countMap.get(edge.getName());
+                        }
+                        count++;
+                        countMap.put(edge.getName(), count);
+                    }
+                }
+                int highestCount = 0;
+                nameWithHighestCount = "";
+                for (String name : countMap.keySet()) {
+                    int count = countMap.get(name);
+                    if (count > highestCount) {
+                        highestCount = count;
+                        nameWithHighestCount = name;
+                    }
+                }
+                counter = 0;
+                return null;
+            }
+        };
+        roadTask.setOnSucceeded(e -> nearestRoadText.setText(nameWithHighestCount));
+        roadTask.setOnFailed(e -> roadTask.getException().printStackTrace());
+        Thread thread = new Thread(roadTask);
+        thread.start();
     }
 }

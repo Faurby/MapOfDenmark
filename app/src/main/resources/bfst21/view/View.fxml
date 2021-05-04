@@ -21,8 +21,6 @@
 
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.ColumnConstraints?>
 <Scene xmlns="https://javafx.com/javafx"
        xmlns:fx="https://javafx.com/fxml"
        fx:controller="bfst21.view.controllers.MainController"
@@ -37,6 +35,7 @@
                    onMouseDragged="#onMouseDragged"
                    onMousePressed="#onMousePressed"
                    onMouseReleased="#onMouseReleased"
+                   onMouseMoved="#onMouseMoved"
                    onScroll="#onScroll">
         </MapCanvas>
         <fx:include fx:id="debugBox" source="DebugBox.fxml"/>
