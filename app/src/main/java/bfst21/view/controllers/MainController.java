@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.*;
 
 
-public class MainController {
+public class MainController extends BaseController {
 
     @FXML
     private MapCanvas canvas;
@@ -282,13 +282,6 @@ public class MainController {
     }
 
     @FXML
-    public void onMouseEntered() {
-        if (model.getMapData() != null) {
-            updateUserNodeList();
-        }
-    }
-
-    @FXML
     public void loadDefault() {
         Task<Void> task = new Task<>() {
             @Override
@@ -384,10 +377,7 @@ public class MainController {
     @FXML
     public void userNodeButtonClicked() {
         if (model.getMapData() == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("ERROR: MapData is null");
-            alert.setContentText("No MapData has been loaded.");
+            Alert alert = alertPopup(Alert.AlertType.ERROR, "Error", "ERROR: MapData is null", "No MapData has been loaded.");
             alert.showAndWait();
         }
         if (userNodeToggle) {
@@ -416,16 +406,12 @@ public class MainController {
 
     private void newUserNodeCheckNameAndSave() {
         if (userNodeNameTextField.getText().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error");
-            alert.setHeaderText("");
-            alert.setContentText("A name is required");
+            Alert alert = alertPopup(Alert.AlertType.INFORMATION,
+                    "Error", "A name is required");
             alert.showAndWait();
         } else if (userNodesMap.containsKey(userNodeNameTextField.getText())) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error");
-            alert.setHeaderText("");
-            alert.setContentText("Point of Interest names must be unique");
+            Alert alert = alertPopup(Alert.AlertType.INFORMATION,
+                    "Error", "Point of Interest names must be unique");
             alert.showAndWait();
         } else {
             saveUserNode();
@@ -459,6 +445,7 @@ public class MainController {
         userNodesMap = model.getMapData().getUserNodesMap();
 
         for (UserNode userNode : userNodeListItems) {
+            //TODO: dette skal ændres. Man kan ikke længere trykke på user nodes i listen hvis navnet er for langt
             String name = userNode.getName();
             if (name.length() >= 12) {
                 name = name.substring(0, 12) + "...";
@@ -539,17 +526,11 @@ public class MainController {
 
     private void userNodeNewNameCheckNameAndSave() {
         if (userNodeNewNameTextField.getText().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error");
-            alert.setHeaderText("");
-            alert.setContentText("A name is required");
+            Alert alert = alertPopup(Alert.AlertType.INFORMATION, "Error", "A name is required");
             alert.showAndWait();
 
         } else if (userNodesMap.containsKey(userNodeNewNameTextField.getText())) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error");
-            alert.setHeaderText("");
-            alert.setContentText("Point of Interest names must be unique");
+            Alert alert = alertPopup(Alert.AlertType.INFORMATION, "Error", "Point of Interest names must be unique");
             alert.showAndWait();
 
         } else {
@@ -591,10 +572,8 @@ public class MainController {
         String fileName = model.getFileName();
 
         if (fileName.endsWith(".obj")) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirmation");
-            alert.setHeaderText("");
-            alert.setContentText("You're currently using an OBJ file. Are you sure you want to save another OBJ file?");
+            String contentText = "You're currently using an OBJ file. Are you sure you want to save another OBJ file?";
+            Alert alert = alertPopup(Alert.AlertType.CONFIRMATION, "Confirmation", contentText);
             alert.showAndWait();
             if (alert.getResult() == ButtonType.OK) {
                 saveObjFile();
@@ -627,11 +606,8 @@ public class MainController {
                 }
             };
             task.setOnSucceeded(event -> {
-                Alert confirmationPopup = new Alert(Alert.AlertType.INFORMATION);
-                confirmationPopup.setContentText("Successfully saved OBJ");
-                confirmationPopup.setTitle("Success");
-                confirmationPopup.setHeaderText("");
-                confirmationPopup.showAndWait();
+                Alert alert = alertPopup(Alert.AlertType.INFORMATION, "Success", "Successfully saved OBJ");
+                alert.showAndWait();
             });
             task.setOnFailed(event -> task.getException().printStackTrace());
             Thread thread = new Thread(task);
