@@ -43,8 +43,7 @@ public class SearchBoxController extends NavigationSubController {
                 }
             }
         } else {
-            Alert alert = alertPopup(Alert.AlertType.ERROR, "Error", "Search field is empty");
-            alert.showAndWait();
+            displayAlert(Alert.AlertType.ERROR, "Error", "Search field is empty");
         }
     }
 

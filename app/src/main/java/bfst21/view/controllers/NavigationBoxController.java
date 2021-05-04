@@ -40,17 +40,15 @@ public class NavigationBoxController extends NavigationSubController {
     @FXML
     private VBox destinationSuggestions;
 
-    private TransportOptions transOptions = TransportOptions.getInstance();
+    private final TransportOptions transOptions = TransportOptions.getInstance();
 
     @FXML
     public void searchNavigationAddresses() {
         if (startingPoint.getText().trim().equals("")) {
-            Alert alert = alertPopup(Alert.AlertType.ERROR, "Error", "Starting point search field is empty");
-            alert.showAndWait();
+            displayAlert(Alert.AlertType.ERROR, "Error", "Starting point search field is empty");
 
         } else if (destinationPoint.getText().trim().equals("")) {
-            Alert alert = alertPopup(Alert.AlertType.ERROR, "Error", "Destination point search field is empty");
-            alert.showAndWait();
+            displayAlert(Alert.AlertType.ERROR, "Error", "Destination point search field is empty");
 
         } else {
             String startingAddress = startingPoint.getText().trim().toLowerCase();

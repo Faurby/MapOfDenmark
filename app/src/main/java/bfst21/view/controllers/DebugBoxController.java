@@ -27,7 +27,6 @@ public class DebugBoxController extends SubController {
         this.zoomText.setText(zoomText);
     }
 
-
     public void setRepaintTime(String repaintTime) {
         this.repaintTime.setText(repaintTime);
     }
