@@ -206,6 +206,11 @@ public class XmlParser {
                                         break;
                                     case "highway":
                                         switch (value) {
+                                            case "mini_roundabout":
+                                                if (way != null) {
+                                                    way.setOneWay(true);
+                                                }
+                                                break;
                                             case "motorway":
                                             case "motorway_link":
                                                 elementType = ElementType.MOTORWAY;

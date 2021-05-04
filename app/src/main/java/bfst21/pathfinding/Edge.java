@@ -11,7 +11,7 @@ public class Edge implements Serializable {
 
     private static final long serialVersionUID = -8885206149678561745L;
 
-    private final float weight;
+    private final float weight, distance;
     private final int from, to;
     private String name;
 
@@ -21,6 +21,7 @@ public class Edge implements Serializable {
                 int from,
                 int to,
                 float weight,
+                float distance,
                 boolean canDrive,
                 boolean canBike,
                 boolean canWalk) {
@@ -31,6 +32,7 @@ public class Edge implements Serializable {
         this.from = from;
         this.to = to;
         this.weight = weight;
+        this.distance = distance;
         this.canDrive = canDrive;
         this.canBike = canBike;
         this.canWalk = canWalk;
@@ -80,6 +82,10 @@ public class Edge implements Serializable {
 
     public float getWeight() {
         return weight;
+    }
+
+    public float getDistance() {
+        return distance;
     }
 
     public String getName() {
