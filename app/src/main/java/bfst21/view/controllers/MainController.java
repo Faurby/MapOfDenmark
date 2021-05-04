@@ -7,10 +7,8 @@ import bfst21.osm.UserNode;
 import bfst21.osm.Way;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.pathfinding.Edge;
-import bfst21.pathfinding.Vertex;
 import bfst21.view.ColorMode;
 import bfst21.view.MapCanvas;
-import edu.princeton.cs.algs4.MaxPQ;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -26,7 +24,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -54,7 +51,6 @@ public class MainController extends BaseController {
     private VBox loadingText;
     @FXML
     private ProgressBar progressBar;
-
     @FXML
     private VBox userNodeVBox;
     @FXML
@@ -81,7 +77,6 @@ public class MainController extends BaseController {
     private VBox userNodeNewDescriptionVBox;
     @FXML
     private TextField userNodeNewDescriptionTextField;
-
     @FXML
     private SearchBoxController searchBoxController;
     @FXML
@@ -112,7 +107,6 @@ public class MainController extends BaseController {
     private Point2D lastMouse;
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
     private Task<Void> roadTask;
-
 
     public void updateZoomBox() {
         setZoomPercent(canvas.getZoomPercent());
@@ -163,7 +157,6 @@ public class MainController extends BaseController {
             Point2D currentMousePos = new Point2D(event.getX(), event.getY());
             updateMouseCoords(currentMousePos);
         });
-
         userNodeListView.setOnMouseClicked(event -> userNodeClickedInListView(userNodeListView.getSelectionModel().getSelectedItem()));
     }
 
@@ -426,19 +419,19 @@ public class MainController extends BaseController {
     }
 
     private void newUserNodeCheckNameAndSave() {
-        String textfield = userNodeNameTextField.getText();
-        if (textfield.isEmpty()) {
+        String textField = userNodeNameTextField.getText();
+        if (textField.isEmpty()) {
             Alert alert = alertPopup(Alert.AlertType.INFORMATION,
                     "Error", "A name is required");
             alert.showAndWait();
 
-        } else if (textfield.length() > 20) {
+        } else if (textField.length() > 20) {
             Alert alert = alertPopup(Alert.AlertType.INFORMATION,
                     "Error",
                     "Names must be no longer than 20 characters");
             alert.showAndWait();
 
-        } else if (userNodesMap.containsKey(textfield)) {
+        } else if (userNodesMap.containsKey(textField)) {
             Alert alert = alertPopup(Alert.AlertType.INFORMATION,
                     "Error", "Point of Interest names must be unique");
             alert.showAndWait();
@@ -479,11 +472,7 @@ public class MainController extends BaseController {
             tempList.add(userNode.getName());
         }
         userNodeListView.setItems(tempList);
-        if (!userNodeListItems.isEmpty()) {
-            userNodeListView.setVisible(true);
-        } else {
-            userNodeListView.setVisible(false);
-        }
+        userNodeListView.setVisible(!userNodeListItems.isEmpty());
     }
 
     @FXML

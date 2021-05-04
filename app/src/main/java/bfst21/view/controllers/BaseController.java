@@ -2,6 +2,7 @@ package bfst21.view.controllers;
 
 import javafx.scene.control.Alert;
 
+
 public class BaseController {
 
     protected Alert alertPopup(Alert.AlertType alertType, String title, String contentText) {

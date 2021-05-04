@@ -28,7 +28,6 @@ public class DebugBoxController extends SubController {
     }
 
 
-
     public void setRepaintTime(String repaintTime) {
         this.repaintTime.setText(repaintTime);
     }

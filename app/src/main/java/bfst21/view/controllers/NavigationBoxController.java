@@ -85,7 +85,7 @@ public class NavigationBoxController extends NavigationSubController {
 
                 mainController.getCanvas().setGreyPinCoords(sCoords[0], sCoords[1]);
                 mainController.getCanvas().setGreyPinVisible(true);
-                
+
                 mainController.getCanvas().setRedPinCoords(dCoords[0], dCoords[1]);
                 mainController.getCanvas().setRedPinVisible(true);
 
@@ -199,7 +199,6 @@ public class NavigationBoxController extends NavigationSubController {
 
     @Override
     public void setVisible(boolean visible) {
-        super.setVisible(visible);
         navigationBox.setVisible(visible);
         navigationBox.setManaged(visible);
 

@@ -14,34 +14,27 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class NavigationSubController extends SubController {
 
-    protected boolean isVisible;
+public abstract class NavigationSubController extends SubController {
 
     private List<OsmAddress> allSuggestions = new ArrayList<>();
     private List<OsmAddress> allSuggestionsDestSpecific = new ArrayList<>();
+
     private List<String> shownSuggestions = new ArrayList<>();
     private List<String> shownSuggestionsDestSpecific = new ArrayList<>();
+
     private TST<List<OsmAddress>> addressTries;
     private Task<Void> addressSuggestionTask;
 
-    public void setVisible(boolean visible) {
-        isVisible = visible;
-    }
-
-    public boolean isVisible() {
-        return isVisible;
-    }
+    public abstract void setVisible(boolean visible);
 
     protected void displayAddressSuggestions(VBox suggestions, TextArea textArea, boolean extended) {
         int count = 0;
         suggestions.getChildren().clear();
 
-        List<String> localShownSuggestions;
-        if (extended){
+        List<String> localShownSuggestions = shownSuggestions;
+        if (extended) {
             localShownSuggestions = shownSuggestionsDestSpecific;
-        } else {
-            localShownSuggestions = shownSuggestions;
         }
 
         for (String s : localShownSuggestions) {
@@ -65,7 +58,7 @@ public abstract class NavigationSubController extends SubController {
         }
     }
 
-    protected void checkTries(){
+    protected void checkTries() {
         if (addressTries == null) {
             activateTries();
         }
@@ -85,12 +78,12 @@ public abstract class NavigationSubController extends SubController {
             }
         }
         addressSuggestionTask = new Task<>() {
+
             @Override
             protected Void call() {
                 if (addressTries == null) {
                     activateTries();
                 }
-
                 List<OsmAddress> localAllSuggestions;
                 if (extended) {
                     shownSuggestionsDestSpecific = new ArrayList<>();
@@ -123,7 +116,6 @@ public abstract class NavigationSubController extends SubController {
                     if (it.hasNext()) {
                         localAllSuggestions = addressTries.get(it.next());
                     }
-
                     if (localAllSuggestions.size() > 0) {
                         for (OsmAddress osmAddress : localAllSuggestions) {
                             String address = osmAddress.toString();
@@ -181,7 +173,6 @@ public abstract class NavigationSubController extends SubController {
                 counter++;
             }
         }
-
         return addressInput.substring(0, counter);
     }
 
@@ -192,6 +183,7 @@ public abstract class NavigationSubController extends SubController {
     public List<OsmAddress> getAllSuggestions() {
         return allSuggestions;
     }
+
     public List<OsmAddress> getAllSuggestionsDestSpecific() {
         return allSuggestionsDestSpecific;
     }
