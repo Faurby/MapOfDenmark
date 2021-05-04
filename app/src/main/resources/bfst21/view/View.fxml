@@ -26,7 +26,8 @@
 <Scene xmlns="https://javafx.com/javafx"
        xmlns:fx="https://javafx.com/fxml"
        fx:controller="bfst21.view.controllers.MainController"
-       fx:id="scene">
+       fx:id="scene"
+       onKeyPressed="#onKeyPressed">
 
     <StackPane fx:id="stackPane" minHeight="480" minWidth="640">
 
@@ -36,8 +37,7 @@
                    onMouseDragged="#onMouseDragged"
                    onMousePressed="#onMousePressed"
                    onMouseReleased="#onMouseReleased"
-                   onScroll="#onScroll"
-                   onKeyPressed="#onKeyPressed">
+                   onScroll="#onScroll">
         </MapCanvas>
         <fx:include fx:id="debugBox" source="DebugBox.fxml"/>
 

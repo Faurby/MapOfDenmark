@@ -58,10 +58,7 @@ public class SearchBoxController extends SubController {
             }
 
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("");
-            alert.setContentText("Search field is empty.");
+            Alert alert = alertPopup(Alert.AlertType.ERROR, "Error", "Search field is empty");
             alert.showAndWait();
         }
     }
@@ -125,7 +122,7 @@ public class SearchBoxController extends SubController {
         suggestions.getChildren().clear();
 
         for (String s : shownSuggestions) {
-            if (count <= 50) {
+            if (count <= 500) {
                 Label b = new Label(s);
                 b.setPrefWidth(800);
                 b.setOnMouseClicked((event) -> {
@@ -186,13 +183,9 @@ public class SearchBoxController extends SubController {
                     }
 
                     if (allSuggestions.size() > 0) {
-                        int count = 0;
                         for (OsmAddress osmAddress : allSuggestions) {
-                            if (count < 20) {
                             String address = osmAddress.toString();
                             shownSuggestions.add(address);
-                                count++;
-                            }
                         }
                     }
                 } else {
