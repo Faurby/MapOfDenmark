@@ -275,38 +275,6 @@ public class MainController extends BaseController {
         lastMouse = new Point2D(mouseEvent.getX(), mouseEvent.getY());
         updateAverageRepaintTime();
 
-        if (mouseEvent.isSecondaryButtonDown()) {
-            Point2D point = canvas.mouseToModelCoords(lastMouse);
-            float[] queryCoords = new float[]{(float) point.getX(), (float) point.getY()};
-            canvas.runNearestNeighborTask(queryCoords);
-            float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords);
-
-            DirectedGraph graph = canvas.getModel().getMapData().getDirectedGraph();
-            int nearestVertex = graph.getVertexID(nearestCoords);
-            List<Edge> edgeList = graph.getAdjacentEdges(nearestVertex);
-            Map<String, Integer> countMap = new HashMap<>();
-            for (Edge edge : edgeList) {
-                if (edge.getName() != null) {
-                    int count = 0;
-                    if (countMap.containsKey(edge.getName())) {
-                        count = countMap.get(edge.getName());
-                    }
-                    count++;
-                    countMap.put(edge.getName(), count);
-                }
-            }
-            int highestCount = 0;
-            String nameWithHighestCount = "";
-            for (String name : countMap.keySet()) {
-                int count = countMap.get(name);
-                if (count > highestCount) {
-                    highestCount = count;
-                    nameWithHighestCount = name;
-                }
-            }
-            nearestRoadText.setText(nameWithHighestCount);
-        }
-
         if (userNodeToggle && mouseEvent.isPrimaryButtonDown()) {
             newUserNodeVBox.setVisible(true);
             userNodeNameTextField.requestFocus();
