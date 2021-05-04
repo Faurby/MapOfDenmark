@@ -170,6 +170,8 @@ public class MainController extends BaseController {
     private void userNodeClickedInListView(String userNodeName) {
         if (userNodeName != null) {
             UserNode clickedUserNode = userNodesMap.get(userNodeName);
+            canvas.setRedPinCoords(clickedUserNode.getX(), clickedUserNode.getY());
+            canvas.setRedPinVisible(true);
             canvas.changeView(clickedUserNode.getX(), clickedUserNode.getY());
             userNodeListView.getSelectionModel().clearSelection();
         }
@@ -264,7 +266,8 @@ public class MainController extends BaseController {
         if (mouseEvent.isPrimaryButtonDown()) {
             canvas.pan(dx, dy);
         }
-        onMousePressed(mouseEvent);
+        lastMouse = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+        updateAverageRepaintTime();
     }
 
     @FXML

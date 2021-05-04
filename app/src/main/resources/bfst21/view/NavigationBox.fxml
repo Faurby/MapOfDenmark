@@ -13,7 +13,7 @@
       xmlns="https://javafx.com/javafx"
       xmlns:fx="https://javafx.com/fxml"
       fx:controller="bfst21.view.controllers.NavigationBoxController"
-      minWidth="200"
+      minWidth="250"
       visible="false"
       managed="false"
       style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B">
@@ -27,25 +27,53 @@
 
     <Text text="Navigation" style="-fx-font-size: 15 "/>
 
-    <GridPane vgap="5" hgap="2">
+    <GridPane hgap="2">
+
+        <VBox GridPane.columnIndex="1"
+              GridPane.rowIndex="1"
+              GridPane.rowSpan="3"
+              spacing="5">
 
         <TextArea fx:id="startingPoint"
-                  GridPane.columnIndex="1"
-                  GridPane.rowIndex="1"
                   minHeight="25"
                   prefHeight="25"
                   promptText="From:"
                   wrapText="true"
                   onKeyPressed="#typingCheck"/>
 
+        <ScrollPane minWidth="200"
+                    prefWidth="350"
+                    maxHeight="100"
+                    minHeight="0"
+                    style="-fx-padding: 0 10 0 10 ; -fx-background-color: WHITE"
+                    fitToWidth="true">
+
+            <VBox fx:id="startingSuggestions"
+                  style="-fx-background-color: WHITE"
+                  onKeyPressed="#typingCheck">
+            </VBox>
+        </ScrollPane>
+
         <TextArea fx:id="destinationPoint"
-                  GridPane.columnIndex="1"
-                  GridPane.rowIndex="3"
                   minHeight="25"
                   prefHeight="25"
                   promptText="To:"
                   wrapText="true"
                   onKeyPressed="#typingCheck"/>
+
+            <ScrollPane minWidth="200"
+                        prefWidth="350"
+                        maxHeight="100"
+                        minHeight="0"
+                        style="-fx-padding: 0 10 0 10 ; -fx-background-color: WHITE"
+                        fitToWidth="true">
+
+                <VBox fx:id="destinationSuggestions"
+                      style="-fx-background-color: WHITE"
+                      onKeyPressed="#typingCheck">
+                </VBox>
+            </ScrollPane>
+        </VBox>
 
         <Button fx:id="switchButton"
                 GridPane.columnIndex="2"
@@ -135,7 +163,7 @@
 
     <HBox alignment="BASELINE_CENTER" style="-fx-padding: 10 0 5 0">
 
-        <Button onAction="#expandSearchView"
+        <Button onAction="#minimizeSearchView"
                 text="Minimize" GridPane.columnIndex="0"
                 GridPane.rowIndex="0"/>
 

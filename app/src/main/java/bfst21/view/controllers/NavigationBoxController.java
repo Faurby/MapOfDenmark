@@ -1,12 +1,8 @@
 package bfst21.view.controllers;
 
-import bfst21.address.TST;
-import bfst21.models.MapData;
-import bfst21.models.Model;
 import bfst21.models.TransportOption;
 import bfst21.models.TransportOptions;
 import bfst21.osm.OsmAddress;
-import bfst21.view.MapCanvas;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -21,7 +17,7 @@ import javafx.stage.Stage;
 import java.util.List;
 
 
-public class NavigationBoxController extends SubController {
+public class NavigationBoxController extends NavigationSubController {
 
     @FXML
     private TextArea startingPoint;
@@ -39,8 +35,11 @@ public class NavigationBoxController extends SubController {
     private Button searchButtonExpanded;
     @FXML
     private VBox navigationBox;
+    @FXML
+    private VBox startingSuggestions;
+    @FXML
+    private VBox destinationSuggestions;
 
-    private TST<List<OsmAddress>> addressTries;
     private TransportOptions transOptions = TransportOptions.getInstance();
 
     @FXML
@@ -54,12 +53,49 @@ public class NavigationBoxController extends SubController {
             alert.showAndWait();
 
         } else {
-            if (addressTries == null) {
-                MapCanvas mapCanvas = mainController.getCanvas();
-                Model model = mapCanvas.getModel();
-                MapData mapData = model.getMapData();
-                addressTries = mapData.getAddressTries();
+            String startingAddress = startingPoint.getText().trim().toLowerCase();
+            String destinationAddress = destinationPoint.getText().trim().toLowerCase();
+
+            startingSuggestions.getChildren().clear();
+            destinationSuggestions.getChildren().clear();
+
+            checkTries();
+
+            float[] sCoords = null;
+            float[] dCoords = null;
+
+            for (OsmAddress osmAddressS : getAllSuggestions()) {
+                if (osmAddressS.toString().toLowerCase().contains(startingAddress)
+                        || osmAddressS.omitHouseNumberToString().toLowerCase().contains(startingAddress)) {
+                    sCoords = new float[]{osmAddressS.getNode().getX(), osmAddressS.getNode().getY()};
+                    break;
+                }
             }
+
+            for (OsmAddress osmAddressD : getAllSuggestionsDestSpecific()) {
+                System.out.println("Destination, address check: " + osmAddressD.toString());
+                if (osmAddressD.toString().toLowerCase().contains(destinationAddress)
+                        || osmAddressD.omitHouseNumberToString().toLowerCase().contains(destinationAddress)) {
+                    dCoords = new float[]{osmAddressD.getNode().getX(), osmAddressD.getNode().getY()};
+                    break;
+                }
+            }
+
+            if (sCoords != null && dCoords != null) {
+
+                mainController.getCanvas().setGreyPinCoords(sCoords[0], sCoords[1]);
+                mainController.getCanvas().setGreyPinVisible(true);
+                
+                mainController.getCanvas().setRedPinCoords(dCoords[0], dCoords[1]);
+                mainController.getCanvas().setRedPinVisible(true);
+
+                float avgX = (sCoords[0] + dCoords[0]) / 2;
+                float avgY = (sCoords[1] + dCoords[1]) / 2;
+
+                mainController.getCanvas().changeView(avgX, avgY);
+                //TODO while(rangeSearch(getBoundingBox))
+            }
+
 
 //            String originAddress = startingPoint.getText();
 //            float[] originCoords = addressTries.get(originAddress);
@@ -83,6 +119,10 @@ public class NavigationBoxController extends SubController {
     }
 
     public void switchText() {
+        List<OsmAddress> temp = getAllSuggestions();
+        setAllSuggestions(getAllSuggestionsDestSpecific());
+        setAllSuggestionsDestSpecific(temp);
+
         String s = startingPoint.getText();
         startingPoint.setText(destinationPoint.getText());
         destinationPoint.setText(s);
@@ -121,12 +161,28 @@ public class NavigationBoxController extends SubController {
             searchButtonExpanded.requestFocus();
             startingPoint.setText(startingPoint.getText().trim());
             destinationPoint.setText(destinationPoint.getText().trim());
+            startingSuggestions.getChildren().clear();
+            destinationSuggestions.getChildren().clear();
             searchNavigationAddresses();
+        } else {
+            if (keyEvent.getSource().toString().contains("startingPoint")) {
+                int textLength = startingPoint.getText().trim().length();
+                if (textLength >= 2) {
+                    runAddressSuggestionTask(startingSuggestions, startingPoint, false);
+                }
+            } else if (keyEvent.getSource().toString().contains("destinationPoint")) {
+                int textLength = destinationPoint.getText().trim().length();
+                if (textLength >= 2) {
+                    runAddressSuggestionTask(destinationSuggestions, destinationPoint, true);
+                }
+            }
+
+
         }
     }
 
     @FXML
-    public void expandSearchView() {
+    public void minimizeSearchView() {
         mainController.setNavigationBoxVisible(false);
         mainController.setSearchBoxVisible(true);
 
@@ -136,6 +192,9 @@ public class NavigationBoxController extends SubController {
         } else if (!startingPoint.getText().isEmpty()) {
             mainController.setSearchBoxAddressText(startingPoint.getText());
         }
+
+        mainController.getCanvas().setRedPinVisible(false);
+        mainController.getCanvas().setGreyPinVisible(false);
     }
 
     @Override
@@ -155,6 +214,6 @@ public class NavigationBoxController extends SubController {
     }
 
     public void onWindowResize(Stage stage) {
-        navigationBox.setMaxWidth(stage.getWidth() * 0.30D);
+        navigationBox.setMaxWidth(stage.getWidth() * 0.25D);
     }
 }
