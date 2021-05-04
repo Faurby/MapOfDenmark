@@ -408,14 +408,23 @@ public class MainController extends BaseController {
     }
 
     private void newUserNodeCheckNameAndSave() {
-        if (userNodeNameTextField.getText().isEmpty()) {
+        String textfield = userNodeNameTextField.getText();
+        if (textfield.isEmpty()) {
             Alert alert = alertPopup(Alert.AlertType.INFORMATION,
                     "Error", "A name is required");
             alert.showAndWait();
-        } else if (userNodesMap.containsKey(userNodeNameTextField.getText())) {
+
+        } else if (textfield.length() > 20) {
+            Alert alert = alertPopup(Alert.AlertType.INFORMATION,
+                    "Error",
+                    "Names must be no longer than 20 characters");
+            alert.showAndWait();
+
+        } else if (userNodesMap.containsKey(textfield)) {
             Alert alert = alertPopup(Alert.AlertType.INFORMATION,
                     "Error", "Point of Interest names must be unique");
             alert.showAndWait();
+
         } else {
             saveUserNode();
         }
@@ -438,6 +447,7 @@ public class MainController extends BaseController {
         userNodeToggle = false;
         newUserNodeVBox.setVisible(false);
         updateUserNodeList();
+        userNodeNameTextField.setText("");
         canvas.repaint();
     }
 
@@ -448,12 +458,7 @@ public class MainController extends BaseController {
         userNodesMap = model.getMapData().getUserNodesMap();
 
         for (UserNode userNode : userNodeListItems) {
-            //TODO: dette skal ændres. Man kan ikke længere trykke på user nodes i listen hvis navnet er for langt
-            String name = userNode.getName();
-            if (name.length() >= 12) {
-                name = name.substring(0, 12) + "...";
-            }
-            tempList.add(name);
+            tempList.add(userNode.getName());
         }
         userNodeListView.setItems(tempList);
     }
@@ -528,11 +533,18 @@ public class MainController extends BaseController {
     }
 
     private void userNodeNewNameCheckNameAndSave() {
-        if (userNodeNewNameTextField.getText().isEmpty()) {
+        String textfield = userNodeNewNameTextField.getText();
+        if (textfield.isEmpty()) {
             Alert alert = alertPopup(Alert.AlertType.INFORMATION, "Error", "A name is required");
             alert.showAndWait();
 
-        } else if (userNodesMap.containsKey(userNodeNewNameTextField.getText())) {
+        } else if (textfield.length() > 20) {
+            Alert alert = alertPopup(Alert.AlertType.INFORMATION,
+                    "Error",
+                    "Names must be no longer than 20 characters");
+            alert.showAndWait();
+
+        } else if (userNodesMap.containsKey(textfield)) {
             Alert alert = alertPopup(Alert.AlertType.INFORMATION, "Error", "Point of Interest names must be unique");
             alert.showAndWait();
 
