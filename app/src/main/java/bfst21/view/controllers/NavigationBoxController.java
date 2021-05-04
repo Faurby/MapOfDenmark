@@ -81,15 +81,16 @@ public class NavigationBoxController extends NavigationSubController {
                 }
             }
 
-            if (sCoords != null && dCoords != null){
-                mainController.getCanvas().setRedPinCoords(sCoords[0], sCoords[1]);
+            if (sCoords != null && dCoords != null) {
+
+                mainController.getCanvas().setGreyPinCoords(sCoords[0], sCoords[1]);
+                mainController.getCanvas().setGreyPinVisible(true);
+                
+                mainController.getCanvas().setRedPinCoords(dCoords[0], dCoords[1]);
                 mainController.getCanvas().setRedPinVisible(true);
 
-                mainController.getCanvas().setGreyPinCoords(dCoords[0], dCoords[1]);
-                mainController.getCanvas().setGreyPinVisible(true);
-
-                float avgX = (sCoords[0]+dCoords[0])/2;
-                float avgY = (sCoords[1]+dCoords[1])/2;
+                float avgX = (sCoords[0] + dCoords[0]) / 2;
+                float avgY = (sCoords[1] + dCoords[1]) / 2;
 
                 mainController.getCanvas().changeView(avgX, avgY);
                 //TODO while(rangeSearch(getBoundingBox))
@@ -118,7 +119,7 @@ public class NavigationBoxController extends NavigationSubController {
     }
 
     public void switchText() {
-        List <OsmAddress> temp = getAllSuggestions();
+        List<OsmAddress> temp = getAllSuggestions();
         setAllSuggestions(getAllSuggestionsDestSpecific());
         setAllSuggestionsDestSpecific(temp);
 
@@ -164,7 +165,7 @@ public class NavigationBoxController extends NavigationSubController {
             destinationSuggestions.getChildren().clear();
             searchNavigationAddresses();
         } else {
-            if(keyEvent.getSource().toString().contains("startingPoint")){
+            if (keyEvent.getSource().toString().contains("startingPoint")) {
                 int textLength = startingPoint.getText().trim().length();
                 if (textLength >= 2) {
                     runAddressSuggestionTask(startingSuggestions, startingPoint, false);
@@ -175,7 +176,6 @@ public class NavigationBoxController extends NavigationSubController {
                     runAddressSuggestionTask(destinationSuggestions, destinationPoint, true);
                 }
             }
-
 
 
         }
