@@ -10,8 +10,6 @@ public class DebugBoxController extends SubController {
     @FXML
     private Text zoomText;
     @FXML
-    private Text zoomPercent;
-    @FXML
     private Text repaintTime;
     @FXML
     private Text nodeSkipAmount;
@@ -29,9 +27,7 @@ public class DebugBoxController extends SubController {
         this.zoomText.setText(zoomText);
     }
 
-    public void setZoomPercent(String zoomPercent) {
-        this.zoomPercent.setText(zoomPercent);
-    }
+
 
     public void setRepaintTime(String repaintTime) {
         this.repaintTime.setText(repaintTime);

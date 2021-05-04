@@ -358,7 +358,6 @@ public class MapData {
             if (elementGroup.getType().canNavigate()) {
                 if (kdTreeMap.containsKey(elementGroup)) {
                     float[] coords = kdTreeMap.get(elementGroup).nearestNeighborSearch(queryCoords);
-
                     coordsList[count] = coords[0];
                     coordsList[count + 1] = coords[1];
                     count += 2;

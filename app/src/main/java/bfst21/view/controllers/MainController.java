@@ -5,8 +5,12 @@ import bfst21.models.*;
 import bfst21.osm.Node;
 import bfst21.osm.UserNode;
 import bfst21.osm.Way;
+import bfst21.pathfinding.DirectedGraph;
+import bfst21.pathfinding.Edge;
+import bfst21.pathfinding.Vertex;
 import bfst21.view.ColorMode;
 import bfst21.view.MapCanvas;
+import edu.princeton.cs.algs4.MaxPQ;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -21,6 +25,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -84,6 +90,12 @@ public class MainController {
     private DebugBoxController debugBoxController;
     @FXML
     private StartBoxController startBoxController;
+    @FXML
+    private Text zoomPercent;
+    @FXML
+    private GridPane footBox;
+    @FXML
+    private Text nearestRoadText;
 
     private boolean resetDijkstra = true;
 
@@ -99,7 +111,7 @@ public class MainController {
 
 
     public void updateZoomBox() {
-        debugBoxController.setZoomPercent("Zoom percent: " + canvas.getZoomPercent());
+        setZoomPercent(canvas.getZoomPercent());
         debugBoxController.setZoomText("Zoom level: " + canvas.getZoomLevelText());
         updateAverageRepaintTime();
         updateNodeSkipAmount();
@@ -202,6 +214,10 @@ public class MainController {
         updateZoomBox();
     }
 
+    public void setZoomPercent(String zoomPercent) {
+        this.zoomPercent.setText(zoomPercent);
+    }
+
     @FXML
     public void onMouseReleased() {
         canvas.runRangeSearchTask();
@@ -255,6 +271,32 @@ public class MainController {
             Point2D point = canvas.mouseToModelCoords(lastMouse);
             float[] queryCoords = new float[]{(float) point.getX(), (float) point.getY()};
             canvas.runNearestNeighborTask(queryCoords);
+            float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords);
+
+            DirectedGraph graph = canvas.getModel().getMapData().getDirectedGraph();
+            int nearestVertex = graph.getVertexID(nearestCoords);
+            List<Edge> edgeList = graph.getAdjacentEdges(nearestVertex);
+            Map<String, Integer> countMap = new HashMap<>();
+            for (Edge edge : edgeList) {
+                if (edge.getName() != null) {
+                    int count = 0;
+                    if (countMap.containsKey(edge.getName())) {
+                        count = countMap.get(edge.getName());
+                    }
+                    count++;
+                    countMap.put(edge.getName(), count);
+                }
+            }
+            int highestCount = 0;
+            String nameWithHighestCount = "";
+            for (String name : countMap.keySet()) {
+                int count = countMap.get(name);
+                if (count > highestCount) {
+                    highestCount = count;
+                    nameWithHighestCount = name;
+                }
+            }
+            nearestRoadText.setText(nameWithHighestCount);
         }
 
         if (userNodeToggle && mouseEvent.isPrimaryButtonDown()) {
@@ -346,6 +388,7 @@ public class MainController {
         loadingText.setVisible(false);
         searchBoxController.setVisible(true);
         userNodeVBox.setVisible(true);
+        footBox.setVisible(true);
         canvas.runRangeSearchTask();
 
         if (model.getMapData() != null) {
@@ -465,6 +508,11 @@ public class MainController {
             tempList.add(name);
         }
         userNodeListView.setItems(tempList);
+        if (!userNodeListItems.isEmpty()) {
+            userNodeListView.setVisible(true);
+        } else {
+            userNodeListView.setVisible(false);
+        }
     }
 
     @FXML
