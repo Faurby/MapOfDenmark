@@ -4,6 +4,7 @@ import bfst21.models.DisplayOptions;
 import bfst21.models.DisplayOption;
 import bfst21.osm.*;
 import bfst21.pathfinding.DirectedGraph;
+import bfst21.pathfinding.Direction;
 import bfst21.pathfinding.Edge;
 import bfst21.pathfinding.Vertex;
 import bfst21.tree.BoundingBox;
@@ -26,8 +27,7 @@ import javafx.scene.transform.NonInvertibleTransformException;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 public class MapCanvas extends Canvas {
@@ -304,7 +304,10 @@ public class MapCanvas extends Canvas {
             gc.setStroke(Color.RED);
             gc.setLineWidth(0.0004 * widthModifier);
 
+            HashMap<String, Float> edgeNames = new HashMap<>();
+
             int destinationID = directedGraph.getVertexID(destinationCoords);
+            List<Edge> edgeList = new ArrayList<>();
 
             Iterable<Edge> it = model.getMapData().getDijkstra().pathTo(destinationID);
             if (it != null) {
@@ -312,8 +315,18 @@ public class MapCanvas extends Canvas {
 
                 for (Edge edge : it) {
                     edge.draw(directedGraph, gc);
+                    edgeList.add(edge);
+                    //edgeNames.put(edge.getName(), edge.getDistance());
                 }
                 gc.stroke();
+            }
+            System.out.println("Directions ------");
+            for (int i = 0; i < (edgeList.size() - 1); i++) {
+                Edge before = edgeList.get(i);
+                Edge after = edgeList.get(i + 1);
+
+                Direction direction = directedGraph.getDirectionRightLeft(before, after);
+                System.out.println("Street: "+before.getName()+" to "+after.getName()+" direction: "+direction.toString());
             }
         }
     }

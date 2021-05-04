@@ -199,4 +199,66 @@ public class DirectedGraph implements Serializable {
     public Vertex[] getVertices() {
         return vertices;
     }
+
+    public float[] getVector(Edge edge) {
+        Vertex fromVertex = vertices[edge.getFrom()];
+        Vertex toVertex = vertices[edge.getTo()];
+
+        float[] fromCoords = fromVertex.getCoords();
+        float[] toCoords = toVertex.getCoords();
+
+        return new float[]{fromCoords[0] - toCoords[0], fromCoords[1] - toCoords[1]};
+    }
+
+    public Direction getDirectionRightLeft(Edge before, Edge after) {
+
+        float[] beforeVector = getVector(before);
+        float[] afterVector = getVector(after);
+
+        if (getDirection(beforeVector) == Direction.NORTH_WEST) {
+            if (getDirection(afterVector) == Direction.NORTH_EAST) return Direction.TURN_RIGHT;
+            if (getDirection(afterVector) == Direction.SOUTH_WEST) return Direction.TURN_LEFT;
+        }
+        if (getDirection(beforeVector) == Direction.NORTH_EAST) {
+            if (getDirection(afterVector) == Direction.SOUTH_EAST) return Direction.TURN_RIGHT;
+            if (getDirection(afterVector) == Direction.NORTH_WEST) return Direction.TURN_LEFT;
+        }
+        if (getDirection(beforeVector) == Direction.SOUTH_EAST) {
+            if (getDirection(afterVector) == Direction.SOUTH_WEST) return Direction.TURN_RIGHT;
+            if (getDirection(afterVector) == Direction.NORTH_EAST) return Direction.TURN_LEFT;
+        }
+        if (getDirection(beforeVector) == Direction.SOUTH_WEST) {
+            if (getDirection(afterVector) == Direction.NORTH_WEST) return Direction.TURN_RIGHT;
+            if (getDirection(afterVector) == Direction.SOUTH_EAST) return Direction.TURN_LEFT;
+        }
+        return Direction.STRAIGHT;
+    }
+
+    private Direction getDirection(float[] vector) {
+        if (vector[0] == 0 && vector[1] > 0) {
+            return Direction.NORTH;
+        }
+        if (vector[0] < 0 && vector[1] == 0) {
+            return Direction.WEST;
+        }
+        if (vector[0] == 0 && vector[1] < 0) {
+            return Direction.SOUTH;
+        }
+        if (vector[0] > 0 && vector[1] == 0) {
+            return Direction.EAST;
+        }
+        if (vector[0] > 0 && vector[1] > 0) {
+            return Direction.NORTH_EAST;
+        }
+        if (vector[0] > 0 && vector[1] < 0) {
+            return Direction.SOUTH_EAST;
+        }
+        if (vector[0] < 0 && vector[1] > 0) {
+            return Direction.NORTH_WEST;
+        }
+        if (vector[0] < 0 && vector[1] < 0) {
+            return Direction.SOUTH_WEST;
+        }
+        return Direction.UNKNOWN;
+    }
 }
