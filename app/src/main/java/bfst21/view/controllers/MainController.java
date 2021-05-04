@@ -109,12 +109,24 @@ public class MainController extends BaseController {
     private Point2D lastMouse;
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
-
     public void updateZoomBox() {
         setZoomPercent(canvas.getZoomPercent());
         debugBoxController.setZoomText("Zoom level: " + canvas.getZoomLevelText());
         updateAverageRepaintTime();
         updateNodeSkipAmount();
+    }
+
+    public void changeZoomToShowPoints(float[] startCoords, float[] destinationCoords) {
+        float dx = Math.abs(startCoords[0] - destinationCoords[0]);
+        float dy = Math.abs(startCoords[1] - destinationCoords[1]);
+        double distPoints = Math.sqrt((dx*dx)+(dy*dy));
+
+        double screenHeight = getCanvas().getScreenBoundingBox(false).getMinY() - getCanvas().getScreenBoundingBox(false).getMaxY();
+        double zf = Math.abs(screenHeight) / (distPoints * 1.8);
+        Point2D point = new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2);
+
+        getCanvas().zoom(zf, point, false);
+        updateZoomBox();
     }
 
     public void updateNodeSkipAmount() {

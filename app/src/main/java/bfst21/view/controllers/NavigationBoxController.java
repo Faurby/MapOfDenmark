@@ -73,7 +73,6 @@ public class NavigationBoxController extends NavigationSubController {
             }
 
             for (OsmAddress osmAddressD : getAllSuggestionsDestSpecific()) {
-                System.out.println("Destination, address check: " + osmAddressD.toString());
                 if (osmAddressD.toString().toLowerCase().contains(destinationAddress)
                         || osmAddressD.omitHouseNumberToString().toLowerCase().contains(destinationAddress)) {
                     dCoords = new float[]{osmAddressD.getNode().getX(), osmAddressD.getNode().getY()};
@@ -92,7 +91,7 @@ public class NavigationBoxController extends NavigationSubController {
                 float avgY = (sCoords[1]+dCoords[1])/2;
 
                 mainController.getCanvas().changeView(avgX, avgY);
-                //TODO while(rangeSearch(getBoundingBox))
+                mainController.changeZoomToShowPoints(sCoords, dCoords);
             }
 
 

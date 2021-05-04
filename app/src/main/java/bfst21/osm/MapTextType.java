@@ -2,10 +2,11 @@ package bfst21.osm;
 
 
 //TODO make it so municipalities and peninsula are registered correctly
-//TODO maybe give different text types different colors?
+// maybe give different text types different colors?
+// delete peninsula and island if this information is still not used later on
 
 public enum MapTextType {
-    PENINSULA( //TODO delete peninsula and island if this information is still not used later on
+    PENINSULA(
             1,
             40D
     ),

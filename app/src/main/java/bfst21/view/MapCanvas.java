@@ -11,6 +11,7 @@ import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
 import bfst21.models.Model;
 import bfst21.tree.KdTree;
+import bfst21.view.controllers.MainController;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -57,6 +58,7 @@ public class MapCanvas extends Canvas {
     private final Image greyPin = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("greyPin.png")));
     private boolean redPinVisible;
     private boolean greyPinVisible;
+    private MainController mainController;
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -509,16 +511,18 @@ public class MapCanvas extends Canvas {
         thread.start();
     }
 
-    public BoundingBox getScreenBoundingBox() {
+    public BoundingBox getScreenBoundingBox(boolean extend) {
         double x1 = trans.getTx() / Math.sqrt(trans.determinant());
         double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
         double x2 = getWidth() - x1;
         double y2 = getHeight() - y1;
 
-        x1 -= 50;
-        y1 -= 50;
-        x2 += 50;
-        y2 += 50;
+        if (extend) {
+            x1 -= 50;
+            y1 -= 50;
+            x2 += 50;
+            y2 += 50;
+        }
 
         Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
         Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
@@ -531,7 +535,7 @@ public class MapCanvas extends Canvas {
      */
     public void rangeSearch() {
         if (model.getMapData() != null) {
-            model.getMapData().kdTreeRangeSearch(getScreenBoundingBox(), zoomLevel);
+            model.getMapData().kdTreeRangeSearch(getScreenBoundingBox(true), zoomLevel);
         }
     }
 
@@ -694,4 +698,7 @@ public class MapCanvas extends Canvas {
         return trans;
     }
 
+    public double getZoomLevelMax() {
+        return zoomLevelMax;
+    }
 }
