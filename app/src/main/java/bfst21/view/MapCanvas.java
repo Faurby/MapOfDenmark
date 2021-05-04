@@ -131,8 +131,12 @@ public class MapCanvas extends Canvas {
             drawUserNodes();
             drawNeighborNodes();
             drawMapText();
-            if (redPinVisible) { drawRedPin();}
-            if (greyPinVisible) { drawGreyPin();}
+            if (redPinVisible) {
+                drawRedPin();
+            }
+            if (greyPinVisible) {
+                drawGreyPin();
+            }
 
             //Display the kd-tree if option is enabled
             if (displayOptions.getBool(DisplayOption.DISPLAY_KD_TREE)) {
@@ -312,50 +316,59 @@ public class MapCanvas extends Canvas {
             int destinationID = directedGraph.getVertexID(destinationCoords);
             List<Edge> edgeList = model.getMapData().getDijkstra().pathTo(destinationID);
 
-            List<String> directions = new ArrayList<>();
+            if (edgeList.size() > 0) {
 
-            System.out.println("Directions ------");
-            gc.beginPath();
-            for (int i = 0; i < (edgeList.size() - 1); i++) {
-                Edge before = edgeList.get(i);
-                Edge after = edgeList.get(i + 1);
+                List<String> directions = new ArrayList<>();
 
-                if (i == 0) {
+                System.out.println("Directions ------");
+                gc.beginPath();
+                float distanceSum = 0;
+                for (int i = 0; i < (edgeList.size() - 1); i++) {
+                    Edge before = edgeList.get(i);
+                    Edge after = edgeList.get(i + 1);
+
+                    Direction direction = directedGraph.getDirectionRightLeft(before, after);
+                    float distanceBefore = before.getDistance() * 1000;
+                    float distanceAfter = after.getDistance() * 1000;
+
+                    distanceSum += distanceBefore;
+
                     before.draw(directedGraph, gc);
+
+                    if (direction != Direction.STRAIGHT) {
+                        directions.add("Drive " + (int) distanceSum + "m down " + before.getName());
+                        directions.add("Then " + direction + " down " + after.getName());
+                        distanceSum = 0;
+                    }
+                    if (i == (edgeList.size() - 2)) {
+                        after.draw(directedGraph, gc);
+                        directions.add("Drive " + (int) (distanceSum + distanceAfter) + "m down " + after.getName());
+                    }
                 }
-                after.draw(directedGraph, gc);
+                gc.stroke();
 
-                Direction direction = directedGraph.getDirectionRightLeft(before, after);
-                float distance = before.getDistance() * 1000;
+                int start = edgeList.get(0).getFrom();
+                float[] startCoords = directedGraph.getVertexCoords(start);
 
-                directions.add("Drive "+distance+"m down "+before.getName());
-                if (direction != Direction.STRAIGHT) {
-                    directions.add("Then "+direction+" down "+after.getName());
+                gc.setStroke(Color.YELLOWGREEN);
+                gc.setLineWidth(0.0005 * widthModifier);
+
+                gc.beginPath();
+                gc.moveTo(startCoords[0], startCoords[1]);
+                gc.lineTo(startCoords[0], startCoords[1]);
+                gc.stroke();
+
+                gc.setStroke(Color.PURPLE);
+                gc.setLineWidth(0.0005 * widthModifier);
+
+                gc.beginPath();
+                gc.moveTo(destinationCoords[0], destinationCoords[1]);
+                gc.lineTo(destinationCoords[0], destinationCoords[1]);
+                gc.stroke();
+
+                for (String dir : directions) {
+                    System.out.println(dir);
                 }
-            }
-            gc.stroke();
-
-            int start = edgeList.get(0).getFrom();
-            float[] startCoords = directedGraph.getVertexCoords(start);
-
-            gc.setStroke(Color.YELLOWGREEN);
-            gc.setLineWidth(0.0005 * widthModifier);
-
-            gc.beginPath();
-            gc.moveTo(startCoords[0], startCoords[1]);
-            gc.lineTo(startCoords[0], startCoords[1]);
-            gc.stroke();
-
-            gc.setStroke(Color.PURPLE);
-            gc.setLineWidth(0.0005 * widthModifier);
-
-            gc.beginPath();
-            gc.moveTo(destinationCoords[0], destinationCoords[1]);
-            gc.lineTo(destinationCoords[0], destinationCoords[1]);
-            gc.stroke();
-
-            for (String dir : directions) {
-                System.out.println(dir);
             }
         }
     }
@@ -368,7 +381,7 @@ public class MapCanvas extends Canvas {
         repaint();
     }
 
-    public void changeView(float newX, float newY){
+    public void changeView(float newX, float newY) {
 
         double x1 = trans.getTx() / Math.sqrt(trans.determinant());
         double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
@@ -389,12 +402,12 @@ public class MapCanvas extends Canvas {
         repaint();
     }
 
-    public void setRedPinVisible(boolean b){
+    public void setRedPinVisible(boolean b) {
         redPinVisible = b;
         repaint();
     }
 
-    public void setGreyPinVisible(boolean b){
+    public void setGreyPinVisible(boolean b) {
         greyPinVisible = b;
         repaint();
     }
@@ -419,18 +432,6 @@ public class MapCanvas extends Canvas {
             gc.drawImage(greyPin, greyPinCoords[0] - (7.5 / zoomLevel), greyPinCoords[1] - (22.5 / zoomLevel), 15 / zoomLevel, 22.5 / zoomLevel);
         }
     }
-
-    //TEST method that draws a dot at the searchAddressCoords-coordinates
-//    public void drawSearchAddress() {
-//        if (searchAddressCoords != null) {
-//            gc.setStroke(Color.GREEN);
-//            gc.setLineWidth(0.004 * widthModifier);
-//            gc.beginPath();
-//            gc.moveTo(searchAddressCoords[0], searchAddressCoords[1]);
-//            gc.lineTo(searchAddressCoords[0], searchAddressCoords[1]);
-//            gc.stroke();
- //       }
- //   }
 
     /**
      * Zooms and repaints the MapCanvas with the given zoom factor.

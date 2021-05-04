@@ -11,6 +11,12 @@ import java.util.List;
 
 /**
  * DirectedGraph is an edge-weighted directed graph.
+ * <p>
+ * This graph is gradually built by creating vertices and edges between them.
+ * We add a Vertex or Edge to its array and resize it if the size limit is reached.
+ * When the graph has been fully built, we clean up the arrays to avoid empty slots.
+ * <p>
+ * coordsToIdMap is used to determine if a vertex exists with the coordinates of a Node.
  */
 public class DirectedGraph implements Serializable {
 
@@ -73,6 +79,11 @@ public class DirectedGraph implements Serializable {
         edgeAmount = actualEdgeAmount;
     }
 
+    /**
+     * Create new vertex with the given coordinates.
+     * It is only created if no vertex exists at the given coordinates.
+     * Resize the array of vertices if necessary.
+     */
     public void createVertex(float[] coords) {
         Node node = new Node(coords[0], coords[1]);
 
@@ -92,6 +103,9 @@ public class DirectedGraph implements Serializable {
         }
     }
 
+    /**
+     * @return id of a vertex with the given coordinates.
+     */
     public int getVertexID(float[] coords) {
         Node node = new Node(coords[0], coords[1]);
 
@@ -101,6 +115,9 @@ public class DirectedGraph implements Serializable {
         return -1;
     }
 
+    /**
+     * @return coordinates of a vertex with the given id.
+     */
     public float[] getVertexCoords(int id) {
         Vertex vertex = vertices[id];
 
@@ -110,16 +127,22 @@ public class DirectedGraph implements Serializable {
         return null;
     }
 
-    public void addEdge(
-            String name,
-            float[] fromCoords,
-            float[] toCoords,
-            int maxSpeed,
-            boolean oneWay,
-            boolean oneWayBike,
-            boolean canDrive,
-            boolean canBike,
-            boolean canWalk) {
+    /**
+     * Add an Edge to the graph.
+     * <p>
+     * Before creating the edge, we need to determine if it is
+     * necessary to create another edge in the opposite direction.
+     * This is determined using the oneWay and oneWayBike values.
+     */
+    public void addEdge(String name,
+                        float[] fromCoords,
+                        float[] toCoords,
+                        int maxSpeed,
+                        boolean oneWay,
+                        boolean oneWayBike,
+                        boolean canDrive,
+                        boolean canBike,
+                        boolean canWalk) {
 
         int fromID = getVertexID(fromCoords);
         int toID = getVertexID(toCoords);
@@ -133,21 +156,26 @@ public class DirectedGraph implements Serializable {
 
         } else if (!oneWay) {
             addEdge(name, toID, fromID, weight, distance, canDrive, false, canWalk);
-            
+
         } else if (!oneWayBike) {
             addEdge(name, toID, fromID, weight, distance, false, canBike, canWalk);
         }
     }
 
-    public void addEdge(
-            String name,
-            int fromID,
-            int toID,
-            float weight,
-            float distance,
-            boolean canDrive,
-            boolean canBike,
-            boolean canWalk) {
+    /**
+     * Creates a new Edge between two vertices fromID and toID.
+     * Edge is added to the list of adjacent edges of each Vertex.
+     * <p>
+     * Resize the array of Edges if necessary.
+     */
+    public void addEdge(String name,
+                        int fromID,
+                        int toID,
+                        float weight,
+                        float distance,
+                        boolean canDrive,
+                        boolean canBike,
+                        boolean canWalk) {
 
         Edge edge = new Edge(name, fromID, toID, weight, distance, canDrive, canBike, canWalk);
 
@@ -173,10 +201,9 @@ public class DirectedGraph implements Serializable {
         edgeAmount++;
     }
 
-    public int getVertexAmount() {
-        return vertexAmount;
-    }
-
+    /**
+     * @return list of adjacent Edges to a vertex with the given id.
+     */
     public List<Edge> getAdjacentEdges(int vertexID) {
         List<Edge> edgeList = new ArrayList<>();
 
@@ -192,14 +219,6 @@ public class DirectedGraph implements Serializable {
         return edgeList;
     }
 
-    public Edge getEdge(int id) {
-        return edges[id];
-    }
-
-    public Vertex[] getVertices() {
-        return vertices;
-    }
-
     public float[] getVector(Edge edge) {
         Vertex fromVertex = vertices[edge.getFrom()];
         Vertex toVertex = vertices[edge.getTo()];
@@ -211,7 +230,9 @@ public class DirectedGraph implements Serializable {
     }
 
     public Direction getDirectionRightLeft(Edge before, Edge after) {
-
+        if (before.getName().equals(after.getName())) {
+            return Direction.STRAIGHT;
+        }
         float[] beforeVector = getVector(before);
         float[] afterVector = getVector(after);
 
@@ -276,5 +297,20 @@ public class DirectedGraph implements Serializable {
             return Direction.SOUTH_WEST;
         }
         return Direction.UNKNOWN;
+    }
+
+    /**
+     * @return Edge from its id.
+     */
+    public Edge getEdge(int id) {
+        return edges[id];
+    }
+
+    public int getVertexAmount() {
+        return vertexAmount;
+    }
+
+    public Vertex[] getVertices() {
+        return vertices;
     }
 }

@@ -1,6 +1,11 @@
 package bfst21.models;
 
 
+/**
+ * TransportOptions is a singleton.
+ * Used to determine which TransportOption is currently selected by the user.
+ * TransportOption.CAR is the default enabled option.
+ */
 public class TransportOptions {
 
     private TransportOption currentlyEnabled = TransportOption.CAR;
@@ -16,7 +21,6 @@ public class TransportOptions {
 
     /**
      * Creates an instance of TransportOptions if it does not exist yet
-     *
      * @return singleton instance of TransportOptions
      */
     public static TransportOptions getInstance() {

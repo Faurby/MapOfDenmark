@@ -7,10 +7,8 @@ import bfst21.osm.UserNode;
 import bfst21.osm.Way;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.pathfinding.Edge;
-import bfst21.pathfinding.Vertex;
 import bfst21.view.ColorMode;
 import bfst21.view.MapCanvas;
-import edu.princeton.cs.algs4.MaxPQ;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -26,7 +24,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -54,7 +51,6 @@ public class MainController extends BaseController {
     private VBox loadingText;
     @FXML
     private ProgressBar progressBar;
-
     @FXML
     private VBox userNodeVBox;
     @FXML
@@ -81,7 +77,6 @@ public class MainController extends BaseController {
     private VBox userNodeNewDescriptionVBox;
     @FXML
     private TextField userNodeNewDescriptionTextField;
-
     @FXML
     private SearchBoxController searchBoxController;
     @FXML
@@ -97,23 +92,32 @@ public class MainController extends BaseController {
     @FXML
     private Text nearestRoadText;
 
+    private int counter;
+    private String nameWithHighestCount = "";
+
     private boolean resetDijkstra = true;
 
     private boolean userNodeToggle = false;
-    private final ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
     private UserNode currentUserNode = null;
-    private ObservableList<UserNode> userNodeListItems = FXCollections.observableArrayList();
+
+    private final ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
+    private final ObservableList<UserNode> userNodeListItems = FXCollections.observableArrayList();
     private HashMap<String, UserNode> userNodesMap = new HashMap<>();
 
     private Model model;
     private Point2D lastMouse;
+    private Task<Void> roadTask;
+
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
     public void updateZoomBox() {
-        setZoomPercent(canvas.getZoomPercent());
+        int nodeSkip = Way.getNodeSkipAmount(canvas.getZoomLevel());
+
+        zoomPercent.setText(canvas.getZoomPercent());
         debugBoxController.setZoomText("Zoom level: " + canvas.getZoomLevelText());
+        debugBoxController.setNodeSkipAmount("Node skip: " + nodeSkip);
+
         updateAverageRepaintTime();
-        updateNodeSkipAmount();
     }
 
     public void changeZoomToShowPoints(float[] startCoords, float[] destinationCoords) {
@@ -127,10 +131,6 @@ public class MainController extends BaseController {
 
         getCanvas().zoom(zf, point, false);
         updateZoomBox();
-    }
-
-    public void updateNodeSkipAmount() {
-        debugBoxController.setNodeSkipAmount("Node skip: " + Way.getNodeSkipAmount(canvas.getZoomLevel()));
     }
 
     public void updateAverageRepaintTime() {
@@ -171,8 +171,9 @@ public class MainController extends BaseController {
             Point2D currentMousePos = new Point2D(event.getX(), event.getY());
             updateMouseCoords(currentMousePos);
         });
-
-        userNodeListView.setOnMouseClicked(event -> userNodeClickedInListView(userNodeListView.getSelectionModel().getSelectedItem()));
+        userNodeListView.setOnMouseClicked(event -> {
+            userNodeClickedInListView(userNodeListView.getSelectionModel().getSelectedItem());
+        });
     }
 
     private void userNodeClickedInListView(String userNodeName) {
@@ -229,10 +230,6 @@ public class MainController extends BaseController {
         updateZoomBox();
     }
 
-    public void setZoomPercent(String zoomPercent) {
-        this.zoomPercent.setText(zoomPercent);
-    }
-
     @FXML
     public void onMouseReleased() {
         canvas.runRangeSearchTask();
@@ -282,38 +279,6 @@ public class MainController extends BaseController {
     private void onMousePressed(MouseEvent mouseEvent) {
         lastMouse = new Point2D(mouseEvent.getX(), mouseEvent.getY());
         updateAverageRepaintTime();
-
-        if (mouseEvent.isSecondaryButtonDown()) {
-            Point2D point = canvas.mouseToModelCoords(lastMouse);
-            float[] queryCoords = new float[]{(float) point.getX(), (float) point.getY()};
-            canvas.runNearestNeighborTask(queryCoords);
-            float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords);
-
-            DirectedGraph graph = canvas.getModel().getMapData().getDirectedGraph();
-            int nearestVertex = graph.getVertexID(nearestCoords);
-            List<Edge> edgeList = graph.getAdjacentEdges(nearestVertex);
-            Map<String, Integer> countMap = new HashMap<>();
-            for (Edge edge : edgeList) {
-                if (edge.getName() != null) {
-                    int count = 0;
-                    if (countMap.containsKey(edge.getName())) {
-                        count = countMap.get(edge.getName());
-                    }
-                    count++;
-                    countMap.put(edge.getName(), count);
-                }
-            }
-            int highestCount = 0;
-            String nameWithHighestCount = "";
-            for (String name : countMap.keySet()) {
-                int count = countMap.get(name);
-                if (count > highestCount) {
-                    highestCount = count;
-                    nameWithHighestCount = name;
-                }
-            }
-            nearestRoadText.setText(nameWithHighestCount);
-        }
 
         if (userNodeToggle && mouseEvent.isPrimaryButtonDown()) {
             newUserNodeVBox.setVisible(true);
@@ -435,11 +400,10 @@ public class MainController extends BaseController {
     @FXML
     public void userNodeButtonClicked() {
         if (model.getMapData() == null) {
-            Alert alert = alertPopup(Alert.AlertType.ERROR,
+            displayAlert(Alert.AlertType.ERROR,
                     "Error",
                     "ERROR: MapData is null",
                     "No MapData has been loaded.");
-            alert.showAndWait();
         }
         if (userNodeToggle) {
             userNodeToggle = false;
@@ -466,22 +430,21 @@ public class MainController extends BaseController {
     }
 
     private void newUserNodeCheckNameAndSave() {
-        String textfield = userNodeNameTextField.getText();
-        if (textfield.isEmpty()) {
-            Alert alert = alertPopup(Alert.AlertType.INFORMATION,
-                    "Error", "A name is required");
-            alert.showAndWait();
+        String textField = userNodeNameTextField.getText();
+        if (textField.isEmpty()) {
+            displayAlert(Alert.AlertType.INFORMATION,
+                    "Error",
+                    "A name is required");
 
-        } else if (textfield.length() > 20) {
-            Alert alert = alertPopup(Alert.AlertType.INFORMATION,
+        } else if (textField.length() > 20) {
+            displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
                     "Names must be no longer than 20 characters");
-            alert.showAndWait();
 
-        } else if (userNodesMap.containsKey(textfield)) {
-            Alert alert = alertPopup(Alert.AlertType.INFORMATION,
-                    "Error", "Point of Interest names must be unique");
-            alert.showAndWait();
+        } else if (userNodesMap.containsKey(textField)) {
+            displayAlert(Alert.AlertType.INFORMATION,
+                    "Error",
+                    "Point of Interest names must be unique");
 
         } else {
             saveUserNode();
@@ -519,11 +482,7 @@ public class MainController extends BaseController {
             tempList.add(userNode.getName());
         }
         userNodeListView.setItems(tempList);
-        if (!userNodeListItems.isEmpty()) {
-            userNodeListView.setVisible(true);
-        } else {
-            userNodeListView.setVisible(false);
-        }
+        userNodeListView.setVisible(!userNodeListItems.isEmpty());
     }
 
     @FXML
@@ -596,20 +555,21 @@ public class MainController extends BaseController {
     }
 
     private void userNodeNewNameCheckNameAndSave() {
-        String textfield = userNodeNewNameTextField.getText();
-        if (textfield.isEmpty()) {
-            Alert alert = alertPopup(Alert.AlertType.INFORMATION, "Error", "A name is required");
-            alert.showAndWait();
+        String textField = userNodeNewNameTextField.getText();
 
-        } else if (textfield.length() > 20) {
-            Alert alert = alertPopup(Alert.AlertType.INFORMATION,
+        if (textField.isEmpty()) {
+            displayAlert(Alert.AlertType.INFORMATION,
+                    "Error",
+                    "A name is required");
+
+        } else if (textField.length() > 20) {
+            displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
                     "Names must be no longer than 20 characters");
-            alert.showAndWait();
 
-        } else if (userNodesMap.containsKey(textfield)) {
-            Alert alert = alertPopup(Alert.AlertType.INFORMATION, "Error", "Point of Interest names must be unique");
-            alert.showAndWait();
+        } else if (userNodesMap.containsKey(textField)) {
+            displayAlert(Alert.AlertType.INFORMATION,
+                    "Error", "Point of Interest names must be unique");
 
         } else {
             currentUserNode.setName(userNodeNewNameTextField.getText());
@@ -651,8 +611,8 @@ public class MainController extends BaseController {
 
         if (fileName.endsWith(".obj")) {
             String contentText = "You're currently using an OBJ file. Are you sure you want to save another OBJ file?";
-            Alert alert = alertPopup(Alert.AlertType.CONFIRMATION, "Confirmation", contentText);
-            alert.showAndWait();
+            Alert alert = displayAlert(Alert.AlertType.CONFIRMATION, "Confirmation", contentText);
+
             if (alert.getResult() == ButtonType.OK) {
                 saveObjFile();
             }
@@ -684,8 +644,9 @@ public class MainController extends BaseController {
                 }
             };
             task.setOnSucceeded(event -> {
-                Alert alert = alertPopup(Alert.AlertType.INFORMATION, "Success", "Successfully saved OBJ");
-                alert.showAndWait();
+                displayAlert(Alert.AlertType.INFORMATION,
+                        "Success",
+                        "Successfully saved OBJ");
             });
             task.setOnFailed(event -> task.getException().printStackTrace());
             Thread thread = new Thread(task);
@@ -705,5 +666,66 @@ public class MainController extends BaseController {
                 break;
             }
         }
+    }
+
+    @FXML
+    public void onMouseMoved(MouseEvent mouseEvent) {
+        lastMouse = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+        if (model.getMapData() != null) {
+            if (counter == 5) {
+                updateRoadTask();
+            }
+            counter++;
+        }
+    }
+
+    public void updateRoadTask() {
+        if (roadTask != null) {
+            if (roadTask.isRunning()) {
+                roadTask.cancel();
+            }
+        }
+        roadTask = new Task<>() {
+
+            @Override
+            protected Void call() {
+                Point2D point = canvas.mouseToModelCoords(lastMouse);
+                float[] queryCoords = new float[]{(float) point.getX(), (float) point.getY()};
+                float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords);
+
+                DirectedGraph graph = canvas.getModel().getMapData().getDirectedGraph();
+
+                int nearestVertex = graph.getVertexID(nearestCoords);
+                List<Edge> edgeList = graph.getAdjacentEdges(nearestVertex);
+                Map<String, Integer> countMap = new HashMap<>();
+
+                for (Edge edge : edgeList) {
+                    if (edge.getName() != null) {
+                        int count = 0;
+                        if (countMap.containsKey(edge.getName())) {
+                            count = countMap.get(edge.getName());
+                        }
+                        count++;
+                        countMap.put(edge.getName(), count);
+                    }
+                }
+                int highestCount = 0;
+                nameWithHighestCount = "";
+
+                for (String name : countMap.keySet()) {
+                    int count = countMap.get(name);
+                    if (count > highestCount) {
+                        highestCount = count;
+                        nameWithHighestCount = name;
+                    }
+                }
+                counter = 0;
+                return null;
+            }
+        };
+        roadTask.setOnSucceeded(e -> nearestRoadText.setText(nameWithHighestCount));
+        roadTask.setOnFailed(e -> roadTask.getException().printStackTrace());
+        Thread thread = new Thread(roadTask);
+        thread.start();
     }
 }

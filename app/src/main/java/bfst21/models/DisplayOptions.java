@@ -3,20 +3,30 @@ package bfst21.models;
 import java.util.HashMap;
 
 
+/**
+ * DisplayOptions is a singleton.
+ * Used to determine if certain elements should be visible to the user.
+ */
 public class DisplayOptions {
 
     private final HashMap<DisplayOption, Boolean> options = new HashMap<>();
-
     private static DisplayOptions instance;
 
+    /**
+     * DisplayOptions constructor
+     * Sets the default value of specific DisplayOptions.
+     */
     private DisplayOptions() {
         options.put(DisplayOption.DISPLAY_KD_TREE, false);
         options.put(DisplayOption.DISPLAY_GRAPH, false);
         options.put(DisplayOption.DISPLAY_DIJKSTRA, false);
     }
 
-    //Returns the current value for a specific option
-    //All settings are true by default
+    /**
+     * @return current boolean value of specific DisplayOption.
+     * All settings will return true by default unless
+     * something else has been specified in the constructor.
+     */
     public boolean getBool(DisplayOption displayOption) {
         if (options.containsKey(displayOption)) {
             return options.get(displayOption);
@@ -24,13 +34,15 @@ public class DisplayOptions {
         return true;
     }
 
+    /**
+     * Toggle specific DisplayOption
+     */
     public void toggle(DisplayOption displayOption) {
         options.put(displayOption, !getBool(displayOption));
     }
 
     /**
      * Creates an instance of DisplayOptions if it does not exist yet
-     *
      * @return singleton instance of DisplayOptions
      */
     public static DisplayOptions getInstance() {

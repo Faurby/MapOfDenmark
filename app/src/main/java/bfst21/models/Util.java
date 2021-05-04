@@ -1,6 +1,9 @@
 package bfst21.models;
 
 
+/**
+ * Utility class.
+ */
 public class Util {
 
     /**
@@ -29,14 +32,5 @@ public class Util {
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return radius * c;
-    }
-
-    public static void resizeArray(int[] input, int newSize) {
-        int[] copy = new int[newSize];
-
-        for (int i = 0; i < input.length; i++) {
-            copy[i] = input[i];
-        }
-        input = copy;
     }
 }

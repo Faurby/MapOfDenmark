@@ -1,25 +1,15 @@
 package bfst21.view.controllers;
 
-import bfst21.address.TST;
-import bfst21.models.MapData;
-import bfst21.models.Model;
 import bfst21.osm.OsmAddress;
-import bfst21.view.MapCanvas;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 
 public class SearchBoxController extends NavigationSubController {
@@ -52,16 +42,13 @@ public class SearchBoxController extends NavigationSubController {
                     break;
                 }
             }
-
         } else {
-            Alert alert = alertPopup(Alert.AlertType.ERROR, "Error", "Search field is empty");
-            alert.showAndWait();
+            displayAlert(Alert.AlertType.ERROR, "Error", "Search field is empty");
         }
     }
 
     @Override
     public void setVisible(boolean visible) {
-        super.setVisible(visible);
         searchBox.setVisible(visible);
         searchBox.setManaged(visible);
 

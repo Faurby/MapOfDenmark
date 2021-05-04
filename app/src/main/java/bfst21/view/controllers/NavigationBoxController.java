@@ -40,17 +40,15 @@ public class NavigationBoxController extends NavigationSubController {
     @FXML
     private VBox destinationSuggestions;
 
-    private TransportOptions transOptions = TransportOptions.getInstance();
+    private final TransportOptions transOptions = TransportOptions.getInstance();
 
     @FXML
     public void searchNavigationAddresses() {
-        if (startingPoint.getText().trim().equals("")) {
-            Alert alert = alertPopup(Alert.AlertType.ERROR, "Error", "Starting point search field is empty");
-            alert.showAndWait();
+        if (startingPoint.getText().trim().isEmpty()) {
+            displayAlert(Alert.AlertType.ERROR, "Error", "Starting point search field is empty");
 
-        } else if (destinationPoint.getText().trim().equals("")) {
-            Alert alert = alertPopup(Alert.AlertType.ERROR, "Error", "Destination point search field is empty");
-            alert.showAndWait();
+        } else if (destinationPoint.getText().trim().isEmpty()) {
+            displayAlert(Alert.AlertType.ERROR, "Error", "Destination point search field is empty");
 
         } else {
             String startingAddress = startingPoint.getText().trim().toLowerCase();
@@ -80,15 +78,16 @@ public class NavigationBoxController extends NavigationSubController {
                 }
             }
 
-            if (sCoords != null && dCoords != null){
-                mainController.getCanvas().setRedPinCoords(sCoords[0], sCoords[1]);
-                mainController.getCanvas().setRedPinVisible(true);
+            if (sCoords != null && dCoords != null) {
 
-                mainController.getCanvas().setGreyPinCoords(dCoords[0], dCoords[1]);
+                mainController.getCanvas().setGreyPinCoords(sCoords[0], sCoords[1]);
                 mainController.getCanvas().setGreyPinVisible(true);
 
-                float avgX = (sCoords[0]+dCoords[0])/2;
-                float avgY = (sCoords[1]+dCoords[1])/2;
+                mainController.getCanvas().setRedPinCoords(dCoords[0], dCoords[1]);
+                mainController.getCanvas().setRedPinVisible(true);
+
+                float avgX = (sCoords[0] + dCoords[0]) / 2;
+                float avgY = (sCoords[1] + dCoords[1]) / 2;
 
                 mainController.getCanvas().changeView(avgX, avgY);
                 mainController.changeZoomToShowPoints(sCoords, dCoords);
@@ -117,7 +116,7 @@ public class NavigationBoxController extends NavigationSubController {
     }
 
     public void switchText() {
-        List <OsmAddress> temp = getAllSuggestions();
+        List<OsmAddress> temp = getAllSuggestions();
         setAllSuggestions(getAllSuggestionsDestSpecific());
         setAllSuggestionsDestSpecific(temp);
 
@@ -163,7 +162,7 @@ public class NavigationBoxController extends NavigationSubController {
             destinationSuggestions.getChildren().clear();
             searchNavigationAddresses();
         } else {
-            if(keyEvent.getSource().toString().contains("startingPoint")){
+            if (keyEvent.getSource().toString().contains("startingPoint")) {
                 int textLength = startingPoint.getText().trim().length();
                 if (textLength >= 2) {
                     runAddressSuggestionTask(startingSuggestions, startingPoint, false);
@@ -174,9 +173,6 @@ public class NavigationBoxController extends NavigationSubController {
                     runAddressSuggestionTask(destinationSuggestions, destinationPoint, true);
                 }
             }
-
-
-
         }
     }
 
@@ -198,7 +194,6 @@ public class NavigationBoxController extends NavigationSubController {
 
     @Override
     public void setVisible(boolean visible) {
-        super.setVisible(visible);
         navigationBox.setVisible(visible);
         navigationBox.setManaged(visible);
 
