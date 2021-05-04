@@ -260,7 +260,8 @@ public class MainController extends BaseController {
         if (mouseEvent.isPrimaryButtonDown()) {
             canvas.pan(dx, dy);
         }
-        onMousePressed(mouseEvent);
+        lastMouse = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+        updateAverageRepaintTime();
     }
 
     @FXML

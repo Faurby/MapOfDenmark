@@ -212,7 +212,8 @@ public enum ElementType {
                 this == ElementType.CYCLEWAY ||
                 this == ElementType.RESIDENTIAL ||
                 this == ElementType.ROAD ||
-                this == ElementType.FOOTWAY;
+                this == ElementType.FOOTWAY ||
+                this == ElementType.FERRY;
     }
 
     public boolean canDrive() {
