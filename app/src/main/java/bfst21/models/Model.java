@@ -43,8 +43,11 @@ public class Model {
         long totalTime = -System.nanoTime();
 
         File file = new File(fileName);
-        if (file.exists()) {
+        boolean loadDefaultFile = fileName.equalsIgnoreCase(defaultFileName);
 
+        //Check if file exists unless we are loading the default file within a jar file.
+        //The file check does not work properly for files within a jar file.
+        if (file.exists() || (loadDefaultFile && jarFile)) {
             if (fileName.endsWith(".osm")) {
                 XmlParser xmlParser = new XmlParser();
                 mapData = xmlParser.loadOSM(fileName);

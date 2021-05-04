@@ -176,9 +176,9 @@ public class MainController extends BaseController {
     public void onKeyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.D && event.isControlDown()) {
             showHideDebug();
-        }
-        else if (event.getCode() == KeyCode.ESCAPE) {
-            if(userNodeToggle) {
+
+        } else if (event.getCode() == KeyCode.ESCAPE) {
+            if (userNodeToggle) {
                 userNodeToggle = false;
                 scene.setCursor(Cursor.DEFAULT);
             }

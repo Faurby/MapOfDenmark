@@ -1,5 +1,7 @@
 package bfst21.pathfinding;
 
+import bfst21.models.TransportOption;
+import bfst21.models.TransportOptions;
 import edu.princeton.cs.algs4.IndexMinPQ;
 import edu.princeton.cs.algs4.Stack;
 
@@ -16,6 +18,8 @@ public class DijkstraPath {
     private final double[] distTo;
     private final Edge[] edgeTo;
     private final IndexMinPQ<Double> pq;
+
+    private final boolean isDriving;
     private boolean foundDestination;
 
     public DijkstraPath(DirectedGraph directedGraph,
@@ -26,6 +30,8 @@ public class DijkstraPath {
         int destinationID = directedGraph.getVertexID(destinationCoords);
 
         int vertexAmount = directedGraph.getVertexAmount();
+
+        isDriving = TransportOptions.getInstance().getCurrentlyEnabled() == TransportOption.CAR;
 
         distTo = new double[vertexAmount];
         edgeTo = new Edge[vertexAmount];
@@ -38,6 +44,7 @@ public class DijkstraPath {
         pq = new IndexMinPQ<>(vertexAmount);
         pq.insert(sourceID, distTo[sourceID]);
         while (!pq.isEmpty() && !foundDestination) {
+
             int vertexID = pq.delMin();
 
             if (vertexID == destinationID) {
@@ -54,7 +61,13 @@ public class DijkstraPath {
             int v = edge.getFrom();
             int w = edge.getTo();
 
-            double weight = edge.getWeight();
+            //Use the distance as weight if traveling by foot or bike.
+            double weight = edge.getDistance();
+
+            //Use the weight calculated by maxspeed and distance if we are traveling by car.
+            if (isDriving) {
+                weight = edge.getWeight();
+            }
 
             if (distTo[w] > distTo[v] + weight) {
                 distTo[w] = distTo[v] + weight;

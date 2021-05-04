@@ -2,7 +2,6 @@ package bfst21.pathfinding;
 
 import bfst21.models.Util;
 import bfst21.osm.Node;
-import bfst21.osm.Way;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,9 +21,13 @@ public class DirectedGraph implements Serializable {
     private Vertex[] vertices = new Vertex[1];
     private Edge[] edges = new Edge[1];
 
-    private int vertexAmount;
-    private int edgeAmount;
+    private int vertexAmount, edgeAmount;
 
+    /**
+     * Clean up vertices and edges by removing unused slots in the array.
+     * We count how many elements are actually present, then create a
+     * new array with the correct size and copy all elements over.
+     */
     public void cleanUp() {
 
         int actualVertexAmount = 0;
@@ -68,16 +71,6 @@ public class DirectedGraph implements Serializable {
 
         vertexAmount = actualVertexAmount;
         edgeAmount = actualEdgeAmount;
-    }
-
-    public void removeVertex(int vertexID) {
-        Vertex vertex = vertices[vertexID];
-        if (vertex != null) {
-            for (int id : vertex.getEdges()) {
-                edges[id] = null;
-            }
-        }
-        vertices[vertexID] = null;
     }
 
     public void createVertex(float[] coords) {
@@ -133,13 +126,16 @@ public class DirectedGraph implements Serializable {
         float distance = (float) Util.distTo(fromCoords, toCoords);
         float weight = (distance * 60.0f / maxSpeed);
 
-        addEdge(name, fromID, toID, weight, canDrive, canBike, canWalk);
+        addEdge(name, fromID, toID, weight, distance, canDrive, canBike, canWalk);
 
-        if (!oneWay && oneWayBike) {
-            addEdge(name, toID, fromID, weight, canDrive, false, canWalk);
+        if (!oneWay && !oneWayBike) {
+            addEdge(name, toID, fromID, weight, distance, canDrive, canBike, canWalk);
+
+        } else if (!oneWay) {
+            addEdge(name, toID, fromID, weight, distance, canDrive, false, canWalk);
             
-        } else if (oneWay && !oneWayBike) {
-            addEdge(name, toID, fromID, weight, false, canBike, canWalk);
+        } else if (!oneWayBike) {
+            addEdge(name, toID, fromID, weight, distance, false, canBike, canWalk);
         }
     }
 
@@ -148,11 +144,12 @@ public class DirectedGraph implements Serializable {
             int fromID,
             int toID,
             float weight,
+            float distance,
             boolean canDrive,
             boolean canBike,
             boolean canWalk) {
 
-        Edge edge = new Edge(name, fromID, toID, weight, canDrive, canBike, canWalk);
+        Edge edge = new Edge(name, fromID, toID, weight, distance, canDrive, canBike, canWalk);
 
         if (edgeAmount == edges.length) {
             Edge[] copy = new Edge[edges.length * 2];
