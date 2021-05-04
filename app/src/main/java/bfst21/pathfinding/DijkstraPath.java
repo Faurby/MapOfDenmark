@@ -3,7 +3,10 @@ package bfst21.pathfinding;
 import bfst21.models.TransportOption;
 import bfst21.models.TransportOptions;
 import edu.princeton.cs.algs4.IndexMinPQ;
-import edu.princeton.cs.algs4.Stack;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -87,14 +90,15 @@ public class DijkstraPath {
         return distTo[targetID] < Double.POSITIVE_INFINITY;
     }
 
-    public Iterable<Edge> pathTo(int targetID) {
+    public List<Edge> pathTo(int targetID) {
         if (!hasPathTo(targetID)) {
             return null;
         }
-        Stack<Edge> path = new Stack<>();
+        List<Edge> path = new ArrayList<>();
         for (Edge e = edgeTo[targetID]; e != null; e = edgeTo[e.getFrom()]) {
-            path.push(e);
+            path.add(e);
         }
+        Collections.reverse(path);
         return path;
     }
 
