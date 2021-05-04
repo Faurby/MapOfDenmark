@@ -20,10 +20,14 @@
 
 
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.ColumnConstraints?>
 <Scene xmlns="https://javafx.com/javafx"
        xmlns:fx="https://javafx.com/fxml"
        fx:controller="bfst21.view.controllers.MainController"
-       fx:id="scene">
+       fx:id="scene"
+       onKeyPressed="#onKeyPressed">
 
     <StackPane fx:id="stackPane" minHeight="480" minWidth="640">
 
@@ -33,8 +37,7 @@
                    onMouseDragged="#onMouseDragged"
                    onMousePressed="#onMousePressed"
                    onMouseReleased="#onMouseReleased"
-                   onScroll="#onScroll"
-                   onKeyPressed="#onKeyPressed">
+                   onScroll="#onScroll">
         </MapCanvas>
         <fx:include fx:id="debugBox" source="DebugBox.fxml"/>
 
@@ -260,19 +263,43 @@
         <VBox fx:id="userNodeVBox"
               maxWidth="150"
               maxHeight="120"
-              StackPane.alignment="BOTTOM_RIGHT"
+              StackPane.alignment="TOP_RIGHT"
               spacing="8"
               visible="false">
             <padding>
-                <Insets bottom="15"/>
+                <Insets bottom="15" top="40"/>
             </padding>
             <Button fx:id="newUserNodeButton"
                     onAction="#userNodeButtonClicked"
-                    text="Add point of interest"/>
+                    text="Add point of interest"
+                    style="-fx-border-color: #3E859B"/>
             <ListView fx:id="userNodeListView"
                       maxWidth="${newUserNodeButton.width}"
-                      maxHeight="65"
-                      minHeight="0" />
+                      maxHeight="100"
+                      minHeight="100"
+                      visible="false"
+                      style="-fx-border-color: #3E859B"/>
         </VBox>
+        <GridPane fx:id="footBox"
+                maxWidth="230"
+                maxHeight="30"
+                prefHeight="30"
+                StackPane.alignment="BOTTOM_RIGHT"
+                style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B; -fx-font-size: large;"
+                visible="false"
+                hgap="5"
+                alignment="CENTER_RIGHT">
+            <padding>
+                <Insets right="10" left="10"/>
+            </padding>
+            <Text text=""
+                  fx:id="nearestRoadText"
+                  GridPane.columnIndex="1"/>
+            <Text text=" | "
+                  GridPane.columnIndex="2"/>
+                <Text text=""
+                      fx:id="zoomPercent"
+                      GridPane.columnIndex="3"/>
+        </GridPane>
     </StackPane>
 </Scene>

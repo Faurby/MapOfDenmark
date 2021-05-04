@@ -45,17 +45,11 @@ public class NavigationBoxController extends NavigationSubController {
     @FXML
     public void searchNavigationAddresses() {
         if (startingPoint.getText().trim().equals("")) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("");
-            alert.setContentText("Starting point search field is empty.");
+            Alert alert = alertPopup(Alert.AlertType.ERROR, "Error", "Starting point search field is empty");
             alert.showAndWait();
 
         } else if (destinationPoint.getText().trim().equals("")) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("");
-            alert.setContentText("Destination point search field is empty.");
+            Alert alert = alertPopup(Alert.AlertType.ERROR, "Error", "Destination point search field is empty");
             alert.showAndWait();
 
         } else {

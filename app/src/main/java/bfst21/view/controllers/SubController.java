@@ -1,7 +1,7 @@
 package bfst21.view.controllers;
 
 
-public abstract class SubController {
+public abstract class SubController extends BaseController {
 
     protected MainController mainController;
 

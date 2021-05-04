@@ -1,7 +1,12 @@
 package bfst21.pathfinding;
 
+import bfst21.models.TransportOption;
+import bfst21.models.TransportOptions;
 import edu.princeton.cs.algs4.IndexMinPQ;
-import edu.princeton.cs.algs4.Stack;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -16,6 +21,8 @@ public class DijkstraPath {
     private final double[] distTo;
     private final Edge[] edgeTo;
     private final IndexMinPQ<Double> pq;
+
+    private final boolean isDriving;
     private boolean foundDestination;
 
     public DijkstraPath(DirectedGraph directedGraph,
@@ -26,6 +33,8 @@ public class DijkstraPath {
         int destinationID = directedGraph.getVertexID(destinationCoords);
 
         int vertexAmount = directedGraph.getVertexAmount();
+
+        isDriving = TransportOptions.getInstance().getCurrentlyEnabled() == TransportOption.CAR;
 
         distTo = new double[vertexAmount];
         edgeTo = new Edge[vertexAmount];
@@ -38,6 +47,7 @@ public class DijkstraPath {
         pq = new IndexMinPQ<>(vertexAmount);
         pq.insert(sourceID, distTo[sourceID]);
         while (!pq.isEmpty() && !foundDestination) {
+
             int vertexID = pq.delMin();
 
             if (vertexID == destinationID) {
@@ -54,7 +64,13 @@ public class DijkstraPath {
             int v = edge.getFrom();
             int w = edge.getTo();
 
-            double weight = edge.getWeight();
+            //Use the distance as weight if traveling by foot or bike.
+            double weight = edge.getDistance();
+
+            //Use the weight calculated by maxspeed and distance if we are traveling by car.
+            if (isDriving) {
+                weight = edge.getWeight();
+            }
 
             if (distTo[w] > distTo[v] + weight) {
                 distTo[w] = distTo[v] + weight;
@@ -74,14 +90,15 @@ public class DijkstraPath {
         return distTo[targetID] < Double.POSITIVE_INFINITY;
     }
 
-    public Iterable<Edge> pathTo(int targetID) {
+    public List<Edge> pathTo(int targetID) {
         if (!hasPathTo(targetID)) {
             return null;
         }
-        Stack<Edge> path = new Stack<>();
+        List<Edge> path = new ArrayList<>();
         for (Edge e = edgeTo[targetID]; e != null; e = edgeTo[e.getFrom()]) {
-            path.push(e);
+            path.add(e);
         }
+        Collections.reverse(path);
         return path;
     }
 

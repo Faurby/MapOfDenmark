@@ -2,7 +2,6 @@ package bfst21.pathfinding;
 
 import bfst21.models.Util;
 import bfst21.osm.Node;
-import bfst21.osm.Way;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,9 +21,13 @@ public class DirectedGraph implements Serializable {
     private Vertex[] vertices = new Vertex[1];
     private Edge[] edges = new Edge[1];
 
-    private int vertexAmount;
-    private int edgeAmount;
+    private int vertexAmount, edgeAmount;
 
+    /**
+     * Clean up vertices and edges by removing unused slots in the array.
+     * We count how many elements are actually present, then create a
+     * new array with the correct size and copy all elements over.
+     */
     public void cleanUp() {
 
         int actualVertexAmount = 0;
@@ -68,16 +71,6 @@ public class DirectedGraph implements Serializable {
 
         vertexAmount = actualVertexAmount;
         edgeAmount = actualEdgeAmount;
-    }
-
-    public void removeVertex(int vertexID) {
-        Vertex vertex = vertices[vertexID];
-        if (vertex != null) {
-            for (int id : vertex.getEdges()) {
-                edges[id] = null;
-            }
-        }
-        vertices[vertexID] = null;
     }
 
     public void createVertex(float[] coords) {
@@ -133,13 +126,16 @@ public class DirectedGraph implements Serializable {
         float distance = (float) Util.distTo(fromCoords, toCoords);
         float weight = (distance * 60.0f / maxSpeed);
 
-        addEdge(name, fromID, toID, weight, canDrive, canBike, canWalk);
+        addEdge(name, fromID, toID, weight, distance, canDrive, canBike, canWalk);
 
-        if (!oneWay && oneWayBike) {
-            addEdge(name, toID, fromID, weight, canDrive, false, canWalk);
+        if (!oneWay && !oneWayBike) {
+            addEdge(name, toID, fromID, weight, distance, canDrive, canBike, canWalk);
+
+        } else if (!oneWay) {
+            addEdge(name, toID, fromID, weight, distance, canDrive, false, canWalk);
             
-        } else if (oneWay && !oneWayBike) {
-            addEdge(name, toID, fromID, weight, false, canBike, canWalk);
+        } else if (!oneWayBike) {
+            addEdge(name, toID, fromID, weight, distance, false, canBike, canWalk);
         }
     }
 
@@ -148,11 +144,12 @@ public class DirectedGraph implements Serializable {
             int fromID,
             int toID,
             float weight,
+            float distance,
             boolean canDrive,
             boolean canBike,
             boolean canWalk) {
 
-        Edge edge = new Edge(name, fromID, toID, weight, canDrive, canBike, canWalk);
+        Edge edge = new Edge(name, fromID, toID, weight, distance, canDrive, canBike, canWalk);
 
         if (edgeAmount == edges.length) {
             Edge[] copy = new Edge[edges.length * 2];
@@ -201,5 +198,83 @@ public class DirectedGraph implements Serializable {
 
     public Vertex[] getVertices() {
         return vertices;
+    }
+
+    public float[] getVector(Edge edge) {
+        Vertex fromVertex = vertices[edge.getFrom()];
+        Vertex toVertex = vertices[edge.getTo()];
+
+        float[] fromCoords = fromVertex.getCoords();
+        float[] toCoords = toVertex.getCoords();
+
+        return new float[]{fromCoords[0] - toCoords[0], fromCoords[1] - toCoords[1]};
+    }
+
+    public Direction getDirectionRightLeft(Edge before, Edge after) {
+
+        float[] beforeVector = getVector(before);
+        float[] afterVector = getVector(after);
+
+        Direction beforeDirection = getDirection(beforeVector);
+        Direction afterDirection = getDirection(afterVector);
+
+        if (beforeDirection == Direction.NORTH_WEST) {
+            if (afterDirection == Direction.NORTH_EAST) {
+                return Direction.TURN_LEFT;
+
+            } else if (afterDirection == Direction.SOUTH_WEST) {
+                return Direction.TURN_RIGHT;
+            }
+        } else if (beforeDirection == Direction.NORTH_EAST) {
+            if (afterDirection == Direction.SOUTH_EAST) {
+                return Direction.TURN_LEFT;
+
+            } else if (afterDirection == Direction.NORTH_WEST) {
+                return Direction.TURN_RIGHT;
+            }
+        } else if (beforeDirection == Direction.SOUTH_EAST) {
+            if (afterDirection == Direction.SOUTH_WEST) {
+                return Direction.TURN_LEFT;
+
+            } else if (afterDirection == Direction.NORTH_EAST) {
+                return Direction.TURN_RIGHT;
+            }
+        } else if (beforeDirection == Direction.SOUTH_WEST) {
+            if (afterDirection == Direction.NORTH_WEST) {
+                return Direction.TURN_LEFT;
+
+            } else if (afterDirection == Direction.SOUTH_EAST) {
+                return Direction.TURN_RIGHT;
+            }
+        }
+        return Direction.STRAIGHT;
+    }
+
+    private Direction getDirection(float[] vector) {
+        if (vector[0] == 0 && vector[1] > 0) {
+            return Direction.NORTH;
+        }
+        if (vector[0] < 0 && vector[1] == 0) {
+            return Direction.WEST;
+        }
+        if (vector[0] == 0 && vector[1] < 0) {
+            return Direction.SOUTH;
+        }
+        if (vector[0] > 0 && vector[1] == 0) {
+            return Direction.EAST;
+        }
+        if (vector[0] > 0 && vector[1] > 0) {
+            return Direction.NORTH_EAST;
+        }
+        if (vector[0] > 0 && vector[1] < 0) {
+            return Direction.SOUTH_EAST;
+        }
+        if (vector[0] < 0 && vector[1] > 0) {
+            return Direction.NORTH_WEST;
+        }
+        if (vector[0] < 0 && vector[1] < 0) {
+            return Direction.SOUTH_WEST;
+        }
+        return Direction.UNKNOWN;
     }
 }

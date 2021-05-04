@@ -15,7 +15,6 @@
       visible="false"
       style="-fx-padding: 30">
 
-    <Text text="zoomPercent" fx:id="zoomPercent"/>
     <Text text="zoomText" fx:id="zoomText"/>
     <Text text="repaintTime" fx:id="repaintTime"/>
     <Text text="nodeSkipAmount" fx:id="nodeSkipAmount"/>
