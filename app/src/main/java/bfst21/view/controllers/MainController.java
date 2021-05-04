@@ -542,18 +542,19 @@ public class MainController extends BaseController {
     }
 
     private void userNodeNewNameCheckNameAndSave() {
-        String textfield = userNodeNewNameTextField.getText();
-        if (textfield.isEmpty()) {
+        String textField = userNodeNewNameTextField.getText();
+
+        if (textField.isEmpty()) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
                     "A name is required");
 
-        } else if (textfield.length() > 20) {
+        } else if (textField.length() > 20) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
                     "Names must be no longer than 20 characters");
 
-        } else if (userNodesMap.containsKey(textfield)) {
+        } else if (userNodesMap.containsKey(textField)) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error", "Point of Interest names must be unique");
 

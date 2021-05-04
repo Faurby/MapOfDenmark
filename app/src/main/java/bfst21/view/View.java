@@ -14,6 +14,7 @@ public class View {
     public View(Model model, Stage stage) throws IOException {
         FXMLLoader loader = new FXMLLoader(View.class.getResource("View.fxml"));
         Scene scene = loader.load();
+
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.setTitle("Map of Denmark");

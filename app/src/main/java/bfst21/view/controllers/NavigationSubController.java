@@ -46,12 +46,9 @@ public abstract class NavigationSubController extends SubController {
                     suggestions.getChildren().clear();
                     textArea.requestFocus();
                 });
-                b.setOnMouseEntered((event) -> {
-                    b.setStyle("-fx-background-color:#dae7f3;");
-                });
-                b.setOnMouseExited((event) -> {
-                    b.setStyle("-fx-background-color: transparent;");
-                });
+                b.setOnMouseEntered((event) -> b.setStyle("-fx-background-color:#dae7f3;"));
+                b.setOnMouseExited((event) -> b.setStyle("-fx-background-color: transparent;"));
+
                 suggestions.getChildren().add(b);
                 count++;
             }

@@ -431,18 +431,6 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    //TEST method that draws a dot at the searchAddressCoords-coordinates
-//    public void drawSearchAddress() {
-//        if (searchAddressCoords != null) {
-//            gc.setStroke(Color.GREEN);
-//            gc.setLineWidth(0.004 * widthModifier);
-//            gc.beginPath();
-//            gc.moveTo(searchAddressCoords[0], searchAddressCoords[1]);
-//            gc.lineTo(searchAddressCoords[0], searchAddressCoords[1]);
-//            gc.stroke();
-    //       }
-    //   }
-
     /**
      * Zooms and repaints the MapCanvas with the given zoom factor.
      * Runs a range search task unless it is the initial zoom after loading the map.
