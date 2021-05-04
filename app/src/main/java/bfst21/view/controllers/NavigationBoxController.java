@@ -102,9 +102,6 @@ public class NavigationBoxController extends NavigationSubController {
             }
 
 
-            //mainController.getCanvas().changeView(osmAddress.getNode().getX(), osmAddress.getNode().getY());
-
-
 //            String originAddress = startingPoint.getText();
 //            float[] originCoords = addressTries.get(originAddress);
 //
