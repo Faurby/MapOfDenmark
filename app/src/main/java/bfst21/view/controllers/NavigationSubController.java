@@ -19,9 +19,9 @@ public abstract class NavigationSubController extends SubController {
     protected boolean isVisible;
 
     private List<OsmAddress> allSuggestions = new ArrayList<>();
-    private List<OsmAddress> allDestinationSuggestions = new ArrayList<>();
+    private List<OsmAddress> allSuggestionsDestSpecific = new ArrayList<>();
     private List<String> shownSuggestions = new ArrayList<>();
-    private List<String> shownDestinationSuggestions = new ArrayList<>();
+    private List<String> shownSuggestionsDestSpecific = new ArrayList<>();
     private TST<List<OsmAddress>> addressTries;
     private Task<Void> addressSuggestionTask;
 
@@ -39,7 +39,7 @@ public abstract class NavigationSubController extends SubController {
 
         List<String> localShownSuggestions;
         if (extended){
-            localShownSuggestions = shownDestinationSuggestions;
+            localShownSuggestions = shownSuggestionsDestSpecific;
         } else {
             localShownSuggestions = shownSuggestions;
         }
@@ -93,8 +93,8 @@ public abstract class NavigationSubController extends SubController {
 
                 List<OsmAddress> localAllSuggestions;
                 if (extended) {
-                    shownDestinationSuggestions = new ArrayList<>();
-                    localAllSuggestions = allDestinationSuggestions;
+                    shownSuggestionsDestSpecific = new ArrayList<>();
+                    localAllSuggestions = allSuggestionsDestSpecific;
                 } else {
                     shownSuggestions = new ArrayList<>();
                     localAllSuggestions = allSuggestions;
@@ -131,7 +131,7 @@ public abstract class NavigationSubController extends SubController {
                             String address = osmAddress.toString();
 
                             if (extended) {
-                                shownDestinationSuggestions.add(address);
+                                shownSuggestionsDestSpecific.add(address);
                             } else {
                                 shownSuggestions.add(address);
                             }
@@ -148,14 +148,14 @@ public abstract class NavigationSubController extends SubController {
                         String address = osmAddress.omitHouseNumberToString();
 
                         if (extended) {
-                            shownDestinationSuggestions.add(address);
+                            shownSuggestionsDestSpecific.add(address);
                         } else {
                             shownSuggestions.add(address);
                         }
                     }
                 }
                 if (extended) {
-                    allDestinationSuggestions = localAllSuggestions;
+                    allSuggestionsDestSpecific = localAllSuggestions;
                 } else {
                     allSuggestions = localAllSuggestions;
                 }
@@ -194,7 +194,15 @@ public abstract class NavigationSubController extends SubController {
     public List<OsmAddress> getAllSuggestions() {
         return allSuggestions;
     }
-    public List<OsmAddress> getAllDestinationSuggestions() {
-        return allDestinationSuggestions;
+    public List<OsmAddress> getAllSuggestionsDestSpecific() {
+        return allSuggestionsDestSpecific;
+    }
+
+    public void setAllSuggestions(List<OsmAddress> allSuggestions) {
+        this.allSuggestions = allSuggestions;
+    }
+
+    public void setAllSuggestionsDestSpecific(List<OsmAddress> allSuggestionsDestSpecific) {
+        this.allSuggestionsDestSpecific = allSuggestionsDestSpecific;
     }
 }

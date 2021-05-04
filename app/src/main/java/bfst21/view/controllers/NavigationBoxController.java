@@ -1,12 +1,8 @@
 package bfst21.view.controllers;
 
-import bfst21.address.TST;
-import bfst21.models.MapData;
-import bfst21.models.Model;
 import bfst21.models.TransportOption;
 import bfst21.models.TransportOptions;
 import bfst21.osm.OsmAddress;
-import bfst21.view.MapCanvas;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -82,7 +78,7 @@ public class NavigationBoxController extends NavigationSubController {
                 }
             }
 
-            for (OsmAddress osmAddressD : getAllDestinationSuggestions()) {
+            for (OsmAddress osmAddressD : getAllSuggestionsDestSpecific()) {
                 System.out.println("Destination, address check: " + osmAddressD.toString());
                 if (osmAddressD.toString().toLowerCase().contains(destinationAddress)
                         || osmAddressD.omitHouseNumberToString().toLowerCase().contains(destinationAddress)) {
@@ -131,6 +127,10 @@ public class NavigationBoxController extends NavigationSubController {
     }
 
     public void switchText() {
+        List <OsmAddress> temp = getAllSuggestions();
+        setAllSuggestions(getAllSuggestionsDestSpecific());
+        setAllSuggestionsDestSpecific(temp);
+
         String s = startingPoint.getText();
         startingPoint.setText(destinationPoint.getText());
         destinationPoint.setText(s);
