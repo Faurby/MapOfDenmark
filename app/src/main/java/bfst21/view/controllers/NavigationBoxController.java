@@ -1,7 +1,6 @@
 package bfst21.view.controllers;
 
 import bfst21.address.TST;
-import bfst21.exceptions.IllegalInputException;
 import bfst21.models.MapData;
 import bfst21.models.Model;
 import bfst21.models.TransportOption;

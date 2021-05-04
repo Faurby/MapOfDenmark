@@ -143,11 +143,6 @@ public class MainController {
         progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
         updateZoomBox();
 
-        scene.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.D && event.isControlDown()) {
-                showHideDebug();
-            }
-        });
         scene.setOnMouseMoved(event -> {
             Point2D currentMousePos = new Point2D(event.getX(), event.getY());
             updateMouseCoords(currentMousePos);
@@ -178,7 +173,19 @@ public class MainController {
     }
 
     @FXML
-    private void onScroll(ScrollEvent scrollEvent) {
+    public void onKeyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.D && event.isControlDown()) {
+            showHideDebug();
+        }
+        else if (event.getCode() == KeyCode.ESCAPE) {
+            if(userNodeToggle) {
+                userNodeToggle = false;
+            }
+        }
+    }
+
+    @FXML
+    public void onScroll(ScrollEvent scrollEvent) {
         double deltaY;
 
         //Limit delta Y to avoid a rapid zoom update
@@ -229,7 +236,7 @@ public class MainController {
     }
 
     @FXML
-    private void onMouseDragged(MouseEvent mouseEvent) {
+    public void onMouseDragged(MouseEvent mouseEvent) {
         double dx = mouseEvent.getX() - lastMouse.getX();
         double dy = mouseEvent.getY() - lastMouse.getY();
 
@@ -340,6 +347,10 @@ public class MainController {
         searchBoxController.setVisible(true);
         userNodeVBox.setVisible(true);
         canvas.runRangeSearchTask();
+
+        if (model.getMapData() != null) {
+            updateUserNodeList();
+        }
     }
 
     @FXML

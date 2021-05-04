@@ -34,7 +34,7 @@
                    onMousePressed="#onMousePressed"
                    onMouseReleased="#onMouseReleased"
                    onScroll="#onScroll"
-                   onMouseEntered="#onMouseEntered">
+                   onKeyPressed="#onKeyPressed">
         </MapCanvas>
         <fx:include fx:id="debugBox" source="DebugBox.fxml"/>
 
