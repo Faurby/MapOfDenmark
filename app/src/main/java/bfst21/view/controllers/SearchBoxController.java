@@ -35,11 +35,6 @@ public class SearchBoxController extends NavigationSubController {
     @FXML
     private VBox suggestions;
 
-    private TST<List<OsmAddress>> addressTries;
-    private Task<Void> addressSuggestionTask;
-    private List<OsmAddress> allSuggestions = new ArrayList<>();
-    private List<String> shownSuggestions = new ArrayList<>();
-
     @FXML
     private void searchSingleAddress() {
         String address = addressArea.getText().trim().toLowerCase();
@@ -47,10 +42,9 @@ public class SearchBoxController extends NavigationSubController {
 
         if (!address.isEmpty()) {
 
-            if (addressTries == null) {
-                activateTries();
-            }
-            for (OsmAddress osmAddress : allSuggestions) {
+            checkTries();
+
+            for (OsmAddress osmAddress : getAllSuggestions()) {
                 if (osmAddress.toString().toLowerCase().contains(address) || osmAddress.omitHouseNumberToString().toLowerCase().contains(address)) {
                     mainController.getCanvas().changeView(osmAddress.getNode().getX(), osmAddress.getNode().getY());
                     break;
@@ -64,13 +58,6 @@ public class SearchBoxController extends NavigationSubController {
             alert.setContentText("Search field is empty.");
             alert.showAndWait();
         }
-    }
-
-    private void activateTries() {
-        MapCanvas mapCanvas = mainController.getCanvas();
-        Model model = mapCanvas.getModel();
-        MapData mapData = model.getMapData();
-        addressTries = mapData.getAddressTries();
     }
 
     @Override
@@ -110,125 +97,14 @@ public class SearchBoxController extends NavigationSubController {
         } else if (keyEvent.getCode() == KeyCode.BACK_SPACE && addressArea.getText().trim().length() <= 2) {
             suggestions.getChildren().clear();
 
-        } else if (keyEvent.getCode() == KeyCode.DOWN && shownSuggestions.size() > 0){
+        } else if (keyEvent.getCode() == KeyCode.DOWN && getShownSuggestions().size() > 0) {
             suggestions.requestFocus();
         } else {
             int textLength = addressArea.getText().trim().length();
             if (textLength >= 2) {
-                runAddressSuggestionTask();
+                runAddressSuggestionTask(suggestions, addressArea);
             }
         }
-    }
-
-    private void displayAddressSuggestions() {
-        int count = 0;
-        suggestions.getChildren().clear();
-
-        for (String s : shownSuggestions) {
-            if (count <= 500) {
-                Label b = new Label(s);
-                b.setPrefWidth(800);
-                b.setOnMouseClicked((event) -> {
-                    addressArea.setText(b.getText());
-                    suggestions.getChildren().clear();
-                    addressArea.requestFocus();
-                });
-                b.setOnMouseEntered((event) -> {
-                    b.setStyle("-fx-background-color:#dae7f3;");
-                });
-                b.setOnMouseExited((event) -> {
-                    b.setStyle("-fx-background-color: transparent;");
-                });
-                suggestions.getChildren().add(b);
-                count++;
-            }
-        }
-    }
-
-    private void runAddressSuggestionTask() {
-        if (addressSuggestionTask != null) {
-            if (addressSuggestionTask.isRunning()) {
-                addressSuggestionTask.cancel();
-            }
-        }
-        addressSuggestionTask = new Task<>() {
-            @Override
-            protected Void call() {
-                if (addressTries == null) {
-                    activateTries();
-                }
-                shownSuggestions = new ArrayList<>();
-
-                String input = addressArea.getText();
-                String addressInput = input.replace(" ", "").toLowerCase();
-
-                Iterator<String> it = addressTries.keysWithPrefix(addressInput).iterator();
-
-                //If the string doesn't return matches, find a substring that does
-                if (!it.hasNext()) {
-                    addressInput = longestSubstringWithMatches(addressInput);
-                    it = addressTries.keysWithPrefix(addressInput).iterator();
-                }
-
-                //A check to see whether a valid street name has been typed
-                //This determines whether the suggested addresses are of streets or house numbers
-                String streetName = null;
-                if (it.hasNext()){
-                    String streetInfo = addressTries.keysWithPrefix(addressInput).iterator().next();
-                    streetName = streetInfo.substring(0, streetInfo.length()-4);
-                }
-
-                if (addressInput.equals(streetName)) {
-
-                    if (it.hasNext()) {
-                        allSuggestions = new ArrayList<>();
-                        allSuggestions = addressTries.get(it.next());
-                    }
-
-                    if (allSuggestions.size() > 0) {
-                        for (OsmAddress osmAddress : allSuggestions) {
-                            String address = osmAddress.toString();
-                            shownSuggestions.add(address);
-                        }
-                    }
-                } else {
-
-                    allSuggestions = new ArrayList<>();
-
-                    while (it.hasNext()) {
-                        allSuggestions.add(addressTries.get(it.next()).get(0));
-                    }
-                    for (OsmAddress osmAddress : allSuggestions) {
-                        String address = osmAddress.omitHouseNumberToString();
-                        shownSuggestions.add(address);
-                    }
-                }
-                return null;
-            }
-        };
-
-        addressSuggestionTask.setOnSucceeded(e -> displayAddressSuggestions());
-        addressSuggestionTask.setOnFailed(e -> addressSuggestionTask.getException().printStackTrace());
-        Thread thread = new Thread(addressSuggestionTask);
-        thread.start();
-    }
-
-    public String longestSubstringWithMatches(String addressInput){
-        Iterator<String> modifiedIt;
-        boolean hasResults = true;
-        int counter = 1;
-
-        while (hasResults && counter < addressInput.length()) {
-            modifiedIt = addressTries.keysWithPrefix(addressInput.substring(0, counter)).iterator();
-            if(!modifiedIt.hasNext()){
-                hasResults = false;
-                counter--;
-            } else {
-                counter++;
-            }
-        }
-
-        return addressInput.substring(0, counter);
     }
 
     public void onWindowResize(Stage stage) {
