@@ -21,7 +21,7 @@ import javafx.stage.Stage;
 import java.util.List;
 
 
-public class NavigationBoxController extends SubController {
+public class NavigationBoxController extends NavigationSubController {
 
     @FXML
     private TextArea startingPoint;

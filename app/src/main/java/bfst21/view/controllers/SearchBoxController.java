@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 
 
-public class SearchBoxController extends SubController {
+public class SearchBoxController extends NavigationSubController {
 
     @FXML
     private TextArea addressArea;
