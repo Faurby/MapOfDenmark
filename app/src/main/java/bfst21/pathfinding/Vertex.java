@@ -1,8 +1,11 @@
 package bfst21.pathfinding;
 
-
 import java.io.Serializable;
 
+
+/**
+ * Vertex used in DirectedGraph.
+ */
 public class Vertex implements Serializable {
 
     private static final long serialVersionUID = 5389761446007729723L;
@@ -14,15 +17,7 @@ public class Vertex implements Serializable {
         this.x = x;
         this.y = y;
     }
-
-    public float[] getCoords() {
-        return new float[]{x, y};
-    }
-
-    public int[] getEdges() {
-        return edges;
-    }
-
+    
     public void addEdge(int id) {
         int length = edges.length;
 
@@ -32,5 +27,13 @@ public class Vertex implements Serializable {
         }
         edges = copy;
         edges[length] = id;
+    }
+
+    public float[] getCoords() {
+        return new float[]{x, y};
+    }
+
+    public int[] getEdges() {
+        return edges;
     }
 }

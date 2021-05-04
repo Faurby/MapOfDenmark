@@ -11,6 +11,12 @@ import java.util.List;
 
 /**
  * DirectedGraph is an edge-weighted directed graph.
+ * <p>
+ * This graph is gradually built by creating vertices and edges between them.
+ * We add a Vertex or Edge to its array and resize it if the size limit is reached.
+ * When the graph has been fully built, we clean up the arrays to avoid empty slots.
+ * <p>
+ * coordsToIdMap is used to determine if a vertex exists with the coordinates of a Node.
  */
 public class DirectedGraph implements Serializable {
 
@@ -213,21 +219,6 @@ public class DirectedGraph implements Serializable {
         return edgeList;
     }
 
-    /**
-     * @return Edge from its id.
-     */
-    public Edge getEdge(int id) {
-        return edges[id];
-    }
-
-    public int getVertexAmount() {
-        return vertexAmount;
-    }
-
-    public Vertex[] getVertices() {
-        return vertices;
-    }
-
     public float[] getVector(Edge edge) {
         Vertex fromVertex = vertices[edge.getFrom()];
         Vertex toVertex = vertices[edge.getTo()];
@@ -306,5 +297,20 @@ public class DirectedGraph implements Serializable {
             return Direction.SOUTH_WEST;
         }
         return Direction.UNKNOWN;
+    }
+
+    /**
+     * @return Edge from its id.
+     */
+    public Edge getEdge(int id) {
+        return edges[id];
+    }
+
+    public int getVertexAmount() {
+        return vertexAmount;
+    }
+
+    public Vertex[] getVertices() {
+        return vertices;
     }
 }

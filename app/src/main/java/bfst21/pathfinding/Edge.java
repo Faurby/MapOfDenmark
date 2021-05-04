@@ -7,6 +7,9 @@ import javafx.scene.canvas.GraphicsContext;
 import java.io.Serializable;
 
 
+/**
+ * Weighted Edge used in DirectedGraph.
+ */
 public class Edge implements Serializable {
 
     private static final long serialVersionUID = -8885206149678561745L;
@@ -17,6 +20,10 @@ public class Edge implements Serializable {
 
     private final boolean canDrive, canBike, canWalk;
 
+    /**
+     * Edge constructor.
+     * If name exists, use String interning to decrease memory usage.
+     */
     public Edge(String name,
                 int from,
                 int to,
@@ -38,6 +45,10 @@ public class Edge implements Serializable {
         this.canWalk = canWalk;
     }
 
+
+    /**
+     * Draw an Edge between the coordinates of its vertices.
+     */
     public void draw(DirectedGraph directedGraph, GraphicsContext gc) {
         float[] fromCoords = directedGraph.getVertexCoords(from);
         float[] toCoords = directedGraph.getVertexCoords(to);
@@ -48,6 +59,10 @@ public class Edge implements Serializable {
         }
     }
 
+    /**
+     * Determine if you can navigate this Edge
+     * with the currently enabled TransportOption.
+     */
     public boolean canNavigate() {
         TransportOption transportOption = TransportOptions.getInstance().getCurrentlyEnabled();
 
