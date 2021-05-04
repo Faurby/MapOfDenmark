@@ -377,7 +377,10 @@ public class MainController extends BaseController {
     @FXML
     public void userNodeButtonClicked() {
         if (model.getMapData() == null) {
-            Alert alert = alertPopup(Alert.AlertType.ERROR, "Error", "ERROR: MapData is null", "No MapData has been loaded.");
+            Alert alert = alertPopup(Alert.AlertType.ERROR,
+                    "Error",
+                    "ERROR: MapData is null",
+                    "No MapData has been loaded.");
             alert.showAndWait();
         }
         if (userNodeToggle) {
