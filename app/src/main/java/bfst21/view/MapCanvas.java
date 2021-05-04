@@ -310,50 +310,53 @@ public class MapCanvas extends Canvas {
             int destinationID = directedGraph.getVertexID(destinationCoords);
             List<Edge> edgeList = model.getMapData().getDijkstra().pathTo(destinationID);
 
-            List<String> directions = new ArrayList<>();
+            if (edgeList.size() > 0) {
 
-            System.out.println("Directions ------");
-            gc.beginPath();
-            for (int i = 0; i < (edgeList.size() - 1); i++) {
-                Edge before = edgeList.get(i);
-                Edge after = edgeList.get(i + 1);
+                List<String> directions = new ArrayList<>();
 
-                if (i == 0) {
-                    before.draw(directedGraph, gc);
+                System.out.println("Directions ------");
+                gc.beginPath();
+                for (int i = 0; i < (edgeList.size() - 1); i++) {
+                    Edge before = edgeList.get(i);
+                    Edge after = edgeList.get(i + 1);
+
+                    if (i == 0) {
+                        before.draw(directedGraph, gc);
+                    }
+                    after.draw(directedGraph, gc);
+
+                    Direction direction = directedGraph.getDirectionRightLeft(before, after);
+                    float distance = before.getDistance() * 1000;
+
+                    directions.add("Drive "+distance+"m down "+before.getName());
+                    if (direction != Direction.STRAIGHT) {
+                        directions.add("Then "+direction+" down "+after.getName());
+                    }
                 }
-                after.draw(directedGraph, gc);
+                gc.stroke();
 
-                Direction direction = directedGraph.getDirectionRightLeft(before, after);
-                float distance = before.getDistance() * 1000;
+                int start = edgeList.get(0).getFrom();
+                float[] startCoords = directedGraph.getVertexCoords(start);
 
-                directions.add("Drive "+distance+"m down "+before.getName());
-                if (direction != Direction.STRAIGHT) {
-                    directions.add("Then "+direction+" down "+after.getName());
+                gc.setStroke(Color.YELLOWGREEN);
+                gc.setLineWidth(0.0005 * widthModifier);
+
+                gc.beginPath();
+                gc.moveTo(startCoords[0], startCoords[1]);
+                gc.lineTo(startCoords[0], startCoords[1]);
+                gc.stroke();
+
+                gc.setStroke(Color.PURPLE);
+                gc.setLineWidth(0.0005 * widthModifier);
+
+                gc.beginPath();
+                gc.moveTo(destinationCoords[0], destinationCoords[1]);
+                gc.lineTo(destinationCoords[0], destinationCoords[1]);
+                gc.stroke();
+
+                for (String dir : directions) {
+                    System.out.println(dir);
                 }
-            }
-            gc.stroke();
-
-            int start = edgeList.get(0).getFrom();
-            float[] startCoords = directedGraph.getVertexCoords(start);
-
-            gc.setStroke(Color.YELLOWGREEN);
-            gc.setLineWidth(0.0005 * widthModifier);
-
-            gc.beginPath();
-            gc.moveTo(startCoords[0], startCoords[1]);
-            gc.lineTo(startCoords[0], startCoords[1]);
-            gc.stroke();
-
-            gc.setStroke(Color.PURPLE);
-            gc.setLineWidth(0.0005 * widthModifier);
-
-            gc.beginPath();
-            gc.moveTo(destinationCoords[0], destinationCoords[1]);
-            gc.lineTo(destinationCoords[0], destinationCoords[1]);
-            gc.stroke();
-
-            for (String dir : directions) {
-                System.out.println(dir);
             }
         }
     }

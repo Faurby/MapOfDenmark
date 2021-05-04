@@ -10,11 +10,15 @@ import java.util.List;
 
 
 /**
- * DijkstraPath is based on the Dijkstra algorithm.
+ * DijkstraPath is based on the DijkstraSP class from
+ * the algs4 library by Robert Sedgewick and Kevin Wayne.
+ * <p>
  * It used to find the shortest path between the
  * origin coordinates and the destination coordinates.
- * <p>
  * The algorithm will stop once the destination has been located.
+ * <p>
+ * Weight is normally the distance of an Edge but if you are driving,
+ * it will use the weight calculated using max speed and distance of a Way.
  */
 public class DijkstraPath {
 
@@ -25,6 +29,11 @@ public class DijkstraPath {
     private final boolean isDriving;
     private boolean foundDestination;
 
+    /**
+     * Start Dijkstra pathfinding from the origin point.
+     * Finds all the shortest paths in the graph from the origin point.
+     * Stops when the destination point has been found.
+     */
     public DijkstraPath(DirectedGraph directedGraph,
                         float[] originCoords,
                         float[] destinationCoords) {
@@ -59,6 +68,11 @@ public class DijkstraPath {
         }
     }
 
+    /**
+     * Relax an edge if navigation is possible with the currently enabled TransportOption.
+     * If driving, the weight is set to the Edge weight calculated using distance and max speed.
+     * If walking or biking, the weight is set to the distance of the Edge.
+     */
     public void relax(Edge edge) {
         if (edge.canNavigate()) {
             int v = edge.getFrom();
@@ -86,15 +100,23 @@ public class DijkstraPath {
         }
     }
 
+    /**
+     * Check if Dijkstra has found a path between
+     * the origin point and the specific target point.
+     */
     public boolean hasPathTo(int targetID) {
         return distTo[targetID] < Double.POSITIVE_INFINITY;
     }
 
+    /**
+     * @return path of Edges from the origin point to the specific target point.
+     */
     public List<Edge> pathTo(int targetID) {
-        if (!hasPathTo(targetID)) {
-            return null;
-        }
         List<Edge> path = new ArrayList<>();
+
+        if (!hasPathTo(targetID)) {
+            return path;
+        }
         for (Edge e = edgeTo[targetID]; e != null; e = edgeTo[e.getFrom()]) {
             path.add(e);
         }
