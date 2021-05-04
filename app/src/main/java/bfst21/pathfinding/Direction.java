@@ -1,5 +1,6 @@
 package bfst21.pathfinding;
 
+
 public enum Direction {
 
     UNKNOWN,
