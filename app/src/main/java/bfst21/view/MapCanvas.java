@@ -325,6 +325,29 @@ public class MapCanvas extends Canvas {
                 Edge before = edgeList.get(i);
                 Edge after = edgeList.get(i + 1);
 
+                if (i == 0) {
+                    int from = before.getFrom();
+                    float[] coords = directedGraph.getVertexCoords(from);
+
+                    gc.beginPath();
+                    gc.setStroke(Color.RED);
+                    gc.setLineWidth(10 * (1 / Math.sqrt(trans.determinant())));
+                    gc.moveTo(coords[0], coords[1]);
+                    gc.lineTo(coords[0], coords[1]);
+                    gc.stroke();
+                }
+                if (i == (edgeList.size() - 2)) {
+                    int to = after.getTo();
+                    float[] coords = directedGraph.getVertexCoords(to);
+
+                    gc.beginPath();
+                    gc.setStroke(Color.LIGHTGREEN);
+                    gc.setLineWidth(10 * (1 / Math.sqrt(trans.determinant())));
+                    gc.moveTo(coords[0], coords[1]);
+                    gc.lineTo(coords[0], coords[1]);
+                    gc.stroke();
+                }
+
                 Direction direction = directedGraph.getDirectionRightLeft(before, after);
                 System.out.println("Street: "+before.getName()+" to "+after.getName()+" direction: "+direction.toString());
             }
@@ -461,26 +484,29 @@ public class MapCanvas extends Canvas {
         thread.start();
     }
 
+    public BoundingBox getScreenBoundingBox() {
+        double x1 = trans.getTx() / Math.sqrt(trans.determinant());
+        double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
+        double x2 = getWidth() - x1;
+        double y2 = getHeight() - y1;
+
+        x1 -= 50;
+        y1 -= 50;
+        x2 += 50;
+        y2 += 50;
+
+        Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
+        Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
+
+        return new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
+    }
+
     /**
      * Begins a range search for the kd-tree if MapData is available.
      */
     public void rangeSearch() {
         if (model.getMapData() != null) {
-            double x1 = trans.getTx() / Math.sqrt(trans.determinant());
-            double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
-            double x2 = getWidth() - x1;
-            double y2 = getHeight() - y1;
-
-            x1 -= 50;
-            y1 -= 50;
-            x2 += 50;
-            y2 += 50;
-
-            Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
-            Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
-
-            BoundingBox boundingBox = new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
-            model.getMapData().kdTreeRangeSearch(boundingBox, zoomLevel);
+            model.getMapData().kdTreeRangeSearch(getScreenBoundingBox(), zoomLevel);
         }
     }
 

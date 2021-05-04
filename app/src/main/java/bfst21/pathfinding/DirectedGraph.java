@@ -215,21 +215,37 @@ public class DirectedGraph implements Serializable {
         float[] beforeVector = getVector(before);
         float[] afterVector = getVector(after);
 
-        if (getDirection(beforeVector) == Direction.NORTH_WEST) {
-            if (getDirection(afterVector) == Direction.NORTH_EAST) return Direction.TURN_RIGHT;
-            if (getDirection(afterVector) == Direction.SOUTH_WEST) return Direction.TURN_LEFT;
-        }
-        if (getDirection(beforeVector) == Direction.NORTH_EAST) {
-            if (getDirection(afterVector) == Direction.SOUTH_EAST) return Direction.TURN_RIGHT;
-            if (getDirection(afterVector) == Direction.NORTH_WEST) return Direction.TURN_LEFT;
-        }
-        if (getDirection(beforeVector) == Direction.SOUTH_EAST) {
-            if (getDirection(afterVector) == Direction.SOUTH_WEST) return Direction.TURN_RIGHT;
-            if (getDirection(afterVector) == Direction.NORTH_EAST) return Direction.TURN_LEFT;
-        }
-        if (getDirection(beforeVector) == Direction.SOUTH_WEST) {
-            if (getDirection(afterVector) == Direction.NORTH_WEST) return Direction.TURN_RIGHT;
-            if (getDirection(afterVector) == Direction.SOUTH_EAST) return Direction.TURN_LEFT;
+        Direction beforeDirection = getDirection(beforeVector);
+        Direction afterDirection = getDirection(afterVector);
+
+        if (beforeDirection == Direction.NORTH_WEST) {
+            if (afterDirection == Direction.NORTH_EAST) {
+                return Direction.TURN_LEFT;
+
+            } else if (afterDirection == Direction.SOUTH_WEST) {
+                return Direction.TURN_RIGHT;
+            }
+        } else if (beforeDirection == Direction.NORTH_EAST) {
+            if (afterDirection == Direction.SOUTH_EAST) {
+                return Direction.TURN_LEFT;
+
+            } else if (afterDirection == Direction.NORTH_WEST) {
+                return Direction.TURN_RIGHT;
+            }
+        } else if (beforeDirection == Direction.SOUTH_EAST) {
+            if (afterDirection == Direction.SOUTH_WEST) {
+                return Direction.TURN_LEFT;
+
+            } else if (afterDirection == Direction.NORTH_EAST) {
+                return Direction.TURN_RIGHT;
+            }
+        } else if (beforeDirection == Direction.SOUTH_WEST) {
+            if (afterDirection == Direction.NORTH_WEST) {
+                return Direction.TURN_LEFT;
+
+            } else if (afterDirection == Direction.SOUTH_EAST) {
+                return Direction.TURN_RIGHT;
+            }
         }
         return Direction.STRAIGHT;
     }
