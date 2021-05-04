@@ -129,8 +129,12 @@ public class MapCanvas extends Canvas {
             drawUserNodes();
             drawNeighborNodes();
             drawMapText();
-            if (redPinVisible) { drawRedPin();}
-            if (greyPinVisible) { drawGreyPin();}
+            if (redPinVisible) {
+                drawRedPin();
+            }
+            if (greyPinVisible) {
+                drawGreyPin();
+            }
 
             //Display the kd-tree if option is enabled
             if (displayOptions.getBool(DisplayOption.DISPLAY_KD_TREE)) {
@@ -316,21 +320,27 @@ public class MapCanvas extends Canvas {
 
                 System.out.println("Directions ------");
                 gc.beginPath();
+                float distanceSum = 0;
                 for (int i = 0; i < (edgeList.size() - 1); i++) {
                     Edge before = edgeList.get(i);
                     Edge after = edgeList.get(i + 1);
 
-                    if (i == 0) {
-                        before.draw(directedGraph, gc);
-                    }
-                    after.draw(directedGraph, gc);
-
                     Direction direction = directedGraph.getDirectionRightLeft(before, after);
-                    float distance = before.getDistance() * 1000;
+                    float distanceBefore = before.getDistance() * 1000;
+                    float distanceAfter = after.getDistance() * 1000;
 
-                    directions.add("Drive "+distance+"m down "+before.getName());
+                    distanceSum += distanceBefore;
+
+                    before.draw(directedGraph, gc);
+
                     if (direction != Direction.STRAIGHT) {
-                        directions.add("Then "+direction+" down "+after.getName());
+                        directions.add("Drive " + (int) distanceSum + "m down " + before.getName());
+                        directions.add("Then " + direction + " down " + after.getName());
+                        distanceSum = 0;
+                    }
+                    if (i == (edgeList.size() - 2)) {
+                        after.draw(directedGraph, gc);
+                        directions.add("Drive " + (int) (distanceSum + distanceAfter) + "m down " + after.getName());
                     }
                 }
                 gc.stroke();
@@ -369,7 +379,7 @@ public class MapCanvas extends Canvas {
         repaint();
     }
 
-    public void changeView(float newX, float newY){
+    public void changeView(float newX, float newY) {
 
         double x1 = trans.getTx() / Math.sqrt(trans.determinant());
         double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
@@ -390,12 +400,12 @@ public class MapCanvas extends Canvas {
         repaint();
     }
 
-    public void setRedPinVisible(boolean b){
+    public void setRedPinVisible(boolean b) {
         redPinVisible = b;
         repaint();
     }
 
-    public void setGreyPinVisible(boolean b){
+    public void setGreyPinVisible(boolean b) {
         greyPinVisible = b;
         repaint();
     }
@@ -430,8 +440,8 @@ public class MapCanvas extends Canvas {
 //            gc.moveTo(searchAddressCoords[0], searchAddressCoords[1]);
 //            gc.lineTo(searchAddressCoords[0], searchAddressCoords[1]);
 //            gc.stroke();
- //       }
- //   }
+    //       }
+    //   }
 
     /**
      * Zooms and repaints the MapCanvas with the given zoom factor.
