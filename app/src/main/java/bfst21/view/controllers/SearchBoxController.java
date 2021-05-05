@@ -1,6 +1,7 @@
 package bfst21.view.controllers;
 
 import bfst21.osm.OsmAddress;
+import bfst21.osm.Pin;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -36,8 +37,10 @@ public class SearchBoxController extends NavigationSubController {
 
             for (OsmAddress osmAddress : getAllSuggestions()) {
                 if (osmAddress.toString().toLowerCase().contains(address) || osmAddress.omitHouseNumberToString().toLowerCase().contains(address)) {
-                    mainController.getCanvas().setRedPinCoords(osmAddress.getNode().getX(), osmAddress.getNode().getY());
-                    mainController.getCanvas().setRedPinVisible(true);
+
+                    Pin.DESTINATION.setCoords(osmAddress.getNode().getX(), osmAddress.getNode().getY());
+                    Pin.DESTINATION.setVisible(true);
+
                     mainController.getCanvas().changeView(osmAddress.getNode().getX(), osmAddress.getNode().getY());
                     break;
                 }
@@ -61,7 +64,7 @@ public class SearchBoxController extends NavigationSubController {
     public void expandSearchView() {
         mainController.setSearchBoxVisible(false);
         mainController.setNavigationBoxVisible(true);
-        mainController.getCanvas().setRedPinVisible(false);
+        Pin.DESTINATION.setVisible(false);
 
         if (addressArea.getText() != null) {
             mainController.setNavigationBoxAddressText(addressArea.getText());

@@ -52,13 +52,6 @@ public class MapCanvas extends Canvas {
     private Affine trans = new Affine();
 
     private float[] nearestNeighborCoords;
-    private float[] redPinCoords;
-    private float[] greyPinCoords;
-    private final Image redPin = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("redPin.png")));
-    private final Image greyPin = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("greyPin.png")));
-    private boolean redPinVisible;
-    private boolean greyPinVisible;
-    private MainController mainController;
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -131,11 +124,9 @@ public class MapCanvas extends Canvas {
             drawUserNodes();
             drawNeighborNodes();
             drawMapText();
-            if (redPinVisible) {
-                drawRedPin();
-            }
-            if (greyPinVisible) {
-                drawGreyPin();
+
+            for (Pin pin : Pin.values()) {
+                pin.draw(gc, zoomLevel);
             }
 
             //Display the kd-tree if option is enabled
@@ -400,37 +391,6 @@ public class MapCanvas extends Canvas {
         pan(-dx, -dy);
         rangeSearch();
         repaint();
-    }
-
-    public void setRedPinVisible(boolean b) {
-        redPinVisible = b;
-        repaint();
-    }
-
-    public void setGreyPinVisible(boolean b) {
-        greyPinVisible = b;
-        repaint();
-    }
-
-    public void setGreyPinCoords(float x, float y) {
-        greyPinCoords = new float[]{x, y};
-    }
-
-    public void setRedPinCoords(float x, float y) {
-        redPinCoords = new float[]{x, y};
-    }
-
-    //Method that shows a pin at the searchAddressCoords-coordinates
-    public void drawRedPin() {
-        if (redPinCoords != null) {
-            gc.drawImage(redPin, redPinCoords[0] - (10 / zoomLevel), redPinCoords[1] - (30 / zoomLevel), 20 / zoomLevel, 30 / zoomLevel);
-        }
-    }
-
-    public void drawGreyPin() {
-        if (greyPinCoords != null) {
-            gc.drawImage(greyPin, greyPinCoords[0] - (7.5 / zoomLevel), greyPinCoords[1] - (22.5 / zoomLevel), 15 / zoomLevel, 22.5 / zoomLevel);
-        }
     }
 
     /**

@@ -3,6 +3,7 @@ package bfst21.view.controllers;
 import bfst21.models.TransportOption;
 import bfst21.models.TransportOptions;
 import bfst21.osm.OsmAddress;
+import bfst21.osm.Pin;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -80,11 +81,11 @@ public class NavigationBoxController extends NavigationSubController {
 
             if (sCoords != null && dCoords != null) {
 
-                mainController.getCanvas().setGreyPinCoords(sCoords[0], sCoords[1]);
-                mainController.getCanvas().setGreyPinVisible(true);
+                Pin.ORIGIN.setCoords(sCoords[0], sCoords[1]);
+                Pin.ORIGIN.setVisible(true);
 
-                mainController.getCanvas().setRedPinCoords(dCoords[0], dCoords[1]);
-                mainController.getCanvas().setRedPinVisible(true);
+                Pin.DESTINATION.setCoords(dCoords[0], dCoords[1]);
+                Pin.DESTINATION.setVisible(true);
 
                 float avgX = (sCoords[0] + dCoords[0]) / 2;
                 float avgY = (sCoords[1] + dCoords[1]) / 2;
@@ -188,8 +189,8 @@ public class NavigationBoxController extends NavigationSubController {
             mainController.setSearchBoxAddressText(startingPoint.getText());
         }
 
-        mainController.getCanvas().setRedPinVisible(false);
-        mainController.getCanvas().setGreyPinVisible(false);
+        Pin.ORIGIN.setVisible(false);
+        Pin.DESTINATION.setVisible(false);
     }
 
     @Override

@@ -3,6 +3,7 @@ package bfst21.view.controllers;
 import bfst21.data.BinaryFileManager;
 import bfst21.models.*;
 import bfst21.osm.Node;
+import bfst21.osm.Pin;
 import bfst21.osm.UserNode;
 import bfst21.osm.Way;
 import bfst21.pathfinding.DirectedGraph;
@@ -179,8 +180,9 @@ public class MainController extends BaseController {
     private void userNodeClickedInListView(String userNodeName) {
         if (userNodeName != null) {
             UserNode clickedUserNode = userNodesMap.get(userNodeName);
-            canvas.setRedPinCoords(clickedUserNode.getX(), clickedUserNode.getY());
-            canvas.setRedPinVisible(true);
+            Pin.USER_NODE.setCoords(clickedUserNode.getX(), clickedUserNode.getY());
+            Pin.USER_NODE.setVisible(true);
+
             canvas.changeView(clickedUserNode.getX(), clickedUserNode.getY());
             userNodeListView.getSelectionModel().clearSelection();
         }
