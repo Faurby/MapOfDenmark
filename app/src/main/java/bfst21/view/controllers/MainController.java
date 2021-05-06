@@ -485,6 +485,18 @@ public class MainController extends BaseController {
         }
         userNodeListView.setItems(tempList);
         userNodeListView.setVisible(!userNodeListItems.isEmpty());
+
+        if(userNodeListItems.size() == 1) {
+            userNodeListView.setMaxHeight(27);
+            userNodeListView.setMinHeight(27);
+
+        } else if(userNodeListItems.size() > 1 && userNodeListItems.size() < 4) {
+            userNodeListView.setMaxHeight(userNodeListItems.size() * 25);
+            userNodeListView.setMinHeight(userNodeListItems.size() * 25);
+        } else {
+            userNodeListView.setMaxHeight(85);
+            userNodeListView.setMinHeight(85);
+        }
     }
 
     @FXML

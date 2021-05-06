@@ -260,7 +260,7 @@
             </HBox>
         </VBox>
         <VBox fx:id="userNodeVBox"
-              maxWidth="150"
+              maxWidth="185"
               maxHeight="120"
               StackPane.alignment="TOP_RIGHT"
               spacing="8"
@@ -271,13 +271,12 @@
             <Button fx:id="newUserNodeButton"
                     onAction="#userNodeButtonClicked"
                     text="Add point of interest"
-                    style="-fx-border-color: #3E859B"/>
+                    style="-fx-border-color: #3E859B;"/>
             <ListView fx:id="userNodeListView"
                       maxWidth="${newUserNodeButton.width}"
                       maxHeight="100"
-                      minHeight="100"
                       visible="false"
-                      style="-fx-border-color: #3E859B"/>
+                      style="-fx-border-color: #3E859B;"/>
         </VBox>
         <GridPane fx:id="footBox"
                 maxWidth="230"
