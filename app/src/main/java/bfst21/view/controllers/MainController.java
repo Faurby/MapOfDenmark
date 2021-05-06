@@ -278,7 +278,7 @@ public class MainController extends BaseController {
     }
 
     @FXML
-    private void onMousePressed(MouseEvent mouseEvent) {
+    public void onMousePressed(MouseEvent mouseEvent) {
         lastMouse = new Point2D(mouseEvent.getX(), mouseEvent.getY());
         updateAverageRepaintTime();
 
@@ -490,7 +490,7 @@ public class MainController extends BaseController {
             userNodeListView.setMaxHeight(27);
             userNodeListView.setMinHeight(27);
 
-        } else if(userNodeListItems.size() > 1 && userNodeListItems.size() < 4) {
+        } else if(userNodeListItems.size() < 4) {
             userNodeListView.setMaxHeight(userNodeListItems.size() * 25);
             userNodeListView.setMinHeight(userNodeListItems.size() * 25);
         } else {

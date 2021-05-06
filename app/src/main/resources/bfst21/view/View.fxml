@@ -273,11 +273,10 @@
                     text="Add point of interest"
                     style="-fx-border-color: #3E859B;"/>
             <ListView fx:id="userNodeListView"
-                      maxWidth="${newUserNodeButton.width}"
-                      maxHeight="100"
                       visible="false"
                       style="-fx-border-color: #3E859B;"/>
         </VBox>
+
         <GridPane fx:id="footBox"
                 maxWidth="230"
                 maxHeight="30"
