@@ -1,0 +1,26 @@
+
+/* This is used for testing to see if the css file is being loaded */
+#userNodeVBox {
+    -fx-border-color: red;
+}
+/* This is used for testing to see if the css file is being loaded */
+/*TODO: remove this*/
+
+.largeText {
+    -fx-font-size: large;
+}
+
+.userNodeVBoxes {
+    -fx-background-color: #f6f6f6;
+    -fx-border-color: #a0a0a0;
+}
+
+#newUserNodeButton, #userNodeListView {
+    -fx-border-color: #3E859B;
+}
+
+#footbox {
+    -fx-background-color: #f6f6f6;
+    -fx-border-color: #3E859B;
+    -fx-font-size: large;
+}

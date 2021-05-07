@@ -25,7 +25,8 @@
        xmlns:fx="https://javafx.com/fxml"
        fx:controller="bfst21.view.controllers.MainController"
        fx:id="scene"
-       onKeyPressed="#onKeyPressed">
+       onKeyPressed="#onKeyPressed"
+       stylesheets="@../../styles/userNodesStyles.css, @../../styles/loadingStyles.css">
 
     <StackPane fx:id="stackPane" minHeight="480" minWidth="640">
 
@@ -50,15 +51,8 @@
                 <Insets bottom="8" left="8" top="8"/>
             </padding>
 
-            <fx:include fx:id="searchBox"
-                        source="SearchBox.fxml"
-                        AnchorPane.leftAnchor="0.0"
-                        AnchorPane.topAnchor="0.0"/>
-
             <fx:include fx:id="navigationBox"
                         source="NavigationBox.fxml"
-                        visible="false"
-                        managed="false"
                         AnchorPane.leftAnchor="0.0"
                         AnchorPane.topAnchor="0.0"/>
 
@@ -73,13 +67,10 @@
               minHeight="100"
               minWidth="100"
               visible="false"
-              alignment="CENTER"
-              style="-fx-background-color: WHITE; -fx-padding: 20;">
+              alignment="CENTER">
 
-            <Text text="Loading" style="-fx-font-size: 24;"/>
-            <ProgressBar fx:id="progressBar"
-                         style="-fx-padding: 20;"
-                         minWidth="200"/>
+            <Text text="Loading" style="-fx-font-size: 24"/>
+            <ProgressBar fx:id="progressBar" minWidth="200" style="-fx-padding: 20;"/>
         </VBox>
 
         <HBox fx:id="menuBarHBox"
@@ -126,9 +117,9 @@
               prefHeight="190"
               alignment="CENTER"
               spacing="8"
-              style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;">
+              styleClass="userNodeVBoxes">
 
-            <Text text="New Point of Interest" style="-fx-font-size: large;"/>
+            <Text text="New Point of Interest" styleClass="largeText"/>
 
             <Text text="Name:"/>
             <TextField fx:id="userNodeNameTextField"
@@ -167,7 +158,7 @@
               prefHeight="185"
               alignment="CENTER"
               spacing="8"
-              style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;">
+              styleClass="userNodeVBoxes">
 
             <Text text="Failed to load name" fx:id="userNodeClickedName" style="-fx-font-size: x-large;"/>
 
@@ -203,9 +194,9 @@
               prefHeight="130"
               alignment="CENTER"
               spacing="10"
-              style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;">
+              styleClass="userNodeVBoxes">
 
-            <Text text="Enter new name" style="-fx-font-size: large;"/>
+            <Text text="Enter new name" styleClass="largeText"/>
 
             <TextField fx:id="userNodeNewNameTextField"
                        onKeyPressed="#userNodeNewNameTextFieldKeyPressed"
@@ -235,9 +226,9 @@
               prefHeight="130"
               alignment="CENTER"
               spacing="10"
-              style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;">
+              styleClass="userNodeVBoxes">
 
-            <Text text="Enter new description" style="-fx-font-size: large;"/>
+            <Text text="Enter new description" styleClass="largeText"/>
 
             <TextField fx:id="userNodeNewDescriptionTextField"
                        onKeyPressed="#userNodeNewDescTextFieldKeyPressed"
@@ -270,12 +261,10 @@
             </padding>
             <Button fx:id="newUserNodeButton"
                     onAction="#userNodeButtonClicked"
-                    text="Add point of interest"
-                    style="-fx-border-color: #3E859B;"/>
+                    text="Add point of interest"/>
             <ListView fx:id="userNodeListView"
                       visible="false"
-                      maxWidth="${newUserNodeButton.width}"
-                      style="-fx-border-color: #3E859B;"/>
+                      maxWidth="${newUserNodeButton.width}"/>
         </VBox>
 
         <GridPane fx:id="footBox"
@@ -283,7 +272,6 @@
                 maxHeight="30"
                 prefHeight="30"
                 StackPane.alignment="BOTTOM_RIGHT"
-                style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B; -fx-font-size: large;"
                 visible="false"
                 hgap="5"
                 alignment="CENTER_RIGHT">

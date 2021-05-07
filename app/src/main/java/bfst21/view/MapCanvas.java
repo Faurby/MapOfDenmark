@@ -2,6 +2,7 @@ package bfst21.view;
 
 import bfst21.models.DisplayOptions;
 import bfst21.models.DisplayOption;
+import bfst21.models.TransportOption;
 import bfst21.osm.*;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.pathfinding.Direction;
@@ -289,6 +290,17 @@ public class MapCanvas extends Canvas {
         if (displayOptions.getBool(DisplayOption.DISPLAY_DIJKSTRA)) {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
+            gc.setStroke(Color.GREEN);
+            gc.setLineWidth(0.001 * widthModifier);
+
+            gc.beginPath();
+            gc.moveTo(model.getMapData().originCoords[0], model.getMapData().originCoords[1]);
+            gc.lineTo(model.getMapData().originCoords[0], model.getMapData().originCoords[1]);
+
+            gc.moveTo(model.getMapData().destinationCoords[0], model.getMapData().destinationCoords[1]);
+            gc.lineTo(model.getMapData().destinationCoords[0], model.getMapData().destinationCoords[1]);
+            gc.stroke();
+
             gc.setStroke(Color.DARKSLATEBLUE);
             gc.setLineWidth(0.0002 * widthModifier);
 
@@ -429,7 +441,7 @@ public class MapCanvas extends Canvas {
      * Cancels the current nearest neighbor search task if it is running.
      * Repaints the MapCanvas when the task is finished.
      */
-    public void runNearestNeighborTask(float[] queryCoords) {
+    public void runNearestNeighborTask(float[] queryCoords, TransportOption transportOption) {
         if (nearestNeighborTask != null) {
             if (nearestNeighborTask.isRunning()) {
                 nearestNeighborTask.cancel();
@@ -438,7 +450,7 @@ public class MapCanvas extends Canvas {
         nearestNeighborTask = new Task<>() {
             @Override
             protected Void call() {
-                nearestNeighborCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords);
+                nearestNeighborCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords, transportOption);
                 return null;
             }
         };
