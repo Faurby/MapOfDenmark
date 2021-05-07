@@ -1,6 +1,7 @@
 package bfst21.data;
 
 import bfst21.address.TST;
+import bfst21.models.TransportOption;
 import bfst21.osm.*;
 import bfst21.models.MapData;
 
@@ -280,7 +281,7 @@ public class XmlParser {
                                     case "maxspeed":
                                         if (way != null) {
                                             if (way.getType() != null) {
-                                                if (way.getType().canDrive()) {
+                                                if (way.getType().canNavigate(TransportOption.CAR)) {
                                                     try {
                                                         way.setMaxSpeed(Integer.parseInt(value));
                                                     } catch (NumberFormatException ignored) {

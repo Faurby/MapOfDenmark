@@ -51,15 +51,8 @@
                 <Insets bottom="8" left="8" top="8"/>
             </padding>
 
-            <fx:include fx:id="searchBox"
-                        source="SearchBox.fxml"
-                        AnchorPane.leftAnchor="0.0"
-                        AnchorPane.topAnchor="0.0"/>
-
             <fx:include fx:id="navigationBox"
                         source="NavigationBox.fxml"
-                        visible="false"
-                        managed="false"
                         AnchorPane.leftAnchor="0.0"
                         AnchorPane.topAnchor="0.0"/>
 

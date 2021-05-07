@@ -24,6 +24,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -38,6 +39,8 @@ import java.util.*;
 
 public class MainController extends BaseController {
 
+    @FXML
+    public AnchorPane navigationBox;
     @FXML
     private MapCanvas canvas;
     @FXML
@@ -78,8 +81,6 @@ public class MainController extends BaseController {
     private VBox userNodeNewDescriptionVBox;
     @FXML
     private TextField userNodeNewDescriptionTextField;
-    @FXML
-    private SearchBoxController searchBoxController;
     @FXML
     private NavigationBoxController navigationBoxController;
     @FXML
@@ -159,7 +160,6 @@ public class MainController extends BaseController {
         this.model = model;
         canvas.init(model);
 
-        searchBoxController.setController(this);
         navigationBoxController.setController(this);
         debugBoxController.setController(this);
         startBoxController.setController(this);
@@ -197,7 +197,6 @@ public class MainController extends BaseController {
         StackPane.setAlignment(debugBox, Pos.TOP_RIGHT);
         stage.getHeight();
         canvas.repaint();
-        searchBoxController.onWindowResize(stage);
         navigationBoxController.onWindowResize(stage);
     }
 
@@ -289,9 +288,12 @@ public class MainController extends BaseController {
         }
 
         if (mouseEvent.isShiftDown() && mouseEvent.isPrimaryButtonDown()) {
+            TransportOptions transportOptions = TransportOptions.getInstance();
+            TransportOption currentTransportOption = transportOptions.getCurrentlyEnabled();
+
             Point2D point = canvas.mouseToModelCoords(lastMouse);
             float[] queryCoords = new float[]{(float) point.getX(), (float) point.getY()};
-            float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords);
+            float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords, currentTransportOption);
 
             if (resetDijkstra) {
                 resetDijkstra = false;
@@ -362,7 +364,7 @@ public class MainController extends BaseController {
         startBox.setVisible(false);
         startBox.setManaged(false);
         loadingText.setVisible(false);
-        searchBoxController.setVisible(true);
+        navigationBoxController.setSearchBoxVisible(true);
         userNodeVBox.setVisible(true);
         footBox.setVisible(true);
         canvas.runRangeSearchTask();
@@ -609,22 +611,6 @@ public class MainController extends BaseController {
         userNodeClickedDescription.setText(currentUserNode.getDescription());
     }
 
-    public void setNavigationBoxVisible(boolean visible) {
-        navigationBoxController.setVisible(visible);
-    }
-
-    public void setSearchBoxVisible(boolean visible) {
-        searchBoxController.setVisible(visible);
-    }
-
-    public void setNavigationBoxAddressText(String address) {
-        navigationBoxController.transferAddressText(address);
-    }
-
-    public void setSearchBoxAddressText(String address) {
-        searchBoxController.transferAddressText(address);
-    }
-
     @FXML
     public void preSaveObjFile() {
         String fileName = model.getFileName();
@@ -711,7 +697,7 @@ public class MainController extends BaseController {
             protected Void call() {
                 Point2D point = canvas.mouseToModelCoords(lastMouse);
                 float[] queryCoords = new float[]{(float) point.getX(), (float) point.getY()};
-                float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords);
+                float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords, TransportOption.ALL);
 
                 DirectedGraph graph = canvas.getModel().getMapData().getDirectedGraph();
 

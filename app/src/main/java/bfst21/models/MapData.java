@@ -130,12 +130,12 @@ public class MapData {
 
         for (Way way : wayList) {
             if (way.getType() != null) {
-                if (way.getType().canNavigate()) {
+                if (way.getType().canNavigate(TransportOption.ALL)) {
 
                     ElementType type = way.getType();
-                    boolean canDrive = type.canDrive();
-                    boolean canBike = type.canBike();
-                    boolean canWalk = type.canWalk();
+                    boolean canDrive = type.canNavigate(TransportOption.CAR);
+                    boolean canBike = type.canNavigate(TransportOption.BIKE);
+                    boolean canWalk = type.canNavigate(TransportOption.WALK);
                     boolean oneWay = way.isOneWay();
                     boolean oneWayBike = way.isOneWayBike();
                     int maxSpeed = way.getMaxSpeed();
@@ -350,12 +350,12 @@ public class MapData {
      * <p>
      * When a list of nearby coords are found, we will then find the coords closest to the query.
      */
-    public float[] kdTreeNearestNeighborSearch(float[] queryCoords) {
+    public float[] kdTreeNearestNeighborSearch(float[] queryCoords, TransportOption transportOption) {
         float[] coordsList = new float[ElementGroup.values().size() * 2];
 
         int count = 0;
         for (ElementGroup elementGroup : ElementGroup.values()) {
-            if (elementGroup.getType().canNavigate()) {
+            if (elementGroup.getType().canNavigate(transportOption)) {
                 if (kdTreeMap.containsKey(elementGroup)) {
                     float[] coords = kdTreeMap.get(elementGroup).nearestNeighborSearch(queryCoords);
                     coordsList[count] = coords[0];
