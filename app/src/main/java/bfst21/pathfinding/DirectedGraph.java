@@ -221,6 +221,17 @@ public class DirectedGraph implements Serializable {
         return edgeList;
     }
 
+    public int getOutDegree(int vertexID) {
+        List<Edge> edges = getAdjacentEdges(vertexID);
+        int outDegree = 0;
+        for (Edge edge : edges) {
+            if (edge.getFrom() == vertexID) {
+                outDegree++;
+            }
+        }
+        return outDegree;
+    }
+
     public float[] getVector(Edge edge) {
         Vertex fromVertex = vertices[edge.getFrom()];
         Vertex toVertex = vertices[edge.getTo()];

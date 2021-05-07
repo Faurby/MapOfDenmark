@@ -324,37 +324,43 @@ public class MapCanvas extends Canvas {
 
 
                     if (before.isJunction()) {
+                        before.draw(directedGraph, gc);
                         int fromID = before.getFrom();
-                        List<Edge> fromVertexEdges = directedGraph.getAdjacentEdges(fromID);
-                        if (fromVertexEdges.size() > 2) {
+                        if (directedGraph.getOutDegree(fromID) >= 2) {
                             exitCount++;
                         }
                         if (!after.isJunction()) {
-                            exitCount++;
-
+                            currentDirections.add("Take the " + exitCount + ". exit in the roundabout");
+                            exitCount = 0;
                         }
 
+                    } else {
+                        Direction direction = directedGraph.getDirectionRightLeft(before, after);
+                        float distanceBefore = before.getDistance() * 1000;
+                        float distanceAfter = after.getDistance() * 1000;
+
+                        distanceSum += distanceBefore;
+
+                        before.draw(directedGraph, gc);
+
+                        String dir = direction.toString().toLowerCase().replace("_"," ");
+
+                        if (direction != Direction.STRAIGHT) {
+                            currentDirections.add("Drive " + (int) distanceSum + "m down " + before.getName());
+                            if (!after.isJunction()) {
+                                currentDirections.add("Then " + dir + " down " + after.getName());
+                            }
+                            distanceSum = 0;
+                        }
+                        if (i == (edgeList.size() - 2)) {
+                            after.draw(directedGraph, gc);
+                            currentDirections.add("Drive " + (int) (distanceSum + distanceAfter) + "m down " + after.getName());
+                        }
                     }
-                    Direction direction = directedGraph.getDirectionRightLeft(before, after);
-                    float distanceBefore = before.getDistance() * 1000;
-                    float distanceAfter = after.getDistance() * 1000;
-
-                    distanceSum += distanceBefore;
-
-                    before.draw(directedGraph, gc);
-
-                    String dir = direction.toString().toLowerCase().replace("_"," ");
-
-                    if (direction != Direction.STRAIGHT) {
-                        currentDirections.add("Drive " + (int) distanceSum + "m down " + before.getName());
-                        currentDirections.add("Then " + dir + " down " + after.getName());
-                        distanceSum = 0;
-                    }
-                    if (i == (edgeList.size() - 2)) {
-                        after.draw(directedGraph, gc);
-                        currentDirections.add("Drive " + (int) (distanceSum + distanceAfter) + "m down " + after.getName());
-                    }
+                    int fromID = before.getFrom();
+                    System.out.println(directedGraph.getOutDegree(fromID));
                 }
+
                 gc.stroke();
 
                 int start = edgeList.get(0).getFrom();
