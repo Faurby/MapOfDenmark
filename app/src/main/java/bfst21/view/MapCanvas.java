@@ -289,17 +289,17 @@ public class MapCanvas extends Canvas {
         if (displayOptions.getBool(DisplayOption.DISPLAY_DIJKSTRA)) {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
-            gc.setStroke(Color.DARKSLATEBLUE);
-            gc.setLineWidth(0.0002 * widthModifier);
-
-            gc.beginPath();
-            Edge[] edges = model.getMapData().getDijkstra().getEdgeTo();
-            for (Edge edge : edges) {
-                if (edge != null) {
-                    edge.draw(directedGraph, gc);
-                }
-            }
-            gc.stroke();
+//            gc.setStroke(Color.DARKSLATEBLUE);
+//            gc.setLineWidth(0.0002 * widthModifier);
+//
+//            gc.beginPath();
+//            Edge[] edges = model.getMapData().getDijkstra().getEdgeTo();
+//            for (Edge edge : edges) {
+//                if (edge != null) {
+//                    edge.draw(directedGraph, gc);
+//                }
+//            }
+//            gc.stroke();
 
             gc.setStroke(Color.RED);
             gc.setLineWidth(0.0004 * widthModifier);
@@ -314,10 +314,24 @@ public class MapCanvas extends Canvas {
                 System.out.println("Directions ------");
                 gc.beginPath();
                 float distanceSum = 0;
+                int exitCount = 0;
                 for (int i = 0; i < (edgeList.size() - 1); i++) {
                     Edge before = edgeList.get(i);
                     Edge after = edgeList.get(i + 1);
 
+
+                    if (before.isJunction()) {
+                        int fromID = before.getFrom();
+                        List<Edge> fromVertexEdges = directedGraph.getAdjacentEdges(fromID);
+                        if (fromVertexEdges.size() > 2) {
+                            exitCount++;
+                        }
+                        if (!after.isJunction()) {
+                            exitCount++;
+
+                        }
+
+                    }
                     Direction direction = directedGraph.getDirectionRightLeft(before, after);
                     float distanceBefore = before.getDistance() * 1000;
                     float distanceAfter = after.getDistance() * 1000;

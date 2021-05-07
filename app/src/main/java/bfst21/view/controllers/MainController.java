@@ -299,7 +299,7 @@ public class MainController extends BaseController {
                 model.getMapData().destinationCoords = null;
             } else {
                 model.getMapData().destinationCoords = nearestCoords;
-                model.getMapData().runDijkstra();
+                model.getMapData().runDijkstraTask();
                 resetDijkstra = true;
             }
         }

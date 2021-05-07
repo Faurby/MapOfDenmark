@@ -18,7 +18,7 @@ public class Edge implements Serializable {
     private final int from, to;
     private String name;
 
-    private final boolean canDrive, canBike, canWalk;
+    private final boolean canDrive, canBike, canWalk, junction;
 
     /**
      * Edge constructor.
@@ -29,6 +29,7 @@ public class Edge implements Serializable {
                 int to,
                 float weight,
                 float distance,
+                boolean junction,
                 boolean canDrive,
                 boolean canBike,
                 boolean canWalk) {
@@ -39,10 +40,12 @@ public class Edge implements Serializable {
         this.from = from;
         this.to = to;
         this.weight = weight;
+
         this.distance = distance;
         this.canDrive = canDrive;
         this.canBike = canBike;
         this.canWalk = canWalk;
+        this.junction = junction;
     }
 
 
@@ -85,6 +88,10 @@ public class Edge implements Serializable {
 
     public boolean canDrive() {
         return canDrive;
+    }
+
+    public boolean isJunction() {
+        return junction;
     }
 
     public int getFrom() {
