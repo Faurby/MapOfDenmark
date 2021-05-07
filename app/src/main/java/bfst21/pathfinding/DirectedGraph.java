@@ -138,6 +138,7 @@ public class DirectedGraph implements Serializable {
                         float[] fromCoords,
                         float[] toCoords,
                         int maxSpeed,
+                        boolean junction,
                         boolean oneWay,
                         boolean oneWayBike,
                         boolean canDrive,
@@ -155,10 +156,10 @@ public class DirectedGraph implements Serializable {
             addEdge(name, toID, fromID, weight, distance, canDrive, canBike, canWalk);
 
         } else if (!oneWay && oneWayBike) {
-            addEdge(name, toID, fromID, weight, distance, canDrive, false, canWalk);
+            addEdge(name, toID, fromID, weight, distance, junction, canDrive, false, canWalk);
 
         } else if (!oneWayBike && oneWay) {
-            addEdge(name, toID, fromID, weight, distance, false, canBike, canWalk);
+            addEdge(name, toID, fromID, weight, distance, junction,  false, canBike, canWalk);
         }
     }
 
@@ -173,11 +174,12 @@ public class DirectedGraph implements Serializable {
                         int toID,
                         float weight,
                         float distance,
+                        boolean junction,
                         boolean canDrive,
                         boolean canBike,
                         boolean canWalk) {
 
-        Edge edge = new Edge(name, fromID, toID, weight, distance, canDrive, canBike, canWalk);
+        Edge edge = new Edge(name, fromID, toID, weight, distance, junction, canDrive, canBike, canWalk);
 
         if (edgeAmount == edges.length) {
             Edge[] copy = new Edge[edges.length * 2];

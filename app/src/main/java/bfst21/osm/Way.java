@@ -14,6 +14,7 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
     private ElementType elementType;
     private String role;
     private int maxSpeed = 50;
+    private boolean junction;
     private boolean oneWay;
     private boolean oneWayBike;
     private String name;
@@ -179,6 +180,14 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public void setJunction(boolean junction) {
+        this.junction = junction;
+    }
+
+    public boolean isJunction() {
+        return junction;
     }
 
     public String getRole() {

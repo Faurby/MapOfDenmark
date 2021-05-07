@@ -92,7 +92,6 @@ public class DijkstraPath {
 
                 if (pq.contains(w)) {
                     pq.decreaseKey(w, distTo[w]);
-
                 } else {
                     pq.insert(w, distTo[w]);
                 }

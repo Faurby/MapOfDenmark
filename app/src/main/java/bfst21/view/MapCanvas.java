@@ -12,10 +12,12 @@ import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
 import bfst21.models.Model;
 import bfst21.tree.KdTree;
+import bfst21.view.controllers.MainController;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.StrokeLineCap;
@@ -290,17 +292,6 @@ public class MapCanvas extends Canvas {
         if (displayOptions.getBool(DisplayOption.DISPLAY_DIJKSTRA)) {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
-            gc.setStroke(Color.GREEN);
-            gc.setLineWidth(0.001 * widthModifier);
-
-            gc.beginPath();
-            gc.moveTo(model.getMapData().originCoords[0], model.getMapData().originCoords[1]);
-            gc.lineTo(model.getMapData().originCoords[0], model.getMapData().originCoords[1]);
-
-            gc.moveTo(model.getMapData().destinationCoords[0], model.getMapData().destinationCoords[1]);
-            gc.lineTo(model.getMapData().destinationCoords[0], model.getMapData().destinationCoords[1]);
-            gc.stroke();
-
             gc.setStroke(Color.DARKSLATEBLUE);
             gc.setLineWidth(0.0002 * widthModifier);
 
@@ -326,10 +317,24 @@ public class MapCanvas extends Canvas {
                 System.out.println("Directions ------");
                 gc.beginPath();
                 float distanceSum = 0;
+                int exitCount = 0;
                 for (int i = 0; i < (edgeList.size() - 1); i++) {
                     Edge before = edgeList.get(i);
                     Edge after = edgeList.get(i + 1);
 
+
+                    if (before.isJunction()) {
+                        int fromID = before.getFrom();
+                        List<Edge> fromVertexEdges = directedGraph.getAdjacentEdges(fromID);
+                        if (fromVertexEdges.size() > 2) {
+                            exitCount++;
+                        }
+                        if (!after.isJunction()) {
+                            exitCount++;
+
+                        }
+
+                    }
                     Direction direction = directedGraph.getDirectionRightLeft(before, after);
                     float distanceBefore = before.getDistance() * 1000;
                     float distanceAfter = after.getDistance() * 1000;

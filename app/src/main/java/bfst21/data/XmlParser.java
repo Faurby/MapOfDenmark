@@ -211,6 +211,8 @@ public class XmlParser {
                                                 if (way != null) {
                                                     way.setOneWay(true);
                                                     way.setOneWayBike(true);
+                                                    way.setJunction(true);
+
                                                 }
                                                 break;
                                             case "motorway":
@@ -325,6 +327,8 @@ public class XmlParser {
                                             if (way != null) {
                                                 way.setOneWay(true);
                                                 way.setOneWayBike(true);
+                                                way.setJunction(true);
+
                                             }
                                         }
                                         break;
