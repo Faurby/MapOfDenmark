@@ -3,6 +3,7 @@ package bfst21.test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import bfst21.models.Model;
+import bfst21.models.Util;
 import bfst21.osm.ElementGroup;
 import bfst21.osm.ElementSize;
 import bfst21.osm.ElementType;
@@ -44,10 +45,7 @@ public class XmlParserTest {
 
     @Test
     public void getCorrectDistanceBetween2Coordinates() {
-        Node n1 = new Node(12.6224313f, 55.6571112f);
-        Node n2 = new Node(12.6238016f, 55.6573865f);
-
-        double distance = n1.distTo(n2);
+        double distance = Util.distTo(12.6224313f, 55.6571112f,12.6238016f, 55.6573865f);
         assertEquals(0.09125, distance, 0.0001);
     }
 }
