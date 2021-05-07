@@ -104,6 +104,9 @@ public class Edge implements Serializable {
     }
 
     public String getName() {
+        if (name == null) {
+            return "UNKNOWN ROAD";
+        }
         return name;
     }
 }
