@@ -48,4 +48,18 @@ public class XmlParserTest {
         double distance = Util.distTo(12.6224313f, 55.6571112f,12.6238016f, 55.6573865f);
         assertEquals(0.09125, distance, 0.0001);
     }
+
+    @Test
+    public void getCorrectDistanceBetween2Coordinates2() {
+        double lon1 = 12.485718754160853;
+        double lat1 = 55.71871866715029;
+        double lon2 = 11.559933323788288;
+        double lat2 = 55.58933736433195;
+
+        lat1 = -lat1 / 0.56f;
+        lat2 = -lat2 / 0.56f;
+
+        double distance = Util.distTo(lon1, lat1, lon2, lat2);
+        assertEquals(59.83386186513035, distance, 0.1);
+    }
 }

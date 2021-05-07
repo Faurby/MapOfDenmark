@@ -216,12 +216,15 @@ public class XmlParser {
                                             case "motorway":
                                             case "motorway_link":
                                                 elementType = ElementType.MOTORWAY;
+                                                way.setMaxSpeed(130);
                                                 break;
                                             case "primary":
                                                 elementType = ElementType.PRIMARY;
+                                                way.setMaxSpeed(80);
                                                 break;
                                             case "residential":
                                                 elementType = ElementType.RESIDENTIAL;
+                                                way.setMaxSpeed(50);
                                                 break;
                                             case "footway":
                                             case "footpath":
@@ -241,11 +244,13 @@ public class XmlParser {
                                                 break;
                                             case "trunk":
                                                 elementType = ElementType.TRUNK;
+                                                way.setMaxSpeed(80);
                                                 break;
                                             case "tertiary":
                                             case "secondary":
                                             case "unclassified":
                                                 elementType = ElementType.TERTIARY;
+                                                way.setMaxSpeed(50);
                                                 break;
                                         }
                                         break;

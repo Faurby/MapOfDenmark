@@ -13,7 +13,7 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
 
     private ElementType elementType;
     private String role;
-    private int maxSpeed = 1;
+    private int maxSpeed = 50;
     private boolean oneWay;
     private boolean oneWayBike;
     private String name;
