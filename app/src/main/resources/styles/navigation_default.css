@@ -1,0 +1,33 @@
+#searchBox {
+    -fx-background-color: #f6f6f6;
+    -fx-border-color: #3E859B;
+    -fx-padding: 10 10 5 10;
+}
+
+.scrollPane {
+    -fx-padding: 0 10 0 10;
+    -fx-background-color: WHITE;
+}
+
+.suggestions {
+    -fx-background-color: WHITE;
+}
+
+#navigationHBox {
+    -fx-padding: 10 0 5 0;
+}
+
+.imageView {
+    -fx-background-color: TRANSPARENT;
+}
+
+.toggle-button {
+    -fx-border-color: LIGHTGREY;
+}
+
+#routeBox {
+    -fx-background-color: #f6f6f6;
+    -fx-border-color: #3E859B;
+    -fx-padding: 10 10 5 10;
+}
+

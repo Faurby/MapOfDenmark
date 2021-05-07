@@ -26,7 +26,7 @@
        fx:controller="bfst21.view.controllers.MainController"
        fx:id="scene"
        onKeyPressed="#onKeyPressed"
-       stylesheets="@../../styles/userNodesStyles.css, @../../styles/loadingStyles.css">
+       stylesheets="@../../styles/userNodes_default.css, @../../styles/loading_default.css">
 
     <StackPane fx:id="stackPane" minHeight="480" minWidth="640">
 
