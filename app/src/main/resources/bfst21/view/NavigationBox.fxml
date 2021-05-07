@@ -48,9 +48,9 @@
 
         <HBox alignment="BASELINE_CENTER" prefWidth="198.0" style="-fx-padding: 10 0 5 0">
 
-            <Button fx:id="navigateButton"
+            <Button fx:id="directionsButton"
                     onAction="#expandSearchView"
-                    text="Navigate"
+                    text="Directions"
                     GridPane.columnIndex="0"
                     GridPane.rowIndex="0"/>
 
