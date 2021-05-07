@@ -274,6 +274,7 @@
                     style="-fx-border-color: #3E859B;"/>
             <ListView fx:id="userNodeListView"
                       visible="false"
+                      maxWidth="${newUserNodeButton.width}"
                       style="-fx-border-color: #3E859B;"/>
         </VBox>
 
