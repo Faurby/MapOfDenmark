@@ -154,10 +154,10 @@ public class DirectedGraph implements Serializable {
         if (!oneWay && !oneWayBike) {
             addEdge(name, toID, fromID, weight, distance, canDrive, canBike, canWalk);
 
-        } else if (!oneWay) {
+        } else if (!oneWay && oneWayBike) {
             addEdge(name, toID, fromID, weight, distance, canDrive, false, canWalk);
 
-        } else if (!oneWayBike) {
+        } else if (!oneWayBike && oneWay) {
             addEdge(name, toID, fromID, weight, distance, false, canBike, canWalk);
         }
     }
