@@ -437,16 +437,19 @@ public class MainController extends BaseController {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
                     "A name is required");
+            userNodeNameTextField.requestFocus();
 
-        } else if (textField.length() > 20) {
+        } else if (textField.length() > 15) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
-                    "Names must be no longer than 20 characters");
+                    "Names must be no longer than 15 characters");
+            userNodeNameTextField.requestFocus();
 
         } else if (userNodesMap.containsKey(textField)) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
                     "Point of Interest names must be unique");
+            userNodeNameTextField.requestFocus();
 
         } else {
             saveUserNode();
@@ -575,15 +578,18 @@ public class MainController extends BaseController {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
                     "A name is required");
+            userNodeNewNameTextField.requestFocus();
 
-        } else if (textField.length() > 20) {
+        } else if (textField.length() > 15) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
-                    "Names must be no longer than 20 characters");
+                    "Names must be no longer than 15 characters");
+            userNodeNewNameTextField.requestFocus();
 
         } else if (userNodesMap.containsKey(textField)) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error", "Point of Interest names must be unique");
+            userNodeNewNameTextField.requestFocus();
 
         } else {
             currentUserNode.setName(userNodeNewNameTextField.getText());
