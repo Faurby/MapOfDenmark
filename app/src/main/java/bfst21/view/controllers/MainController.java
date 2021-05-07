@@ -40,7 +40,7 @@ import java.util.*;
 public class MainController extends BaseController {
 
     @FXML
-    public AnchorPane addressBox;
+    public AnchorPane navigationBox;
     @FXML
     private MapCanvas canvas;
     @FXML
