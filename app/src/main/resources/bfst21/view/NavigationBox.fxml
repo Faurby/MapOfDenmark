@@ -9,170 +9,224 @@
 <?import javafx.scene.text.Text?>
 
 
-<VBox fx:id="navigationBox"
-      xmlns="https://javafx.com/javafx"
-      xmlns:fx="https://javafx.com/fxml"
-      fx:controller="bfst21.view.controllers.NavigationBoxController"
-      minWidth="250"
-      visible="false"
-      managed="false"
-      style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B">
+<AnchorPane xmlns="https://javafx.com/javafx"
+           xmlns:fx="https://javafx.com/fxml"
+           fx:controller="bfst21.view.controllers.NavigationBoxController">
 
-    <padding>
-        <Insets bottom="5"
-                left="10"
-                right="10"
-                top="10"/>
-    </padding>
+    <VBox fx:id="searchBox"
+          minWidth="200"
+          visible="false"
+          managed="false"
+          style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B">
 
-    <Text text="Navigation" style="-fx-font-size: 15 "/>
+        <padding>
+            <Insets bottom="5"
+                    left="10"
+                    right="10"
+                    top="10"/>
+        </padding>
 
-    <GridPane hgap="2">
-
-        <VBox GridPane.columnIndex="1"
-              GridPane.rowIndex="1"
-              GridPane.rowSpan="3"
-              spacing="5">
-
-        <TextArea fx:id="startingPoint"
-                  minHeight="25"
+        <TextArea fx:id="addressArea"
+                  minHeight="20"
                   prefHeight="25"
-                  promptText="From:"
+                  promptText="Type an address..."
                   wrapText="true"
                   onKeyPressed="#typingCheck"/>
 
-        <ScrollPane minWidth="200"
+        <ScrollPane minWidth="250"
                     prefWidth="350"
                     maxHeight="100"
                     minHeight="0"
                     style="-fx-padding: 0 10 0 10 ; -fx-background-color: WHITE"
                     fitToWidth="true">
 
-            <VBox fx:id="startingSuggestions"
+            <VBox fx:id="suggestions"
                   style="-fx-background-color: WHITE"
                   onKeyPressed="#typingCheck">
             </VBox>
         </ScrollPane>
 
-        <TextArea fx:id="destinationPoint"
-                  minHeight="25"
-                  prefHeight="25"
-                  promptText="To:"
-                  wrapText="true"
-                  onKeyPressed="#typingCheck"/>
+        <HBox alignment="BASELINE_CENTER" prefWidth="198.0" style="-fx-padding: 10 0 5 0">
 
-            <ScrollPane minWidth="200"
-                        prefWidth="350"
-                        maxHeight="100"
-                        minHeight="0"
-                        style="-fx-padding: 0 10 0 10 ; -fx-background-color: WHITE"
-                        fitToWidth="true">
+            <Button fx:id="navigateButton"
+                    onAction="#expandSearchView"
+                    text="Navigate"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"/>
 
-                <VBox fx:id="destinationSuggestions"
-                      style="-fx-background-color: WHITE"
-                      onKeyPressed="#typingCheck">
-                </VBox>
-            </ScrollPane>
-        </VBox>
+            <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
 
-        <Button fx:id="switchButton"
-                GridPane.columnIndex="2"
-                GridPane.rowIndex="1"
-                GridPane.rowSpan="3"
-                maxHeight="20"
-                maxWidth="40"
-                onAction="#switchText">
+            <Button fx:id="searchButton"
+                    onAction="#searchSingleAddress"
+                    text="Search"
+                    GridPane.columnIndex="2"
+                    GridPane.rowIndex="0"/>
+        </HBox>
+    </VBox>
 
-            <graphic>
-                <ImageView fitWidth="10.0"
-                           preserveRatio="true"
-                           style="-fx-background-color: TRANSPARENT">
-                    <Image url="/arrowPic.png"/>
-                </ImageView>
-            </graphic>
+    <VBox fx:id="routeBox"
+          minWidth="250"
+          visible="false"
+          managed="false"
+          style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B">
 
-        </Button>
-    </GridPane>
+        <padding>
+            <Insets bottom="5"
+                    left="10"
+                    right="10"
+                    top="10"/>
+        </padding>
 
-    <HBox style="-fx-padding: 10 0 0 0 ; -fx-alignment: CENTER ">
+        <Text text="Navigation" style="-fx-font-size: 15 "/>
 
-        <ToggleButton fx:id="CAR"
-                      minHeight="40"
-                      minWidth="35"
-                      prefWidth="120"
-                      onAction="#transportationButtonPushed"
-                      selected="true"
-                      style="-fx-border-color: LIGHTGREY">
+        <GridPane hgap="2">
 
-            <graphic>
-                <ImageView fitHeight="32.0"
-                           preserveRatio="true"
-                           style="-fx-background-color: TRANSPARENT">
-                    <Image url="/carPic.png"/>
-                </ImageView>
-            </graphic>
+            <VBox GridPane.columnIndex="1"
+                  GridPane.rowIndex="1"
+                  GridPane.rowSpan="3"
+                  spacing="5">
 
-            <toggleGroup>
-                <ToggleGroup fx:id="group"/>
-            </toggleGroup>
+                <TextArea fx:id="startingPoint"
+                          minHeight="25"
+                          prefHeight="25"
+                          promptText="From:"
+                          wrapText="true"
+                          onKeyPressed="#typingCheck"/>
 
-        </ToggleButton>
+                <ScrollPane minWidth="200"
+                            prefWidth="350"
+                            maxHeight="100"
+                            minHeight="0"
+                            style="-fx-padding: 0 10 0 10 ; -fx-background-color: WHITE"
+                            fitToWidth="true">
 
-        <ToggleButton fx:id="BIKE"
-                      minHeight="40"
-                      minWidth="35"
-                      prefWidth="120"
-                      onAction="#transportationButtonPushed"
-                      style="-fx-border-color: LIGHTGREY">
+                    <VBox fx:id="startingSuggestions"
+                          style="-fx-background-color: WHITE"
+                          onKeyPressed="#typingCheck">
+                    </VBox>
+                </ScrollPane>
 
-            <graphic>
-                <ImageView fitHeight="32.0"
-                           preserveRatio="true"
-                           style="-fx-background-color: TRANSPARENT">
-                    <Image url="/bikePic.png"/>
-                </ImageView>
-            </graphic>
+                <TextArea fx:id="destinationPoint"
+                          minHeight="25"
+                          prefHeight="25"
+                          promptText="To:"
+                          wrapText="true"
+                          onKeyPressed="#typingCheck"/>
 
-            <toggleGroup>
-                <fx:reference source="group"/>
-            </toggleGroup>
+                <ScrollPane minWidth="200"
+                            prefWidth="350"
+                            maxHeight="100"
+                            minHeight="0"
+                            style="-fx-padding: 0 10 0 10 ; -fx-background-color: WHITE"
+                            fitToWidth="true">
 
-        </ToggleButton>
+                    <VBox fx:id="destinationSuggestions"
+                          style="-fx-background-color: WHITE"
+                          onKeyPressed="#typingCheck">
+                    </VBox>
+                </ScrollPane>
+            </VBox>
 
-        <ToggleButton fx:id="WALK"
-                      minHeight="40"
-                      minWidth="35"
-                      prefWidth="120"
-                      onAction="#transportationButtonPushed"
-                      style="-fx-border-color: LIGHTGREY">
+            <Button fx:id="switchButton"
+                    GridPane.columnIndex="2"
+                    GridPane.rowIndex="1"
+                    GridPane.rowSpan="3"
+                    maxHeight="20"
+                    maxWidth="40"
+                    onAction="#switchText">
 
-            <graphic>
-                <ImageView fitHeight="32.0"
-                           preserveRatio="true"
-                           style="-fx-background-color: TRANSPARENT">
-                    <Image url="/walkPic.png"/>
-                </ImageView>
-            </graphic>
+                <graphic>
+                    <ImageView fitWidth="10.0"
+                               preserveRatio="true"
+                               style="-fx-background-color: TRANSPARENT">
+                        <Image url="/arrowPic.png"/>
+                    </ImageView>
+                </graphic>
 
-            <toggleGroup>
-                <fx:reference source="group"/>
-            </toggleGroup>
+            </Button>
+        </GridPane>
 
-        </ToggleButton>
-    </HBox>
+        <HBox style="-fx-padding: 10 0 0 0 ; -fx-alignment: CENTER ">
 
-    <HBox alignment="BASELINE_CENTER" style="-fx-padding: 10 0 5 0">
+            <ToggleButton fx:id="CAR"
+                          minHeight="40"
+                          minWidth="35"
+                          prefWidth="120"
+                          onAction="#transportationButtonPushed"
+                          selected="true"
+                          style="-fx-border-color: LIGHTGREY">
 
-        <Button onAction="#minimizeSearchView"
-                text="Minimize" GridPane.columnIndex="0"
-                GridPane.rowIndex="0"/>
+                <graphic>
+                    <ImageView fitHeight="32.0"
+                               preserveRatio="true"
+                               style="-fx-background-color: TRANSPARENT">
+                        <Image url="/carPic.png"/>
+                    </ImageView>
+                </graphic>
 
-        <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
+                <toggleGroup>
+                    <ToggleGroup fx:id="group"/>
+                </toggleGroup>
 
-        <Button fx:id="searchButtonExpanded"
-                onAction="#searchNavigationAddresses"
-                text="Search"
-                GridPane.columnIndex="2"
-                GridPane.rowIndex="0"/>
-    </HBox>
-</VBox>
+            </ToggleButton>
+
+            <ToggleButton fx:id="BIKE"
+                          minHeight="40"
+                          minWidth="35"
+                          prefWidth="120"
+                          onAction="#transportationButtonPushed"
+                          style="-fx-border-color: LIGHTGREY">
+
+                <graphic>
+                    <ImageView fitHeight="32.0"
+                               preserveRatio="true"
+                               style="-fx-background-color: TRANSPARENT">
+                        <Image url="/bikePic.png"/>
+                    </ImageView>
+                </graphic>
+
+                <toggleGroup>
+                    <fx:reference source="group"/>
+                </toggleGroup>
+
+            </ToggleButton>
+
+            <ToggleButton fx:id="WALK"
+                          minHeight="40"
+                          minWidth="35"
+                          prefWidth="120"
+                          onAction="#transportationButtonPushed"
+                          style="-fx-border-color: LIGHTGREY">
+
+                <graphic>
+                    <ImageView fitHeight="32.0"
+                               preserveRatio="true"
+                               style="-fx-background-color: TRANSPARENT">
+                        <Image url="/walkPic.png"/>
+                    </ImageView>
+                </graphic>
+
+                <toggleGroup>
+                    <fx:reference source="group"/>
+                </toggleGroup>
+
+            </ToggleButton>
+        </HBox>
+
+        <HBox alignment="BASELINE_CENTER" style="-fx-padding: 10 0 5 0">
+
+            <Button onAction="#minimizeSearchView"
+                    text="Minimize" GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"/>
+
+            <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
+
+            <Button fx:id="searchButtonExpanded"
+                    onAction="#searchNavigationAddresses"
+                    text="Search"
+                    GridPane.columnIndex="2"
+                    GridPane.rowIndex="0"/>
+        </HBox>
+    </VBox>
+
+</AnchorPane>
