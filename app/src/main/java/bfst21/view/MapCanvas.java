@@ -11,12 +11,10 @@ import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
 import bfst21.models.Model;
 import bfst21.tree.KdTree;
-import bfst21.view.controllers.MainController;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.StrokeLineCap;
@@ -52,6 +50,8 @@ public class MapCanvas extends Canvas {
     private Affine trans = new Affine();
 
     private float[] nearestNeighborCoords;
+
+    private List<String> currentDirections = new ArrayList<>();
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -309,7 +309,7 @@ public class MapCanvas extends Canvas {
 
             if (edgeList.size() > 0) {
 
-                List<String> directions = new ArrayList<>();
+                currentDirections = new ArrayList<>();
 
                 System.out.println("Directions ------");
                 gc.beginPath();
@@ -327,13 +327,13 @@ public class MapCanvas extends Canvas {
                     before.draw(directedGraph, gc);
 
                     if (direction != Direction.STRAIGHT) {
-                        directions.add("Drive " + (int) distanceSum + "m down " + before.getName());
-                        directions.add("Then " + direction + " down " + after.getName());
+                        currentDirections.add("Drive " + (int) distanceSum + "m down " + before.getName());
+                        currentDirections.add("Then " + direction + " down " + after.getName());
                         distanceSum = 0;
                     }
                     if (i == (edgeList.size() - 2)) {
                         after.draw(directedGraph, gc);
-                        directions.add("Drive " + (int) (distanceSum + distanceAfter) + "m down " + after.getName());
+                        currentDirections.add("Drive " + (int) (distanceSum + distanceAfter) + "m down " + after.getName());
                     }
                 }
                 gc.stroke();
@@ -357,7 +357,7 @@ public class MapCanvas extends Canvas {
                 gc.lineTo(destinationCoords[0], destinationCoords[1]);
                 gc.stroke();
 
-                for (String dir : directions) {
+                for (String dir : currentDirections) {
                     System.out.println(dir);
                 }
             }
@@ -661,5 +661,9 @@ public class MapCanvas extends Canvas {
 
     public double getZoomLevelMax() {
         return zoomLevelMax;
+    }
+
+    public List<String> getCurrentDirections() {
+        return currentDirections;
     }
 }
