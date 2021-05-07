@@ -209,6 +209,7 @@ public class XmlParser {
                                             case "mini_roundabout":
                                                 if (way != null) {
                                                     way.setOneWay(true);
+                                                    way.setOneWayBike(true);
                                                 }
                                                 break;
                                             case "motorway":
@@ -317,6 +318,7 @@ public class XmlParser {
                                         if (value.equals("roundabout")) {
                                             if (way != null) {
                                                 way.setOneWay(true);
+                                                way.setOneWayBike(true);
                                             }
                                         }
                                         break;
