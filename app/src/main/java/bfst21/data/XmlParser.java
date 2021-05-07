@@ -212,7 +212,6 @@ public class XmlParser {
                                                     way.setOneWay(true);
                                                     way.setOneWayBike(true);
                                                     way.setJunction(true);
-
                                                 }
                                                 break;
                                             case "motorway":

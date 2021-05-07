@@ -47,7 +47,7 @@ public class NavigationBoxController extends SubController {
     @FXML
     private TextArea addressArea;
     @FXML
-    private Button navigateButton;
+    private Button directionsButton;
     @FXML
     private Button searchButton;
     @FXML
@@ -131,7 +131,7 @@ public class NavigationBoxController extends SubController {
             if (keyEvent.getCode() == KeyCode.TAB) {
                 if (keyEvent.getSource().toString().contains("addressArea")) {
                     addressArea.setText(addressArea.getText().trim());
-                    navigateButton.requestFocus();
+                    directionsButton.requestFocus();
                 }
             } else if (keyEvent.getCode() == KeyCode.ENTER) {
                 addressArea.setText(addressArea.getText().trim());

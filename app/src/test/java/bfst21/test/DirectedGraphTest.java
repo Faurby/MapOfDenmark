@@ -7,11 +7,42 @@ import bfst21.pathfinding.DirectedGraph;
 import bfst21.pathfinding.Edge;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class DirectedGraphTest {
+
+    @Test
+    public void directedGraphTest() {
+        DirectedGraph directedGraph = new DirectedGraph();
+
+        float[] coords0 = new float[]{1, 2};
+        float[] coords1 = new float[]{2, 1};
+        float[] coords2 = new float[]{2, 2};
+
+        directedGraph.createVertex(coords0);
+        directedGraph.createVertex(coords1);
+        directedGraph.createVertex(coords2);
+
+        directedGraph.addEdge(null, coords0, coords1, 10, false, false, false, true, true, true);
+        directedGraph.addEdge(null, coords1, coords2, 10, false, false, false, true, true, true);
+
+        assertEquals(coords0, directedGraph.getVertexCoords(0));
+        assertEquals(coords1, directedGraph.getVertexCoords(1));
+        assertEquals(coords2, directedGraph.getVertexCoords(2));
+
+        assertEquals(0, directedGraph.getVertexID(coords0));
+        assertEquals(1, directedGraph.getVertexID(coords1));
+        assertEquals(2, directedGraph.getVertexID(coords2));
+
+        assertEquals(3, directedGraph.getVertexAmount());
+
+        assertEquals(1, directedGraph.getAdjacentEdges(0).size());
+        assertEquals(2, directedGraph.getAdjacentEdges(1).size());
+        assertEquals(1, directedGraph.getAdjacentEdges(2).size());
+
+        assertEquals(3, directedGraph.getVertices().length);
+    }
 
     @Test
     public void dijkstraHasPathToAllVertices() {
