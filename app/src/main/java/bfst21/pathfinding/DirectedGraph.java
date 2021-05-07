@@ -150,10 +150,10 @@ public class DirectedGraph implements Serializable {
         float distance = (float) Util.distTo(fromCoords, toCoords);
         float weight = (distance * 60.0f / maxSpeed);
 
-        addEdge(name, fromID, toID, weight, distance, canDrive, canBike, canWalk);
+        addEdge(name, fromID, toID, weight, distance, junction, canDrive, canBike, canWalk);
 
         if (!oneWay && !oneWayBike) {
-            addEdge(name, toID, fromID, weight, distance, canDrive, canBike, canWalk);
+            addEdge(name, toID, fromID, weight, distance, junction, canDrive, canBike, canWalk);
 
         } else if (!oneWay && oneWayBike) {
             addEdge(name, toID, fromID, weight, distance, junction, canDrive, false, canWalk);

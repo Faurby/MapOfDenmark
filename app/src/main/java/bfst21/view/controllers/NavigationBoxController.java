@@ -243,7 +243,7 @@ public class NavigationBoxController extends SubController {
 
                 mainController.getCanvas().getModel().getMapData().originCoords = nearOriginCoords;
                 mainController.getCanvas().getModel().getMapData().destinationCoords = nearDestinationCoords;
-                mainController.getCanvas().getModel().getMapData().runDijkstra();
+                mainController.getCanvas().getModel().getMapData().runDijkstraTask();
             }
         }
     }
