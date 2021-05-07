@@ -2,6 +2,7 @@ package bfst21.osm;
 
 import bfst21.models.DisplayOption;
 import bfst21.models.DisplayOptions;
+import bfst21.models.TransportOption;
 import javafx.scene.paint.Color;
 
 
@@ -204,42 +205,40 @@ public enum ElementType {
                 this == ElementType.WATER;
     }
 
-    public boolean canNavigate() {
-        return this == ElementType.PRIMARY ||
-                this == ElementType.MOTORWAY ||
-                this == ElementType.TRUNK ||
-                this == ElementType.TERTIARY ||
-                this == ElementType.CYCLEWAY ||
-                this == ElementType.RESIDENTIAL ||
-                this == ElementType.ROAD ||
-                this == ElementType.FOOTWAY ||
-                this == ElementType.FERRY;
-    }
+    public boolean canNavigate(TransportOption transportOption) {
+        if (transportOption == TransportOption.CAR) {
+            return this == ElementType.PRIMARY ||
+                    this == ElementType.MOTORWAY ||
+                    this == ElementType.RESIDENTIAL ||
+                    this == ElementType.TERTIARY ||
+                    this == ElementType.TRUNK ||
+                    this == ElementType.FERRY;
 
-    public boolean canDrive() {
-        return this == ElementType.PRIMARY ||
-                this == ElementType.MOTORWAY ||
-                this == ElementType.RESIDENTIAL ||
-                this == ElementType.TERTIARY ||
-                this == ElementType.TRUNK ||
-                this == ElementType.FERRY;
-    }
+        } else if (transportOption == TransportOption.BIKE) {
+            return this == ElementType.TERTIARY ||
+                    this == ElementType.CYCLEWAY ||
+                    this == ElementType.ROAD ||
+                    this == ElementType.RESIDENTIAL ||
+                    this == ElementType.FERRY;
 
-    public boolean canBike() {
-        return this == ElementType.TERTIARY ||
-                this == ElementType.CYCLEWAY ||
-                this == ElementType.ROAD ||
-                this == ElementType.RESIDENTIAL ||
-                this == ElementType.FERRY;
-    }
-
-    public boolean canWalk() {
-        return this == ElementType.TERTIARY ||
-                this == ElementType.CYCLEWAY ||
-                this == ElementType.RESIDENTIAL ||
-                this == ElementType.ROAD ||
-                this == ElementType.FOOTWAY ||
-                this == ElementType.FERRY;
+        } else if (transportOption == TransportOption.WALK) {
+            return this == ElementType.TERTIARY ||
+                    this == ElementType.CYCLEWAY ||
+                    this == ElementType.RESIDENTIAL ||
+                    this == ElementType.ROAD ||
+                    this == ElementType.FOOTWAY ||
+                    this == ElementType.FERRY;
+        } else {
+            return this == ElementType.PRIMARY ||
+                    this == ElementType.MOTORWAY ||
+                    this == ElementType.TRUNK ||
+                    this == ElementType.TERTIARY ||
+                    this == ElementType.CYCLEWAY ||
+                    this == ElementType.RESIDENTIAL ||
+                    this == ElementType.ROAD ||
+                    this == ElementType.FOOTWAY ||
+                    this == ElementType.FERRY;
+        }
     }
 
     public boolean isDisplayOptionEnabled() {

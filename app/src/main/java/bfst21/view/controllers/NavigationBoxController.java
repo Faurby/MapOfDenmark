@@ -235,8 +235,11 @@ public class NavigationBoxController extends SubController {
                 mainController.getCanvas().changeView(avgX, avgY);
                 mainController.changeZoomToShowPoints(originCoords, destinationCoords);
 
-                float[] nearOriginCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(originCoords);
-                float[] nearDestinationCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(destinationCoords);
+                TransportOptions transportOptions = TransportOptions.getInstance();
+                TransportOption currentTransportOption = transportOptions.getCurrentlyEnabled();
+
+                float[] nearOriginCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(originCoords, currentTransportOption);
+                float[] nearDestinationCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(destinationCoords, currentTransportOption);
 
                 mainController.getCanvas().getModel().getMapData().originCoords = nearOriginCoords;
                 mainController.getCanvas().getModel().getMapData().destinationCoords = nearDestinationCoords;

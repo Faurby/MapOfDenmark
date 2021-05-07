@@ -288,9 +288,12 @@ public class MainController extends BaseController {
         }
 
         if (mouseEvent.isShiftDown() && mouseEvent.isPrimaryButtonDown()) {
+            TransportOptions transportOptions = TransportOptions.getInstance();
+            TransportOption currentTransportOption = transportOptions.getCurrentlyEnabled();
+
             Point2D point = canvas.mouseToModelCoords(lastMouse);
             float[] queryCoords = new float[]{(float) point.getX(), (float) point.getY()};
-            float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords);
+            float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords, currentTransportOption);
 
             if (resetDijkstra) {
                 resetDijkstra = false;
@@ -688,7 +691,7 @@ public class MainController extends BaseController {
             protected Void call() {
                 Point2D point = canvas.mouseToModelCoords(lastMouse);
                 float[] queryCoords = new float[]{(float) point.getX(), (float) point.getY()};
-                float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords);
+                float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords, TransportOption.ALL);
 
                 DirectedGraph graph = canvas.getModel().getMapData().getDirectedGraph();
 
