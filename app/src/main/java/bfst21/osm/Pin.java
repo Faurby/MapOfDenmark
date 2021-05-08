@@ -10,7 +10,7 @@ public enum Pin {
 
     ORIGIN("greyPin.png"),
     DESTINATION("redPin.png"),
-    USER_NODE("redPin.png");
+    USER_NODE("bluePin.png");
 
     private boolean visible = false;
     private float[] coords;
@@ -36,5 +36,13 @@ public enum Pin {
 
     public void setCoords(float x, float y) {
         this.coords = new float[]{x, y};
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public float[] getCoords() {
+        return coords;
     }
 }

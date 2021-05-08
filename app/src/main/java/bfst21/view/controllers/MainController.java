@@ -508,6 +508,16 @@ public class MainController extends BaseController {
     public void userNodeDeleteClicked() {
         if (currentUserNode != null) {
 
+            //Set Pin.USER_NODE to invisible if the coords are the same as the UserNode coords.
+            if (Pin.USER_NODE.isVisible()) {
+                float[] pinCoords = Pin.USER_NODE.getCoords();
+                float[] userNodeCoords = currentUserNode.getCoords();
+
+                if (pinCoords[0] == userNodeCoords[0] && pinCoords[1] == userNodeCoords[1]) {
+                    Pin.USER_NODE.setVisible(false);
+                }
+            }
+
             model.getMapData().getUserNodes().remove(currentUserNode);
             model.getMapData().updateUserNodesMap();
             currentUserNode = null;
