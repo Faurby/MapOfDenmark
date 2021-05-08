@@ -6,6 +6,8 @@ package bfst21.osm;
  * <p>
  * Each MapText has a specific MapTextType which determines
  * what zoom level is required to display the text.
+ * <p>
+ * Extends BoundingBoxElement so it can be placed in a KD-tree.
  */
 public class MapText extends BoundingBoxElement {
 

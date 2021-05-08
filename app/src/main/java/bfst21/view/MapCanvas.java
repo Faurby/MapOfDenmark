@@ -248,7 +248,7 @@ public class MapCanvas extends Canvas {
      */
     private void drawUserNodes() {
         gc.setStroke(Color.BLUE);
-        gc.setLineWidth(10D * (1.0D / Math.sqrt(trans.determinant())));
+        gc.setLineWidth(10.0D * (1.0D / Math.sqrt(trans.determinant())));
 
         for (UserNode userNode : model.getMapData().getUserNodes()) {
             userNode.draw(gc, 0.0D);
@@ -303,7 +303,7 @@ public class MapCanvas extends Canvas {
             gc.stroke();
 
             gc.setStroke(Color.RED);
-            gc.setLineWidth(0.0004D * widthModifier);
+            gc.setLineWidth(3.0D * (1.0D / Math.sqrt(trans.determinant())));
 
             int destinationID = directedGraph.getVertexID(destinationCoords);
             List<Edge> edgeList = model.getMapData().getDijkstra().pathTo(destinationID);

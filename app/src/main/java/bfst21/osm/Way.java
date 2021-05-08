@@ -7,17 +7,23 @@ import bfst21.view.Drawable;
 import javafx.scene.canvas.GraphicsContext;
 
 
+/**
+ * Way is an ordered list of coordinates that
+ * represents a line such as a road, river, wall, etc...
+ * <p>
+ * Extends BoundingBoxElement so it can be placed in a KD-tree.
+ */
 public class Way extends BoundingBoxElement implements Drawable, Serializable {
 
     private static final long serialVersionUID = 3139576893143362100L;
 
     private ElementType elementType;
     private String role;
-    private int maxSpeed = 50;
+    private String name;
     private boolean junction;
     private boolean oneWay;
     private boolean oneWayBike;
-    private String name;
+    private int maxSpeed = 50;
 
     /**
      * Calculate and return the ElementSize of Way by getting the area of its bounding box.

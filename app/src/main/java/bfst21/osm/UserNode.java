@@ -6,6 +6,10 @@ import javafx.scene.canvas.GraphicsContext;
 import java.io.Serializable;
 
 
+/**
+ * UserNode is a point of interest selected by the user.
+ * Every UserNode has a name, description and coordinates.
+ */
 public class UserNode extends Node implements Drawable, Serializable {
 
     private static final long serialVersionUID = -5801814520475467424L;
