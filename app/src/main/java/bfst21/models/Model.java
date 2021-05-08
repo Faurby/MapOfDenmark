@@ -63,7 +63,7 @@ public class Model {
                 mapData = binaryFileManager.loadOBJ(fileName, jarFile);
             }
         } else {
-            System.out.println("File does not exist: "+fileName);
+            System.out.println("File does not exist: " + fileName);
             //TODO: Present an error to the user if the file doesn't exist.
         }
         totalTime += System.nanoTime();

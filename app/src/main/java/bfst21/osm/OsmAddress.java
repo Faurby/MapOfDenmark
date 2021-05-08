@@ -76,5 +76,7 @@ public class OsmAddress implements Serializable {
         return street + " " + houseNumber + ", " + city + " " + postcode;
     }
 
-    public String omitHouseNumberToString() {return street + ", " + city + " " + postcode; }
+    public String omitHouseNumberToString() {
+        return street + ", " + city + " " + postcode;
+    }
 }

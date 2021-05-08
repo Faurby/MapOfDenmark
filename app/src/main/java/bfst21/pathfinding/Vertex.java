@@ -17,7 +17,7 @@ public class Vertex implements Serializable {
         this.x = x;
         this.y = y;
     }
-    
+
     public void addEdge(int id) {
         int length = edges.length;
 

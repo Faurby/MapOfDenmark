@@ -43,6 +43,7 @@ public class DisplayOptions {
 
     /**
      * Creates an instance of DisplayOptions if it does not exist yet
+     *
      * @return singleton instance of DisplayOptions
      */
     public static DisplayOptions getInstance() {

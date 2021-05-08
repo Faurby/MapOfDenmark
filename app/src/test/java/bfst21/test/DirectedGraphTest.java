@@ -27,9 +27,12 @@ public class DirectedGraphTest {
         directedGraph.addEdge(null, coords0, coords1, 10, false, false, false, true, true, true);
         directedGraph.addEdge(null, coords1, coords2, 10, false, false, false, true, true, true);
 
-        assertEquals(coords0, directedGraph.getVertexCoords(0));
-        assertEquals(coords1, directedGraph.getVertexCoords(1));
-        assertEquals(coords2, directedGraph.getVertexCoords(2));
+        assertEquals(coords0[0], directedGraph.getVertexCoords(0)[0]);
+        assertEquals(coords1[0], directedGraph.getVertexCoords(1)[0]);
+        assertEquals(coords2[0], directedGraph.getVertexCoords(2)[0]);
+        assertEquals(coords0[1], directedGraph.getVertexCoords(0)[1]);
+        assertEquals(coords1[1], directedGraph.getVertexCoords(1)[1]);
+        assertEquals(coords2[1], directedGraph.getVertexCoords(2)[1]);
 
         assertEquals(0, directedGraph.getVertexID(coords0));
         assertEquals(1, directedGraph.getVertexID(coords1));
@@ -37,11 +40,11 @@ public class DirectedGraphTest {
 
         assertEquals(3, directedGraph.getVertexAmount());
 
-        assertEquals(1, directedGraph.getAdjacentEdges(0).size());
-        assertEquals(2, directedGraph.getAdjacentEdges(1).size());
-        assertEquals(1, directedGraph.getAdjacentEdges(2).size());
+        assertEquals(2, directedGraph.getAdjacentEdges(0).size());
+        assertEquals(4, directedGraph.getAdjacentEdges(1).size());
+        assertEquals(2, directedGraph.getAdjacentEdges(2).size());
 
-        assertEquals(3, directedGraph.getVertices().length);
+        assertEquals(4, directedGraph.getVertices().length);
     }
 
     @Test

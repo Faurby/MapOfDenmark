@@ -343,7 +343,7 @@ public class MapCanvas extends Canvas {
 
                         before.draw(directedGraph, gc);
 
-                        String dir = direction.toString().toLowerCase().replace("_"," ");
+                        String dir = direction.toString().toLowerCase().replace("_", " ");
 
                         if (direction != Direction.STRAIGHT) {
                             currentDirections.add("Drive " + (int) distanceSum + "m down " + before.getName());

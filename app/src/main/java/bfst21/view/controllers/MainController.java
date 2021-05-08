@@ -125,7 +125,7 @@ public class MainController extends BaseController {
     public void changeZoomToShowPoints(float[] startCoords, float[] destinationCoords) {
         float dx = Math.abs(startCoords[0] - destinationCoords[0]);
         float dy = Math.abs(startCoords[1] - destinationCoords[1]);
-        double distPoints = Math.sqrt((dx*dx)+(dy*dy));
+        double distPoints = Math.sqrt((dx * dx) + (dy * dy));
 
         double screenHeight = getCanvas().getScreenBoundingBox(false).getMinY() - getCanvas().getScreenBoundingBox(false).getMaxY();
         double zf = Math.abs(screenHeight) / (distPoints * 1.8);
@@ -491,11 +491,11 @@ public class MainController extends BaseController {
         userNodeListView.setItems(tempList);
         userNodeListView.setVisible(!userNodeListItems.isEmpty());
 
-        if(userNodeListItems.size() == 1) {
+        if (userNodeListItems.size() == 1) {
             userNodeListView.setMaxHeight(27);
             userNodeListView.setMinHeight(27);
 
-        } else if(userNodeListItems.size() < 4) {
+        } else if (userNodeListItems.size() < 4) {
             userNodeListView.setMaxHeight(userNodeListItems.size() * 25);
             userNodeListView.setMinHeight(userNodeListItems.size() * 25);
         } else {

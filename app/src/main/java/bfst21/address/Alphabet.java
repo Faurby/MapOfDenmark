@@ -3,7 +3,7 @@ package bfst21.address;
 
 /**
  * Alphabet class used to improve memory usage for our address TST.
- *
+ * <p>
  * This code was written by Philip Flyvholm, all credit goes to him.
  */
 public enum Alphabet {
