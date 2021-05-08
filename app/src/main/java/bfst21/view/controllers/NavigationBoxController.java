@@ -68,7 +68,7 @@ public class NavigationBoxController extends SubController {
 
     private boolean isNavigationBoxExpanded = false;
 
-    private void updateAddresTries() {
+    private void updateAddressTries() {
         MapCanvas mapCanvas = mainController.getCanvas();
         Model model = mapCanvas.getModel();
         MapData mapData = model.getMapData();
@@ -311,7 +311,7 @@ public class NavigationBoxController extends SubController {
         routeBox.setMaxWidth(stage.getWidth() * 0.25D);
     }
 
-    protected void displayAddressSuggestions(VBox suggestions, TextArea textArea, boolean extended) {
+    public void displayAddressSuggestions(VBox suggestions, TextArea textArea, boolean extended) {
         int count = 0;
         suggestions.getChildren().clear();
 
@@ -338,7 +338,7 @@ public class NavigationBoxController extends SubController {
         }
     }
 
-    protected void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended) {if (addressSuggestionTask != null) {
+    public void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended) {if (addressSuggestionTask != null) {
             if (addressSuggestionTask.isRunning()) {
                 addressSuggestionTask.cancel();
             }
@@ -355,7 +355,7 @@ public class NavigationBoxController extends SubController {
                     shownSuggestionsOrigin = new ArrayList<>();
                     localAllSuggestions = allSuggestionsOrigin;
                 }
-                updateAddresTries();
+                updateAddressTries();
 
                 String input = textArea.getText();
                 String addressInput = input.replace(" ", "").toLowerCase();
