@@ -20,9 +20,12 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 /**
  * XmlParser is used to parse the XML data given by OpenStreetMaps.
- * Nodes are parsed an added to the relevant Ways or Relations as a float array of coordinates.
+ * Nodes are parsed and added to Ways or Relations as a float array of coordinates.
+ * Ways may have additional tags such as oneway, junction, maxspeed which is parsed.
  * <p>
  * An ElementType can be found by looking at the tags of a Way or Relation.
+ * <p>
+ * Nodes and Relations may contain a name and place tag which is used to create MapTexts.
  * <p>
  * An OsmAddress is created by looking at the address tags of a Node.
  * It is then placed in a ternary search tries for address searching.

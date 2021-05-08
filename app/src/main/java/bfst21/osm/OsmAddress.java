@@ -4,6 +4,13 @@ package bfst21.osm;
 import java.io.Serializable;
 
 
+/**
+ * OsmAddress is an address created by parsing the given OSM data.
+ * Every OsmAddress has a Node which determines the location of the address.
+ * <p>
+ * OsmAddress is placed as a node in a ternary search trie
+ * which can be used to give relevant address suggestions.
+ */
 public class OsmAddress implements Serializable {
 
     private static final long serialVersionUID = -377246689553287254L;

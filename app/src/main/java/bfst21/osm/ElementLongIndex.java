@@ -23,7 +23,12 @@ public class ElementLongIndex<T extends Element> {
         sorted = false;
     }
 
-    public T get(long ref) {
+    /**
+     * @return Element with the given refID.
+     * Sorts the list of elements if necessary.
+     * Uses binary search to find the Element with the correct refID.
+     */
+    public T get(long refID) {
         if (!sorted) {
             elements.sort(Comparator.comparingLong(T::getID));
             sorted = true;
@@ -32,13 +37,13 @@ public class ElementLongIndex<T extends Element> {
         int hi = elements.size(); // nodes.get(hi).getID() > ref
         while (lo + 1 < hi) {
             int mi = (lo + hi) / 2;
-            if (elements.get(mi).getID() <= ref) {
+            if (elements.get(mi).getID() <= refID) {
                 lo = mi;
             } else {
                 hi = mi;
             }
         }
         T element = elements.get(lo);
-        return element.getID() == ref ? element : null;
+        return element.getID() == refID ? element : null;
     }
 }

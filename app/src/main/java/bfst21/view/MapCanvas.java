@@ -200,16 +200,16 @@ public class MapCanvas extends Canvas {
 
                 gc.setFill(getTextColor());
                 gc.setTextAlign(TextAlignment.CENTER);
-                String font = "Calibri";
 
                 for (MapText mapText : model.getMapData().getMapTexts()) {
-
                     if (mapText.canDraw(zoomLevel)) {
-                        if (zoomLevel <= 200) {
-                            gc.setFont(new Font(font, mapText.getMapTextType().getStandardMultiplier() / 220));
-                        } else {
-                            gc.setFont(new Font(font, mapText.getMapTextType().getStandardMultiplier() / zoomLevel));
+
+                        double size = mapText.getMapTextType().getFontSizeMultiplier() / zoomLevel;
+                        if (zoomLevel <= 200D) {
+                            size = mapText.getMapTextType().getFontSizeMultiplier() / 220D;
                         }
+
+                        gc.setFont(new Font("Calibri", size));
                         gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
                     }
                 }

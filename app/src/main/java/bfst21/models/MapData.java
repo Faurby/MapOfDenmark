@@ -349,7 +349,7 @@ public class MapData {
      * if the specific ElementGroup is enabled at the given zoomLevel.
      */
     public void kdTreeRangeSearch(BoundingBox boundingBox, double zoomLevel) {
-        //Search way kd-trees
+        //Search Way kd-trees
         for (ElementGroup elementGroup : ElementGroup.values()) {
             if (elementGroup.doShowElement(zoomLevel)) {
                 if (kdTreeMap.containsKey(elementGroup)) {
@@ -358,7 +358,7 @@ public class MapData {
                 }
             }
         }
-        //Search relation kd-tree and maptext kd-tree
+        //Search Relation kd-tree and MapText kd-tree
         kdTreeRelationSearchList = kdTreeRelations.preRangeSearch(boundingBox);
         kdTreeMapTextSearchList = kdTreeMapTexts.preRangeSearch(boundingBox);
     }

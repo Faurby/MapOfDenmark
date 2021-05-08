@@ -1,6 +1,12 @@
 package bfst21.osm;
 
 
+/**
+ * MapText is used to display text on the map such as cities, towns, villages, etc...
+ * <p>
+ * Each MapText has a specific MapTextType which determines
+ * what zoom level is required to display the text.
+ */
 public class MapText extends BoundingBoxElement {
 
     private static final long serialVersionUID = -2287560037258388900L;
@@ -38,7 +44,6 @@ public class MapText extends BoundingBoxElement {
     }
 
     public boolean canDraw(double zoomLevel) {
-        return mapTextType.zoomLevelRequired <= zoomLevel;
+        return mapTextType.getZoomLevelRequired() <= zoomLevel;
     }
-
 }

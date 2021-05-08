@@ -6,6 +6,9 @@ import javafx.scene.image.Image;
 import java.util.Objects;
 
 
+/**
+ * Pin is used to draw an image at a specific location.
+ */
 public enum Pin {
 
     ORIGIN("greyPin.png"),

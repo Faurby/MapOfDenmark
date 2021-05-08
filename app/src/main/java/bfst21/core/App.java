@@ -11,12 +11,9 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         String defaultFileName = "amager.obj";
-        boolean jarFile = false;
 
-        String path = getClass().getResource("App.class").toString();
-        if (path.contains(".jar")) {
-            jarFile = true;
-        }
+        boolean jarFile = getClass().getResource("App.class").toString().contains(".jar");
+
         if (getParameters().getRaw().size() > 0) {
             defaultFileName = getParameters().getRaw().get(0);
         }

@@ -24,6 +24,12 @@ public class ElementGroup implements Serializable {
         this.elementSize = elementSize;
     }
 
+    /**
+     * @return list of all available ElementGroups.
+     * If an ElementType is drawn using the fill method, an ElementGroup
+     * will be created for every ElementSize with the same ElementType.
+     * Otherwise ElementSize will be set to ElementSize.DEFAULT.
+     */
     public static List<ElementGroup> values() {
         if (elementGroups == null) {
             elementGroups = new ArrayList<>();
@@ -43,6 +49,9 @@ public class ElementGroup implements Serializable {
         return elementGroups;
     }
 
+    /**
+     * @return ElementGroup with the specific ElementType and ElementSize.
+     */
     public static ElementGroup getElementGroup(ElementType elementType, ElementSize elementSize) {
         for (ElementGroup elementGroup : values()) {
             if (elementGroup.getType() == elementType) {

@@ -31,8 +31,8 @@ public class UserNode extends Node implements Drawable, Serializable {
         this.name = name;
     }
 
-    public void setDescription(String newDesc) {
-        this.description = newDesc;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

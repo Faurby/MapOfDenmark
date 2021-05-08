@@ -13,6 +13,11 @@ import java.util.Map;
 /**
  * Relation is a group of elements.
  * It may contain coordinates, Ways and/or other Relations.
+ * <p>
+ * Every Way in the Relation will be given the ElementType of
+ * the Relation if it does not already have an ElementType.
+ * <p>
+ * Relations will only be drawn if it is a multipolygon Relation.
  */
 public class Relation extends BoundingBoxElement implements Serializable, Drawable {
 

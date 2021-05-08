@@ -26,6 +26,10 @@ public enum ElementSize {
         this.zoomLevelRequired = zoomLevelRequired;
     }
 
+    /**
+     * @return largest ElementSize where the specified
+     * areaSize is larger than the required area size.
+     */
     public static ElementSize getSize(double areaSize) {
         for (ElementSize elementSize : ElementSize.values()) {
             if (areaSize >= elementSize.getAreaSizeRequired()) {

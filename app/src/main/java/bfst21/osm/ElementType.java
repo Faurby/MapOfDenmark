@@ -205,6 +205,9 @@ public enum ElementType {
                 this == ElementType.WATER;
     }
 
+    /**
+     * Determine if this ElementType can be navigated with the given TransportOption.
+     */
     public boolean canNavigate(TransportOption transportOption) {
         if (transportOption == TransportOption.CAR) {
             return this == ElementType.PRIMARY ||
