@@ -25,68 +25,75 @@ import java.util.List;
 public class NavigationBoxController extends SubController {
 
     @FXML
-    private TextArea startingPoint;
+    private TextArea originTextArea;
     @FXML
-    private TextArea destinationPoint;
+    private TextArea destinationTextArea;
     @FXML
-    private ToggleButton CAR;
+    private ToggleButton selectCarButton;
     @FXML
-    private ToggleButton BIKE;
+    private ToggleButton selectBikeButton;
     @FXML
-    private ToggleButton WALK;
+    private ToggleButton selectWalkButton;
     @FXML
-    private Button switchButton;
+    private Button switchAddressButton;
     @FXML
-    private Button searchButtonExpanded;
+    private Button findRouteButton;
     @FXML
     private VBox routeBox;
     @FXML
-    private VBox startingSuggestions;
+    private VBox originSuggestionsBox;
     @FXML
-    private VBox destinationSuggestions;
+    private VBox destinationSuggestionsBox;
     @FXML
-    private TextArea addressArea;
+    private TextArea addressTextArea;
     @FXML
-    private Button directionsButton;
+    private Button expandButton;
     @FXML
     private Button searchButton;
     @FXML
     private VBox searchBox;
     @FXML
-    private VBox suggestions;
+    private VBox suggestionsBox;
 
     private final TransportOptions transOptions = TransportOptions.getInstance();
 
-    private List<OsmAddress> allSuggestions = new ArrayList<>();
-    private List<OsmAddress> allSuggestionsDestSpecific = new ArrayList<>();
+    private List<OsmAddress> allSuggestionsOrigin = new ArrayList<>();
+    private List<OsmAddress> allSuggestionsDestination = new ArrayList<>();
 
-    private List<String> shownSuggestions = new ArrayList<>();
-    private List<String> shownSuggestionsDestSpecific = new ArrayList<>();
+    private List<String> shownSuggestionsOrigin = new ArrayList<>();
+    private List<String> shownSuggestionsDestination = new ArrayList<>();
 
-    private TST<List<OsmAddress>> addressTries;
     private Task<Void> addressSuggestionTask;
+    private TST<List<OsmAddress>> addressTries;
 
-    private boolean searchBoxVisible = true;
+    private boolean isNavigationBoxExpanded = false;
+
+    private void updateAddresTries() {
+        MapCanvas mapCanvas = mainController.getCanvas();
+        Model model = mapCanvas.getModel();
+        MapData mapData = model.getMapData();
+        addressTries = mapData.getAddressTries();
+    }
 
     @FXML
     private void searchSingleAddress() {
-        String address = addressArea.getText().trim().toLowerCase();
-        suggestions.getChildren().clear();
+        String address = addressTextArea.getText().trim().toLowerCase();
+        suggestionsBox.getChildren().clear();
 
         if (!address.isEmpty()) {
 
-            checkTries();
+            for (OsmAddress osmAddress : allSuggestionsOrigin) {
+                if (osmAddress.toString().toLowerCase().contains(address)
+                 || osmAddress.omitHouseNumberToString().toLowerCase().contains(address)) {
 
-            for (OsmAddress osmAddress : getAllSuggestions()) {
-                if (osmAddress.toString().toLowerCase().contains(address) || osmAddress.omitHouseNumberToString().toLowerCase().contains(address)) {
-
-                    Pin.DESTINATION.setCoords(osmAddress.getNode().getX(), osmAddress.getNode().getY());
+                    Pin.DESTINATION.setCoords(osmAddress.getNodeCoords());
                     Pin.DESTINATION.setVisible(true);
 
                     mainController.getCanvas().changeView(osmAddress.getNode().getX(), osmAddress.getNode().getY());
-                    break;
+                    return;
                 }
             }
+            displayAlert(Alert.AlertType.ERROR, "Error", "Unable to find address: "+address);
         } else {
             displayAlert(Alert.AlertType.ERROR, "Error", "Search field is empty");
         }
@@ -98,87 +105,96 @@ public class NavigationBoxController extends SubController {
 
         if (visible) {
             searchBox.requestFocus();
-            searchBoxVisible = true;
+            isNavigationBoxExpanded = false;
         }
     }
 
-    public void setNavigationBoxVisible(boolean visible) {
+    public void setRouteBoxVisible(boolean visible) {
         routeBox.setVisible(visible);
         routeBox.setManaged(visible);
 
         if (visible) {
             routeBox.requestFocus();
-            searchBoxVisible = false;
+            isNavigationBoxExpanded = true;
         }
     }
 
     @FXML
-    public void expandSearchView() {
+    public void expandNavigationBox() {
         setSearchBoxVisible(false);
-        setNavigationBoxVisible(true);
+        setRouteBoxVisible(true);
+
+        Pin.ORIGIN.setVisible(false);
         Pin.DESTINATION.setVisible(false);
 
-        if (addressArea.getText() != null) {
-            destinationPoint.setText(addressArea.getText());
-            startingPoint.setText("");
-            setAllSuggestionsDestSpecific(getAllSuggestions());
+        if (addressTextArea.getText() != null) {
+            destinationTextArea.setText(addressTextArea.getText());
+            originTextArea.setText("");
+            allSuggestionsDestination = allSuggestionsOrigin;
         }
     }
 
     public void typingCheck(KeyEvent keyEvent) {
-        if (searchBoxVisible) {
+        if (!isNavigationBoxExpanded) {
 
             if (keyEvent.getCode() == KeyCode.TAB) {
-                if (keyEvent.getSource().toString().contains("addressArea")) {
-                    addressArea.setText(addressArea.getText().trim());
-                    directionsButton.requestFocus();
+                if (keyEvent.getSource().toString().contains("addressTextArea")) {
+
+                    //TODO: What is the point in trimming the text in addressArea?
+                    addressTextArea.setText(addressTextArea.getText().trim());
+                    expandButton.requestFocus();
                 }
             } else if (keyEvent.getCode() == KeyCode.ENTER) {
-                addressArea.setText(addressArea.getText().trim());
-                suggestions.getChildren().clear();
-                searchSingleAddress();
+
+                //TODO: What is the point in trimming the text in addressArea?
+                addressTextArea.setText(addressTextArea.getText().trim());
+                suggestionsBox.getChildren().clear();
                 searchButton.requestFocus();
+                searchSingleAddress();
 
-            } else if (keyEvent.getCode() == KeyCode.BACK_SPACE && addressArea.getText().trim().length() <= 2) {
-                suggestions.getChildren().clear();
+            } else if (keyEvent.getCode() == KeyCode.BACK_SPACE
+                    && addressTextArea.getText().trim().length() <= 2) {
 
-            } else if (keyEvent.getCode() == KeyCode.DOWN && getShownSuggestions().size() > 0) {
-                suggestions.requestFocus();
+                suggestionsBox.getChildren().clear();
+
+            } else if (keyEvent.getCode() == KeyCode.DOWN && shownSuggestionsOrigin.size() > 0) {
+                suggestionsBox.requestFocus();
+
             } else {
-                int textLength = addressArea.getText().trim().length();
+                int textLength = addressTextArea.getText().trim().length();
                 if (textLength >= 2) {
-                    runAddressSuggestionTask(suggestions, addressArea, false);
+                    runAddressSuggestionTask(suggestionsBox, addressTextArea, false);
                 }
             }
         } else {
             if (keyEvent.getCode() == KeyCode.TAB) {
 
-                if (keyEvent.getSource().toString().contains("startingPoint")) {
-                    startingPoint.setText(startingPoint.getText().trim());
-                    destinationPoint.requestFocus();
+                if (keyEvent.getSource().toString().contains("originTextArea")) {
+                    originTextArea.setText(originTextArea.getText().trim());
+                    destinationTextArea.requestFocus();
 
-                } else if (keyEvent.getSource().toString().contains("destinationPoint")) {
-                    destinationPoint.setText(destinationPoint.getText().trim());
-                    startingPoint.setText(startingPoint.getText().trim());
-                    switchButton.requestFocus();
+                } else if (keyEvent.getSource().toString().contains("destinationTextArea")) {
+                    destinationTextArea.setText(destinationTextArea.getText().trim());
+                    originTextArea.setText(originTextArea.getText().trim());
+                    switchAddressButton.requestFocus();
                 }
             } else if (keyEvent.getCode() == KeyCode.ENTER) {
-                searchButtonExpanded.requestFocus();
-                startingPoint.setText(startingPoint.getText().trim());
-                destinationPoint.setText(destinationPoint.getText().trim());
-                startingSuggestions.getChildren().clear();
-                destinationSuggestions.getChildren().clear();
-                searchNavigationAddresses();
+                findRouteButton.requestFocus();
+                originTextArea.setText(originTextArea.getText().trim());
+                destinationTextArea.setText(destinationTextArea.getText().trim());
+                originSuggestionsBox.getChildren().clear();
+                destinationSuggestionsBox.getChildren().clear();
+                findRoute();
             } else {
-                if (keyEvent.getSource().toString().contains("startingPoint")) {
-                    int textLength = startingPoint.getText().trim().length();
+                if (keyEvent.getSource().toString().contains("originTextArea")) {
+                    int textLength = originTextArea.getText().trim().length();
                     if (textLength >= 2) {
-                        runAddressSuggestionTask(startingSuggestions, startingPoint, false);
+                        runAddressSuggestionTask(originSuggestionsBox, originTextArea, false);
                     }
-                } else if (keyEvent.getSource().toString().contains("destinationPoint")) {
-                    int textLength = destinationPoint.getText().trim().length();
+                } else if (keyEvent.getSource().toString().contains("destinationTextArea")) {
+                    int textLength = destinationTextArea.getText().trim().length();
                     if (textLength >= 2) {
-                        runAddressSuggestionTask(destinationSuggestions, destinationPoint, true);
+                        runAddressSuggestionTask(destinationSuggestionsBox, destinationTextArea, true);
                     }
                 }
             }
@@ -186,26 +202,24 @@ public class NavigationBoxController extends SubController {
     }
 
     @FXML
-    public void searchNavigationAddresses() {
-        if (startingPoint.getText().trim().isEmpty()) {
+    public void findRoute() {
+        if (originTextArea.getText().trim().isEmpty()) {
             displayAlert(Alert.AlertType.ERROR, "Error", "Starting point search field is empty");
 
-        } else if (destinationPoint.getText().trim().isEmpty()) {
+        } else if (destinationTextArea.getText().trim().isEmpty()) {
             displayAlert(Alert.AlertType.ERROR, "Error", "Destination point search field is empty");
 
         } else {
-            String startingAddress = startingPoint.getText().trim().toLowerCase();
-            String destinationAddress = destinationPoint.getText().trim().toLowerCase();
+            String startingAddress = originTextArea.getText().trim().toLowerCase();
+            String destinationAddress = destinationTextArea.getText().trim().toLowerCase();
 
-            startingSuggestions.getChildren().clear();
-            destinationSuggestions.getChildren().clear();
-
-            checkTries();
+            originSuggestionsBox.getChildren().clear();
+            destinationSuggestionsBox.getChildren().clear();
 
             float[] originCoords = null;
             float[] destinationCoords = null;
 
-            for (OsmAddress osmAddressS : getAllSuggestions()) {
+            for (OsmAddress osmAddressS : allSuggestionsOrigin) {
                 if (osmAddressS.toString().toLowerCase().contains(startingAddress)
                         || osmAddressS.omitHouseNumberToString().toLowerCase().contains(startingAddress)) {
                     originCoords = new float[]{osmAddressS.getNode().getX(), osmAddressS.getNode().getY()};
@@ -213,7 +227,7 @@ public class NavigationBoxController extends SubController {
                 }
             }
 
-            for (OsmAddress osmAddressD : getAllSuggestionsDestSpecific()) {
+            for (OsmAddress osmAddressD : allSuggestionsDestination) {
                 if (osmAddressD.toString().toLowerCase().contains(destinationAddress)
                         || osmAddressD.omitHouseNumberToString().toLowerCase().contains(destinationAddress)) {
                     destinationCoords = new float[]{osmAddressD.getNode().getX(), osmAddressD.getNode().getY()};
@@ -244,46 +258,48 @@ public class NavigationBoxController extends SubController {
                 mainController.getCanvas().getModel().getMapData().originCoords = nearOriginCoords;
                 mainController.getCanvas().getModel().getMapData().destinationCoords = nearDestinationCoords;
                 mainController.getCanvas().getModel().getMapData().runDijkstraTask();
+
+                mainController.getCanvas().repaint();
             }
         }
     }
 
-    public void switchText() {
-        List<OsmAddress> temp = getAllSuggestions();
-        setAllSuggestions(getAllSuggestionsDestSpecific());
-        setAllSuggestionsDestSpecific(temp);
+    public void switchAddressText() {
+        List<OsmAddress> temp = allSuggestionsOrigin;
+        allSuggestionsOrigin = allSuggestionsDestination;
+        allSuggestionsDestination = temp;
 
-        String s = startingPoint.getText();
-        startingPoint.setText(destinationPoint.getText());
-        destinationPoint.setText(s);
+        String s = originTextArea.getText();
+        originTextArea.setText(destinationTextArea.getText());
+        destinationTextArea.setText(s);
     }
 
-    public void transportationButtonPushed(ActionEvent actionEvent) {
-        if (actionEvent.getSource().toString().contains("WALK")) {
+    public void selectTransportOption(ActionEvent actionEvent) {
+        if (actionEvent.getSource().toString().toLowerCase().contains("walk")) {
             transOptions.setCurrentlyEnabled(TransportOption.WALK);
-            WALK.setSelected(true);
+            selectWalkButton.setSelected(true);
 
-        } else if (actionEvent.getSource().toString().contains("BIKE")) {
+        } else if (actionEvent.getSource().toString().toLowerCase().contains("bike")) {
             transOptions.setCurrentlyEnabled(TransportOption.BIKE);
-            BIKE.setSelected(true);
+            selectBikeButton.setSelected(true);
 
         } else {
             transOptions.setCurrentlyEnabled(TransportOption.CAR);
-            CAR.setSelected(true);
+            selectCarButton.setSelected(true);
         }
         System.out.println(transOptions.getCurrentlyEnabled().toString());
     }
 
     @FXML
-    public void minimizeSearchView() {
-        setNavigationBoxVisible(false);
+    public void minimizeNavigationBox() {
+        setRouteBoxVisible(false);
         setSearchBoxVisible(true);
 
-        if (!destinationPoint.getText().isEmpty() && startingPoint.getText().isEmpty()) {
-            addressArea.setText(destinationPoint.getText());
+        if (!destinationTextArea.getText().isEmpty() && originTextArea.getText().isEmpty()) {
+            addressTextArea.setText(destinationTextArea.getText());
 
-        } else if (!startingPoint.getText().isEmpty()) {
-            addressArea.setText(startingPoint.getText());
+        } else if (!originTextArea.getText().isEmpty()) {
+            addressTextArea.setText(originTextArea.getText());
         }
 
         Pin.ORIGIN.setVisible(false);
@@ -299,9 +315,9 @@ public class NavigationBoxController extends SubController {
         int count = 0;
         suggestions.getChildren().clear();
 
-        List<String> localShownSuggestions = shownSuggestions;
+        List<String> localShownSuggestions = shownSuggestionsOrigin;
         if (extended) {
-            localShownSuggestions = shownSuggestionsDestSpecific;
+            localShownSuggestions = shownSuggestionsDestination;
         }
 
         for (String s : localShownSuggestions) {
@@ -322,21 +338,7 @@ public class NavigationBoxController extends SubController {
         }
     }
 
-    protected void checkTries() {
-        if (addressTries == null) {
-            activateTries();
-        }
-    }
-
-    private void activateTries() {
-        MapCanvas mapCanvas = mainController.getCanvas();
-        Model model = mapCanvas.getModel();
-        MapData mapData = model.getMapData();
-        addressTries = mapData.getAddressTries();
-    }
-
-    protected void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended) {
-        if (addressSuggestionTask != null) {
+    protected void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended) {if (addressSuggestionTask != null) {
             if (addressSuggestionTask.isRunning()) {
                 addressSuggestionTask.cancel();
             }
@@ -345,17 +347,15 @@ public class NavigationBoxController extends SubController {
 
             @Override
             protected Void call() {
-                if (addressTries == null) {
-                    activateTries();
-                }
                 List<OsmAddress> localAllSuggestions;
                 if (extended) {
-                    shownSuggestionsDestSpecific = new ArrayList<>();
-                    localAllSuggestions = allSuggestionsDestSpecific;
+                    shownSuggestionsDestination = new ArrayList<>();
+                    localAllSuggestions = allSuggestionsDestination;
                 } else {
-                    shownSuggestions = new ArrayList<>();
-                    localAllSuggestions = allSuggestions;
+                    shownSuggestionsOrigin = new ArrayList<>();
+                    localAllSuggestions = allSuggestionsOrigin;
                 }
+                updateAddresTries();
 
                 String input = textArea.getText();
                 String addressInput = input.replace(" ", "").toLowerCase();
@@ -385,9 +385,9 @@ public class NavigationBoxController extends SubController {
                             String address = osmAddress.toString();
 
                             if (extended) {
-                                shownSuggestionsDestSpecific.add(address);
+                                shownSuggestionsDestination.add(address);
                             } else {
-                                shownSuggestions.add(address);
+                                shownSuggestionsOrigin.add(address);
                             }
                         }
                     }
@@ -402,16 +402,16 @@ public class NavigationBoxController extends SubController {
                         String address = osmAddress.omitHouseNumberToString();
 
                         if (extended) {
-                            shownSuggestionsDestSpecific.add(address);
+                            shownSuggestionsDestination.add(address);
                         } else {
-                            shownSuggestions.add(address);
+                            shownSuggestionsOrigin.add(address);
                         }
                     }
                 }
                 if (extended) {
-                    allSuggestionsDestSpecific = localAllSuggestions;
+                    allSuggestionsDestination = localAllSuggestions;
                 } else {
-                    allSuggestions = localAllSuggestions;
+                    allSuggestionsOrigin = localAllSuggestions;
                 }
                 return null;
             }
@@ -438,25 +438,5 @@ public class NavigationBoxController extends SubController {
             }
         }
         return addressInput.substring(0, counter);
-    }
-
-    public List<String> getShownSuggestions() {
-        return shownSuggestions;
-    }
-
-    public List<OsmAddress> getAllSuggestions() {
-        return allSuggestions;
-    }
-
-    public List<OsmAddress> getAllSuggestionsDestSpecific() {
-        return allSuggestionsDestSpecific;
-    }
-
-    public void setAllSuggestions(List<OsmAddress> allSuggestions) {
-        this.allSuggestions = allSuggestions;
-    }
-
-    public void setAllSuggestionsDestSpecific(List<OsmAddress> allSuggestionsDestSpecific) {
-        this.allSuggestionsDestSpecific = allSuggestionsDestSpecific;
     }
 }

@@ -180,7 +180,7 @@ public class MainController extends BaseController {
     private void userNodeClickedInListView(String userNodeName) {
         if (userNodeName != null) {
             UserNode clickedUserNode = userNodesMap.get(userNodeName);
-            Pin.USER_NODE.setCoords(clickedUserNode.getX(), clickedUserNode.getY());
+            Pin.USER_NODE.setCoords(clickedUserNode.getCoords());
             Pin.USER_NODE.setVisible(true);
 
             canvas.changeView(clickedUserNode.getX(), clickedUserNode.getY());

@@ -38,6 +38,10 @@ public enum Pin {
         this.coords = new float[]{x, y};
     }
 
+    public void setCoords(float[] coords) {
+        this.coords = coords;
+    }
+
     public boolean isVisible() {
         return visible;
     }

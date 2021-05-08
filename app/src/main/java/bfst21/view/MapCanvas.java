@@ -357,8 +357,8 @@ public class MapCanvas extends Canvas {
                             currentDirections.add("Drive " + (int) (distanceSum + distanceAfter) + "m down " + after.getName());
                         }
                     }
-                    int fromID = before.getFrom();
-                    System.out.println(directedGraph.getOutDegree(fromID));
+                    //int fromID = before.getFrom();
+                    //System.out.println(directedGraph.getOutDegree(fromID));
                 }
 
                 gc.stroke();
