@@ -154,7 +154,6 @@
                           minHeight="40"
                           minWidth="35"
                           prefWidth="120"
-                          onAction="#selectTransportOption"
                           selected="true"
                           style="-fx-border-color: LIGHTGREY">
 
@@ -176,7 +175,6 @@
                           minHeight="40"
                           minWidth="35"
                           prefWidth="120"
-                          onAction="#selectTransportOption"
                           style="-fx-border-color: LIGHTGREY">
 
                 <graphic>
@@ -197,7 +195,6 @@
                           minHeight="40"
                           minWidth="35"
                           prefWidth="120"
-                          onAction="#selectTransportOption"
                           style="-fx-border-color: LIGHTGREY">
 
                 <graphic>

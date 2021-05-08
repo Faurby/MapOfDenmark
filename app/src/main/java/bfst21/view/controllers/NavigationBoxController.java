@@ -10,6 +10,7 @@ import bfst21.osm.Pin;
 import bfst21.view.MapCanvas;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -67,6 +68,12 @@ public class NavigationBoxController extends SubController {
     private TST<List<OsmAddress>> addressTries;
 
     private boolean isNavigationBoxExpanded = false;
+
+    public void initialize() {
+        selectWalkButton.setOnAction(new ToggleTransportListener(TransportOption.WALK, selectWalkButton));
+        selectBikeButton.setOnAction(new ToggleTransportListener(TransportOption.BIKE, selectBikeButton));
+        selectCarButton.setOnAction(new ToggleTransportListener(TransportOption.CAR, selectCarButton));
+    }
 
     @FXML
     private void searchSingleAddress() {
@@ -360,20 +367,25 @@ public class NavigationBoxController extends SubController {
         destinationTextArea.setText(s);
     }
 
-    public void selectTransportOption(ActionEvent actionEvent) {
-        if (actionEvent.getSource().toString().toLowerCase().contains("walk")) {
-            transOptions.setCurrentlyEnabled(TransportOption.WALK);
-            selectWalkButton.setSelected(true);
+    private class ToggleTransportListener implements EventHandler<ActionEvent> {
 
-        } else if (actionEvent.getSource().toString().toLowerCase().contains("bike")) {
-            transOptions.setCurrentlyEnabled(TransportOption.BIKE);
-            selectBikeButton.setSelected(true);
+        private final TransportOption transportOption;
+        private final ToggleButton toggleButton;
 
-        } else {
-            transOptions.setCurrentlyEnabled(TransportOption.CAR);
-            selectCarButton.setSelected(true);
+        public ToggleTransportListener(TransportOption transportOption,
+                                       ToggleButton toggleButton) {
+
+            this.transportOption = transportOption;
+            this.toggleButton = toggleButton;
         }
-        System.out.println(transOptions.getCurrentlyEnabled().toString());
+
+        @Override
+        public void handle(ActionEvent event) {
+            transOptions.setCurrentlyEnabled(transportOption);
+            toggleButton.setSelected(true);
+
+            System.out.println("Selected TransportOption."+transportOption.toString());
+        }
     }
 
     @FXML
