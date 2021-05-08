@@ -68,13 +68,6 @@ public class NavigationBoxController extends SubController {
 
     private boolean isNavigationBoxExpanded = false;
 
-    private void updateAddressTries() {
-        MapCanvas mapCanvas = mainController.getCanvas();
-        Model model = mapCanvas.getModel();
-        MapData mapData = model.getMapData();
-        addressTries = mapData.getAddressTries();
-    }
-
     @FXML
     private void searchSingleAddress() {
         String address = addressTextArea.getText().trim().toLowerCase();
@@ -96,41 +89,6 @@ public class NavigationBoxController extends SubController {
             displayAlert(Alert.AlertType.ERROR, "Error", "Unable to find address: "+address);
         } else {
             displayAlert(Alert.AlertType.ERROR, "Error", "Search field is empty");
-        }
-    }
-
-    public void setSearchBoxVisible(boolean visible) {
-        searchBox.setVisible(visible);
-        searchBox.setManaged(visible);
-
-        if (visible) {
-            searchBox.requestFocus();
-            isNavigationBoxExpanded = false;
-        }
-    }
-
-    public void setRouteBoxVisible(boolean visible) {
-        routeBox.setVisible(visible);
-        routeBox.setManaged(visible);
-
-        if (visible) {
-            routeBox.requestFocus();
-            isNavigationBoxExpanded = true;
-        }
-    }
-
-    @FXML
-    public void expandNavigationBox() {
-        setSearchBoxVisible(false);
-        setRouteBoxVisible(true);
-
-        Pin.ORIGIN.setVisible(false);
-        Pin.DESTINATION.setVisible(false);
-
-        if (addressTextArea.getText() != null) {
-            destinationTextArea.setText(addressTextArea.getText());
-            originTextArea.setText("");
-            allSuggestionsDestination = allSuggestionsOrigin;
         }
     }
 
@@ -264,53 +222,6 @@ public class NavigationBoxController extends SubController {
         }
     }
 
-    public void switchAddressText() {
-        List<OsmAddress> temp = allSuggestionsOrigin;
-        allSuggestionsOrigin = allSuggestionsDestination;
-        allSuggestionsDestination = temp;
-
-        String s = originTextArea.getText();
-        originTextArea.setText(destinationTextArea.getText());
-        destinationTextArea.setText(s);
-    }
-
-    public void selectTransportOption(ActionEvent actionEvent) {
-        if (actionEvent.getSource().toString().toLowerCase().contains("walk")) {
-            transOptions.setCurrentlyEnabled(TransportOption.WALK);
-            selectWalkButton.setSelected(true);
-
-        } else if (actionEvent.getSource().toString().toLowerCase().contains("bike")) {
-            transOptions.setCurrentlyEnabled(TransportOption.BIKE);
-            selectBikeButton.setSelected(true);
-
-        } else {
-            transOptions.setCurrentlyEnabled(TransportOption.CAR);
-            selectCarButton.setSelected(true);
-        }
-        System.out.println(transOptions.getCurrentlyEnabled().toString());
-    }
-
-    @FXML
-    public void minimizeNavigationBox() {
-        setRouteBoxVisible(false);
-        setSearchBoxVisible(true);
-
-        if (!destinationTextArea.getText().isEmpty() && originTextArea.getText().isEmpty()) {
-            addressTextArea.setText(destinationTextArea.getText());
-
-        } else if (!originTextArea.getText().isEmpty()) {
-            addressTextArea.setText(originTextArea.getText());
-        }
-
-        Pin.ORIGIN.setVisible(false);
-        Pin.DESTINATION.setVisible(false);
-    }
-
-    public void onWindowResize(Stage stage) {
-        searchBox.setMaxWidth(stage.getWidth() * 0.25D);
-        routeBox.setMaxWidth(stage.getWidth() * 0.25D);
-    }
-
     public void displayAddressSuggestions(VBox suggestions, TextArea textArea, boolean extended) {
         int count = 0;
         suggestions.getChildren().clear();
@@ -364,7 +275,7 @@ public class NavigationBoxController extends SubController {
 
                 //If the string doesn't return matches, find a substring that does
                 if (!it.hasNext()) {
-                    addressInput = longestSubstringWithMatches(addressInput);
+                    addressInput = findLongestSubstringWithMatches(addressInput);
                     it = addressTries.keysWithPrefix(addressInput).iterator();
                 }
 
@@ -423,20 +334,108 @@ public class NavigationBoxController extends SubController {
         thread.start();
     }
 
-    private String longestSubstringWithMatches(String addressInput) {
-        Iterator<String> modifiedIt;
-        boolean hasResults = true;
-        int counter = 1;
+    private String findLongestSubstringWithMatches(String addressInput) {
 
-        while (hasResults && counter < addressInput.length()) {
-            modifiedIt = addressTries.keysWithPrefix(addressInput.substring(0, counter)).iterator();
-            if (!modifiedIt.hasNext()) {
-                hasResults = false;
-                counter--;
+        int endIndex = addressInput.length() - 1;
+        while (endIndex > 0) {
+            String subStringInput = addressInput.substring(0, endIndex);
+            Iterator<String> it = addressTries.keysWithPrefix(subStringInput).iterator();
+
+            if (it.hasNext()) {
+                return subStringInput;
             } else {
-                counter++;
+                endIndex--;
             }
         }
-        return addressInput.substring(0, counter);
+        return addressInput;
+    }
+
+    public void switchAddressText() {
+        List<OsmAddress> temp = allSuggestionsOrigin;
+        allSuggestionsOrigin = allSuggestionsDestination;
+        allSuggestionsDestination = temp;
+
+        String s = originTextArea.getText();
+        originTextArea.setText(destinationTextArea.getText());
+        destinationTextArea.setText(s);
+    }
+
+    public void selectTransportOption(ActionEvent actionEvent) {
+        if (actionEvent.getSource().toString().toLowerCase().contains("walk")) {
+            transOptions.setCurrentlyEnabled(TransportOption.WALK);
+            selectWalkButton.setSelected(true);
+
+        } else if (actionEvent.getSource().toString().toLowerCase().contains("bike")) {
+            transOptions.setCurrentlyEnabled(TransportOption.BIKE);
+            selectBikeButton.setSelected(true);
+
+        } else {
+            transOptions.setCurrentlyEnabled(TransportOption.CAR);
+            selectCarButton.setSelected(true);
+        }
+        System.out.println(transOptions.getCurrentlyEnabled().toString());
+    }
+
+    @FXML
+    public void expandNavigationBox() {
+        setSearchBoxVisible(false);
+        setRouteBoxVisible(true);
+
+        Pin.ORIGIN.setVisible(false);
+        Pin.DESTINATION.setVisible(false);
+
+        if (addressTextArea.getText() != null) {
+            destinationTextArea.setText(addressTextArea.getText());
+            originTextArea.setText("");
+            allSuggestionsDestination = allSuggestionsOrigin;
+        }
+    }
+
+    @FXML
+    public void minimizeNavigationBox() {
+        setRouteBoxVisible(false);
+        setSearchBoxVisible(true);
+
+        if (!destinationTextArea.getText().isEmpty() && originTextArea.getText().isEmpty()) {
+            addressTextArea.setText(destinationTextArea.getText());
+
+        } else if (!originTextArea.getText().isEmpty()) {
+            addressTextArea.setText(originTextArea.getText());
+        }
+
+        Pin.ORIGIN.setVisible(false);
+        Pin.DESTINATION.setVisible(false);
+    }
+
+    public void setSearchBoxVisible(boolean visible) {
+        searchBox.setVisible(visible);
+        searchBox.setManaged(visible);
+
+        if (visible) {
+            searchBox.requestFocus();
+            isNavigationBoxExpanded = false;
+        }
+    }
+
+    public void setRouteBoxVisible(boolean visible) {
+        routeBox.setVisible(visible);
+        routeBox.setManaged(visible);
+
+        if (visible) {
+            routeBox.requestFocus();
+            isNavigationBoxExpanded = true;
+        }
+    }
+
+    private void updateAddressTries() {
+        MapCanvas mapCanvas = mainController.getCanvas();
+        Model model = mapCanvas.getModel();
+        MapData mapData = model.getMapData();
+        addressTries = mapData.getAddressTries();
+    }
+
+    public void onWindowResize(Stage stage) {
+        searchBox.setMaxWidth(stage.getWidth() * 0.25D);
+        routeBox.setMaxWidth(stage.getWidth() * 0.25D);
     }
 }
