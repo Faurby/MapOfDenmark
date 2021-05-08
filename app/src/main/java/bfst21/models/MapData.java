@@ -134,10 +134,7 @@ public class MapData {
             if (way.getType() != null) {
                 if (way.getType().canNavigate(TransportOption.ALL)) {
 
-                    boolean junction = false;
-                    if (way.isJunction()) {
-                        junction = true;
-                    }
+                    boolean junction = way.isJunction();
 
                     ElementType type = way.getType();
                     boolean canDrive = type.canNavigate(TransportOption.CAR);
