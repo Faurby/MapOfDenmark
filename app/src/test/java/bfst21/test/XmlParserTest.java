@@ -7,7 +7,6 @@ import bfst21.models.Util;
 import bfst21.osm.ElementGroup;
 import bfst21.osm.ElementSize;
 import bfst21.osm.ElementType;
-import bfst21.osm.Node;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,13 +43,21 @@ public class XmlParserTest {
     }
 
     @Test
-    public void getCorrectDistanceBetween2Coordinates() {
-        double distance = Util.distTo(12.6224313f, 55.6571112f,12.6238016f, 55.6573865f);
+    public void haversineFormula_correctDistance1() {
+        double lon1 = 12.6224313f;
+        double lat1 = 55.6571112f;
+        double lon2 = 12.6238016f;
+        double lat2 = 55.6573865f;
+
+        lat1 = -lat1 / 0.56f;
+        lat2 = -lat2 / 0.56f;
+
+        double distance = Util.distTo(lon1, lat1, lon2, lat2);
         assertEquals(0.09125, distance, 0.0001);
     }
 
     @Test
-    public void getCorrectDistanceBetween2Coordinates2() {
+    public void haversineFormula_correctDistance2() {
         double lon1 = 12.485718754160853;
         double lat1 = 55.71871866715029;
         double lon2 = 11.559933323788288;

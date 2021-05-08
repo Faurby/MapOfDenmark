@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DirectedGraphTest {
 
     @Test
-    public void directedGraphTest() {
+    public void buildDirectedGraph_correctVerticesAndEdges() {
         DirectedGraph directedGraph = new DirectedGraph();
 
         float[] coords0 = new float[]{1, 2};
@@ -84,7 +84,7 @@ public class DirectedGraphTest {
     }
 
     @Test
-    public void dijkstraPathTo_withOneWay_hasCorrectPath(){
+    public void dijkstraPathTo_withOneWay_hasCorrectPath() {
         DirectedGraph directedGraph = new DirectedGraph();
 
         float[] coords0 = new float[]{1, 2};
@@ -119,14 +119,14 @@ public class DirectedGraphTest {
     }
 
     @Test
-    public void dijkstraPathTo_withDifferentWeights_hasCorrectPath(){
+    public void dijkstraPathTo_withDifferentWeights_hasCorrectPath() {
         DirectedGraph directedGraph = new DirectedGraph();
 
         //draws an approximate square using real coordinates
-        float[] id0 = new float[]{55.69688f,12.43251f}; //SW
-        float[] id1 = new float[]{55.69932f,12.43231f}; //NW
-        float[] id2 = new float[]{55.69942f,12.43703f}; //NE
-        float[] id3 = new float[]{55.69698f,12.43724f}; //SE
+        float[] id0 = new float[]{55.69688f, 12.43251f}; //SW
+        float[] id1 = new float[]{55.69932f, 12.43231f}; //NW
+        float[] id2 = new float[]{55.69942f, 12.43703f}; //NE
+        float[] id3 = new float[]{55.69698f, 12.43724f}; //SE
 
         directedGraph.createVertex(id0);
         directedGraph.createVertex(id1);
@@ -220,8 +220,4 @@ public class DirectedGraphTest {
 
         assertTrue(actualEdge);
     }
-
-
-
-
 }
