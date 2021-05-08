@@ -116,23 +116,23 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
     }
 
     public static int getNodeSkipAmount(double zoomLevel) {
-        if (zoomLevel <= 100) {
+        if (zoomLevel <= 100.0D) {
             return 10;
-        } else if (zoomLevel <= 140) {
+        } else if (zoomLevel <= 140.0D) {
             return 9;
-        } else if (zoomLevel <= 190) {
+        } else if (zoomLevel <= 190.0D) {
             return 8;
-        } else if (zoomLevel <= 270) {
+        } else if (zoomLevel <= 270.0D) {
             return 7;
-        } else if (zoomLevel <= 350) {
+        } else if (zoomLevel <= 350.0D) {
             return 6;
-        } else if (zoomLevel <= 500) {
+        } else if (zoomLevel <= 500.0D) {
             return 5;
-        } else if (zoomLevel <= 700) {
+        } else if (zoomLevel <= 700.0D) {
             return 4;
-        } else if (zoomLevel <= 950) {
+        } else if (zoomLevel <= 950.0D) {
             return 3;
-        } else if (zoomLevel <= 1350) {
+        } else if (zoomLevel <= 1_350.0D) {
             return 2;
         }
         return 1;

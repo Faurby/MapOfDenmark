@@ -51,7 +51,7 @@ public class DijkstraPath {
         for (int v = 0; v < vertexAmount; v++) {
             distTo[v] = Double.POSITIVE_INFINITY;
         }
-        distTo[sourceID] = 0.0;
+        distTo[sourceID] = 0.0D;
 
         pq = new IndexMinPQ<>(vertexAmount);
         pq.insert(sourceID, distTo[sourceID]);

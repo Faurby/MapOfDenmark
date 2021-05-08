@@ -250,12 +250,12 @@ public class MainController extends BaseController {
                 }
                 if (closestNode != null) {
                     // 300 is a number chosen by trial and error. It seems to fit perfectly.
-                    if (nodeAtMouse.distTo(closestNode) < 300 * (1 / Math.sqrt(canvas.getTrans().determinant()))) {
+                    if (nodeAtMouse.distTo(closestNode) < 300.0D * (1.0D / Math.sqrt(canvas.getTrans().determinant()))) {
                         userNodeClickedVBox.setVisible(true);
                         userNodeClickedName.setText(closestNode.getName());
                         userNodeClickedDescription.setText((closestNode.getDescription().equals("") ? "No description entered" : closestNode.getDescription()));
                         String x = String.format(Locale.ENGLISH, "%.6f", closestNode.getX());
-                        String y = String.format(Locale.ENGLISH, "%.6f", (-1 * closestNode.getY() * 0.56));
+                        String y = String.format(Locale.ENGLISH, "%.6f", (-1f * closestNode.getY() * 0.56f));
                         userNodeClickedCoords.setText(x + ", " + y);
                         currentUserNode = closestNode;
                     }
@@ -376,7 +376,7 @@ public class MainController extends BaseController {
 
     @FXML
     public void zoomButtonClicked(ActionEvent actionEvent) {
-        Point2D point = new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2);
+        Point2D point = new Point2D(stackPane.getWidth() / 2.0D, stackPane.getHeight() / 2.0D);
 
         if (actionEvent.toString().toLowerCase().contains("zoomin")) {
             canvas.zoom(2.0D, point, false);
@@ -492,15 +492,15 @@ public class MainController extends BaseController {
         userNodeListView.setVisible(!userNodeListItems.isEmpty());
 
         if (userNodeListItems.size() == 1) {
-            userNodeListView.setMaxHeight(27);
-            userNodeListView.setMinHeight(27);
+            userNodeListView.setMaxHeight(27.0D);
+            userNodeListView.setMinHeight(27.0D);
 
         } else if (userNodeListItems.size() < 4) {
-            userNodeListView.setMaxHeight(userNodeListItems.size() * 25);
-            userNodeListView.setMinHeight(userNodeListItems.size() * 25);
+            userNodeListView.setMaxHeight(userNodeListItems.size() * 25.0D);
+            userNodeListView.setMinHeight(userNodeListItems.size() * 25.0D);
         } else {
-            userNodeListView.setMaxHeight(85);
-            userNodeListView.setMinHeight(85);
+            userNodeListView.setMaxHeight(85.0D);
+            userNodeListView.setMinHeight(85.0D);
         }
     }
 
@@ -655,7 +655,7 @@ public class MainController extends BaseController {
                     long time = -System.nanoTime();
                     binaryFileManager.saveOBJ(file.getAbsolutePath(), mapData);
                     time += System.nanoTime();
-                    System.out.println("Saved .obj file in: " + time / 1_000_000 + "ms to " + file.getAbsolutePath());
+                    System.out.println("Saved .obj file in: " + time / 1_000_000L + "ms to " + file.getAbsolutePath());
                     return null;
                 }
             };

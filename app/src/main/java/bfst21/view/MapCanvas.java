@@ -205,8 +205,8 @@ public class MapCanvas extends Canvas {
                     if (mapText.canDraw(zoomLevel)) {
 
                         double size = mapText.getMapTextType().getFontSizeMultiplier() / zoomLevel;
-                        if (zoomLevel <= 200D) {
-                            size = mapText.getMapTextType().getFontSizeMultiplier() / 220D;
+                        if (zoomLevel <= 200.0D) {
+                            size = mapText.getMapTextType().getFontSizeMultiplier() / 220.0D;
                         }
 
                         gc.setFont(new Font("Calibri", size));
@@ -248,10 +248,10 @@ public class MapCanvas extends Canvas {
      */
     private void drawUserNodes() {
         gc.setStroke(Color.BLUE);
-        gc.setLineWidth(10 * (1 / Math.sqrt(trans.determinant())));
+        gc.setLineWidth(10D * (1.0D / Math.sqrt(trans.determinant())));
 
         for (UserNode userNode : model.getMapData().getUserNodes()) {
-            userNode.draw(gc, 0);
+            userNode.draw(gc, 0.0D);
         }
     }
 
@@ -263,7 +263,7 @@ public class MapCanvas extends Canvas {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
             gc.setStroke(Color.DARKSLATEBLUE);
-            gc.setLineWidth(0.0002 * widthModifier);
+            gc.setLineWidth(0.0002D * widthModifier);
             gc.beginPath();
 
             Vertex[] vertices = directedGraph.getVertices();
@@ -291,7 +291,7 @@ public class MapCanvas extends Canvas {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
             gc.setStroke(Color.DARKSLATEBLUE);
-            gc.setLineWidth(0.0002 * widthModifier);
+            gc.setLineWidth(0.0002D * widthModifier);
 
             gc.beginPath();
             Edge[] edges = model.getMapData().getDijkstra().getEdgeTo();
@@ -303,7 +303,7 @@ public class MapCanvas extends Canvas {
             gc.stroke();
 
             gc.setStroke(Color.RED);
-            gc.setLineWidth(0.0004 * widthModifier);
+            gc.setLineWidth(0.0004D * widthModifier);
 
             int destinationID = directedGraph.getVertexID(destinationCoords);
             List<Edge> edgeList = model.getMapData().getDijkstra().pathTo(destinationID);
@@ -316,6 +316,7 @@ public class MapCanvas extends Canvas {
                 gc.beginPath();
                 float distanceSum = 0;
                 int exitCount = 0;
+
                 for (int i = 0; i < (edgeList.size() - 1); i++) {
                     Edge before = edgeList.get(i);
                     Edge after = edgeList.get(i + 1);
@@ -334,8 +335,8 @@ public class MapCanvas extends Canvas {
 
                     } else {
                         Direction direction = directedGraph.getDirectionRightLeft(before, after);
-                        float distanceBefore = before.getDistance() * 1000;
-                        float distanceAfter = after.getDistance() * 1000;
+                        float distanceBefore = before.getDistance() * 1_000f;
+                        float distanceAfter = after.getDistance() * 1_000f;
 
                         distanceSum += distanceBefore;
 
@@ -365,7 +366,7 @@ public class MapCanvas extends Canvas {
                 float[] startCoords = directedGraph.getVertexCoords(start);
 
                 gc.setStroke(Color.YELLOWGREEN);
-                gc.setLineWidth(0.0005 * widthModifier);
+                gc.setLineWidth(0.0005D * widthModifier);
 
                 gc.beginPath();
                 gc.moveTo(startCoords[0], startCoords[1]);
@@ -373,7 +374,7 @@ public class MapCanvas extends Canvas {
                 gc.stroke();
 
                 gc.setStroke(Color.PURPLE);
-                gc.setLineWidth(0.0005 * widthModifier);
+                gc.setLineWidth(0.0005D * widthModifier);
 
                 gc.beginPath();
                 gc.moveTo(destinationCoords[0], destinationCoords[1]);
@@ -405,8 +406,8 @@ public class MapCanvas extends Canvas {
         Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
         Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
 
-        double oldX = (p1.getX() + p2.getX()) / 2;
-        double oldY = (p1.getY() + p2.getY()) / 2;
+        double oldX = (p1.getX() + p2.getX()) / 2.0D;
+        double oldY = (p1.getY() + p2.getY()) / 2.0D;
 
         double dx = (newX - oldX) * zoomLevel;
         double dy = (newY - oldY) * zoomLevel;
@@ -438,7 +439,7 @@ public class MapCanvas extends Canvas {
         if (nearestNeighborCoords != null) {
 
             gc.setStroke(Color.RED);
-            gc.setLineWidth(0.002 * widthModifier);
+            gc.setLineWidth(0.002D * widthModifier);
 
             gc.beginPath();
             gc.moveTo(nearestNeighborCoords[0], nearestNeighborCoords[1]);
@@ -502,10 +503,10 @@ public class MapCanvas extends Canvas {
         double y2 = getHeight() - y1;
 
         if (extend) {
-            x1 -= 50;
-            y1 -= 50;
-            x2 += 50;
-            y2 += 50;
+            x1 -= 50.0D;
+            y1 -= 50.0D;
+            x2 += 50.0D;
+            y2 += 50.0D;
         }
 
         Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
@@ -624,17 +625,17 @@ public class MapCanvas extends Canvas {
      * Adjust width modifier used to properly size Ways at the current zoom level
      */
     public void adjustWidthModifier() {
-        if (zoomLevel < 500) {
+        if (zoomLevel < 500D) {
             widthModifier = 1.0D;
 
-        } else if (zoomLevel < 2000) {
-            widthModifier = 0.75;
+        } else if (zoomLevel < 2_000.0D) {
+            widthModifier = 0.75D;
 
-        } else if (zoomLevel < 6000) {
-            widthModifier = 0.50;
+        } else if (zoomLevel < 6_000.0D) {
+            widthModifier = 0.50D;
 
-        } else if (zoomLevel < 22000) {
-            widthModifier = 0.25;
+        } else if (zoomLevel < 22_000.0D) {
+            widthModifier = 0.25D;
         }
     }
 
@@ -648,13 +649,13 @@ public class MapCanvas extends Canvas {
      * @return zoom level percentage.
      */
     public String getZoomPercent() {
-        if (zoomLevel == 0) {
+        if (zoomLevel == 0.0D) {
             return 100 + "%";
         } else {
             double max = Math.log(zoomLevelMax);
             double min = Math.log(zoomLevelMin);
             double diff = max - min;
-            double forOnePercent = diff / 100;
+            double forOnePercent = diff / 100.0D;
 
             double current = Math.log(zoomLevel) / forOnePercent;
 

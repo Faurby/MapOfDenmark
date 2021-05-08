@@ -81,7 +81,7 @@ public class BoundingBox implements Drawable {
         float bMinY = getMinY();
 
         gc.setStroke(Color.PURPLE);
-        gc.setLineWidth(0.0005);
+        gc.setLineWidth(0.0005D);
 
         gc.moveTo(bMinX, bMinY);
         gc.lineTo(bMaxX, bMinY);

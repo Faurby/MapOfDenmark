@@ -89,6 +89,14 @@ public enum ElementType {
             Color.rgb(223, 241, 242),
             Color.rgb(61, 64, 67)
     ),
+    SERVICE(
+            0.0003f,
+            50000.0f,
+            0.0D,
+            Color.rgb(255, 255, 255),
+            Color.rgb(255, 255, 255),
+            Color.rgb(61, 64, 67)
+    ),
     ROAD(
             0.0003f,
             50000.0f,
@@ -188,9 +196,9 @@ public enum ElementType {
      */
     public boolean doFillDraw() {
         return this == ElementType.BUILDING ||
+                this == ElementType.FOREST ||
                 this == ElementType.ISLAND ||
                 this == ElementType.LANDUSE ||
-                this == ElementType.FOREST ||
                 this == ElementType.WATER;
     }
 
@@ -200,8 +208,8 @@ public enum ElementType {
      */
     public boolean hasMultipleSizes() {
         return this == ElementType.BUILDING ||
-                this == ElementType.LANDUSE ||
                 this == ElementType.FOREST ||
+                this == ElementType.LANDUSE ||
                 this == ElementType.WATER;
     }
 
@@ -210,37 +218,38 @@ public enum ElementType {
      */
     public boolean canNavigate(TransportOption transportOption) {
         if (transportOption == TransportOption.CAR) {
-            return this == ElementType.PRIMARY ||
+            return this == ElementType.FERRY ||
                     this == ElementType.MOTORWAY ||
+                    this == ElementType.PRIMARY ||
                     this == ElementType.RESIDENTIAL ||
+                    this == ElementType.ROAD ||
                     this == ElementType.TERTIARY ||
-                    this == ElementType.TRUNK ||
-                    this == ElementType.FERRY;
+                    this == ElementType.TRUNK;
 
         } else if (transportOption == TransportOption.BIKE) {
-            return this == ElementType.TERTIARY ||
-                    this == ElementType.CYCLEWAY ||
-                    this == ElementType.ROAD ||
+            return this == ElementType.CYCLEWAY ||
+                    this == ElementType.FERRY ||
                     this == ElementType.RESIDENTIAL ||
-                    this == ElementType.FERRY;
+                    this == ElementType.ROAD ||
+                    this == ElementType.TERTIARY;
 
         } else if (transportOption == TransportOption.WALK) {
-            return this == ElementType.TERTIARY ||
-                    this == ElementType.CYCLEWAY ||
+            return this == ElementType.CYCLEWAY ||
+                    this == ElementType.FERRY ||
+                    this == ElementType.FOOTWAY ||
                     this == ElementType.RESIDENTIAL ||
                     this == ElementType.ROAD ||
-                    this == ElementType.FOOTWAY ||
-                    this == ElementType.FERRY;
+                    this == ElementType.TERTIARY;
         } else {
-            return this == ElementType.PRIMARY ||
+            return this == ElementType.CYCLEWAY ||
+                    this == ElementType.FERRY ||
+                    this == ElementType.FOOTWAY ||
                     this == ElementType.MOTORWAY ||
-                    this == ElementType.TRUNK ||
-                    this == ElementType.TERTIARY ||
-                    this == ElementType.CYCLEWAY ||
+                    this == ElementType.PRIMARY ||
                     this == ElementType.RESIDENTIAL ||
                     this == ElementType.ROAD ||
-                    this == ElementType.FOOTWAY ||
-                    this == ElementType.FERRY;
+                    this == ElementType.TERTIARY ||
+                    this == ElementType.TRUNK;
         }
     }
 

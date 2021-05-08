@@ -64,7 +64,7 @@ public class XmlParser {
         List<Way> coastlines = new ArrayList<>();
         List<Way> islands;
 
-        float mapMinX = 0, mapMinY = 0, mapMaxX = 0, mapMaxY = 0;
+        float mapMinX = 0.0f, mapMinY = 0.0f, mapMaxX = 0.0f, mapMaxY = 0.0f;
         boolean isCoastline = false;
 
         String name = null;
@@ -397,8 +397,8 @@ public class XmlParser {
                                 float minY = relation.getMinY();
                                 float maxY = relation.getMaxY();
 
-                                float midX = (minX + maxX / 2);
-                                float midY = (minY + maxY / 2);
+                                float midX = (minX + maxX / 2.0f);
+                                float midY = (minY + maxY / 2.0f);
 
                                 float[] coords = new float[]{midX, midY};
                                 mapText.setCoords(coords);
@@ -432,7 +432,7 @@ public class XmlParser {
             }
         }
         time += System.nanoTime();
-        System.out.println("Parsed OSM data in: " + time / 1_000_000 + "ms");
+        System.out.println("Parsed OSM data in: " + time / 1_000_000L + "ms");
         islands = mergeCoastLines(coastlines);
 
         List<Way> wayList = new ArrayList<>();

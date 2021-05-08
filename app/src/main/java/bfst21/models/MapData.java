@@ -176,7 +176,7 @@ public class MapData {
         directedGraph.cleanUp();
 
         time += System.nanoTime();
-        System.out.println("Built directed graph for path finding in " + time / 1_000_000 + "ms");
+        System.out.println("Built directed graph for path finding in " + time / 1_000_000L + "ms");
     }
 
     /**
@@ -216,7 +216,7 @@ public class MapData {
             kdTreeMapTexts.build(mapTexts);
 
             time += System.nanoTime();
-            System.out.println("Built kd-tree for map texts in " + time / 1_000_000 + "ms with depth: " + kdTreeMapTexts.getMaxDepth());
+            System.out.println("Built kd-tree for map texts in " + time / 1_000_000L + "ms with depth: " + kdTreeMapTexts.getMaxDepth());
         }
     }
 
@@ -234,7 +234,7 @@ public class MapData {
             kdTreeRelations.build(relationList);
 
             time += System.nanoTime();
-            System.out.println("Built kd-tree for relations in " + time / 1_000_000 + "ms with depth: " + kdTreeRelations.getMaxDepth());
+            System.out.println("Built kd-tree for relations in " + time / 1_000_000L + "ms with depth: " + kdTreeRelations.getMaxDepth());
         }
     }
 
