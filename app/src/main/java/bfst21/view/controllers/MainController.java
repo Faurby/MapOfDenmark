@@ -112,7 +112,7 @@ public class MainController extends BaseController {
 
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
-    public void updateZoomBox() {
+    private void updateZoomBox() {
         int nodeSkip = Way.getNodeSkipAmount(canvas.getZoomLevel());
 
         zoomPercent.setText(canvas.getZoomPercent());
@@ -135,11 +135,11 @@ public class MainController extends BaseController {
         updateZoomBox();
     }
 
-    public void updateAverageRepaintTime() {
+    private void updateAverageRepaintTime() {
         debugBoxController.setRepaintTime("Repaint time: " + canvas.getAverageRepaintTime());
     }
 
-    public void updateMouseCoords(Point2D currentMousePos) {
+    private void updateMouseCoords(Point2D currentMousePos) {
         double currentPosX = canvas.mouseToModelCoords(currentMousePos).getX();
         double currentPosY = canvas.mouseToModelCoords(currentMousePos).getY();
 
@@ -189,7 +189,7 @@ public class MainController extends BaseController {
     }
 
     @FXML
-    private void showHideDebug() {
+    public void toggleDebugVisibility() {
         debugBox.setVisible(!debugBox.isVisible());
     }
 
@@ -203,7 +203,7 @@ public class MainController extends BaseController {
     @FXML
     public void onKeyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.D && event.isControlDown()) {
-            showHideDebug();
+            toggleDebugVisibility();
 
         } else if (event.getCode() == KeyCode.ESCAPE) {
             if (userNodeToggle) {
@@ -695,7 +695,7 @@ public class MainController extends BaseController {
         }
     }
 
-    public void updateRoadTask() {
+    private void updateRoadTask() {
         if (roadTask != null) {
             if (roadTask.isRunning()) {
                 roadTask.cancel();

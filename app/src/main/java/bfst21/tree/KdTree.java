@@ -1,6 +1,6 @@
 package bfst21.tree;
 
-import bfst21.models.Util;
+import bfst21.models.DistanceUtil;
 import bfst21.osm.BoundingBoxElement;
 
 import java.io.Serializable;
@@ -279,7 +279,7 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
         double distanceToCurrentNeighbor;
 
         if (currentNearestNeighbor != null) {
-            distanceToCurrentNeighbor = Util.distTo(queryCoords, currentNearestNeighbor);
+            distanceToCurrentNeighbor = DistanceUtil.distTo(queryCoords, currentNearestNeighbor);
         } else {
             distanceToCurrentNeighbor = Double.POSITIVE_INFINITY;
         }
@@ -292,10 +292,10 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
                 float x = coords[i];
                 float y = coords[i + 1];
 
-                double distance = Util.distTo(queryCoords[0], queryCoords[1], x, y);
+                double distance = DistanceUtil.distTo(queryCoords[0], queryCoords[1], x, y);
 
                 if (currentNearestNeighbor != null) {
-                    distanceToCurrentNeighbor = Util.distTo(queryCoords, currentNearestNeighbor);
+                    distanceToCurrentNeighbor = DistanceUtil.distTo(queryCoords, currentNearestNeighbor);
                 }
                 if (distance < distanceToCurrentNeighbor) {
                     currentNearestNeighbor = new float[]{x, y};
@@ -312,7 +312,7 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
      * is called to check the other side of the split.
      */
     private void investigateOtherSide(float[] queryCoords, KdNode<T> kdNode) {
-        double distanceToCurrentNeighbor = Util.distTo(queryCoords, currentNearestNeighbor);
+        double distanceToCurrentNeighbor = DistanceUtil.distTo(queryCoords, currentNearestNeighbor);
 
         if (depth % 2 == 0) {
             float nodeMaxX = kdNode.getMaxX();

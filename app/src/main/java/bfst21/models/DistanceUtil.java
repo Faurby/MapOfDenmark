@@ -4,7 +4,7 @@ package bfst21.models;
 /**
  * Utility class.
  */
-public class Util {
+public class DistanceUtil {
 
     /**
      * Calculate the distance between 2 float array coordinates.

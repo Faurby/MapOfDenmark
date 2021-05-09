@@ -73,7 +73,7 @@ public class DijkstraPath {
      * If driving, the weight is set to the Edge weight calculated using distance and max speed.
      * If walking or biking, the weight is set to the distance of the Edge.
      */
-    public void relax(Edge edge) {
+    private void relax(Edge edge) {
         if (edge.canNavigate()) {
             int v = edge.getFrom();
             int w = edge.getTo();

@@ -2,7 +2,7 @@ package bfst21.pathfinding;
 
 import bfst21.models.TransportOption;
 import bfst21.models.TransportOptions;
-import bfst21.models.Util;
+import bfst21.models.DistanceUtil;
 import bfst21.osm.Node;
 
 import java.io.Serializable;
@@ -149,7 +149,7 @@ public class DirectedGraph implements Serializable {
 
         int fromID = getVertexID(fromCoords);
         int toID = getVertexID(toCoords);
-        float distance = (float) Util.distTo(fromCoords, toCoords);
+        float distance = (float) DistanceUtil.distTo(fromCoords, toCoords);
         float weight = (distance * 60.0f / maxSpeed);
 
         addEdge(name, fromID, toID, weight, distance, junction, canDrive, canBike, canWalk);
@@ -251,7 +251,7 @@ public class DirectedGraph implements Serializable {
         return outDegree;
     }
 
-    public float[] getVector(Edge edge) {
+    private float[] getVector(Edge edge) {
         Vertex fromVertex = vertices[edge.getFrom()];
         Vertex toVertex = vertices[edge.getTo()];
 

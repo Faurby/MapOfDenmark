@@ -390,7 +390,7 @@ public class MapData {
             float x = coordsList[i];
             float y = coordsList[i + 1];
 
-            double distance = Util.distTo(queryCoords[0], queryCoords[1], x, y);
+            double distance = DistanceUtil.distTo(queryCoords[0], queryCoords[1], x, y);
 
             if (distance < minimumDistance) {
                 minimumDistance = distance;

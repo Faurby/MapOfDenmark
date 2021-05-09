@@ -102,26 +102,7 @@ public class MapCanvas extends Canvas {
         if (model.getMapData() != null) {
 
             adjustWidthModifier();
-
-            //Draw every elementGroup if option is enabled
-            for (ElementGroup elementGroup : ElementGroup.values()) {
-                ElementType elementType = elementGroup.getType();
-                try {
-                    if (elementType.isDisplayOptionEnabled()) {
-
-                        //TODO: This is a bit scuffed
-                        // but relations needs to be drawn in the correct order somehow...
-                        ElementSize elementSize = elementGroup.getSize();
-                        if (elementSize == ElementSize.DEFAULT || elementSize == ElementSize.SMALL) {
-                            drawRelations(elementType);
-                        }
-                        drawOrFill(elementGroup);
-                    }
-                } catch (IllegalArgumentException ex) {
-                    System.out.println("Failed to draw " + elementGroup);
-                    System.out.println("There is no DISPLAY_" + elementType + " in the Option class!");
-                }
-            }
+            drawElementGroups();
             drawUserNodes();
             drawNeighborNodes();
             drawMapText();
@@ -192,13 +173,16 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void drawMapText() {
+    /**
+     * Draws every MapText found by the kd-tree range search.
+     */
+    private void drawMapText() {
         if (displayOptions.getBool(DisplayOption.DISPLAY_TEXT)) {
             List<MapText> list = model.getMapData().getMapTexts();
 
             if (list.size() > 0) {
 
-                gc.setFill(getTextColor());
+                gc.setFill(getMapTextColor());
                 gc.setTextAlign(TextAlignment.CENTER);
 
                 for (MapText mapText : model.getMapData().getMapTexts()) {
@@ -218,10 +202,37 @@ public class MapCanvas extends Canvas {
     }
 
     /**
+     * Draw every ElementGroup if option is enabled
+     */
+    private void drawElementGroups() {
+        for (ElementGroup elementGroup : ElementGroup.values()) {
+            ElementType elementType = elementGroup.getType();
+            try {
+                if (elementType.isDisplayOptionEnabled()) {
+
+                    //Workaround: Relations need to be drawn in the
+                    //correct order together with other ElementTypes.
+                    //So this is done to only draw Relations once per ElementType
+                    ElementSize elementSize = elementGroup.getSize();
+
+                    if (elementSize == ElementSize.DEFAULT
+                     || elementSize == ElementSize.SMALL) {
+                        drawRelations(elementType);
+                    }
+                    drawOrFill(elementGroup);
+                }
+            } catch (IllegalArgumentException ex) {
+                System.out.println("Failed to draw " + elementGroup);
+                System.out.println("There is no DISPLAY_" + elementType + " in the Option class!");
+            }
+        }
+    }
+
+    /**
      * Draws or fills every Way with the ElementGroup to display at the current zoom level.
      * Retrieves values for colors, size and line dashes from the ElementType.
      */
-    public void drawOrFill(ElementGroup elementGroup) {
+    private void drawOrFill(ElementGroup elementGroup) {
         if (elementGroup.doShowElement(zoomLevel)) {
             ElementType elementType = elementGroup.getType();
             gc.setLineDashes(elementType.getLineDashes());
@@ -258,7 +269,7 @@ public class MapCanvas extends Canvas {
     /**
      * Draw the entire navigation graph.
      */
-    public void drawGraph() {
+    private void drawGraph() {
         if (displayOptions.getBool(DisplayOption.DISPLAY_GRAPH)) {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
@@ -286,7 +297,7 @@ public class MapCanvas extends Canvas {
      * Draws a path from the origin coords to the destination coords.
      * Draws every path that dijkstra has investigated.
      */
-    public void drawPathTo(float[] destinationCoords) {
+    private void drawPathTo(float[] destinationCoords) {
         if (displayOptions.getBool(DisplayOption.DISPLAY_DIJKSTRA)) {
             DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
@@ -396,6 +407,9 @@ public class MapCanvas extends Canvas {
         repaint();
     }
 
+    /**
+     * Change the current view of the screen to the given x and y values.
+     */
     public void changeView(float newX, float newY) {
 
         double x1 = trans.getTx() / Math.sqrt(trans.determinant());
@@ -435,7 +449,7 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void drawNeighborNodes() {
+    private void drawNeighborNodes() {
         if (nearestNeighborCoords != null) {
 
             gc.setStroke(Color.RED);
@@ -521,7 +535,7 @@ public class MapCanvas extends Canvas {
     /**
      * Begins a range search for the kd-tree if MapData is available.
      */
-    public void rangeSearch() {
+    private void rangeSearch() {
         if (model.getMapData() != null) {
             model.getMapData().kdTreeRangeSearch(getScreenBoundingBox(true), zoomLevel);
         }
@@ -530,7 +544,7 @@ public class MapCanvas extends Canvas {
     /**
      * Draws a visualization of the kd-tree if option is enabled.
      */
-    public void drawKdTree(KdNode kdNode,
+    private void drawKdTree(KdNode kdNode,
                            float maxX,
                            float maxY,
                            float minX,
@@ -602,7 +616,7 @@ public class MapCanvas extends Canvas {
     /**
      * @return Color for the specific ElementType depending on the current color mode.
      */
-    public Color getColor(ElementType elementType) {
+    private Color getColor(ElementType elementType) {
         if (colorMode == ColorMode.COLOR_BLIND) {
             return elementType.getColorBlind();
         } else if (colorMode == ColorMode.DARK_MODE) {
@@ -611,7 +625,10 @@ public class MapCanvas extends Canvas {
         return elementType.getColor();
     }
 
-    public Color getTextColor() {
+    /**
+     * @return Color for MapText depending on the current color mode.
+     */
+    private Color getMapTextColor() {
         if (colorMode == ColorMode.COLOR_BLIND) {
             return Color.rgb(220, 255, 255);
         } else if (colorMode == ColorMode.DARK_MODE) {
@@ -627,7 +644,7 @@ public class MapCanvas extends Canvas {
     /**
      * Adjust width modifier used to properly size Ways at the current zoom level
      */
-    public void adjustWidthModifier() {
+    private void adjustWidthModifier() {
         if (zoomLevel < 500D) {
             widthModifier = 1.0D;
 
@@ -648,7 +665,6 @@ public class MapCanvas extends Canvas {
 
     /**
      * Calculate zoom level percentage using the zoom limits.
-     *
      * @return zoom level percentage.
      */
     public String getZoomPercent() {

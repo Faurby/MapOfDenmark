@@ -103,7 +103,7 @@
                     </Menu>
                 </Menu>
                 <Menu text="Help">
-                    <MenuItem onAction="#showHideDebug"
+                    <MenuItem onAction="#toggleDebugVisibility"
                               text="Toggle debug options"/>
                 </Menu>
             </MenuBar>

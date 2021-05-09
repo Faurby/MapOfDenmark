@@ -3,7 +3,7 @@ package bfst21.test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import bfst21.models.Model;
-import bfst21.models.Util;
+import bfst21.models.DistanceUtil;
 import bfst21.osm.ElementGroup;
 import bfst21.osm.ElementSize;
 import bfst21.osm.ElementType;
@@ -52,7 +52,7 @@ public class XmlParserTest {
         lat1 = -lat1 / 0.56f;
         lat2 = -lat2 / 0.56f;
 
-        double distance = Util.distTo(lon1, lat1, lon2, lat2);
+        double distance = DistanceUtil.distTo(lon1, lat1, lon2, lat2);
         assertEquals(0.09125, distance, 0.0001);
     }
 
@@ -66,7 +66,7 @@ public class XmlParserTest {
         lat1 = -lat1 / 0.56f;
         lat2 = -lat2 / 0.56f;
 
-        double distance = Util.distTo(lon1, lat1, lon2, lat2);
+        double distance = DistanceUtil.distTo(lon1, lat1, lon2, lat2);
         assertEquals(59.83386186513035, distance, 0.1);
     }
 }

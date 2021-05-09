@@ -75,7 +75,6 @@ public class NavigationBoxController extends SubController {
         selectCarButton.setOnAction(new ToggleTransportListener(TransportOption.CAR, selectCarButton));
     }
 
-    @FXML
     private void searchSingleAddress() {
         String address = addressTextArea.getText().trim().toLowerCase();
         suggestionsBox.getChildren().clear();
@@ -229,7 +228,7 @@ public class NavigationBoxController extends SubController {
         }
     }
 
-    public void displayAddressSuggestions(VBox suggestions, TextArea textArea, boolean extended) {
+    private void displayAddressSuggestions(VBox suggestions, TextArea textArea, boolean extended) {
         int count = 0;
         suggestions.getChildren().clear();
 
@@ -256,7 +255,7 @@ public class NavigationBoxController extends SubController {
         }
     }
 
-    public void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended) {if (addressSuggestionTask != null) {
+    private void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended) {if (addressSuggestionTask != null) {
             if (addressSuggestionTask.isRunning()) {
                 addressSuggestionTask.cancel();
             }
@@ -357,6 +356,7 @@ public class NavigationBoxController extends SubController {
         return addressInput;
     }
 
+    @FXML
     public void switchAddressText() {
         List<OsmAddress> temp = allSuggestionsOrigin;
         allSuggestionsOrigin = allSuggestionsDestination;
