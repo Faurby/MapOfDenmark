@@ -75,7 +75,8 @@ public class NavigationBoxController extends SubController {
         selectCarButton.setOnAction(new ToggleTransportListener(TransportOption.CAR, selectCarButton));
     }
 
-    private void searchSingleAddress() {
+    @FXML
+    public void searchSingleAddress() {
         String address = addressTextArea.getText().trim().toLowerCase();
         suggestionsBox.getChildren().clear();
 
