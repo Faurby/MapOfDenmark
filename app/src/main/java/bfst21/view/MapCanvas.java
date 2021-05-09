@@ -270,7 +270,7 @@ public class MapCanvas extends Canvas {
 
             for (Vertex vertex : vertices) {
                 if (vertex != null) {
-                    for (int id : vertex.getEdges()) {
+                    for (int id : vertex.getAdjacentEdges()) {
                         Edge edge = directedGraph.getEdge(id);
                         if (edge != null) {
                             edge.draw(directedGraph, gc);
@@ -496,6 +496,9 @@ public class MapCanvas extends Canvas {
         thread.start();
     }
 
+    /**
+     * @return BoundingBox of the screen.
+     */
     public BoundingBox getScreenBoundingBox(boolean extend) {
         double x1 = trans.getTx() / Math.sqrt(trans.determinant());
         double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());

@@ -6,6 +6,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 
+/**
+ * BoundingBox represents the bounding box of the screen.
+ * This is used to start a kd-tree range search within a bounding box.
+ */
 public class BoundingBox implements Drawable {
 
     private final float maxX, maxY, minX, minY;
@@ -18,9 +22,6 @@ public class BoundingBox implements Drawable {
     }
 
     public boolean intersects(float otherMaxX, float otherMaxY, float otherMinX, float otherMinY) {
-
-        //return (minX < otherMaxX) && (otherMinX < maxX) && (minY < otherMaxY) && (minY < otherMinY && otherMinY < maxY);
-        //return minX < boundingBox.maxX && maxX > boundingBox.minX && minY < boundingBox.maxY && maxY > boundingBox.minY;
 
         //Check if other box is inside this box
         if (otherMinX >= minX && otherMaxX <= maxX && otherMinY >= minY && otherMaxY <= maxY) {
@@ -41,9 +42,7 @@ public class BoundingBox implements Drawable {
             }
         }
         if ((otherMinY >= minY && otherMinY <= maxY) || (otherMaxY >= minY && otherMaxY <= maxY)) {
-            if ((otherMinX <= minX && otherMaxX >= maxX)) {
-                return true;
-            }
+            return otherMinX <= minX && otherMaxX >= maxX;
         }
         return false;
     }

@@ -1,5 +1,7 @@
 package bfst21.pathfinding;
 
+import bfst21.models.TransportOption;
+import bfst21.models.TransportOptions;
 import bfst21.models.Util;
 import bfst21.osm.Node;
 
@@ -211,7 +213,7 @@ public class DirectedGraph implements Serializable {
 
         Vertex vertex = vertices[vertexID];
         if (vertex != null) {
-            for (int id : vertex.getEdges()) {
+            for (int id : vertex.getAdjacentEdges()) {
                 Edge edge = edges[id];
                 if (edge != null) {
                     edgeList.add(edge);
@@ -221,13 +223,29 @@ public class DirectedGraph implements Serializable {
         return edgeList;
     }
 
+    /**
+     * @return out degree of vertex with given vertexID.
+     * <p>
+     * The out degree is only increased if the edge can be
+     * navigated using the currently enabled TransportOption.
+     */
     public int getOutDegree(int vertexID) {
         List<Edge> edges = getAdjacentEdges(vertexID);
         int outDegree = 0;
 
         for (Edge edge : edges) {
             if (edge.getFrom() == vertexID) {
-                outDegree++;
+                TransportOption current = TransportOptions.getInstance().getCurrentlyEnabled();
+
+                if (current == TransportOption.CAR && edge.canDrive()) {
+                    outDegree++;
+                }
+                if (current == TransportOption.BIKE && edge.canBike()) {
+                    outDegree++;
+                }
+                if (current == TransportOption.WALK && edge.canWalk()) {
+                    outDegree++;
+                }
             }
         }
         return outDegree;

@@ -61,7 +61,7 @@ public class KdTreeTest {
 
         BoundingBox boundingBox = new BoundingBox(4, 5, 4, 5);
 
-        List<Way> searchList = kdTree.preRangeSearch(boundingBox);
+        List<Way> searchList = kdTree.rangeSearch(boundingBox);
         float[] wayCoords = searchList.get(0).getCoords();
 
         assertEquals(coords4[0], wayCoords[0]);

@@ -48,7 +48,6 @@ public class Edge implements Serializable {
         this.junction = junction;
     }
 
-
     /**
      * Draw an Edge between the coordinates of its vertices.
      */

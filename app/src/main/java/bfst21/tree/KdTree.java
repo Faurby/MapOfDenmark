@@ -9,6 +9,15 @@ import java.util.Comparator;
 import java.util.List;
 
 
+/**
+ * KdTree is a 2d binary search tree.
+ * <p>
+ * This is heavily inspired by the standard kd-tree data structure
+ * but modifications have been made to only draw certain elements on a map.
+ * <p>
+ * Elements inserted must extend BoundingBoxElement so its
+ * bounding box can be used to build and search the kd-tree.
+ */
 public class KdTree<T extends BoundingBoxElement> implements Serializable {
 
     private static final long serialVersionUID = -7974247333826441763L;
@@ -22,72 +31,9 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
         return root;
     }
 
-    public List<T> preRangeSearch(BoundingBox boundingBox) {
-        depth = 0;
-
-        List<T> list = new ArrayList<>();
-        rangeSearch(boundingBox, root, list);
-
-        return list;
-    }
-
-    private void rangeSearch(BoundingBox boundingBox, KdNode<T> kdNode, List<T> list) {
-        if (kdNode != null) {
-
-            if (kdNode.getList() != null) {
-                for (T element : kdNode.getList()) {
-
-                    float minX = element.getMinX();
-                    float maxX = element.getMaxX();
-                    float minY = element.getMinY();
-                    float maxY = element.getMaxY();
-
-                    if (boundingBox.intersects(maxX, maxY, minX, minY)) {
-                        list.add(element);
-                    }
-                }
-            }
-            boolean checkRight = false;
-            boolean checkLeft = false;
-
-            if (depth % 2 == 0) {
-                float nodeMaxX = kdNode.getMaxX();
-                float nodeMinX = kdNode.getMinX();
-                float maxX = boundingBox.getMaxX();
-                float minX = boundingBox.getMinX();
-
-                if (nodeMaxX >= minX) {
-                    checkLeft = true;
-                }
-                if (nodeMinX <= maxX) {
-                    checkRight = true;
-                }
-            } else {
-                float nodeMaxY = kdNode.getMaxY();
-                float nodeMinY = kdNode.getMinY();
-                float maxY = boundingBox.getMaxY();
-                float minY = boundingBox.getMinY();
-
-                if (nodeMaxY >= minY) {
-                    checkLeft = true;
-                }
-                if (nodeMinY <= maxY) {
-                    checkRight = true;
-                }
-            }
-            if (checkRight) {
-                depth++;
-                rangeSearch(boundingBox, kdNode.getRightChild(), list);
-                depth--;
-            }
-            if (checkLeft) {
-                depth++;
-                rangeSearch(boundingBox, kdNode.getLeftChild(), list);
-                depth--;
-            }
-        }
-    }
-
+    /**
+     * Build the kd-tree with the given list of elements.
+     */
     public void build(List<T> elementList) {
         depth = 0;
 
@@ -188,6 +134,97 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
         }
     }
 
+    /**
+     * Start a range search within the given BoundingBox of the screen.
+     * The range search starts at the root KdNode.
+     *
+     * @return list of elements found by the range search.
+     */
+    public List<T> rangeSearch(BoundingBox boundingBox) {
+        depth = 0;
+
+        List<T> list = new ArrayList<>();
+        rangeSearch(boundingBox, root, list);
+
+        return list;
+    }
+
+    /**
+     * Inner range search method which will recursively continue the
+     * search until all elements within the BoundingBox have been found.
+     * <p>
+     * The BoundingBox of the current KdNode will
+     * be compared with the BoundingBox of the screen.
+     * This is used to determine what side of the split is checked.
+     * In cases where elements are overlapping, both sides are checked.
+     * <p>
+     * If we reach a leaf KdNode, we add elements to
+     * the list if they intersect the given BoundingBox.
+     */
+    private void rangeSearch(BoundingBox boundingBox, KdNode<T> kdNode, List<T> list) {
+        if (kdNode != null) {
+
+            if (kdNode.getList() != null) { //Check if KdNode is a leaf
+                for (T element : kdNode.getList()) {
+
+                    float minX = element.getMinX();
+                    float maxX = element.getMaxX();
+                    float minY = element.getMinY();
+                    float maxY = element.getMaxY();
+
+                    if (boundingBox.intersects(maxX, maxY, minX, minY)) {
+                        list.add(element);
+                    }
+                }
+            }
+            boolean checkRight = false;
+            boolean checkLeft = false;
+
+            //When depth is divisible by 2, we compare x-values instead of y-values.
+            if (depth % 2 == 0) {
+                float nodeMaxX = kdNode.getMaxX();
+                float nodeMinX = kdNode.getMinX();
+                float maxX = boundingBox.getMaxX();
+                float minX = boundingBox.getMinX();
+
+                if (nodeMaxX >= minX) {
+                    checkLeft = true;
+                }
+                if (nodeMinX <= maxX) {
+                    checkRight = true;
+                }
+            } else {
+                float nodeMaxY = kdNode.getMaxY();
+                float nodeMinY = kdNode.getMinY();
+                float maxY = boundingBox.getMaxY();
+                float minY = boundingBox.getMinY();
+
+                if (nodeMaxY >= minY) {
+                    checkLeft = true;
+                }
+                if (nodeMinY <= maxY) {
+                    checkRight = true;
+                }
+            }
+            if (checkRight) {
+                depth++;
+                rangeSearch(boundingBox, kdNode.getRightChild(), list);
+                depth--;
+            }
+            if (checkLeft) {
+                depth++;
+                rangeSearch(boundingBox, kdNode.getLeftChild(), list);
+                depth--;
+            }
+        }
+    }
+
+    /**
+     * Start a nearest neighbor search with the given query coords.
+     * The nearest neighbor search starts at the root KdNode.
+     *
+     * @return coords of the nearest neighbor.
+     */
     public float[] nearestNeighborSearch(float[] queryCoords) {
         depth = 0;
 
@@ -195,6 +232,10 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
         return currentNearestNeighbor;
     }
 
+    /**
+     * Inner nearest neighbor search method which will continue
+     * recursively until the nearest neighbor has been found.
+     */
     private void nearestNeighborSearch(float[] queryCoords, KdNode<T> kdNode) {
         boolean isLeaf = kdNode.getList() != null;
 
@@ -231,6 +272,9 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
         }
     }
 
+    /**
+     * Investigate leaf KdNode to update current nearest neighbor.
+     */
     private void investigateLeaf(float[] queryCoords, KdNode<T> kdNode) {
         double distanceToCurrentNeighbor;
 
@@ -260,6 +304,13 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
         }
     }
 
+    /**
+     * Investigate the other side of a split to see if there
+     * are elements closer than the current nearest neighbor.
+     * <p>
+     * If anything is found, a nearest neighbor search
+     * is called to check the other side of the split.
+     */
     private void investigateOtherSide(float[] queryCoords, KdNode<T> kdNode) {
         double distanceToCurrentNeighbor = Util.distTo(queryCoords, currentNearestNeighbor);
 

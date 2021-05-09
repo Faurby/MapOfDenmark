@@ -353,14 +353,14 @@ public class MapData {
         for (ElementGroup elementGroup : ElementGroup.values()) {
             if (elementGroup.doShowElement(zoomLevel)) {
                 if (kdTreeMap.containsKey(elementGroup)) {
-                    List<Way> wayList = kdTreeMap.get(elementGroup).preRangeSearch(boundingBox);
+                    List<Way> wayList = kdTreeMap.get(elementGroup).rangeSearch(boundingBox);
                     kdTreeSearchMap.put(elementGroup, wayList);
                 }
             }
         }
         //Search Relation kd-tree and MapText kd-tree
-        kdTreeRelationSearchList = kdTreeRelations.preRangeSearch(boundingBox);
-        kdTreeMapTextSearchList = kdTreeMapTexts.preRangeSearch(boundingBox);
+        kdTreeRelationSearchList = kdTreeRelations.rangeSearch(boundingBox);
+        kdTreeMapTextSearchList = kdTreeMapTexts.rangeSearch(boundingBox);
     }
 
     /**
