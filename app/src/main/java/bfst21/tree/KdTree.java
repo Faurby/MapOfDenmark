@@ -340,6 +340,29 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
         }
     }
 
+    /**
+     * @return list of all elements in the kd-tree.
+     * This is only used for unit testing.
+     */
+    public List<T> getAllElements() {
+        List<T> list = new ArrayList<>();
+
+        getAllElements(root, list);
+        return list;
+    }
+
+    private void getAllElements(KdNode<T> kdNode, List<T> list) {
+        if (kdNode != null) {
+            if (kdNode.getList() != null) {
+                list.addAll(kdNode.getList());
+
+            } else {
+                getAllElements(kdNode.getLeftChild(), list);
+                getAllElements(kdNode.getRightChild(), list);
+            }
+        }
+    }
+
     public int getMaxDepth() {
         return maxDepth;
     }

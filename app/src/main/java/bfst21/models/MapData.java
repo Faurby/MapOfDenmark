@@ -5,6 +5,7 @@ import bfst21.osm.*;
 import bfst21.pathfinding.DijkstraPath;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.tree.BoundingBox;
+import bfst21.tree.KdNode;
 import bfst21.tree.KdTree;
 import javafx.concurrent.Task;
 

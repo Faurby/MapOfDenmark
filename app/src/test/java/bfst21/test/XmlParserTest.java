@@ -4,15 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import bfst21.models.Model;
 import bfst21.models.DistanceUtil;
-import bfst21.osm.ElementGroup;
-import bfst21.osm.ElementSize;
-import bfst21.osm.ElementType;
+import bfst21.osm.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.util.List;
 
 
 public class XmlParserTest {
@@ -31,15 +30,17 @@ public class XmlParserTest {
 
     @Test
     public void getBuildingsSize_correctAmount() {
-        int actual = model.getMapData().getWays(ElementGroup.getElementGroup(ElementType.BUILDING, ElementSize.DEFAULT)).size();
-        assertEquals(3452081, actual);
-        //buildings where k="building"
+        ElementGroup elementGroup = new ElementGroup(ElementType.BUILDING, ElementSize.SMALL);
+        List<Way> ways = model.getMapData().getKdTree(elementGroup).getAllElements();
+
+        assertEquals(67292, ways.size());
     }
 
     @Test
     public void getRelationsSize_correctAmount() {
-        int actual = model.getMapData().getRelations().size();
-        assertEquals(31727, actual);
+        List<Relation> relations = model.getMapData().getKdTreeRelations().getAllElements();
+
+        assertEquals(807, relations.size());
     }
 
     @Test
