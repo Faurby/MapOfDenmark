@@ -141,7 +141,7 @@
                     <ImageView fitWidth="10.0"
                                preserveRatio="true"
                                style="-fx-background-color: TRANSPARENT">
-                        <Image url="/arrowPic.png"/>
+                        <Image url="/arrow.png"/>
                     </ImageView>
                 </graphic>
 
@@ -161,7 +161,7 @@
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
                                style="-fx-background-color: TRANSPARENT">
-                        <Image url="/carPic.png"/>
+                        <Image url="/car_icon.png"/>
                     </ImageView>
                 </graphic>
 
@@ -181,7 +181,7 @@
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
                                style="-fx-background-color: TRANSPARENT">
-                        <Image url="/bikePic.png"/>
+                        <Image url="/bike_icon.png"/>
                     </ImageView>
                 </graphic>
 
@@ -201,7 +201,7 @@
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
                                style="-fx-background-color: TRANSPARENT">
-                        <Image url="/walkPic.png"/>
+                        <Image url="/walk_icon.png"/>
                     </ImageView>
                 </graphic>
 

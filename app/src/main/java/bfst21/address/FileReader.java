@@ -16,7 +16,7 @@ public class FileReader {
 
     public void readFile() {
         List<City> cityList = new ArrayList<>();
-        String path = "CityPostcodePair.txt";
+        String path = "city_postcode_pairs.txt";
         Scanner sc = new Scanner(getClass().getClassLoader().getResourceAsStream(path), StandardCharsets.UTF_8);
 
         while (sc.hasNext()) {

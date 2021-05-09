@@ -11,9 +11,9 @@ import java.util.Objects;
  */
 public enum Pin {
 
-    ORIGIN("greyPin.png"),
-    DESTINATION("redPin.png"),
-    USER_NODE("bluePin.png");
+    ORIGIN("grey_pin.png"),
+    DESTINATION("red_pin.png"),
+    USER_NODE("blue_pin.png");
 
     private boolean visible = false;
     private float[] coords;
