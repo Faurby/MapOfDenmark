@@ -374,6 +374,7 @@ public class MainController extends BaseController {
         if (model.getMapData() != null) {
             updateUserNodeList();
         }
+        canvas.repaint();
     }
 
     @FXML
