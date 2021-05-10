@@ -1,0 +1,46 @@
+
+/* THIS STYLESHEET CONTAINS THE STYLING THAT SHOULDN'T BE CHANGED BY COLOR MODES */
+
+.largeText {
+    -fx-font-size: large;
+}
+
+.textField {
+    -fx-max-width: 150;
+    -fx-pref-width: 150;
+}
+
+.userNodeButton {
+    -fx-max-width: 90;
+    -fx-pref-width: 90;
+}
+
+.userNodeVBoxes {
+    visibility: hidden;
+    -fx-max-width: 220;
+    -fx-pref-width: 220;
+    -fx-max-height: 190;
+    -fx-pref-height: 190;
+    -fx-alignment: CENTER;
+    -fx-spacing: 8;
+}
+
+.userNodeNewNameOrDescVBoxes {
+    -fx-max-width: 180;
+    -fx-pref-width: 180;
+    -fx-max-height: 140;
+    -fx-pref-height: 140;
+    -fx-spacing: 10;
+}
+
+#userNodeVBox {
+    visibility: hidden;
+    -fx-max-width: 185;
+    -fx-max-height: 120;
+    -fx-spacing: 8;
+    -fx-padding: 40 0 15 0;
+}
+
+#userNodeClickedName {
+    -fx-font-size: x-large;
+}

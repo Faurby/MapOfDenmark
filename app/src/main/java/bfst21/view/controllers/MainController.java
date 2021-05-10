@@ -52,7 +52,7 @@ public class MainController extends BaseController {
     @FXML
     private Scene scene;
     @FXML
-    private VBox loadingText;
+    private VBox loadingVBox;
     @FXML
     private ProgressBar progressBar;
     @FXML
@@ -357,13 +357,13 @@ public class MainController extends BaseController {
 
     private void startLoadingFile() {
         userNodeVBox.setVisible(false);
-        loadingText.setVisible(true);
+        loadingVBox.setVisible(true);
     }
 
     private void finishedLoadingFile() {
         startBox.setVisible(false);
         startBox.setManaged(false);
-        loadingText.setVisible(false);
+        loadingVBox.setVisible(false);
         navigationBoxController.setSearchBoxVisible(true);
         userNodeVBox.setVisible(true);
         footBox.setVisible(true);

@@ -4,16 +4,16 @@
 
 /* EDIT BELOW HERE FOR RESPECTIVE COLOR MODE */
 .searchBox {
-    -fx-background-color: #f6f6f6;
-    -fx-border-color: #3E859B;
+    -fx-background-color: #747474;
+    -fx-border-color: #244e58;
 }
 
 .scrollPane {
-    -fx-background-color: WHITE;
+    -fx-background-color: GREY;
 }
 
 .suggestions {
-    -fx-background-color: WHITE;
+    -fx-background-color: GREY;
 }
 
 .toggle-button {

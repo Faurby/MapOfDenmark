@@ -4,7 +4,6 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Text?>
-<?import javafx.geometry.Insets?>
 
 
 <VBox xmlns="https://javafx.com/javafx"
@@ -13,43 +12,39 @@
       maxWidth="40"
       maxHeight="20"
       visible="false"
-      style="-fx-padding: 30">
+      fx:id="debugVBox"
+      stylesheets="@../../styles/debug_default.css">
 
     <Text text="zoomText" fx:id="zoomText"/>
     <Text text="repaintTime" fx:id="repaintTime"/>
     <Text text="nodeSkipAmount" fx:id="nodeSkipAmount"/>
 
-    <VBox minWidth="150"
-          style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B;">
+    <VBox minWidth="150" fx:id="debugOptionsVBox">
 
-        <padding>
-            <Insets top="5" right="10" bottom="5" left="10"/>
-        </padding>
+        <Text text="Debug options:"/>
 
-        <Text text="Debug options:" style="-fx-padding: 2"/>
-
-        <CheckBox text="Display KD tree" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display graph" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display dijkstra" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display relations" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display island" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display water" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display waterway" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display landuse" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display forest" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display cycleway" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display footway" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display pedestrian" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display road" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display residential" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display trunk" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display motorway" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display tertiary" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display primary" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display building" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display ferry" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display unknown" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
-        <CheckBox text="Display text" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
+        <CheckBox text="Display KD tree" selected="false" onAction="#onCheckDebug"/>
+        <CheckBox text="Display graph" selected="false" onAction="#onCheckDebug"/>
+        <CheckBox text="Display dijkstra" selected="false" onAction="#onCheckDebug"/>
+        <CheckBox text="Display relations" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display island" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display water" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display waterway" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display landuse" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display forest" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display cycleway" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display footway" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display pedestrian" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display road" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display residential" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display trunk" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display motorway" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display tertiary" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display primary" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display building" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display ferry" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display unknown" selected="true" onAction="#onCheckDebug"/>
+        <CheckBox text="Display text" selected="true" onAction="#onCheckDebug"/>
     </VBox>
     <Text text="mouseCoords" fx:id="mouseCoords"/>
     <Text text="mouseCoordsRealWorld" fx:id="mouseCoordsRealWorld"/>

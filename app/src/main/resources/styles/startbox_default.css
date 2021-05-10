@@ -1,11 +1,9 @@
 
 /* IMPORT MAIN FILE */
-@import "_debug.css";
-
+@import "_startbox.css";
 
 /* EDIT BELOW HERE FOR RESPECTIVE COLOR MODE */
-#debugOptionsVBox {
+#startboxVBox {
     -fx-background-color: #f6f6f6;
     -fx-border-color: #3E859B;
 }
-

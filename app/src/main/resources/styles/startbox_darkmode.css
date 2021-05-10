@@ -1,0 +1,9 @@
+
+/* IMPORT MAIN FILE */
+@import "_startbox.css";
+
+/* EDIT BELOW HERE FOR RESPECTIVE COLOR MODE */
+#startboxVBox {
+    -fx-background-color: #6f6f6f;
+    -fx-border-color: #1e4049;
+}
