@@ -247,6 +247,7 @@ public class XmlParser {
                                                 elementType = ElementType.ROAD;
                                                 break;
                                             case "trunk":
+                                            case "trunk_link":
                                                 elementType = ElementType.TRUNK;
                                                 way.setMaxSpeed(80);
                                                 break;
