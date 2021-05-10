@@ -279,84 +279,87 @@ public class MapCanvas extends Canvas {
         DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
         int destinationID = directedGraph.getVertexID(destinationCoords);
-        List<Edge> edgeList = model.getMapData().getDijkstra().pathTo(destinationID);
 
-        if (edgeList.size() > 0) {
+        if (model.getMapData().getDijkstra() != null) {
+            List<Edge> edgeList = model.getMapData().getDijkstra().pathTo(destinationID);
 
-            gc.setStroke(Color.RED);
-            gc.setLineWidth(3.0D * (1.0D / Math.sqrt(trans.determinant())));
+            if (edgeList.size() > 0) {
 
-            currentDirections = new ArrayList<>();
+                gc.setStroke(Color.RED);
+                gc.setLineWidth(3.0D * (1.0D / Math.sqrt(trans.determinant())));
 
-            gc.beginPath();
-            float distanceSum = 0;
-            int exitCount = 0;
+                currentDirections = new ArrayList<>();
 
-            for (int i = 0; i < (edgeList.size() - 1); i++) {
-                Edge before = edgeList.get(i);
-                Edge after = edgeList.get(i + 1);
+                gc.beginPath();
+                float distanceSum = 0;
+                int exitCount = 0;
+
+                for (int i = 0; i < (edgeList.size() - 1); i++) {
+                    Edge before = edgeList.get(i);
+                    Edge after = edgeList.get(i + 1);
 
 
-                if (before.isJunction()) {
-                    before.draw(directedGraph, gc);
-                    int fromID = before.getFrom();
-                    if (directedGraph.getOutDegree(fromID) >= 2) {
-                        exitCount++;
-                    }
-                    if (!after.isJunction()) {
-                        currentDirections.add("Take the " + exitCount + ". exit in the roundabout");
-                        exitCount = 0;
-                    }
-
-                } else {
-                    Direction direction = directedGraph.getDirectionRightLeft(before, after);
-                    float distanceBefore = before.getDistance() * 1_000f;
-                    float distanceAfter = after.getDistance() * 1_000f;
-
-                    distanceSum += distanceBefore;
-
-                    before.draw(directedGraph, gc);
-
-                    String dir = direction.toString().toLowerCase().replace("_", " ");
-
-                    if (direction != Direction.STRAIGHT) {
-                        currentDirections.add("Drive " + (int) distanceSum + "m down " + before.getName());
-                        if (!after.isJunction()) {
-                            currentDirections.add("Then " + dir + " down " + after.getName());
+                    if (before.isJunction()) {
+                        before.draw(directedGraph, gc);
+                        int fromID = before.getFrom();
+                        if (directedGraph.getOutDegree(fromID) >= 2) {
+                            exitCount++;
                         }
-                        distanceSum = 0;
-                    }
-                    if (i == (edgeList.size() - 2)) {
-                        after.draw(directedGraph, gc);
-                        currentDirections.add("Drive " + (int) (distanceSum + distanceAfter) + "m down " + after.getName());
+                        if (!after.isJunction()) {
+                            currentDirections.add("Take the " + exitCount + ". exit in the roundabout");
+                            exitCount = 0;
+                        }
+
+                    } else {
+                        Direction direction = directedGraph.getDirectionRightLeft(before, after);
+                        float distanceBefore = before.getDistance() * 1_000f;
+                        float distanceAfter = after.getDistance() * 1_000f;
+
+                        distanceSum += distanceBefore;
+
+                        before.draw(directedGraph, gc);
+
+                        String dir = direction.toString().toLowerCase().replace("_", " ");
+
+                        if (direction != Direction.STRAIGHT) {
+                            currentDirections.add("Drive " + (int) distanceSum + "m down " + before.getName());
+                            if (!after.isJunction()) {
+                                currentDirections.add("Then " + dir + " down " + after.getName());
+                            }
+                            distanceSum = 0;
+                        }
+                        if (i == (edgeList.size() - 2)) {
+                            after.draw(directedGraph, gc);
+                            currentDirections.add("Drive " + (int) (distanceSum + distanceAfter) + "m down " + after.getName());
+                        }
                     }
                 }
-            }
 
-            gc.stroke();
+                gc.stroke();
 
-            int start = edgeList.get(0).getFrom();
-            float[] startCoords = directedGraph.getVertexCoords(start);
+                int start = edgeList.get(0).getFrom();
+                float[] startCoords = directedGraph.getVertexCoords(start);
 
-            gc.setStroke(Color.YELLOWGREEN);
-            gc.setLineWidth(0.0005D * widthModifier);
+                gc.setStroke(Color.YELLOWGREEN);
+                gc.setLineWidth(0.0005D * widthModifier);
 
-            gc.beginPath();
-            gc.moveTo(startCoords[0], startCoords[1]);
-            gc.lineTo(startCoords[0], startCoords[1]);
-            gc.stroke();
+                gc.beginPath();
+                gc.moveTo(startCoords[0], startCoords[1]);
+                gc.lineTo(startCoords[0], startCoords[1]);
+                gc.stroke();
 
-            gc.setStroke(Color.PURPLE);
-            gc.setLineWidth(0.0005D * widthModifier);
+                gc.setStroke(Color.PURPLE);
+                gc.setLineWidth(0.0005D * widthModifier);
 
-            gc.beginPath();
-            gc.moveTo(destinationCoords[0], destinationCoords[1]);
-            gc.lineTo(destinationCoords[0], destinationCoords[1]);
-            gc.stroke();
+                gc.beginPath();
+                gc.moveTo(destinationCoords[0], destinationCoords[1]);
+                gc.lineTo(destinationCoords[0], destinationCoords[1]);
+                gc.stroke();
 
-            System.out.println("Directions: ------");
-            for (String dir : currentDirections) {
-                System.out.println(dir);
+                System.out.println("Directions: ------");
+                for (String dir : currentDirections) {
+                    System.out.println(dir);
+                }
             }
         }
     }
