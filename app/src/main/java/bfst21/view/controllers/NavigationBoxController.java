@@ -456,4 +456,7 @@ public class NavigationBoxController extends SubController {
     public void setAllSuggestionsDestSpecific(List<OsmAddress> allSuggestionsDestSpecific) {
         this.allSuggestionsDestSpecific = allSuggestionsDestSpecific;
     }
+
+    public void deleteUserActions(ActionEvent actionEvent) {
+    }
 }

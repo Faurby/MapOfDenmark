@@ -10,8 +10,8 @@
 
 
 <AnchorPane xmlns="https://javafx.com/javafx"
-           xmlns:fx="https://javafx.com/fxml"
-           fx:controller="bfst21.view.controllers.NavigationBoxController">
+            xmlns:fx="https://javafx.com/fxml"
+            fx:controller="bfst21.view.controllers.NavigationBoxController">
 
     <VBox fx:id="searchBox"
           minWidth="200"
@@ -26,12 +26,29 @@
                     top="10"/>
         </padding>
 
-        <TextArea fx:id="addressArea"
-                  minHeight="20"
-                  prefHeight="25"
-                  promptText="Type an address..."
-                  wrapText="true"
-                  onKeyPressed="#typingCheck"/>
+        <HBox>
+            <TextArea fx:id="addressArea"
+                      minHeight="20"
+                      prefHeight="25"
+                      promptText="Type an address..."
+                      wrapText="true"
+                      onKeyPressed="#typingCheck"/>
+
+            <Button
+                    minHeight="20"
+                    minWidth="20"
+                    onAction="#deleteUserActions"
+                    style="-fx-border-color: LIGHTGREY">
+                <graphic>
+                    <ImageView fitHeight="15.0"
+                               preserveRatio="true"
+                               opacity="0.8"
+                               style="-fx-background-color: TRANSPARENT">
+                        <Image url="/deleteIcon.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </HBox>
 
         <ScrollPane minWidth="250"
                     prefWidth="350"
@@ -76,8 +93,6 @@
                     right="10"
                     top="10"/>
         </padding>
-
-        <Text text="Navigation" style="-fx-font-size: 15 "/>
 
         <GridPane hgap="2">
 
@@ -213,19 +228,19 @@
             </ToggleButton>
         </HBox>
 
-        <HBox alignment="BASELINE_CENTER" style="-fx-padding: 10 0 5 0">
+        <HBox alignment="BASELINE_CENTER" style="-fx-padding: 10 0 5 0" spacing="5">
 
             <Button onAction="#minimizeSearchView"
-                    text="Minimize" GridPane.columnIndex="0"
-                    GridPane.rowIndex="0"/>
+                    text="Minimize" />
+
+            <Button onAction="#deleteUserActions"
+                    text="Clear" />
 
             <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
 
             <Button fx:id="searchButtonExpanded"
                     onAction="#searchNavigationAddresses"
-                    text="Search"
-                    GridPane.columnIndex="2"
-                    GridPane.rowIndex="0"/>
+                    text="Search" />
         </HBox>
     </VBox>
 
