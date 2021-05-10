@@ -1,6 +1,6 @@
 package bfst21.osm;
 
-import bfst21.models.Util;
+import bfst21.models.DistanceUtil;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -30,7 +30,7 @@ public class Node implements Serializable {
     }
 
     public double distTo(Node other) {
-        return Util.distTo(x, y, other.getX(), other.getY());
+        return DistanceUtil.distTo(x, y, other.getX(), other.getY());
     }
 
     public float[] getCoords() {

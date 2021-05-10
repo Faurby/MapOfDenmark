@@ -21,6 +21,7 @@ public class TransportOptions {
 
     /**
      * Creates an instance of TransportOptions if it does not exist yet
+     *
      * @return singleton instance of TransportOptions
      */
     public static TransportOptions getInstance() {

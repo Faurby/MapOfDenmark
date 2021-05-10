@@ -51,7 +51,7 @@ public class DijkstraPath {
         for (int v = 0; v < vertexAmount; v++) {
             distTo[v] = Double.POSITIVE_INFINITY;
         }
-        distTo[sourceID] = 0.0;
+        distTo[sourceID] = 0.0D;
 
         pq = new IndexMinPQ<>(vertexAmount);
         pq.insert(sourceID, distTo[sourceID]);
@@ -73,7 +73,7 @@ public class DijkstraPath {
      * If driving, the weight is set to the Edge weight calculated using distance and max speed.
      * If walking or biking, the weight is set to the distance of the Edge.
      */
-    public void relax(Edge edge) {
+    private void relax(Edge edge) {
         if (edge.canNavigate()) {
             int v = edge.getFrom();
             int w = edge.getTo();
@@ -92,7 +92,6 @@ public class DijkstraPath {
 
                 if (pq.contains(w)) {
                     pq.decreaseKey(w, distTo[w]);
-
                 } else {
                     pq.insert(w, distTo[w]);
                 }
@@ -122,9 +121,5 @@ public class DijkstraPath {
         }
         Collections.reverse(path);
         return path;
-    }
-
-    public Edge[] getEdgeTo() {
-        return edgeTo;
     }
 }

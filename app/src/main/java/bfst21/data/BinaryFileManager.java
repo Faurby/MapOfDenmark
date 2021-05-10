@@ -1,5 +1,6 @@
 package bfst21.data;
 
+import bfst21.address.OsmAddress;
 import bfst21.address.TST;
 import bfst21.osm.*;
 import bfst21.pathfinding.DirectedGraph;

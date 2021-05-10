@@ -1,9 +1,18 @@
-package bfst21.osm;
+package bfst21.address;
 
+
+import bfst21.osm.Node;
 
 import java.io.Serializable;
 
 
+/**
+ * OsmAddress is an address created by parsing the given OSM data.
+ * Every OsmAddress has a Node which determines the location of the address.
+ * <p>
+ * OsmAddress is placed as a node in a ternary search trie
+ * which can be used to give relevant address suggestions.
+ */
 public class OsmAddress implements Serializable {
 
     private static final long serialVersionUID = -377246689553287254L;
@@ -22,14 +31,6 @@ public class OsmAddress implements Serializable {
 
     public Node getNode() {
         return node;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public String getHouseNumber() {
-        return houseNumber;
     }
 
     public String getPostcode() {
@@ -76,5 +77,7 @@ public class OsmAddress implements Serializable {
         return street + " " + houseNumber + ", " + city + " " + postcode;
     }
 
-    public String omitHouseNumberToString() {return street + ", " + city + " " + postcode; }
+    public String omitHouseNumberToString() {
+        return street + ", " + city + " " + postcode;
+    }
 }

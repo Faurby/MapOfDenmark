@@ -13,16 +13,6 @@ public class DisplayOptions {
     private static DisplayOptions instance;
 
     /**
-     * DisplayOptions constructor
-     * Sets the default value of specific DisplayOptions.
-     */
-    private DisplayOptions() {
-        options.put(DisplayOption.DISPLAY_KD_TREE, false);
-        options.put(DisplayOption.DISPLAY_GRAPH, false);
-        options.put(DisplayOption.DISPLAY_DIJKSTRA, false);
-    }
-
-    /**
      * @return current boolean value of specific DisplayOption.
      * All settings will return true by default unless
      * something else has been specified in the constructor.
@@ -43,6 +33,7 @@ public class DisplayOptions {
 
     /**
      * Creates an instance of DisplayOptions if it does not exist yet
+     *
      * @return singleton instance of DisplayOptions
      */
     public static DisplayOptions getInstance() {

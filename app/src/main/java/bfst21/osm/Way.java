@@ -7,16 +7,23 @@ import bfst21.view.Drawable;
 import javafx.scene.canvas.GraphicsContext;
 
 
+/**
+ * Way is an ordered list of coordinates that
+ * represents a line such as a road, river, wall, etc...
+ * <p>
+ * Extends BoundingBoxElement so it can be placed in a KD-tree.
+ */
 public class Way extends BoundingBoxElement implements Drawable, Serializable {
 
     private static final long serialVersionUID = 3139576893143362100L;
 
     private ElementType elementType;
     private String role;
-    private int maxSpeed = 1;
+    private String name;
+    private boolean junction;
     private boolean oneWay;
     private boolean oneWayBike;
-    private String name;
+    private int maxSpeed = 50;
 
     /**
      * Calculate and return the ElementSize of Way by getting the area of its bounding box.
@@ -115,23 +122,23 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
     }
 
     public static int getNodeSkipAmount(double zoomLevel) {
-        if (zoomLevel <= 100) {
+        if (zoomLevel <= 100.0D) {
             return 10;
-        } else if (zoomLevel <= 140) {
+        } else if (zoomLevel <= 140.0D) {
             return 9;
-        } else if (zoomLevel <= 190) {
+        } else if (zoomLevel <= 190.0D) {
             return 8;
-        } else if (zoomLevel <= 270) {
+        } else if (zoomLevel <= 270.0D) {
             return 7;
-        } else if (zoomLevel <= 350) {
+        } else if (zoomLevel <= 350.0D) {
             return 6;
-        } else if (zoomLevel <= 500) {
+        } else if (zoomLevel <= 500.0D) {
             return 5;
-        } else if (zoomLevel <= 700) {
+        } else if (zoomLevel <= 700.0D) {
             return 4;
-        } else if (zoomLevel <= 950) {
+        } else if (zoomLevel <= 950.0D) {
             return 3;
-        } else if (zoomLevel <= 1350) {
+        } else if (zoomLevel <= 1_350.0D) {
             return 2;
         }
         return 1;
@@ -179,6 +186,14 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public void setJunction(boolean junction) {
+        this.junction = junction;
+    }
+
+    public boolean isJunction() {
+        return junction;
     }
 
     public String getRole() {

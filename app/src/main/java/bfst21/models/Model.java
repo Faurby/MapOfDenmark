@@ -63,11 +63,11 @@ public class Model {
                 mapData = binaryFileManager.loadOBJ(fileName, jarFile);
             }
         } else {
-            System.out.println("File does not exist: "+fileName);
+            System.out.println("File does not exist: " + fileName);
             //TODO: Present an error to the user if the file doesn't exist.
         }
         totalTime += System.nanoTime();
-        System.out.println("Total load time: " + totalTime / 1_000_000 + "ms");
+        System.out.println("Total load time: " + totalTime / 1_000_000L + "ms");
     }
 
     public MapData getMapData() {

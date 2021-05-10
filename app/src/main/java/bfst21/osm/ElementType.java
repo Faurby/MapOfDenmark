@@ -2,6 +2,7 @@ package bfst21.osm;
 
 import bfst21.models.DisplayOption;
 import bfst21.models.DisplayOptions;
+import bfst21.models.TransportOption;
 import javafx.scene.paint.Color;
 
 
@@ -26,7 +27,7 @@ public enum ElementType {
     ),
     LANDUSE(
             1f,
-            500.0f,
+            400.0f,
             0.0D,
             Color.rgb(172, 220, 180),
             Color.rgb(69, 80, 7),
@@ -34,7 +35,7 @@ public enum ElementType {
     ),
     FOREST(
             1f,
-            1000.0f,
+            800.0f,
             0.0D,
             Color.rgb(162, 210, 170),
             Color.rgb(59, 70, 0),
@@ -42,7 +43,7 @@ public enum ElementType {
     ),
     WATER(
             1f,
-            500.0f,
+            400.0f,
             0.0D,
             Color.rgb(160, 196, 252),
             Color.rgb(0, 126, 170),
@@ -50,7 +51,7 @@ public enum ElementType {
     ),
     WATERWAY(
             0.0002f,
-            10000.0f,
+            8000.0f,
             0.0D,
             Color.rgb(160, 196, 252),
             Color.rgb(0, 126, 170),
@@ -58,7 +59,7 @@ public enum ElementType {
     ),
     FERRY(
             0.0004f,
-            1000.0f,
+            800.0f,
             0.0003D,
             Color.rgb(126, 142, 244),
             Color.rgb(126, 142, 244),
@@ -66,7 +67,7 @@ public enum ElementType {
     ),
     CYCLEWAY(
             0.0001f,
-            50000.0f,
+            40000.0f,
             0.0001D,
             Color.rgb(33, 33, 250),
             Color.rgb(33, 33, 250),
@@ -74,7 +75,7 @@ public enum ElementType {
     ),
     FOOTWAY(
             0.0001f,
-            50000.0f,
+            40000.0f,
             0.0001D,
             Color.rgb(252, 132, 116),
             Color.rgb(252, 132, 116),
@@ -82,15 +83,23 @@ public enum ElementType {
     ),
     PEDESTRIAN(
             0.0001f,
-            50000.0f,
+            40000.0f,
             0.0D,
             Color.rgb(223, 241, 242),
             Color.rgb(223, 241, 242),
             Color.rgb(61, 64, 67)
     ),
+    SERVICE(
+            0.0003f,
+            40000.0f,
+            0.0D,
+            Color.rgb(255, 255, 255),
+            Color.rgb(255, 255, 255),
+            Color.rgb(61, 64, 67)
+    ),
     ROAD(
             0.0003f,
-            50000.0f,
+            40000.0f,
             0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
@@ -98,7 +107,7 @@ public enum ElementType {
     ),
     RESIDENTIAL(
             0.00015f,
-            10000.0f,
+            8000.0f,
             0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
@@ -106,7 +115,7 @@ public enum ElementType {
     ),
     RAILWAY(
             0.00006f,
-            1500.0f,
+            1400.0f,
             0.0D,
             Color.rgb(80, 80, 80),
             Color.rgb(80, 80, 80),
@@ -114,7 +123,7 @@ public enum ElementType {
     ),
     TRUNK(
             0.0003f,
-            50000.0f,
+            40000.0f,
             0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
@@ -122,7 +131,7 @@ public enum ElementType {
     ),
     MOTORWAY(
             0.0003f,
-            500.0f,
+            400.0f,
             0.0D,
             Color.rgb(248, 197, 81),
             Color.rgb(248, 198, 81),
@@ -130,7 +139,7 @@ public enum ElementType {
     ),
     TERTIARY(
             0.0003f,
-            3000.0f,
+            2000.0f,
             0.0D,
             Color.rgb(255, 255, 255),
             Color.rgb(255, 255, 255),
@@ -138,7 +147,7 @@ public enum ElementType {
     ),
     PRIMARY(
             0.0003f,
-            1500.0f,
+            1200.0f,
             0.0D,
             Color.rgb(236, 148, 164),
             Color.rgb(255, 140, 0),
@@ -146,7 +155,7 @@ public enum ElementType {
     ),
     AEROWAY(
             0.002f,
-            5000.0f,
+            4000.0f,
             0.0D,
             Color.rgb(200, 200, 200),
             Color.rgb(200, 200, 200),
@@ -154,7 +163,7 @@ public enum ElementType {
     ),
     BUILDING(
             1f,
-            40000.0f,
+            30000.0f,
             0.0D,
             Color.rgb(197, 185, 175),
             Color.rgb(51, 51, 51),
@@ -162,7 +171,7 @@ public enum ElementType {
     ),
     UNKNOWN(
             0.002f,
-            500.0f,
+            400.0f,
             0.0D,
             Color.rgb(255, 0, 0),
             Color.rgb(255, 0, 0),
@@ -187,9 +196,9 @@ public enum ElementType {
      */
     public boolean doFillDraw() {
         return this == ElementType.BUILDING ||
+                this == ElementType.FOREST ||
                 this == ElementType.ISLAND ||
                 this == ElementType.LANDUSE ||
-                this == ElementType.FOREST ||
                 this == ElementType.WATER;
     }
 
@@ -199,47 +208,45 @@ public enum ElementType {
      */
     public boolean hasMultipleSizes() {
         return this == ElementType.BUILDING ||
-                this == ElementType.LANDUSE ||
                 this == ElementType.FOREST ||
+                this == ElementType.LANDUSE ||
                 this == ElementType.WATER;
     }
 
-    public boolean canNavigate() {
-        return this == ElementType.PRIMARY ||
-                this == ElementType.MOTORWAY ||
-                this == ElementType.TRUNK ||
-                this == ElementType.TERTIARY ||
-                this == ElementType.CYCLEWAY ||
-                this == ElementType.RESIDENTIAL ||
-                this == ElementType.ROAD ||
-                this == ElementType.FOOTWAY ||
-                this == ElementType.FERRY;
-    }
+    /**
+     * Determine if this ElementType can be navigated with the given TransportOption.
+     */
+    public boolean canNavigate(TransportOption transportOption) {
+        if (transportOption == TransportOption.CAR) {
+            return this == ElementType.MOTORWAY ||
+                    this == ElementType.PRIMARY ||
+                    this == ElementType.RESIDENTIAL ||
+                    this == ElementType.ROAD ||
+                    this == ElementType.TERTIARY ||
+                    this == ElementType.TRUNK;
 
-    public boolean canDrive() {
-        return this == ElementType.PRIMARY ||
-                this == ElementType.MOTORWAY ||
-                this == ElementType.RESIDENTIAL ||
-                this == ElementType.TERTIARY ||
-                this == ElementType.TRUNK ||
-                this == ElementType.FERRY;
-    }
+        } else if (transportOption == TransportOption.BIKE) {
+            return this == ElementType.CYCLEWAY ||
+                    this == ElementType.RESIDENTIAL ||
+                    this == ElementType.ROAD ||
+                    this == ElementType.TERTIARY;
 
-    public boolean canBike() {
-        return this == ElementType.TERTIARY ||
-                this == ElementType.CYCLEWAY ||
-                this == ElementType.ROAD ||
-                this == ElementType.RESIDENTIAL ||
-                this == ElementType.FERRY;
-    }
-
-    public boolean canWalk() {
-        return this == ElementType.TERTIARY ||
-                this == ElementType.CYCLEWAY ||
-                this == ElementType.RESIDENTIAL ||
-                this == ElementType.ROAD ||
-                this == ElementType.FOOTWAY ||
-                this == ElementType.FERRY;
+        } else if (transportOption == TransportOption.WALK) {
+            return this == ElementType.CYCLEWAY ||
+                    this == ElementType.FOOTWAY ||
+                    this == ElementType.RESIDENTIAL ||
+                    this == ElementType.ROAD ||
+                    this == ElementType.TERTIARY;
+        } else {
+            return this == ElementType.CYCLEWAY ||
+                    this == ElementType.FOOTWAY ||
+                    this == ElementType.MOTORWAY ||
+                    this == ElementType.PRIMARY ||
+                    this == ElementType.RESIDENTIAL ||
+                    this == ElementType.ROAD ||
+                    this == ElementType.TERTIARY ||
+                    this == ElementType.TRUNK;
+        }
     }
 
     public boolean isDisplayOptionEnabled() {
@@ -268,9 +275,5 @@ public enum ElementType {
 
     public boolean doShowElement(double zoomLevel) {
         return zoomLevel >= zoomLevelRequired;
-    }
-
-    public float getZoomLevelRequired() {
-        return zoomLevelRequired;
     }
 }

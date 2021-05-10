@@ -1,6 +1,8 @@
 package bfst21.pathfinding;
 
-import bfst21.models.Util;
+import bfst21.models.TransportOption;
+import bfst21.models.TransportOptions;
+import bfst21.models.DistanceUtil;
 import bfst21.osm.Node;
 
 import java.io.Serializable;
@@ -138,6 +140,7 @@ public class DirectedGraph implements Serializable {
                         float[] fromCoords,
                         float[] toCoords,
                         int maxSpeed,
+                        boolean junction,
                         boolean oneWay,
                         boolean oneWayBike,
                         boolean canDrive,
@@ -146,19 +149,19 @@ public class DirectedGraph implements Serializable {
 
         int fromID = getVertexID(fromCoords);
         int toID = getVertexID(toCoords);
-        float distance = (float) Util.distTo(fromCoords, toCoords);
+        float distance = (float) DistanceUtil.distTo(fromCoords, toCoords);
         float weight = (distance * 60.0f / maxSpeed);
 
-        addEdge(name, fromID, toID, weight, distance, canDrive, canBike, canWalk);
+        addEdge(name, fromID, toID, weight, distance, junction, canDrive, canBike, canWalk);
 
         if (!oneWay && !oneWayBike) {
-            addEdge(name, toID, fromID, weight, distance, canDrive, canBike, canWalk);
+            addEdge(name, toID, fromID, weight, distance, junction, canDrive, canBike, canWalk);
 
-        } else if (!oneWay) {
-            addEdge(name, toID, fromID, weight, distance, canDrive, false, canWalk);
+        } else if (!oneWay && oneWayBike) {
+            addEdge(name, toID, fromID, weight, distance, junction, canDrive, false, canWalk);
 
-        } else if (!oneWayBike) {
-            addEdge(name, toID, fromID, weight, distance, false, canBike, canWalk);
+        } else if (!oneWayBike && oneWay) {
+            addEdge(name, toID, fromID, weight, distance, junction, false, canBike, canWalk);
         }
     }
 
@@ -173,11 +176,12 @@ public class DirectedGraph implements Serializable {
                         int toID,
                         float weight,
                         float distance,
+                        boolean junction,
                         boolean canDrive,
                         boolean canBike,
                         boolean canWalk) {
 
-        Edge edge = new Edge(name, fromID, toID, weight, distance, canDrive, canBike, canWalk);
+        Edge edge = new Edge(name, fromID, toID, weight, distance, junction, canDrive, canBike, canWalk);
 
         if (edgeAmount == edges.length) {
             Edge[] copy = new Edge[edges.length * 2];
@@ -209,7 +213,7 @@ public class DirectedGraph implements Serializable {
 
         Vertex vertex = vertices[vertexID];
         if (vertex != null) {
-            for (int id : vertex.getEdges()) {
+            for (int id : vertex.getAdjacentEdges()) {
                 Edge edge = edges[id];
                 if (edge != null) {
                     edgeList.add(edge);
@@ -219,7 +223,35 @@ public class DirectedGraph implements Serializable {
         return edgeList;
     }
 
-    public float[] getVector(Edge edge) {
+    /**
+     * @return out degree of vertex with given vertexID.
+     * <p>
+     * The out degree is only increased if the edge can be
+     * navigated using the currently enabled TransportOption.
+     */
+    public int getOutDegree(int vertexID) {
+        List<Edge> edges = getAdjacentEdges(vertexID);
+        int outDegree = 0;
+
+        for (Edge edge : edges) {
+            if (edge.getFrom() == vertexID) {
+                TransportOption current = TransportOptions.getInstance().getCurrentlyEnabled();
+
+                if (current == TransportOption.CAR && edge.canDrive()) {
+                    outDegree++;
+                }
+                if (current == TransportOption.BIKE && edge.canBike()) {
+                    outDegree++;
+                }
+                if (current == TransportOption.WALK && edge.canWalk()) {
+                    outDegree++;
+                }
+            }
+        }
+        return outDegree;
+    }
+
+    private float[] getVector(Edge edge) {
         Vertex fromVertex = vertices[edge.getFrom()];
         Vertex toVertex = vertices[edge.getTo()];
 
@@ -299,13 +331,6 @@ public class DirectedGraph implements Serializable {
             return Direction.SOUTH_WEST;
         }
         return Direction.UNKNOWN;
-    }
-
-    /**
-     * @return Edge from its id.
-     */
-    public Edge getEdge(int id) {
-        return edges[id];
     }
 
     public int getVertexAmount() {

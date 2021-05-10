@@ -5,53 +5,60 @@ package bfst21.osm;
 // maybe give different text types different colors?
 // delete peninsula and island if this information is still not used later on
 
+/**
+ * MapTextType is used to separate MapText into groups
+ * depending on the place tag parsed in the given OSM data.
+ * <p>
+ * Each MapTextType has a required zoom level and and a font size multiplier.
+ */
 public enum MapTextType {
+
     PENINSULA(
-            1,
-            40D
+            1.0D,
+            40.0D
     ),
     CITY(
-            50,
-            30D
+            50.0D,
+            30.0D
     ),
     ISLAND(
-            1_000,
-            30D
+            1_000.0D,
+            30.0D
     ),
     TOWN(
-            1_500,
-            20D
+            1_500.0D,
+            20.0D
     ),
     ISLET(
-            2_000,
+            2_000.0D,
             0.01D
     ),
     VILLAGE(
-            4_000,
-            20D
+            4_000.0D,
+            20.0D
     ),
     SUBURB(
-            10_000,
-            20D
+            10_000.0D,
+            20.0D
     ),
     HAMLET(
-            10_000,
-            20D
-    ),
-    USERNODE(
-            1,
-            40D
+            10_000.0D,
+            20.0D
     );
 
-    float zoomLevelRequired;
-    double standardModifier;
+    private final double zoomLevelRequired;
+    private final double fontSizeMultiplier;
 
-    MapTextType(float zoomLevelRequired, double standardMultiplier) {
+    MapTextType(double zoomLevelRequired, double fontSizeMultiplier) {
         this.zoomLevelRequired = zoomLevelRequired;
-        this.standardModifier = standardMultiplier;
+        this.fontSizeMultiplier = fontSizeMultiplier;
     }
 
-    public double getStandardMultiplier() {
-        return standardModifier;
+    public double getFontSizeMultiplier() {
+        return fontSizeMultiplier;
+    }
+
+    public double getZoomLevelRequired() {
+        return zoomLevelRequired;
     }
 }

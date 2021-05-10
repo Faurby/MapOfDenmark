@@ -3,7 +3,7 @@ package bfst21.address;
 
 /**
  * Alphabet class used to improve memory usage for our address TST.
- *
+ * <p>
  * This code was written by Philip Flyvholm, all credit goes to him.
  */
 public enum Alphabet {
@@ -65,10 +65,10 @@ public enum Alphabet {
     }
 
     /**
-     * Get the byte associated with the character
+     * Get the byte associated with the character.
      *
-     * @param character A lowercase char
-     * @return The associated byte with the char. -1 if invalid
+     * @param character A lowercase char.
+     * @return The associated byte with the char. -1 if invalid.
      */
     public static byte getByteValue(char character) {
         for (Alphabet value : Alphabet.values()) {
@@ -79,6 +79,11 @@ public enum Alphabet {
         return (byte) -1;
     }
 
+    /**
+     * Get the char associated with the byte.
+     *
+     * @return The associated char with the byte. '0' if invalid.
+     */
     public static char getCharValue(byte val) {
         for (Alphabet value : Alphabet.values()) {
             if (value.associatedByte == val) {

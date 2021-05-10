@@ -6,6 +6,14 @@ import java.io.Serializable;
 import java.util.List;
 
 
+/**
+ * KdNode is used as a node in the kd-tree.
+ * <p>
+ * A non-leaf KdNode has a right and left child to organize the kd-tree.
+ * <p>
+ * A node may be a leaf KdNode if they contain a list of elements.
+ * Elements in a leaf KdNode must extend BoundingBoxElement.
+ */
 public class KdNode<T extends BoundingBoxElement> implements Serializable {
 
     private static final long serialVersionUID = 8198499209216068048L;

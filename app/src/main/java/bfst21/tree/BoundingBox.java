@@ -1,12 +1,11 @@
 package bfst21.tree;
 
 
-import bfst21.view.Drawable;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-
-
-public class BoundingBox implements Drawable {
+/**
+ * BoundingBox represents the bounding box of the screen.
+ * This is used to start a kd-tree range search within a bounding box.
+ */
+public class BoundingBox {
 
     private final float maxX, maxY, minX, minY;
 
@@ -18,9 +17,6 @@ public class BoundingBox implements Drawable {
     }
 
     public boolean intersects(float otherMaxX, float otherMaxY, float otherMinX, float otherMinY) {
-
-        //return (minX < otherMaxX) && (otherMinX < maxX) && (minY < otherMaxY) && (minY < otherMinY && otherMinY < maxY);
-        //return minX < boundingBox.maxX && maxX > boundingBox.minX && minY < boundingBox.maxY && maxY > boundingBox.minY;
 
         //Check if other box is inside this box
         if (otherMinX >= minX && otherMaxX <= maxX && otherMinY >= minY && otherMaxY <= maxY) {
@@ -41,9 +37,7 @@ public class BoundingBox implements Drawable {
             }
         }
         if ((otherMinY >= minY && otherMinY <= maxY) || (otherMaxY >= minY && otherMaxY <= maxY)) {
-            if ((otherMinX <= minX && otherMaxX >= maxX)) {
-                return true;
-            }
+            return otherMinX <= minX && otherMaxX >= maxX;
         }
         return false;
     }
@@ -71,22 +65,5 @@ public class BoundingBox implements Drawable {
 
     public float getMinY() {
         return minY;
-    }
-
-    @Override
-    public void trace(GraphicsContext gc, double zoomLevel) {
-        float bMaxX = getMaxX();
-        float bMaxY = getMaxY();
-        float bMinX = getMinX();
-        float bMinY = getMinY();
-
-        gc.setStroke(Color.PURPLE);
-        gc.setLineWidth(0.0005);
-
-        gc.moveTo(bMinX, bMinY);
-        gc.lineTo(bMaxX, bMinY);
-        gc.lineTo(bMaxX, bMaxY);
-        gc.lineTo(bMinX, bMaxY);
-        gc.lineTo(bMinX, bMinY);
     }
 }

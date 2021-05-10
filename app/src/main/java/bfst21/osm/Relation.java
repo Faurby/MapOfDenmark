@@ -13,6 +13,14 @@ import java.util.Map;
 /**
  * Relation is a group of elements.
  * It may contain coordinates, Ways and/or other Relations.
+ * <p>
+ * Every Way in the Relation will be given the ElementType of
+ * the Relation if it does not already have an ElementType.
+ * <p>
+ * Relations will only be drawn if it is a multipolygon Relation.
+ * The rest can be drawn as individual Ways instead.
+ * <p>
+ * Extends BoundingBoxElement so it can be placed in a KD-tree.
  */
 public class Relation extends BoundingBoxElement implements Serializable, Drawable {
 
@@ -138,6 +146,10 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
         }
     }
 
+    /**
+     * Draw a multipolygon Relation by tracing every outer/inner Way
+     * then using FillRule.EVEN_ODD to correctly fill and draw the entire Relation.
+     */
     @Override
     public void trace(GraphicsContext gc, double zoomLevel) {
 

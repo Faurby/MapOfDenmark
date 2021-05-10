@@ -2,9 +2,6 @@ package bfst21.models;
 
 
 public enum DisplayOption {
-    DISPLAY_KD_TREE,
-    DISPLAY_GRAPH,
-    DISPLAY_DIJKSTRA,
     DISPLAY_RELATIONS,
     DISPLAY_ISLAND,
     DISPLAY_WATERWAY,
@@ -23,6 +20,7 @@ public enum DisplayOption {
     DISPLAY_BUILDING,
     DISPLAY_UNKNOWN,
     DISPLAY_RAILWAY,
+    DISPLAY_SERVICE,
     DISPLAY_AEROWAY,
     DISPLAY_FERRY,
     DISPLAY_TEXT

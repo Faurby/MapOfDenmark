@@ -1,5 +1,6 @@
 package bfst21.models;
 
+import bfst21.address.OsmAddress;
 import bfst21.address.TST;
 import bfst21.osm.*;
 import bfst21.pathfinding.DijkstraPath;
@@ -35,9 +36,6 @@ public class MapData {
     private final float minX, minY, maxX, maxY;
 
     private final TST<List<OsmAddress>> addressTries;
-
-    public float[] originCoords;
-    public float[] destinationCoords;
 
     /**
      * MapData constructor.
@@ -130,12 +128,14 @@ public class MapData {
 
         for (Way way : wayList) {
             if (way.getType() != null) {
-                if (way.getType().canNavigate()) {
+                if (way.getType().canNavigate(TransportOption.ALL)) {
+
+                    boolean junction = way.isJunction();
 
                     ElementType type = way.getType();
-                    boolean canDrive = type.canDrive();
-                    boolean canBike = type.canBike();
-                    boolean canWalk = type.canWalk();
+                    boolean canDrive = type.canNavigate(TransportOption.CAR);
+                    boolean canBike = type.canNavigate(TransportOption.BIKE);
+                    boolean canWalk = type.canNavigate(TransportOption.WALK);
                     boolean oneWay = way.isOneWay();
                     boolean oneWayBike = way.isOneWayBike();
                     int maxSpeed = way.getMaxSpeed();
@@ -159,6 +159,7 @@ public class MapData {
                                 fromCoords,
                                 toCoords,
                                 maxSpeed,
+                                junction,
                                 oneWay,
                                 oneWayBike,
                                 canDrive,
@@ -171,16 +172,14 @@ public class MapData {
         directedGraph.cleanUp();
 
         time += System.nanoTime();
-        System.out.println("Built directed graph for path finding in " + time / 1_000_000 + "ms");
+        System.out.println("Built directed graph for path finding in " + time / 1_000_000L + "ms");
     }
 
     /**
      * Run dijkstra path finding if coords for origin and destination are present.
      */
-    public void runDijkstra() {
-        if (originCoords != null && destinationCoords != null) {
-            dijkstraPath = new DijkstraPath(directedGraph, originCoords, destinationCoords);
-        }
+    public void runDijkstra(float[] originCoords, float[] destinationCoords) {
+        dijkstraPath = new DijkstraPath(directedGraph, originCoords, destinationCoords);
     }
 
     /**
@@ -197,7 +196,7 @@ public class MapData {
             kdTreeMapTexts.build(mapTexts);
 
             time += System.nanoTime();
-            System.out.println("Built kd-tree for map texts in " + time / 1_000_000 + "ms with depth: " + kdTreeMapTexts.getMaxDepth());
+            System.out.println("Built kd-tree for map texts in " + time / 1_000_000L + "ms with depth: " + kdTreeMapTexts.getMaxDepth());
         }
     }
 
@@ -215,7 +214,7 @@ public class MapData {
             kdTreeRelations.build(relationList);
 
             time += System.nanoTime();
-            System.out.println("Built kd-tree for relations in " + time / 1_000_000 + "ms with depth: " + kdTreeRelations.getMaxDepth());
+            System.out.println("Built kd-tree for relations in " + time / 1_000_000L + "ms with depth: " + kdTreeRelations.getMaxDepth());
         }
     }
 
@@ -330,18 +329,18 @@ public class MapData {
      * if the specific ElementGroup is enabled at the given zoomLevel.
      */
     public void kdTreeRangeSearch(BoundingBox boundingBox, double zoomLevel) {
-        //Search way kd-trees
+        //Search Way kd-trees
         for (ElementGroup elementGroup : ElementGroup.values()) {
             if (elementGroup.doShowElement(zoomLevel)) {
                 if (kdTreeMap.containsKey(elementGroup)) {
-                    List<Way> wayList = kdTreeMap.get(elementGroup).preRangeSearch(boundingBox);
+                    List<Way> wayList = kdTreeMap.get(elementGroup).rangeSearch(boundingBox);
                     kdTreeSearchMap.put(elementGroup, wayList);
                 }
             }
         }
-        //Search relation kd-tree and maptext kd-tree
-        kdTreeRelationSearchList = kdTreeRelations.preRangeSearch(boundingBox);
-        kdTreeMapTextSearchList = kdTreeMapTexts.preRangeSearch(boundingBox);
+        //Search Relation kd-tree and MapText kd-tree
+        kdTreeRelationSearchList = kdTreeRelations.rangeSearch(boundingBox);
+        kdTreeMapTextSearchList = kdTreeMapTexts.rangeSearch(boundingBox);
     }
 
     /**
@@ -350,12 +349,12 @@ public class MapData {
      * <p>
      * When a list of nearby coords are found, we will then find the coords closest to the query.
      */
-    public float[] kdTreeNearestNeighborSearch(float[] queryCoords) {
+    public float[] kdTreeNearestNeighborSearch(float[] queryCoords, TransportOption transportOption) {
         float[] coordsList = new float[ElementGroup.values().size() * 2];
 
         int count = 0;
         for (ElementGroup elementGroup : ElementGroup.values()) {
-            if (elementGroup.getType().canNavigate()) {
+            if (elementGroup.getType().canNavigate(transportOption)) {
                 if (kdTreeMap.containsKey(elementGroup)) {
                     float[] coords = kdTreeMap.get(elementGroup).nearestNeighborSearch(queryCoords);
                     coordsList[count] = coords[0];
@@ -371,7 +370,7 @@ public class MapData {
             float x = coordsList[i];
             float y = coordsList[i + 1];
 
-            double distance = Util.distTo(queryCoords[0], queryCoords[1], x, y);
+            double distance = DistanceUtil.distTo(queryCoords[0], queryCoords[1], x, y);
 
             if (distance < minimumDistance) {
                 minimumDistance = distance;

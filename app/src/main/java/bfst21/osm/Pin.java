@@ -6,11 +6,14 @@ import javafx.scene.image.Image;
 import java.util.Objects;
 
 
+/**
+ * Pin is used to draw an image at a specific location.
+ */
 public enum Pin {
 
-    ORIGIN("greyPin.png"),
-    DESTINATION("redPin.png"),
-    USER_NODE("redPin.png");
+    ORIGIN("grey_pin.png"),
+    DESTINATION("red_pin.png"),
+    USER_NODE("blue_pin.png");
 
     private boolean visible = false;
     private float[] coords;
@@ -23,10 +26,10 @@ public enum Pin {
     public void draw(GraphicsContext gc, double zoomLevel) {
 
         if (visible && coords != null) {
-            double x = coords[0] - (10 / zoomLevel);
-            double y = coords[1] - (30 / zoomLevel);
+            double x = coords[0] - (10.0D / zoomLevel);
+            double y = coords[1] - (30.0D / zoomLevel);
 
-            gc.drawImage(image, x, y, 20 / zoomLevel, 30 / zoomLevel);
+            gc.drawImage(image, x, y, 20.0D / zoomLevel, 30.0D / zoomLevel);
         }
     }
 
@@ -36,5 +39,17 @@ public enum Pin {
 
     public void setCoords(float x, float y) {
         this.coords = new float[]{x, y};
+    }
+
+    public void setCoords(float[] coords) {
+        this.coords = coords;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public float[] getCoords() {
+        return coords;
     }
 }

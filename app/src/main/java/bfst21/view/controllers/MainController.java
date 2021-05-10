@@ -24,10 +24,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -40,7 +37,9 @@ import java.util.*;
 public class MainController extends BaseController {
 
     @FXML
-    public AnchorPane addressBox;
+    public AnchorPane navigationBox;
+    @FXML
+    public HBox menuBarHBox;
     @FXML
     private MapCanvas canvas;
     @FXML
@@ -52,7 +51,7 @@ public class MainController extends BaseController {
     @FXML
     private Scene scene;
     @FXML
-    private VBox loadingText;
+    private VBox loadingScreenBox;
     @FXML
     private ProgressBar progressBar;
     @FXML
@@ -62,9 +61,9 @@ public class MainController extends BaseController {
     @FXML
     private VBox newUserNodeVBox;
     @FXML
-    private TextField userNodeNameTextField;
+    private TextField userNodeNameText;
     @FXML
-    private TextField userNodeDescriptionTextField;
+    private TextField userNodeDescriptionText;
     @FXML
     private VBox userNodeClickedVBox;
     @FXML
@@ -76,11 +75,11 @@ public class MainController extends BaseController {
     @FXML
     private VBox userNodeNewNameVBox;
     @FXML
-    private TextField userNodeNewNameTextField;
+    private TextField userNodeNewNameText;
     @FXML
     private VBox userNodeNewDescriptionVBox;
     @FXML
-    private TextField userNodeNewDescriptionTextField;
+    private TextField userNodeNewDescriptionText;
     @FXML
     private NavigationBoxController navigationBoxController;
     @FXML
@@ -88,9 +87,9 @@ public class MainController extends BaseController {
     @FXML
     private StartBoxController startBoxController;
     @FXML
-    private Text zoomPercent;
+    private Text zoomPercentText;
     @FXML
-    private GridPane footBox;
+    private GridPane footerGridPane;
     @FXML
     private Text nearestRoadText;
 
@@ -112,10 +111,10 @@ public class MainController extends BaseController {
 
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
-    public void updateZoomBox() {
+    private void updateZoomBox() {
         int nodeSkip = Way.getNodeSkipAmount(canvas.getZoomLevel());
 
-        zoomPercent.setText(canvas.getZoomPercent());
+        zoomPercentText.setText(canvas.getZoomPercent());
         debugBoxController.setZoomText("Zoom level: " + canvas.getZoomLevelText());
         debugBoxController.setNodeSkipAmount("Node skip: " + nodeSkip);
 
@@ -125,7 +124,7 @@ public class MainController extends BaseController {
     public void changeZoomToShowPoints(float[] startCoords, float[] destinationCoords) {
         float dx = Math.abs(startCoords[0] - destinationCoords[0]);
         float dy = Math.abs(startCoords[1] - destinationCoords[1]);
-        double distPoints = Math.sqrt((dx*dx)+(dy*dy));
+        double distPoints = Math.sqrt((dx * dx) + (dy * dy));
 
         double screenHeight = getCanvas().getScreenBoundingBox(false).getMinY() - getCanvas().getScreenBoundingBox(false).getMaxY();
         double zf = Math.abs(screenHeight) / (distPoints * 1.8);
@@ -135,11 +134,11 @@ public class MainController extends BaseController {
         updateZoomBox();
     }
 
-    public void updateAverageRepaintTime() {
+    private void updateAverageRepaintTime() {
         debugBoxController.setRepaintTime("Repaint time: " + canvas.getAverageRepaintTime());
     }
 
-    public void updateMouseCoords(Point2D currentMousePos) {
+    private void updateMouseCoords(Point2D currentMousePos) {
         double currentPosX = canvas.mouseToModelCoords(currentMousePos).getX();
         double currentPosY = canvas.mouseToModelCoords(currentMousePos).getY();
 
@@ -180,7 +179,7 @@ public class MainController extends BaseController {
     private void userNodeClickedInListView(String userNodeName) {
         if (userNodeName != null) {
             UserNode clickedUserNode = userNodesMap.get(userNodeName);
-            Pin.USER_NODE.setCoords(clickedUserNode.getX(), clickedUserNode.getY());
+            Pin.USER_NODE.setCoords(clickedUserNode.getCoords());
             Pin.USER_NODE.setVisible(true);
 
             canvas.changeView(clickedUserNode.getX(), clickedUserNode.getY());
@@ -189,7 +188,7 @@ public class MainController extends BaseController {
     }
 
     @FXML
-    private void showHideDebug() {
+    public void toggleDebugVisibility() {
         debugBox.setVisible(!debugBox.isVisible());
     }
 
@@ -203,7 +202,7 @@ public class MainController extends BaseController {
     @FXML
     public void onKeyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.D && event.isControlDown()) {
-            showHideDebug();
+            toggleDebugVisibility();
 
         } else if (event.getCode() == KeyCode.ESCAPE) {
             if (userNodeToggle) {
@@ -250,12 +249,12 @@ public class MainController extends BaseController {
                 }
                 if (closestNode != null) {
                     // 300 is a number chosen by trial and error. It seems to fit perfectly.
-                    if (nodeAtMouse.distTo(closestNode) < 300 * (1 / Math.sqrt(canvas.getTrans().determinant()))) {
+                    if (nodeAtMouse.distTo(closestNode) < 300.0D * (1.0D / Math.sqrt(canvas.getTrans().determinant()))) {
                         userNodeClickedVBox.setVisible(true);
                         userNodeClickedName.setText(closestNode.getName());
                         userNodeClickedDescription.setText((closestNode.getDescription().equals("") ? "No description entered" : closestNode.getDescription()));
                         String x = String.format(Locale.ENGLISH, "%.6f", closestNode.getX());
-                        String y = String.format(Locale.ENGLISH, "%.6f", (-1 * closestNode.getY() * 0.56));
+                        String y = String.format(Locale.ENGLISH, "%.6f", (-1f * closestNode.getY() * 0.56f));
                         userNodeClickedCoords.setText(x + ", " + y);
                         currentUserNode = closestNode;
                     }
@@ -283,22 +282,25 @@ public class MainController extends BaseController {
 
         if (userNodeToggle && mouseEvent.isPrimaryButtonDown()) {
             newUserNodeVBox.setVisible(true);
-            userNodeNameTextField.requestFocus();
+            userNodeNameText.requestFocus();
             scene.setCursor(Cursor.DEFAULT);
         }
 
         if (mouseEvent.isShiftDown() && mouseEvent.isPrimaryButtonDown()) {
+            TransportOptions transportOptions = TransportOptions.getInstance();
+            TransportOption currentTransportOption = transportOptions.getCurrentlyEnabled();
+
             Point2D point = canvas.mouseToModelCoords(lastMouse);
             float[] queryCoords = new float[]{(float) point.getX(), (float) point.getY()};
-            float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords);
+            float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords, currentTransportOption);
 
             if (resetDijkstra) {
                 resetDijkstra = false;
-                model.getMapData().originCoords = nearestCoords;
-                model.getMapData().destinationCoords = null;
+                canvas.originCoords = nearestCoords;
+                canvas.destinationCoords = null;
             } else {
-                model.getMapData().destinationCoords = nearestCoords;
-                model.getMapData().runDijkstra();
+                canvas.destinationCoords = nearestCoords;
+                canvas.runDijkstraTask();
                 resetDijkstra = true;
             }
         }
@@ -354,26 +356,30 @@ public class MainController extends BaseController {
 
     private void startLoadingFile() {
         userNodeVBox.setVisible(false);
-        loadingText.setVisible(true);
+        loadingScreenBox.setVisible(true);
+        menuBarHBox.setVisible(false);
+        footerGridPane.setVisible(false);
     }
 
     private void finishedLoadingFile() {
         startBox.setVisible(false);
         startBox.setManaged(false);
-        loadingText.setVisible(false);
+        loadingScreenBox.setVisible(false);
         navigationBoxController.setSearchBoxVisible(true);
         userNodeVBox.setVisible(true);
-        footBox.setVisible(true);
+        footerGridPane.setVisible(true);
         canvas.runRangeSearchTask();
+        menuBarHBox.setVisible(true);
 
         if (model.getMapData() != null) {
             updateUserNodeList();
         }
+        canvas.repaint();
     }
 
     @FXML
     public void zoomButtonClicked(ActionEvent actionEvent) {
-        Point2D point = new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2);
+        Point2D point = new Point2D(stackPane.getWidth() / 2.0D, stackPane.getHeight() / 2.0D);
 
         if (actionEvent.toString().toLowerCase().contains("zoomin")) {
             canvas.zoom(2.0D, point, false);
@@ -416,7 +422,7 @@ public class MainController extends BaseController {
     }
 
     @FXML
-    public void userNodeTextFieldKeyPressed(KeyEvent keyEvent) {
+    public void userNodeTextKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ENTER) {
             newUserNodeCheckNameAndSave();
         } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
@@ -431,21 +437,24 @@ public class MainController extends BaseController {
     }
 
     private void newUserNodeCheckNameAndSave() {
-        String textField = userNodeNameTextField.getText();
+        String textField = userNodeNameText.getText();
         if (textField.isEmpty()) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
                     "A name is required");
+            userNodeNameText.requestFocus();
 
-        } else if (textField.length() > 20) {
+        } else if (textField.length() > 15) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
-                    "Names must be no longer than 20 characters");
+                    "Names must be no longer than 15 characters");
+            userNodeNameText.requestFocus();
 
         } else if (userNodesMap.containsKey(textField)) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
                     "Point of Interest names must be unique");
+            userNodeNameText.requestFocus();
 
         } else {
             saveUserNode();
@@ -460,7 +469,7 @@ public class MainController extends BaseController {
 
     private void saveUserNode() {
         Point2D point = canvas.mouseToModelCoords(lastMouse);
-        UserNode userNode = new UserNode((float) point.getX(), (float) point.getY(), userNodeNameTextField.getText(), userNodeDescriptionTextField.getText());
+        UserNode userNode = new UserNode((float) point.getX(), (float) point.getY(), userNodeNameText.getText(), userNodeDescriptionText.getText());
 
         model.getMapData().addUserNode(userNode);
         model.getMapData().updateUserNodesMap();
@@ -469,7 +478,7 @@ public class MainController extends BaseController {
         userNodeToggle = false;
         newUserNodeVBox.setVisible(false);
         updateUserNodeList();
-        userNodeNameTextField.setText("");
+        userNodeNameText.setText("");
         canvas.repaint();
     }
 
@@ -485,22 +494,32 @@ public class MainController extends BaseController {
         userNodeListView.setItems(tempList);
         userNodeListView.setVisible(!userNodeListItems.isEmpty());
 
-        if(userNodeListItems.size() == 1) {
-            userNodeListView.setMaxHeight(27);
-            userNodeListView.setMinHeight(27);
+        if (userNodeListItems.size() == 1) {
+            userNodeListView.setMaxHeight(27.0D);
+            userNodeListView.setMinHeight(27.0D);
 
-        } else if(userNodeListItems.size() < 4) {
-            userNodeListView.setMaxHeight(userNodeListItems.size() * 25);
-            userNodeListView.setMinHeight(userNodeListItems.size() * 25);
+        } else if (userNodeListItems.size() < 4) {
+            userNodeListView.setMaxHeight(userNodeListItems.size() * 25.0D);
+            userNodeListView.setMinHeight(userNodeListItems.size() * 25.0D);
         } else {
-            userNodeListView.setMaxHeight(85);
-            userNodeListView.setMinHeight(85);
+            userNodeListView.setMaxHeight(85.0D);
+            userNodeListView.setMinHeight(85.0D);
         }
     }
 
     @FXML
     public void userNodeDeleteClicked() {
         if (currentUserNode != null) {
+
+            //Set Pin.USER_NODE to invisible if the coords are the same as the UserNode coords.
+            if (Pin.USER_NODE.isVisible()) {
+                float[] pinCoords = Pin.USER_NODE.getCoords();
+                float[] userNodeCoords = currentUserNode.getCoords();
+
+                if (pinCoords[0] == userNodeCoords[0] && pinCoords[1] == userNodeCoords[1]) {
+                    Pin.USER_NODE.setVisible(false);
+                }
+            }
 
             model.getMapData().getUserNodes().remove(currentUserNode);
             model.getMapData().updateUserNodesMap();
@@ -520,17 +539,17 @@ public class MainController extends BaseController {
     @FXML
     public void userNodeChangeNameClicked() {
         userNodeNewNameVBox.setVisible(true);
-        userNodeNewNameTextField.requestFocus();
+        userNodeNewNameText.requestFocus();
     }
 
     @FXML
     public void userNodeChangeDescriptionClicked() {
         userNodeNewDescriptionVBox.setVisible(true);
-        userNodeNewDescriptionTextField.requestFocus();
+        userNodeNewDescriptionText.requestFocus();
     }
 
     @FXML
-    public void userNodeNewNameTextFieldKeyPressed(KeyEvent keyEvent) {
+    public void userNodeNewNameTextKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ENTER) {
             userNodeNewNameCheckNameAndSave();
 
@@ -540,11 +559,11 @@ public class MainController extends BaseController {
     }
 
     @FXML
-    public void userNodeNewDescTextFieldKeyPressed(KeyEvent keyEvent) {
+    public void userNodeNewDescTextKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ENTER) {
-            currentUserNode.setDescription(userNodeNewDescriptionTextField.getText());
+            currentUserNode.setDescription(userNodeNewDescriptionText.getText());
             userNodeNewDescriptionVBox.setVisible(false);
-            userNodeNewDescriptionTextField.setText("");
+            userNodeNewDescriptionText.setText("");
             userNodeClickedDescription.setText(currentUserNode.getDescription());
 
         } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
@@ -568,26 +587,29 @@ public class MainController extends BaseController {
     }
 
     private void userNodeNewNameCheckNameAndSave() {
-        String textField = userNodeNewNameTextField.getText();
+        String textField = userNodeNewNameText.getText();
 
         if (textField.isEmpty()) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
                     "A name is required");
+            userNodeNewNameText.requestFocus();
 
-        } else if (textField.length() > 20) {
+        } else if (textField.length() > 15) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
-                    "Names must be no longer than 20 characters");
+                    "Names must be no longer than 15 characters");
+            userNodeNewNameText.requestFocus();
 
         } else if (userNodesMap.containsKey(textField)) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error", "Point of Interest names must be unique");
+            userNodeNewNameText.requestFocus();
 
         } else {
-            currentUserNode.setName(userNodeNewNameTextField.getText());
+            currentUserNode.setName(userNodeNewNameText.getText());
             userNodeNewNameVBox.setVisible(false);
-            userNodeNewNameTextField.setText("");
+            userNodeNewNameText.setText("");
             userNodeClickedName.setText(currentUserNode.getName());
             updateUserNodeList();
             model.getMapData().getUserNodesMap().put(currentUserNode.getName(), currentUserNode);
@@ -596,9 +618,9 @@ public class MainController extends BaseController {
 
     @FXML
     public void userNodeNewDescSaveClicked() {
-        currentUserNode.setDescription(userNodeNewDescriptionTextField.getText());
+        currentUserNode.setDescription(userNodeNewDescriptionText.getText());
         userNodeNewDescriptionVBox.setVisible(false);
-        userNodeNewDescriptionTextField.setText("");
+        userNodeNewDescriptionText.setText("");
         userNodeClickedDescription.setText(currentUserNode.getDescription());
     }
 
@@ -636,7 +658,7 @@ public class MainController extends BaseController {
                     long time = -System.nanoTime();
                     binaryFileManager.saveOBJ(file.getAbsolutePath(), mapData);
                     time += System.nanoTime();
-                    System.out.println("Saved .obj file in: " + time / 1_000_000 + "ms to " + file.getAbsolutePath());
+                    System.out.println("Saved .obj file in: " + time / 1_000_000L + "ms to " + file.getAbsolutePath());
                     return null;
                 }
             };
@@ -676,7 +698,7 @@ public class MainController extends BaseController {
         }
     }
 
-    public void updateRoadTask() {
+    private void updateRoadTask() {
         if (roadTask != null) {
             if (roadTask.isRunning()) {
                 roadTask.cancel();
@@ -688,7 +710,7 @@ public class MainController extends BaseController {
             protected Void call() {
                 Point2D point = canvas.mouseToModelCoords(lastMouse);
                 float[] queryCoords = new float[]{(float) point.getX(), (float) point.getY()};
-                float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords);
+                float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords, TransportOption.ALL);
 
                 DirectedGraph graph = canvas.getModel().getMapData().getDirectedGraph();
 

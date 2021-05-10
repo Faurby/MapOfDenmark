@@ -1,6 +1,8 @@
 package bfst21.data;
 
+import bfst21.address.OsmAddress;
 import bfst21.address.TST;
+import bfst21.models.TransportOption;
 import bfst21.osm.*;
 import bfst21.models.MapData;
 
@@ -19,9 +21,12 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 /**
  * XmlParser is used to parse the XML data given by OpenStreetMaps.
- * Nodes are parsed an added to the relevant Ways or Relations as a float array of coordinates.
+ * Nodes are parsed and added to Ways or Relations as a float array of coordinates.
+ * Ways may have additional tags such as oneway, junction, maxspeed which is parsed.
  * <p>
  * An ElementType can be found by looking at the tags of a Way or Relation.
+ * <p>
+ * Nodes and Relations may contain a name and place tag which is used to create MapTexts.
  * <p>
  * An OsmAddress is created by looking at the address tags of a Node.
  * It is then placed in a ternary search tries for address searching.
@@ -60,7 +65,7 @@ public class XmlParser {
         List<Way> coastlines = new ArrayList<>();
         List<Way> islands;
 
-        float mapMinX = 0, mapMinY = 0, mapMaxX = 0, mapMaxY = 0;
+        float mapMinX = 0.0f, mapMinY = 0.0f, mapMaxX = 0.0f, mapMaxY = 0.0f;
         boolean isCoastline = false;
 
         String name = null;
@@ -210,17 +215,21 @@ public class XmlParser {
                                                 if (way != null) {
                                                     way.setOneWay(true);
                                                     way.setOneWayBike(true);
+                                                    way.setJunction(true);
                                                 }
                                                 break;
                                             case "motorway":
                                             case "motorway_link":
                                                 elementType = ElementType.MOTORWAY;
+                                                way.setMaxSpeed(130);
                                                 break;
                                             case "primary":
                                                 elementType = ElementType.PRIMARY;
+                                                way.setMaxSpeed(80);
                                                 break;
                                             case "residential":
                                                 elementType = ElementType.RESIDENTIAL;
+                                                way.setMaxSpeed(50);
                                                 break;
                                             case "footway":
                                             case "footpath":
@@ -239,12 +248,15 @@ public class XmlParser {
                                                 elementType = ElementType.ROAD;
                                                 break;
                                             case "trunk":
+                                            case "trunk_link":
                                                 elementType = ElementType.TRUNK;
+                                                way.setMaxSpeed(80);
                                                 break;
                                             case "tertiary":
                                             case "secondary":
                                             case "unclassified":
                                                 elementType = ElementType.TERTIARY;
+                                                way.setMaxSpeed(50);
                                                 break;
                                         }
                                         break;
@@ -280,7 +292,7 @@ public class XmlParser {
                                     case "maxspeed":
                                         if (way != null) {
                                             if (way.getType() != null) {
-                                                if (way.getType().canDrive()) {
+                                                if (way.getType().canNavigate(TransportOption.CAR)) {
                                                     try {
                                                         way.setMaxSpeed(Integer.parseInt(value));
                                                     } catch (NumberFormatException ignored) {
@@ -319,6 +331,8 @@ public class XmlParser {
                                             if (way != null) {
                                                 way.setOneWay(true);
                                                 way.setOneWayBike(true);
+                                                way.setJunction(true);
+
                                             }
                                         }
                                         break;
@@ -380,22 +394,6 @@ public class XmlParser {
                                 elementType = null;
                             }
                             if (mapText != null) {
-                                float minX = relation.getMinX();
-                                float maxX = relation.getMaxX();
-                                float minY = relation.getMinY();
-                                float maxY = relation.getMaxY();
-
-                                float midX = (minX + maxX / 2);
-                                float midY = (minY + maxY / 2);
-
-                                float[] coords = new float[]{midX, midY};
-                                mapText.setCoords(coords);
-
-                                float xLength = Math.abs(maxX - minX);
-                                float yLength = Math.abs(maxY - minY);
-                                float areaSize = (float) ((xLength * yLength) * Math.pow(10.0D, 7.0D));
-                                mapText.setAreaSize(areaSize);
-
                                 mapTexts.add(mapText);
                                 mapText = null;
                             }
@@ -420,7 +418,7 @@ public class XmlParser {
             }
         }
         time += System.nanoTime();
-        System.out.println("Parsed OSM data in: " + time / 1_000_000 + "ms");
+        System.out.println("Parsed OSM data in: " + time / 1_000_000L + "ms");
         islands = mergeCoastLines(coastlines);
 
         List<Way> wayList = new ArrayList<>();

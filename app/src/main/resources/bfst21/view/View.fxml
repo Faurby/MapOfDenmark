@@ -25,7 +25,8 @@
        xmlns:fx="https://javafx.com/fxml"
        fx:controller="bfst21.view.controllers.MainController"
        fx:id="scene"
-       onKeyPressed="#onKeyPressed">
+       onKeyPressed="#onKeyPressed"
+       stylesheets="@../../styles/userNodesStyles.css, @../../styles/loadingStyles.css">
 
     <StackPane fx:id="stackPane" minHeight="480" minWidth="640">
 
@@ -62,20 +63,18 @@
 
         <fx:include fx:id="startBox" source="StartBox.fxml"/>
 
-        <VBox fx:id="loadingText"
+        <VBox fx:id="loadingScreenBox"
               minHeight="100"
               minWidth="100"
               visible="false"
-              alignment="CENTER"
-              style="-fx-background-color: WHITE; -fx-padding: 20;">
+              alignment="CENTER">
 
-            <Text text="Loading" style="-fx-font-size: 24;"/>
-            <ProgressBar fx:id="progressBar"
-                         style="-fx-padding: 20;"
-                         minWidth="200"/>
+            <Text text="Loading" style="-fx-font-size: 24"/>
+            <ProgressBar fx:id="progressBar" minWidth="200" style="-fx-padding: 20;"/>
         </VBox>
 
         <HBox fx:id="menuBarHBox"
+              visible="false"
               maxHeight="25"
               minHeight="25"
               minWidth="${scene.width}"
@@ -105,7 +104,7 @@
                     </Menu>
                 </Menu>
                 <Menu text="Help">
-                    <MenuItem onAction="#showHideDebug"
+                    <MenuItem onAction="#toggleDebugVisibility"
                               text="Toggle debug options"/>
                 </Menu>
             </MenuBar>
@@ -119,20 +118,20 @@
               prefHeight="190"
               alignment="CENTER"
               spacing="8"
-              style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;">
+              styleClass="userNodeVBoxes">
 
-            <Text text="New Point of Interest" style="-fx-font-size: large;"/>
+            <Text text="New Point of Interest" styleClass="largeText"/>
 
             <Text text="Name:"/>
-            <TextField fx:id="userNodeNameTextField"
-                       onKeyPressed="#userNodeTextFieldKeyPressed"
+            <TextField fx:id="userNodeNameText"
+                       onKeyPressed="#userNodeTextKeyPressed"
                        promptText="Name"
                        maxWidth="150"
                        prefWidth="150"/>
 
             <Text text="Description:"/>
-            <TextField fx:id="userNodeDescriptionTextField"
-                       onKeyPressed="#userNodeTextFieldKeyPressed"
+            <TextField fx:id="userNodeDescriptionText"
+                       onKeyPressed="#userNodeTextKeyPressed"
                        promptText="Description"
                        maxWidth="150"
                        prefWidth="150"/>
@@ -160,7 +159,7 @@
               prefHeight="185"
               alignment="CENTER"
               spacing="8"
-              style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;">
+              styleClass="userNodeVBoxes">
 
             <Text text="Failed to load name" fx:id="userNodeClickedName" style="-fx-font-size: x-large;"/>
 
@@ -196,12 +195,12 @@
               prefHeight="130"
               alignment="CENTER"
               spacing="10"
-              style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;">
+              styleClass="userNodeVBoxes">
 
-            <Text text="Enter new name" style="-fx-font-size: large;"/>
+            <Text text="Enter new name" styleClass="largeText"/>
 
-            <TextField fx:id="userNodeNewNameTextField"
-                       onKeyPressed="#userNodeNewNameTextFieldKeyPressed"
+            <TextField fx:id="userNodeNewNameText"
+                       onKeyPressed="#userNodeNewNameTextKeyPressed"
                        promptText="New name"
                        maxWidth="140"
                        prefWidth="140"/>
@@ -228,12 +227,12 @@
               prefHeight="130"
               alignment="CENTER"
               spacing="10"
-              style="-fx-background-color: #f6f6f6; -fx-border-color: #a0a0a0;">
+              styleClass="userNodeVBoxes">
 
-            <Text text="Enter new description" style="-fx-font-size: large;"/>
+            <Text text="Enter new description" styleClass="largeText"/>
 
-            <TextField fx:id="userNodeNewDescriptionTextField"
-                       onKeyPressed="#userNodeNewDescTextFieldKeyPressed"
+            <TextField fx:id="userNodeNewDescriptionText"
+                       onKeyPressed="#userNodeNewDescTextKeyPressed"
                        promptText="New description"
                        maxWidth="140"
                        prefWidth="140"/>
@@ -263,34 +262,29 @@
             </padding>
             <Button fx:id="newUserNodeButton"
                     onAction="#userNodeButtonClicked"
-                    text="Add point of interest"
-                    style="-fx-border-color: #3E859B;"/>
+                    text="Add point of interest"/>
             <ListView fx:id="userNodeListView"
                       visible="false"
-                      maxWidth="${newUserNodeButton.width}"
-                      style="-fx-border-color: #3E859B;"/>
+                      maxWidth="${newUserNodeButton.width}"/>
         </VBox>
 
-        <GridPane fx:id="footBox"
-                maxWidth="230"
-                maxHeight="30"
-                prefHeight="30"
-                StackPane.alignment="BOTTOM_RIGHT"
-                style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B; -fx-font-size: large;"
-                visible="false"
-                hgap="5"
-                alignment="CENTER_RIGHT">
+        <GridPane fx:id="footerGridPane"
+                  maxWidth="230"
+                  maxHeight="30"
+                  prefHeight="30"
+                  StackPane.alignment="BOTTOM_RIGHT"
+                  visible="false"
+                  hgap="5"
+                  alignment="CENTER_RIGHT">
             <padding>
                 <Insets right="10" left="10"/>
             </padding>
-            <Text text=""
-                  fx:id="nearestRoadText"
+            <Text fx:id="nearestRoadText"
                   GridPane.columnIndex="1"/>
             <Text text=" | "
                   GridPane.columnIndex="2"/>
-                <Text text=""
-                      fx:id="zoomPercent"
-                      GridPane.columnIndex="3"/>
+            <Text fx:id="zoomPercentText"
+                  GridPane.columnIndex="3"/>
         </GridPane>
     </StackPane>
 </Scene>

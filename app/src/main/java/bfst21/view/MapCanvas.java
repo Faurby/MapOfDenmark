@@ -3,14 +3,9 @@ package bfst21.view;
 import bfst21.models.DisplayOptions;
 import bfst21.models.DisplayOption;
 import bfst21.osm.*;
-import bfst21.pathfinding.DirectedGraph;
-import bfst21.pathfinding.Direction;
-import bfst21.pathfinding.Edge;
-import bfst21.pathfinding.Vertex;
+import bfst21.pathfinding.*;
 import bfst21.tree.BoundingBox;
-import bfst21.tree.KdNode;
 import bfst21.models.Model;
-import bfst21.tree.KdTree;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -42,14 +37,14 @@ public class MapCanvas extends Canvas {
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
     private final GraphicsContext gc = getGraphicsContext2D();
 
-    private int depth;
     private Task<Void> rangeSearchTask;
-    private Task<Void> nearestNeighborTask;
+    private Task<Void> dijkstraTask;
+
+    public float[] originCoords;
+    public float[] destinationCoords;
 
     private ColorMode colorMode = ColorMode.STANDARD;
     private Affine trans = new Affine();
-
-    private float[] nearestNeighborCoords;
 
     private List<String> currentDirections = new ArrayList<>();
 
@@ -101,59 +96,15 @@ public class MapCanvas extends Canvas {
         if (model.getMapData() != null) {
 
             adjustWidthModifier();
-
-            //Draw every elementGroup if option is enabled
-            for (ElementGroup elementGroup : ElementGroup.values()) {
-                ElementType elementType = elementGroup.getType();
-                try {
-                    if (elementType.isDisplayOptionEnabled()) {
-
-                        //TODO: This is a bit scuffed
-                        // but relations needs to be drawn in the correct order somehow...
-                        ElementSize elementSize = elementGroup.getSize();
-                        if (elementSize == ElementSize.DEFAULT || elementSize == ElementSize.SMALL) {
-                            drawRelations(elementType);
-                        }
-                        drawOrFill(elementGroup);
-                    }
-                } catch (IllegalArgumentException ex) {
-                    System.out.println("Failed to draw " + elementGroup);
-                    System.out.println("There is no DISPLAY_" + elementType + " in the Option class!");
-                }
-            }
+            drawElementGroups();
             drawUserNodes();
-            drawNeighborNodes();
             drawMapText();
 
             for (Pin pin : Pin.values()) {
                 pin.draw(gc, zoomLevel);
             }
-
-            //Display the kd-tree if option is enabled
-            if (displayOptions.getBool(DisplayOption.DISPLAY_KD_TREE)) {
-                depth = 0;
-
-                float maxX = model.getMapData().getMaxX();
-                float maxY = model.getMapData().getMaxY();
-                float minX = model.getMapData().getMinX();
-                float minY = model.getMapData().getMinY();
-
-                for (ElementGroup elementGroup : ElementGroup.values()) {
-                    if (elementGroup.doShowElement(zoomLevel)) {
-
-                        if (elementGroup.getType().isDisplayOptionEnabled()) {
-
-                            KdTree<Way> kdTree = model.getMapData().getKdTree(elementGroup);
-                            if (kdTree != null) {
-                                drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
-                            }
-                        }
-                    }
-                }
-            }
-            drawGraph();
-            if (model.getMapData().destinationCoords != null) {
-                drawPathTo(model.getMapData().destinationCoords);
+            if (destinationCoords != null) {
+                drawPathTo(destinationCoords);
             }
         }
         gc.restore();
@@ -191,24 +142,27 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void drawMapText() {
+    /**
+     * Draws every MapText found by the kd-tree range search.
+     */
+    private void drawMapText() {
         if (displayOptions.getBool(DisplayOption.DISPLAY_TEXT)) {
             List<MapText> list = model.getMapData().getMapTexts();
 
             if (list.size() > 0) {
 
-                gc.setFill(getTextColor());
+                gc.setFill(getMapTextColor());
                 gc.setTextAlign(TextAlignment.CENTER);
-                String font = "Calibri";
 
                 for (MapText mapText : model.getMapData().getMapTexts()) {
-
                     if (mapText.canDraw(zoomLevel)) {
-                        if (zoomLevel <= 200) {
-                            gc.setFont(new Font(font, mapText.getMapTextType().getStandardMultiplier() / 220));
-                        } else {
-                            gc.setFont(new Font(font, mapText.getMapTextType().getStandardMultiplier() / zoomLevel));
+
+                        double size = mapText.getMapTextType().getFontSizeMultiplier() / zoomLevel;
+                        if (zoomLevel <= 200.0D) {
+                            size = mapText.getMapTextType().getFontSizeMultiplier() / 220.0D;
                         }
+
+                        gc.setFont(new Font("Calibri", size));
                         gc.fillText(mapText.getName(), mapText.getCoords()[0], mapText.getCoords()[1]);
                     }
                 }
@@ -217,10 +171,37 @@ public class MapCanvas extends Canvas {
     }
 
     /**
+     * Draw every ElementGroup if option is enabled
+     */
+    private void drawElementGroups() {
+        for (ElementGroup elementGroup : ElementGroup.values()) {
+            ElementType elementType = elementGroup.getType();
+            try {
+                if (elementType.isDisplayOptionEnabled()) {
+
+                    //Workaround: Relations need to be drawn in the
+                    //correct order together with other ElementTypes.
+                    //So this is done to only draw Relations once per ElementType
+                    ElementSize elementSize = elementGroup.getSize();
+
+                    if (elementSize == ElementSize.DEFAULT
+                            || elementSize == ElementSize.SMALL) {
+                        drawRelations(elementType);
+                    }
+                    drawOrFill(elementGroup);
+                }
+            } catch (IllegalArgumentException ex) {
+                System.out.println("Failed to draw " + elementGroup);
+                System.out.println("There is no DISPLAY_" + elementType + " in the Option class!");
+            }
+        }
+    }
+
+    /**
      * Draws or fills every Way with the ElementGroup to display at the current zoom level.
      * Retrieves values for colors, size and line dashes from the ElementType.
      */
-    public void drawOrFill(ElementGroup elementGroup) {
+    private void drawOrFill(ElementGroup elementGroup) {
         if (elementGroup.doShowElement(zoomLevel)) {
             ElementType elementType = elementGroup.getType();
             gc.setLineDashes(elementType.getLineDashes());
@@ -247,37 +228,10 @@ public class MapCanvas extends Canvas {
      */
     private void drawUserNodes() {
         gc.setStroke(Color.BLUE);
-        gc.setLineWidth(10 * (1 / Math.sqrt(trans.determinant())));
+        gc.setLineWidth(10.0D * (1.0D / Math.sqrt(trans.determinant())));
 
         for (UserNode userNode : model.getMapData().getUserNodes()) {
-            userNode.draw(gc, 0);
-        }
-    }
-
-    /**
-     * Draw the entire navigation graph.
-     */
-    public void drawGraph() {
-        if (displayOptions.getBool(DisplayOption.DISPLAY_GRAPH)) {
-            DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
-
-            gc.setStroke(Color.DARKSLATEBLUE);
-            gc.setLineWidth(0.0002 * widthModifier);
-            gc.beginPath();
-
-            Vertex[] vertices = directedGraph.getVertices();
-
-            for (Vertex vertex : vertices) {
-                if (vertex != null) {
-                    for (int id : vertex.getEdges()) {
-                        Edge edge = directedGraph.getEdge(id);
-                        if (edge != null) {
-                            edge.draw(directedGraph, gc);
-                        }
-                    }
-                }
-            }
-            gc.stroke();
+            userNode.draw(gc, 0.0D);
         }
     }
 
@@ -285,64 +239,73 @@ public class MapCanvas extends Canvas {
      * Draws a path from the origin coords to the destination coords.
      * Draws every path that dijkstra has investigated.
      */
-    public void drawPathTo(float[] destinationCoords) {
-        if (displayOptions.getBool(DisplayOption.DISPLAY_DIJKSTRA)) {
-            DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
+    private void drawPathTo(float[] destinationCoords) {
+        DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
-            gc.setStroke(Color.DARKSLATEBLUE);
-            gc.setLineWidth(0.0002 * widthModifier);
+        int destinationID = directedGraph.getVertexID(destinationCoords);
 
-            gc.beginPath();
-            Edge[] edges = model.getMapData().getDijkstra().getEdgeTo();
-            for (Edge edge : edges) {
-                if (edge != null) {
-                    edge.draw(directedGraph, gc);
-                }
-            }
-            gc.stroke();
-
-            gc.setStroke(Color.RED);
-            gc.setLineWidth(0.0004 * widthModifier);
-
-            int destinationID = directedGraph.getVertexID(destinationCoords);
+        if (model.getMapData().getDijkstra() != null) {
             List<Edge> edgeList = model.getMapData().getDijkstra().pathTo(destinationID);
 
             if (edgeList.size() > 0) {
 
+                gc.setStroke(Color.RED);
+                gc.setLineWidth(3.0D * (1.0D / Math.sqrt(trans.determinant())));
+
                 currentDirections = new ArrayList<>();
 
-                System.out.println("Directions ------");
                 gc.beginPath();
                 float distanceSum = 0;
+                int exitCount = 0;
+
                 for (int i = 0; i < (edgeList.size() - 1); i++) {
                     Edge before = edgeList.get(i);
                     Edge after = edgeList.get(i + 1);
 
-                    Direction direction = directedGraph.getDirectionRightLeft(before, after);
-                    float distanceBefore = before.getDistance() * 1000;
-                    float distanceAfter = after.getDistance() * 1000;
 
-                    distanceSum += distanceBefore;
+                    if (before.isJunction()) {
+                        before.draw(directedGraph, gc);
+                        int fromID = before.getFrom();
+                        if (directedGraph.getOutDegree(fromID) >= 2) {
+                            exitCount++;
+                        }
+                        if (!after.isJunction()) {
+                            currentDirections.add("Take the " + exitCount + ". exit in the roundabout");
+                            exitCount = 0;
+                        }
 
-                    before.draw(directedGraph, gc);
+                    } else {
+                        Direction direction = directedGraph.getDirectionRightLeft(before, after);
+                        float distanceBefore = before.getDistance() * 1_000f;
+                        float distanceAfter = after.getDistance() * 1_000f;
 
-                    if (direction != Direction.STRAIGHT) {
-                        currentDirections.add("Drive " + (int) distanceSum + "m down " + before.getName());
-                        currentDirections.add("Then " + direction + " down " + after.getName());
-                        distanceSum = 0;
-                    }
-                    if (i == (edgeList.size() - 2)) {
-                        after.draw(directedGraph, gc);
-                        currentDirections.add("Drive " + (int) (distanceSum + distanceAfter) + "m down " + after.getName());
+                        distanceSum += distanceBefore;
+
+                        before.draw(directedGraph, gc);
+
+                        String dir = direction.toString().toLowerCase().replace("_", " ");
+
+                        if (direction != Direction.STRAIGHT) {
+                            currentDirections.add("Drive " + (int) distanceSum + "m down " + before.getName());
+                            if (!after.isJunction()) {
+                                currentDirections.add("Then " + dir + " down " + after.getName());
+                            }
+                            distanceSum = 0;
+                        }
+                        if (i == (edgeList.size() - 2)) {
+                            after.draw(directedGraph, gc);
+                            currentDirections.add("Drive " + (int) (distanceSum + distanceAfter) + "m down " + after.getName());
+                        }
                     }
                 }
+
                 gc.stroke();
 
                 int start = edgeList.get(0).getFrom();
                 float[] startCoords = directedGraph.getVertexCoords(start);
 
                 gc.setStroke(Color.YELLOWGREEN);
-                gc.setLineWidth(0.0005 * widthModifier);
+                gc.setLineWidth(0.0005D * widthModifier);
 
                 gc.beginPath();
                 gc.moveTo(startCoords[0], startCoords[1]);
@@ -350,13 +313,14 @@ public class MapCanvas extends Canvas {
                 gc.stroke();
 
                 gc.setStroke(Color.PURPLE);
-                gc.setLineWidth(0.0005 * widthModifier);
+                gc.setLineWidth(0.0005D * widthModifier);
 
                 gc.beginPath();
                 gc.moveTo(destinationCoords[0], destinationCoords[1]);
                 gc.lineTo(destinationCoords[0], destinationCoords[1]);
                 gc.stroke();
 
+                System.out.println("Directions: ------");
                 for (String dir : currentDirections) {
                     System.out.println(dir);
                 }
@@ -372,6 +336,9 @@ public class MapCanvas extends Canvas {
         repaint();
     }
 
+    /**
+     * Change the current view of the screen to the given x and y values.
+     */
     public void changeView(float newX, float newY) {
 
         double x1 = trans.getTx() / Math.sqrt(trans.determinant());
@@ -382,8 +349,8 @@ public class MapCanvas extends Canvas {
         Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
         Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
 
-        double oldX = (p1.getX() + p2.getX()) / 2;
-        double oldY = (p1.getY() + p2.getY()) / 2;
+        double oldX = (p1.getX() + p2.getX()) / 2.0D;
+        double oldY = (p1.getY() + p2.getY()) / 2.0D;
 
         double dx = (newX - oldX) * zoomLevel;
         double dy = (newY - oldY) * zoomLevel;
@@ -411,41 +378,29 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public void drawNeighborNodes() {
-        if (nearestNeighborCoords != null) {
-
-            gc.setStroke(Color.RED);
-            gc.setLineWidth(0.002 * widthModifier);
-
-            gc.beginPath();
-            gc.moveTo(nearestNeighborCoords[0], nearestNeighborCoords[1]);
-            gc.lineTo(nearestNeighborCoords[0], nearestNeighborCoords[1]);
-            gc.stroke();
-        }
-    }
-
     /**
-     * Starts a new nearest neighbor search task.
-     * Cancels the current nearest neighbor search task if it is running.
-     * Repaints the MapCanvas when the task is finished.
+     * Run dijkstra path finding if coords for origin and destination are present.
      */
-    public void runNearestNeighborTask(float[] queryCoords) {
-        if (nearestNeighborTask != null) {
-            if (nearestNeighborTask.isRunning()) {
-                nearestNeighborTask.cancel();
+    public void runDijkstraTask() {
+        if (dijkstraTask != null) {
+            if (dijkstraTask.isRunning()) {
+                dijkstraTask.cancel();
             }
         }
-        nearestNeighborTask = new Task<>() {
+        dijkstraTask = new Task<>() {
             @Override
             protected Void call() {
-                nearestNeighborCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords);
+                model.getMapData().runDijkstra(originCoords, destinationCoords);
                 return null;
             }
         };
-        nearestNeighborTask.setOnSucceeded(e -> repaint());
-        nearestNeighborTask.setOnFailed(e -> nearestNeighborTask.getException().printStackTrace());
-        Thread thread = new Thread(nearestNeighborTask);
-        thread.start();
+        dijkstraTask.setOnSucceeded(e -> repaint());
+        dijkstraTask.setOnFailed(e -> dijkstraTask.getException().printStackTrace());
+
+        if (originCoords != null && destinationCoords != null) {
+            Thread thread = new Thread(dijkstraTask);
+            thread.start();
+        }
     }
 
     /**
@@ -472,6 +427,18 @@ public class MapCanvas extends Canvas {
         thread.start();
     }
 
+    /**
+     * Begins a range search for the kd-tree if MapData is available.
+     */
+    private void rangeSearch() {
+        if (model.getMapData() != null) {
+            model.getMapData().kdTreeRangeSearch(getScreenBoundingBox(true), zoomLevel);
+        }
+    }
+
+    /**
+     * @return BoundingBox of the screen.
+     */
     public BoundingBox getScreenBoundingBox(boolean extend) {
         double x1 = trans.getTx() / Math.sqrt(trans.determinant());
         double y1 = (-trans.getTy()) / Math.sqrt(trans.determinant());
@@ -479,84 +446,16 @@ public class MapCanvas extends Canvas {
         double y2 = getHeight() - y1;
 
         if (extend) {
-            x1 -= 50;
-            y1 -= 50;
-            x2 += 50;
-            y2 += 50;
+            x1 -= 50.0D;
+            y1 -= 50.0D;
+            x2 += 50.0D;
+            y2 += 50.0D;
         }
 
         Point2D p1 = mouseToModelCoords(new Point2D(x1, y1));
         Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
 
         return new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
-    }
-
-    /**
-     * Begins a range search for the kd-tree if MapData is available.
-     */
-    public void rangeSearch() {
-        if (model.getMapData() != null) {
-            model.getMapData().kdTreeRangeSearch(getScreenBoundingBox(true), zoomLevel);
-        }
-    }
-
-    /**
-     * Draws a visualization of the kd-tree if option is enabled.
-     */
-    public void drawKdTree(KdNode kdNode,
-                           float maxX,
-                           float maxY,
-                           float minX,
-                           float minY,
-                           double lineWidth) {
-
-        if (kdNode != null) {
-
-            float kMinX = kdNode.getMinX();
-            float kMaxX = kdNode.getMaxX();
-            float kMinY = kdNode.getMinY();
-            float kMaxY = kdNode.getMaxY();
-
-            gc.setStroke(Color.PURPLE);
-            if (depth == 0) {
-                gc.setStroke(Color.RED);
-            } else if (depth == 1) {
-                gc.setStroke(Color.TURQUOISE);
-            } else if (depth == 2) {
-                gc.setStroke(Color.TEAL);
-            }
-
-            gc.setLineWidth(lineWidth);
-            gc.beginPath();
-
-            lineWidth *= 0.7D;
-
-            if (depth % 2 == 0) {
-                gc.moveTo(kMinX, maxY);
-                gc.lineTo(kMinX, minY);
-                gc.stroke();
-                gc.moveTo(kMaxX, maxY);
-                gc.lineTo(kMaxX, minY);
-                gc.stroke();
-
-                depth++;
-                drawKdTree(kdNode.getLeftChild(), kMaxX, maxY, minX, minY, lineWidth);
-                drawKdTree(kdNode.getRightChild(), maxX, maxY, kMinX, minY, lineWidth);
-
-            } else {
-                gc.moveTo(maxX, kMinY);
-                gc.lineTo(minX, kMinY);
-                gc.stroke();
-                gc.moveTo(maxX, kMaxY);
-                gc.lineTo(minX, kMaxY);
-                gc.stroke();
-
-                depth++;
-                drawKdTree(kdNode.getLeftChild(), maxX, kMaxY, minX, minY, lineWidth);
-                drawKdTree(kdNode.getRightChild(), maxX, maxY, minX, kMinY, lineWidth);
-            }
-            depth--;
-        }
     }
 
     /**
@@ -575,7 +474,7 @@ public class MapCanvas extends Canvas {
     /**
      * @return Color for the specific ElementType depending on the current color mode.
      */
-    public Color getColor(ElementType elementType) {
+    private Color getColor(ElementType elementType) {
         if (colorMode == ColorMode.COLOR_BLIND) {
             return elementType.getColorBlind();
         } else if (colorMode == ColorMode.DARK_MODE) {
@@ -584,7 +483,10 @@ public class MapCanvas extends Canvas {
         return elementType.getColor();
     }
 
-    public Color getTextColor() {
+    /**
+     * @return Color for MapText depending on the current color mode.
+     */
+    private Color getMapTextColor() {
         if (colorMode == ColorMode.COLOR_BLIND) {
             return Color.rgb(220, 255, 255);
         } else if (colorMode == ColorMode.DARK_MODE) {
@@ -600,18 +502,18 @@ public class MapCanvas extends Canvas {
     /**
      * Adjust width modifier used to properly size Ways at the current zoom level
      */
-    public void adjustWidthModifier() {
-        if (zoomLevel < 500) {
+    private void adjustWidthModifier() {
+        if (zoomLevel < 500D) {
             widthModifier = 1.0D;
 
-        } else if (zoomLevel < 2000) {
-            widthModifier = 0.75;
+        } else if (zoomLevel < 2_000.0D) {
+            widthModifier = 0.75D;
 
-        } else if (zoomLevel < 6000) {
-            widthModifier = 0.50;
+        } else if (zoomLevel < 6_000.0D) {
+            widthModifier = 0.50D;
 
-        } else if (zoomLevel < 22000) {
-            widthModifier = 0.25;
+        } else if (zoomLevel < 22_000.0D) {
+            widthModifier = 0.25D;
         }
     }
 
@@ -625,13 +527,13 @@ public class MapCanvas extends Canvas {
      * @return zoom level percentage.
      */
     public String getZoomPercent() {
-        if (zoomLevel == 0) {
+        if (zoomLevel == 0.0D) {
             return 100 + "%";
         } else {
             double max = Math.log(zoomLevelMax);
             double min = Math.log(zoomLevelMin);
             double diff = max - min;
-            double forOnePercent = diff / 100;
+            double forOnePercent = diff / 100.0D;
 
             double current = Math.log(zoomLevel) / forOnePercent;
 
@@ -657,10 +559,6 @@ public class MapCanvas extends Canvas {
 
     public Affine getTrans() {
         return trans;
-    }
-
-    public double getZoomLevelMax() {
-        return zoomLevelMax;
     }
 
     public List<String> getCurrentDirections() {
