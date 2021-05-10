@@ -4,10 +4,7 @@ import bfst21.models.DisplayOptions;
 import bfst21.models.DisplayOption;
 import bfst21.models.TransportOption;
 import bfst21.osm.*;
-import bfst21.pathfinding.DirectedGraph;
-import bfst21.pathfinding.Direction;
-import bfst21.pathfinding.Edge;
-import bfst21.pathfinding.Vertex;
+import bfst21.pathfinding.*;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdNode;
 import bfst21.models.Model;
@@ -46,6 +43,10 @@ public class MapCanvas extends Canvas {
     private int depth;
     private Task<Void> rangeSearchTask;
     private Task<Void> nearestNeighborTask;
+    private Task<Void> dijkstraTask;
+
+    public float[] originCoords;
+    public float[] destinationCoords;
 
     private ColorMode colorMode = ColorMode.STANDARD;
     private Affine trans = new Affine();
@@ -111,8 +112,8 @@ public class MapCanvas extends Canvas {
                 pin.draw(gc, zoomLevel);
             }
             drawGraph();
-            if (model.getMapData().destinationCoords != null) {
-                drawPathTo(model.getMapData().destinationCoords);
+            if (destinationCoords != null) {
+                drawPathTo(destinationCoords);
             }
         }
         gc.restore();
@@ -448,6 +449,31 @@ public class MapCanvas extends Canvas {
     }
 
     /**
+     * Run dijkstra path finding if coords for origin and destination are present.
+     */
+    public void runDijkstraTask() {
+        if (dijkstraTask != null) {
+            if (dijkstraTask.isRunning()) {
+                dijkstraTask.cancel();
+            }
+        }
+        dijkstraTask = new Task<>() {
+            @Override
+            protected Void call() {
+                model.getMapData().runDijkstra(originCoords, destinationCoords);
+                return null;
+            }
+        };
+        dijkstraTask.setOnSucceeded(e -> repaint());
+        dijkstraTask.setOnFailed(e -> dijkstraTask.getException().printStackTrace());
+
+        if (originCoords != null && destinationCoords != null) {
+            Thread thread = new Thread(dijkstraTask);
+            thread.start();
+        }
+    }
+
+    /**
      * Starts a new range search task.
      * Cancels the current range search task if it is running.
      * Repaints the MapCanvas when the task is finished.
@@ -472,6 +498,15 @@ public class MapCanvas extends Canvas {
     }
 
     /**
+     * Begins a range search for the kd-tree if MapData is available.
+     */
+    private void rangeSearch() {
+        if (model.getMapData() != null) {
+            model.getMapData().kdTreeRangeSearch(getScreenBoundingBox(true), zoomLevel);
+        }
+    }
+
+    /**
      * @return BoundingBox of the screen.
      */
     public BoundingBox getScreenBoundingBox(boolean extend) {
@@ -491,15 +526,6 @@ public class MapCanvas extends Canvas {
         Point2D p2 = mouseToModelCoords(new Point2D(x2, y2));
 
         return new BoundingBox((float) p1.getX(), (float) p2.getX(), (float) p1.getY(), (float) p2.getY());
-    }
-
-    /**
-     * Begins a range search for the kd-tree if MapData is available.
-     */
-    private void rangeSearch() {
-        if (model.getMapData() != null) {
-            model.getMapData().kdTreeRangeSearch(getScreenBoundingBox(true), zoomLevel);
-        }
     }
 
     /**

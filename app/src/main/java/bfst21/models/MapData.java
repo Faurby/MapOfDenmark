@@ -5,9 +5,7 @@ import bfst21.osm.*;
 import bfst21.pathfinding.DijkstraPath;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.tree.BoundingBox;
-import bfst21.tree.KdNode;
 import bfst21.tree.KdTree;
-import javafx.concurrent.Task;
 
 import java.util.*;
 
@@ -37,10 +35,6 @@ public class MapData {
     private final float minX, minY, maxX, maxY;
 
     private final TST<List<OsmAddress>> addressTries;
-
-    public float[] originCoords;
-    public float[] destinationCoords;
-    private Task<Void> dijkstraTask;
 
     /**
      * MapData constructor.
@@ -183,24 +177,8 @@ public class MapData {
     /**
      * Run dijkstra path finding if coords for origin and destination are present.
      */
-    public void runDijkstraTask() {
-        if (dijkstraTask != null) {
-            if (dijkstraTask.isRunning()) {
-                dijkstraTask.cancel();
-            }
-        }
-        dijkstraTask = new Task<>() {
-            @Override
-            protected Void call() {
-                dijkstraPath = new DijkstraPath(directedGraph, originCoords, destinationCoords);
-                return null;
-            }
-        };
-        dijkstraTask.setOnFailed(e -> dijkstraTask.getException().printStackTrace());
-        if (originCoords != null && destinationCoords != null) {
-            Thread thread = new Thread(dijkstraTask);
-            thread.start();
-        }
+    public void runDijkstra(float[] originCoords, float[] destinationCoords) {
+        dijkstraPath = new DijkstraPath(directedGraph, originCoords, destinationCoords);
     }
 
     /**

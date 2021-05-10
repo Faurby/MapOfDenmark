@@ -297,11 +297,11 @@ public class MainController extends BaseController {
 
             if (resetDijkstra) {
                 resetDijkstra = false;
-                model.getMapData().originCoords = nearestCoords;
-                model.getMapData().destinationCoords = null;
+                canvas.originCoords = nearestCoords;
+                canvas.destinationCoords = null;
             } else {
-                model.getMapData().destinationCoords = nearestCoords;
-                model.getMapData().runDijkstraTask();
+                canvas.destinationCoords = nearestCoords;
+                canvas.runDijkstraTask();
                 resetDijkstra = true;
             }
         }
