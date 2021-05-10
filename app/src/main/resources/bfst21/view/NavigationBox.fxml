@@ -26,14 +26,8 @@
                     top="10"/>
         </padding>
 
-        <TextArea fx:id="addressTextArea"
-                  minHeight="20"
-                  prefHeight="25"
-                  promptText="Type an address..."
-                  wrapText="true"
-                  onKeyPressed="#typingCheck"/>
         <HBox>
-            <TextArea fx:id="addressArea"
+            <TextArea fx:id="addressTextArea"
                       minHeight="20"
                       prefHeight="25"
                       promptText="Type an address..."
@@ -237,6 +231,9 @@
 
             <Button onAction="#minimizeNavigationBox"
                     text="Minimize"/>
+
+            <Button onAction="#deleteUserActions"
+                    text="Clear" />
 
             <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
 
