@@ -12,10 +12,10 @@ public enum ElementSize {
 
     //TODO: The areaSizeRequired values may need to be changed
     // We need to test the area sizes of different Ways to see if it is still correct
-    MASSIVE(500_000.0f, 500.0f),
-    LARGE(100_000.0f, 1_000.0f),
-    MEDIUM(70_000.0f, 2_000.0f),
-    SMALL(0.0f, 3_000.0f),
+    MASSIVE(500_000.0f, 400.0f),
+    LARGE(100_000.0f, 800.0f),
+    MEDIUM(70_000.0f, 1_600.0f),
+    SMALL(0.0f, 2_400.0f),
     DEFAULT(0.0f, 0.0f);
 
     private final float areaSizeRequired;

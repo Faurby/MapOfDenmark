@@ -17,7 +17,6 @@ public class MapText extends BoundingBoxElement {
     MapTextType mapTextType;
 
     private float[] coords;
-    private float areaSize = 1.0f;
 
     public MapText(String name, MapTextType mapTextType) {
         this.name = name;
@@ -27,10 +26,6 @@ public class MapText extends BoundingBoxElement {
     public void setCoords(float[] coords) {
         this.coords = coords;
         updateBoundingBox(coords[0], coords[1]);
-    }
-
-    public void setAreaSize(float areaSize) {
-        this.areaSize = areaSize;
     }
 
     public String getName() {

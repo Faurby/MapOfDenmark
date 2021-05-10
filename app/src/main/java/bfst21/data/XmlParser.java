@@ -392,22 +392,6 @@ public class XmlParser {
                                 elementType = null;
                             }
                             if (mapText != null) {
-                                float minX = relation.getMinX();
-                                float maxX = relation.getMaxX();
-                                float minY = relation.getMinY();
-                                float maxY = relation.getMaxY();
-
-                                float midX = (minX + maxX / 2.0f);
-                                float midY = (minY + maxY / 2.0f);
-
-                                float[] coords = new float[]{midX, midY};
-                                mapText.setCoords(coords);
-
-                                float xLength = Math.abs(maxX - minX);
-                                float yLength = Math.abs(maxY - minY);
-                                float areaSize = (float) ((xLength * yLength) * Math.pow(10.0D, 7.0D));
-                                mapText.setAreaSize(areaSize);
-
                                 mapTexts.add(mapText);
                                 mapText = null;
                             }
