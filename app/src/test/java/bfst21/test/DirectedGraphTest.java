@@ -106,7 +106,7 @@ public class DirectedGraphTest {
         directedGraph.addEdge(null, coords2, coords3, 10, false, false, false, true, true, true);
         directedGraph.addEdge(null, coords3, coords4, 10, false, false, false, true, true, true);
         directedGraph.addEdge(null, coords4, coords5, 10, false, false, false, true, true, true);
-        directedGraph.addEdge(null, coords5, coords2, 10, true, false, false, true, true, true);
+        directedGraph.addEdge(null, coords5, coords2, 10, false, true, false, true, true, true);
 
         DijkstraPath dijkstraPath = new DijkstraPath(directedGraph, coords0, coords5);
         int counter = 0;
