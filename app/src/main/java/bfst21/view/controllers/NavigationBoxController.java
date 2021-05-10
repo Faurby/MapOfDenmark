@@ -88,7 +88,7 @@ public class NavigationBoxController extends SubController {
                 }
             }
         } else {
-            displayAlert(Alert.AlertType.ERROR, "Error", "Search field is empty");
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address into the search field");
         }
     }
 
@@ -187,11 +187,14 @@ public class NavigationBoxController extends SubController {
 
     @FXML
     public void searchNavigationAddresses() {
-        if (startingPoint.getText().trim().isEmpty()) {
-            displayAlert(Alert.AlertType.ERROR, "Error", "Starting point search field is empty");
+        if (startingPoint.getText().trim().isEmpty() && destinationPoint.getText().trim().isEmpty()) {
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting and destination point");
+
+        } else if (startingPoint.getText().trim().isEmpty()) {
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting point");
 
         } else if (destinationPoint.getText().trim().isEmpty()) {
-            displayAlert(Alert.AlertType.ERROR, "Error", "Destination point search field is empty");
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the destination point");
 
         } else {
             String startingAddress = startingPoint.getText().trim().toLowerCase();

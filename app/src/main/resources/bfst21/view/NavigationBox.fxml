@@ -15,7 +15,8 @@
     <VBox fx:id="searchBox"
           minWidth="200"
           visible="false"
-          managed="false">
+          managed="false"
+          styleClass="searchBox">
 
         <TextArea fx:id="addressArea"
                   minHeight="20"
@@ -37,8 +38,7 @@
             </VBox>
         </ScrollPane>
 
-        <HBox fx:id="navigationHBox" alignment="BASELINE_CENTER" prefWidth="198.0">
-
+        <HBox alignment="BASELINE_CENTER" prefWidth="198.0" styleClass="hboxForButtons">
             <Button fx:id="navigateButton"
                     onAction="#expandSearchView"
                     text="Navigate"
@@ -58,15 +58,14 @@
     <VBox fx:id="routeBox"
           minWidth="250"
           visible="false"
-          managed="false">
+          managed="false"
+          styleClass="searchBox">
 
         <GridPane hgap="2">
-
             <VBox GridPane.columnIndex="1"
                   GridPane.rowIndex="1"
                   GridPane.rowSpan="3"
                   spacing="5">
-
                 <TextArea fx:id="startingPoint"
                           minHeight="25"
                           prefHeight="25"
@@ -100,7 +99,6 @@
                             minHeight="0"
                             fitToWidth="true"
                             styleClass="scrollPane">
-
                     <VBox fx:id="destinationSuggestions"
                           onKeyPressed="#typingCheck"
                           styleClass="suggestions">
@@ -115,7 +113,6 @@
                     maxHeight="20"
                     maxWidth="40"
                     onAction="#switchText">
-
                 <graphic>
                     <ImageView fitWidth="10.0"
                                preserveRatio="true"
@@ -126,15 +123,13 @@
             </Button>
         </GridPane>
 
-        <HBox style="-fx-padding: 10 0 0 0 ; -fx-alignment: CENTER ">
-
+        <HBox fx:id="transportModeHBox">
             <ToggleButton fx:id="CAR"
                           minHeight="40"
                           minWidth="35"
                           prefWidth="120"
                           onAction="#transportationButtonPushed"
                           selected="true">
-
                 <graphic>
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
@@ -146,7 +141,6 @@
                 <toggleGroup>
                     <ToggleGroup fx:id="group"/>
                 </toggleGroup>
-
             </ToggleButton>
 
             <ToggleButton fx:id="BIKE"
@@ -154,7 +148,6 @@
                           minWidth="35"
                           prefWidth="120"
                           onAction="#transportationButtonPushed">
-
                 <graphic>
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
@@ -166,7 +159,6 @@
                 <toggleGroup>
                     <fx:reference source="group"/>
                 </toggleGroup>
-
             </ToggleButton>
 
             <ToggleButton fx:id="WALK"
@@ -174,7 +166,6 @@
                           minWidth="35"
                           prefWidth="120"
                           onAction="#transportationButtonPushed">
-
                 <graphic>
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
@@ -186,12 +177,10 @@
                 <toggleGroup>
                     <fx:reference source="group"/>
                 </toggleGroup>
-
             </ToggleButton>
         </HBox>
 
-        <HBox alignment="BASELINE_CENTER" style="-fx-padding: 10 0 5 0">
-
+        <HBox alignment="BASELINE_CENTER" styleClass="hboxForButtons">
             <Button onAction="#minimizeSearchView"
                     text="Minimize" GridPane.columnIndex="0"
                     GridPane.rowIndex="0"/>
@@ -205,5 +194,4 @@
                     GridPane.rowIndex="0"/>
         </HBox>
     </VBox>
-
 </AnchorPane>
