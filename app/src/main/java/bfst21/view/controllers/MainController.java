@@ -24,10 +24,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -42,6 +39,8 @@ public class MainController extends BaseController {
     @FXML
     public AnchorPane navigationBox;
     @FXML
+    public HBox menuBarHBox;
+    @FXML
     private MapCanvas canvas;
     @FXML
     private StackPane stackPane;
@@ -52,7 +51,7 @@ public class MainController extends BaseController {
     @FXML
     private Scene scene;
     @FXML
-    private VBox loadingText;
+    private VBox loadingScreenBox;
     @FXML
     private ProgressBar progressBar;
     @FXML
@@ -62,9 +61,9 @@ public class MainController extends BaseController {
     @FXML
     private VBox newUserNodeVBox;
     @FXML
-    private TextField userNodeNameTextField;
+    private TextField userNodeNameText;
     @FXML
-    private TextField userNodeDescriptionTextField;
+    private TextField userNodeDescriptionText;
     @FXML
     private VBox userNodeClickedVBox;
     @FXML
@@ -76,11 +75,11 @@ public class MainController extends BaseController {
     @FXML
     private VBox userNodeNewNameVBox;
     @FXML
-    private TextField userNodeNewNameTextField;
+    private TextField userNodeNewNameText;
     @FXML
     private VBox userNodeNewDescriptionVBox;
     @FXML
-    private TextField userNodeNewDescriptionTextField;
+    private TextField userNodeNewDescriptionText;
     @FXML
     private NavigationBoxController navigationBoxController;
     @FXML
@@ -88,9 +87,9 @@ public class MainController extends BaseController {
     @FXML
     private StartBoxController startBoxController;
     @FXML
-    private Text zoomPercent;
+    private Text zoomPercentText;
     @FXML
-    private GridPane footBox;
+    private GridPane footerGridPane;
     @FXML
     private Text nearestRoadText;
 
@@ -115,7 +114,7 @@ public class MainController extends BaseController {
     private void updateZoomBox() {
         int nodeSkip = Way.getNodeSkipAmount(canvas.getZoomLevel());
 
-        zoomPercent.setText(canvas.getZoomPercent());
+        zoomPercentText.setText(canvas.getZoomPercent());
         debugBoxController.setZoomText("Zoom level: " + canvas.getZoomLevelText());
         debugBoxController.setNodeSkipAmount("Node skip: " + nodeSkip);
 
@@ -283,7 +282,7 @@ public class MainController extends BaseController {
 
         if (userNodeToggle && mouseEvent.isPrimaryButtonDown()) {
             newUserNodeVBox.setVisible(true);
-            userNodeNameTextField.requestFocus();
+            userNodeNameText.requestFocus();
             scene.setCursor(Cursor.DEFAULT);
         }
 
@@ -357,17 +356,20 @@ public class MainController extends BaseController {
 
     private void startLoadingFile() {
         userNodeVBox.setVisible(false);
-        loadingText.setVisible(true);
+        loadingScreenBox.setVisible(true);
+        menuBarHBox.setVisible(false);
+        footerGridPane.setVisible(false);
     }
 
     private void finishedLoadingFile() {
         startBox.setVisible(false);
         startBox.setManaged(false);
-        loadingText.setVisible(false);
+        loadingScreenBox.setVisible(false);
         navigationBoxController.setSearchBoxVisible(true);
         userNodeVBox.setVisible(true);
-        footBox.setVisible(true);
+        footerGridPane.setVisible(true);
         canvas.runRangeSearchTask();
+        menuBarHBox.setVisible(true);
 
         if (model.getMapData() != null) {
             updateUserNodeList();
@@ -419,7 +421,7 @@ public class MainController extends BaseController {
     }
 
     @FXML
-    public void userNodeTextFieldKeyPressed(KeyEvent keyEvent) {
+    public void userNodeTextKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ENTER) {
             newUserNodeCheckNameAndSave();
         } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
@@ -434,24 +436,24 @@ public class MainController extends BaseController {
     }
 
     private void newUserNodeCheckNameAndSave() {
-        String textField = userNodeNameTextField.getText();
+        String textField = userNodeNameText.getText();
         if (textField.isEmpty()) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
                     "A name is required");
-            userNodeNameTextField.requestFocus();
+            userNodeNameText.requestFocus();
 
         } else if (textField.length() > 15) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
                     "Names must be no longer than 15 characters");
-            userNodeNameTextField.requestFocus();
+            userNodeNameText.requestFocus();
 
         } else if (userNodesMap.containsKey(textField)) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
                     "Point of Interest names must be unique");
-            userNodeNameTextField.requestFocus();
+            userNodeNameText.requestFocus();
 
         } else {
             saveUserNode();
@@ -466,7 +468,7 @@ public class MainController extends BaseController {
 
     private void saveUserNode() {
         Point2D point = canvas.mouseToModelCoords(lastMouse);
-        UserNode userNode = new UserNode((float) point.getX(), (float) point.getY(), userNodeNameTextField.getText(), userNodeDescriptionTextField.getText());
+        UserNode userNode = new UserNode((float) point.getX(), (float) point.getY(), userNodeNameText.getText(), userNodeDescriptionText.getText());
 
         model.getMapData().addUserNode(userNode);
         model.getMapData().updateUserNodesMap();
@@ -475,7 +477,7 @@ public class MainController extends BaseController {
         userNodeToggle = false;
         newUserNodeVBox.setVisible(false);
         updateUserNodeList();
-        userNodeNameTextField.setText("");
+        userNodeNameText.setText("");
         canvas.repaint();
     }
 
@@ -536,17 +538,17 @@ public class MainController extends BaseController {
     @FXML
     public void userNodeChangeNameClicked() {
         userNodeNewNameVBox.setVisible(true);
-        userNodeNewNameTextField.requestFocus();
+        userNodeNewNameText.requestFocus();
     }
 
     @FXML
     public void userNodeChangeDescriptionClicked() {
         userNodeNewDescriptionVBox.setVisible(true);
-        userNodeNewDescriptionTextField.requestFocus();
+        userNodeNewDescriptionText.requestFocus();
     }
 
     @FXML
-    public void userNodeNewNameTextFieldKeyPressed(KeyEvent keyEvent) {
+    public void userNodeNewNameTextKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ENTER) {
             userNodeNewNameCheckNameAndSave();
 
@@ -556,11 +558,11 @@ public class MainController extends BaseController {
     }
 
     @FXML
-    public void userNodeNewDescTextFieldKeyPressed(KeyEvent keyEvent) {
+    public void userNodeNewDescTextKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ENTER) {
-            currentUserNode.setDescription(userNodeNewDescriptionTextField.getText());
+            currentUserNode.setDescription(userNodeNewDescriptionText.getText());
             userNodeNewDescriptionVBox.setVisible(false);
-            userNodeNewDescriptionTextField.setText("");
+            userNodeNewDescriptionText.setText("");
             userNodeClickedDescription.setText(currentUserNode.getDescription());
 
         } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
@@ -584,29 +586,29 @@ public class MainController extends BaseController {
     }
 
     private void userNodeNewNameCheckNameAndSave() {
-        String textField = userNodeNewNameTextField.getText();
+        String textField = userNodeNewNameText.getText();
 
         if (textField.isEmpty()) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
                     "A name is required");
-            userNodeNewNameTextField.requestFocus();
+            userNodeNewNameText.requestFocus();
 
         } else if (textField.length() > 15) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error",
                     "Names must be no longer than 15 characters");
-            userNodeNewNameTextField.requestFocus();
+            userNodeNewNameText.requestFocus();
 
         } else if (userNodesMap.containsKey(textField)) {
             displayAlert(Alert.AlertType.INFORMATION,
                     "Error", "Point of Interest names must be unique");
-            userNodeNewNameTextField.requestFocus();
+            userNodeNewNameText.requestFocus();
 
         } else {
-            currentUserNode.setName(userNodeNewNameTextField.getText());
+            currentUserNode.setName(userNodeNewNameText.getText());
             userNodeNewNameVBox.setVisible(false);
-            userNodeNewNameTextField.setText("");
+            userNodeNewNameText.setText("");
             userNodeClickedName.setText(currentUserNode.getName());
             updateUserNodeList();
             model.getMapData().getUserNodesMap().put(currentUserNode.getName(), currentUserNode);
@@ -615,9 +617,9 @@ public class MainController extends BaseController {
 
     @FXML
     public void userNodeNewDescSaveClicked() {
-        currentUserNode.setDescription(userNodeNewDescriptionTextField.getText());
+        currentUserNode.setDescription(userNodeNewDescriptionText.getText());
         userNodeNewDescriptionVBox.setVisible(false);
-        userNodeNewDescriptionTextField.setText("");
+        userNodeNewDescriptionText.setText("");
         userNodeClickedDescription.setText(currentUserNode.getDescription());
     }
 

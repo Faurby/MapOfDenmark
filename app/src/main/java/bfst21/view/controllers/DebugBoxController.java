@@ -14,9 +14,9 @@ public class DebugBoxController extends SubController {
     @FXML
     private Text nodeSkipAmount;
     @FXML
-    private Text mouseCoords;
+    private Text mouseCoordsText;
     @FXML
-    private Text mouseCoordsRealWorld;
+    private Text realMouseCoordsText;
 
     @FXML
     public void onCheckDebug(ActionEvent actionEvent) {
@@ -36,10 +36,10 @@ public class DebugBoxController extends SubController {
     }
 
     public void setMouseCoords(String mouseCoords) {
-        this.mouseCoords.setText(mouseCoords);
+        this.mouseCoordsText.setText(mouseCoords);
     }
 
     public void setMouseCoordsRealWorld(String mouseCoords) {
-        this.mouseCoordsRealWorld.setText(mouseCoords);
+        this.realMouseCoordsText.setText(mouseCoords);
     }
 }
