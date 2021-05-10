@@ -44,7 +44,7 @@
                                preserveRatio="true"
                                opacity="0.8"
                                style="-fx-background-color: TRANSPARENT">
-                        <Image url="/deleteIcon.png"/>
+                        <Image url="/delete_icon.png"/>
                     </ImageView>
                 </graphic>
             </Button>

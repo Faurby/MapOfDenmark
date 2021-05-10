@@ -453,5 +453,15 @@ public class NavigationBoxController extends SubController {
     }
 
     public void deleteUserActions(ActionEvent actionEvent) {
+        originTextArea.setText("");
+        destinationTextArea.setText("");
+        addressTextArea.setText("");
+
+        suggestionsBox.getChildren().clear();
+        originSuggestionsBox.getChildren().clear();
+        destinationSuggestionsBox.getChildren().clear();
+
+        Pin.ORIGIN.setVisible(false);
+        Pin.DESTINATION.setVisible(false);
     }
 }
