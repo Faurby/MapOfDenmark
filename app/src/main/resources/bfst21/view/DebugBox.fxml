@@ -28,7 +28,6 @@
 
         <Text text="Debug options:" style="-fx-padding: 2"/>
 
-        <CheckBox text="Display graph" selected="false" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display relations" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display island" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>
         <CheckBox text="Display water" selected="true" onAction="#onCheckDebug" style="-fx-padding: 2"/>

@@ -27,10 +27,6 @@ public class KdTree<T extends BoundingBoxElement> implements Serializable {
 
     private float[] currentNearestNeighbor = null;
 
-    public KdNode<T> getRoot() {
-        return root;
-    }
-
     /**
      * Build the kd-tree with the given list of elements.
      */

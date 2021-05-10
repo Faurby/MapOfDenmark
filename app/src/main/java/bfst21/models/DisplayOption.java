@@ -2,7 +2,6 @@ package bfst21.models;
 
 
 public enum DisplayOption {
-    DISPLAY_GRAPH,
     DISPLAY_RELATIONS,
     DISPLAY_ISLAND,
     DISPLAY_WATERWAY,

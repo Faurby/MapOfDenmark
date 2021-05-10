@@ -5,7 +5,7 @@ import bfst21.models.MapData;
 import bfst21.models.Model;
 import bfst21.models.TransportOption;
 import bfst21.models.TransportOptions;
-import bfst21.osm.OsmAddress;
+import bfst21.address.OsmAddress;
 import bfst21.osm.Pin;
 import bfst21.view.MapCanvas;
 import javafx.concurrent.Task;

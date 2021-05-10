@@ -122,8 +122,4 @@ public class DijkstraPath {
         Collections.reverse(path);
         return path;
     }
-
-    public Edge[] getEdgeTo() {
-        return edgeTo;
-    }
 }

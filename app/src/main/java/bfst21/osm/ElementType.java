@@ -276,8 +276,4 @@ public enum ElementType {
     public boolean doShowElement(double zoomLevel) {
         return zoomLevel >= zoomLevelRequired;
     }
-
-    public float getZoomLevelRequired() {
-        return zoomLevelRequired;
-    }
 }

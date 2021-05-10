@@ -2,13 +2,10 @@ package bfst21.view;
 
 import bfst21.models.DisplayOptions;
 import bfst21.models.DisplayOption;
-import bfst21.models.TransportOption;
 import bfst21.osm.*;
 import bfst21.pathfinding.*;
 import bfst21.tree.BoundingBox;
-import bfst21.tree.KdNode;
 import bfst21.models.Model;
-import bfst21.tree.KdTree;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -40,9 +37,7 @@ public class MapCanvas extends Canvas {
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
     private final GraphicsContext gc = getGraphicsContext2D();
 
-    private int depth;
     private Task<Void> rangeSearchTask;
-    private Task<Void> nearestNeighborTask;
     private Task<Void> dijkstraTask;
 
     public float[] originCoords;
@@ -50,8 +45,6 @@ public class MapCanvas extends Canvas {
 
     private ColorMode colorMode = ColorMode.STANDARD;
     private Affine trans = new Affine();
-
-    private float[] nearestNeighborCoords;
 
     private List<String> currentDirections = new ArrayList<>();
 
@@ -105,13 +98,11 @@ public class MapCanvas extends Canvas {
             adjustWidthModifier();
             drawElementGroups();
             drawUserNodes();
-            drawNeighborNodes();
             drawMapText();
 
             for (Pin pin : Pin.values()) {
                 pin.draw(gc, zoomLevel);
             }
-            drawGraph();
             if (destinationCoords != null) {
                 drawPathTo(destinationCoords);
             }
@@ -241,33 +232,6 @@ public class MapCanvas extends Canvas {
 
         for (UserNode userNode : model.getMapData().getUserNodes()) {
             userNode.draw(gc, 0.0D);
-        }
-    }
-
-    /**
-     * Draw the entire navigation graph.
-     */
-    private void drawGraph() {
-        if (displayOptions.getBool(DisplayOption.DISPLAY_GRAPH)) {
-            DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
-
-            gc.setStroke(Color.DARKSLATEBLUE);
-            gc.setLineWidth(0.0002D * widthModifier);
-            gc.beginPath();
-
-            Vertex[] vertices = directedGraph.getVertices();
-
-            for (Vertex vertex : vertices) {
-                if (vertex != null) {
-                    for (int id : vertex.getAdjacentEdges()) {
-                        Edge edge = directedGraph.getEdge(id);
-                        if (edge != null) {
-                            edge.draw(directedGraph, gc);
-                        }
-                    }
-                }
-            }
-            gc.stroke();
         }
     }
 
@@ -412,43 +376,6 @@ public class MapCanvas extends Canvas {
                 runRangeSearchTask();
             }
         }
-    }
-
-    private void drawNeighborNodes() {
-        if (nearestNeighborCoords != null) {
-
-            gc.setStroke(Color.RED);
-            gc.setLineWidth(0.002D * widthModifier);
-
-            gc.beginPath();
-            gc.moveTo(nearestNeighborCoords[0], nearestNeighborCoords[1]);
-            gc.lineTo(nearestNeighborCoords[0], nearestNeighborCoords[1]);
-            gc.stroke();
-        }
-    }
-
-    /**
-     * Starts a new nearest neighbor search task.
-     * Cancels the current nearest neighbor search task if it is running.
-     * Repaints the MapCanvas when the task is finished.
-     */
-    public void runNearestNeighborTask(float[] queryCoords, TransportOption transportOption) {
-        if (nearestNeighborTask != null) {
-            if (nearestNeighborTask.isRunning()) {
-                nearestNeighborTask.cancel();
-            }
-        }
-        nearestNeighborTask = new Task<>() {
-            @Override
-            protected Void call() {
-                nearestNeighborCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords, transportOption);
-                return null;
-            }
-        };
-        nearestNeighborTask.setOnSucceeded(e -> repaint());
-        nearestNeighborTask.setOnFailed(e -> nearestNeighborTask.getException().printStackTrace());
-        Thread thread = new Thread(nearestNeighborTask);
-        thread.start();
     }
 
     /**
@@ -632,10 +559,6 @@ public class MapCanvas extends Canvas {
 
     public Affine getTrans() {
         return trans;
-    }
-
-    public double getZoomLevelMax() {
-        return zoomLevelMax;
     }
 
     public List<String> getCurrentDirections() {

@@ -333,13 +333,6 @@ public class DirectedGraph implements Serializable {
         return Direction.UNKNOWN;
     }
 
-    /**
-     * @return Edge from its id.
-     */
-    public Edge getEdge(int id) {
-        return edges[id];
-    }
-
     public int getVertexAmount() {
         return vertexAmount;
     }

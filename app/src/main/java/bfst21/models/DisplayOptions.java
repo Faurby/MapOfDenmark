@@ -13,14 +13,6 @@ public class DisplayOptions {
     private static DisplayOptions instance;
 
     /**
-     * DisplayOptions constructor
-     * Sets the default value of specific DisplayOptions.
-     */
-    private DisplayOptions() {
-        options.put(DisplayOption.DISPLAY_GRAPH, false);
-    }
-
-    /**
      * @return current boolean value of specific DisplayOption.
      * All settings will return true by default unless
      * something else has been specified in the constructor.
