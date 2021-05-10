@@ -20,7 +20,7 @@ jar {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
-    from('data/amager.obj')
+    from('data/denmark.obj')
 }
 
 javafx {
@@ -89,7 +89,7 @@ tasks.withType(Test) {
 }
 
 tasks.withType(JavaExec) {
-    jvmArgs = ['-Xms1000m', '-Xmx3000m']
+    jvmArgs = ['-Xms5000m', '-Xmx5000m']
 }
 
 run {

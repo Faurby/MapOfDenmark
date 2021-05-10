@@ -10,7 +10,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        String defaultFileName = "amager.obj";
+        String defaultFileName = "denmark.obj";
 
         boolean jarFile = getClass().getResource("App.class").toString().contains(".jar");
 
