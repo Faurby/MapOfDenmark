@@ -1,11 +1,3 @@
-
-/* This is used for testing to see if the css file is being loaded */
-#userNodeVBox {
-    -fx-border-color: red;
-}
-/* This is used for testing to see if the css file is being loaded */
-/*TODO: remove this*/
-
 .largeText {
     -fx-font-size: large;
 }

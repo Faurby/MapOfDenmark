@@ -110,29 +110,6 @@ public class MapCanvas extends Canvas {
             for (Pin pin : Pin.values()) {
                 pin.draw(gc, zoomLevel);
             }
-
-            //Display the kd-tree if option is enabled
-            if (displayOptions.getBool(DisplayOption.DISPLAY_KD_TREE)) {
-                depth = 0;
-
-                float maxX = model.getMapData().getMaxX();
-                float maxY = model.getMapData().getMaxY();
-                float minX = model.getMapData().getMinX();
-                float minY = model.getMapData().getMinY();
-
-                for (ElementGroup elementGroup : ElementGroup.values()) {
-                    if (elementGroup.doShowElement(zoomLevel)) {
-
-                        if (elementGroup.getType().isDisplayOptionEnabled()) {
-
-                            KdTree<Way> kdTree = model.getMapData().getKdTree(elementGroup);
-                            if (kdTree != null) {
-                                drawKdTree(kdTree.getRoot(), maxX, maxY, minX, minY, 0.001);
-                            }
-                        }
-                    }
-                }
-            }
             drawGraph();
             if (model.getMapData().destinationCoords != null) {
                 drawPathTo(model.getMapData().destinationCoords);
@@ -216,7 +193,7 @@ public class MapCanvas extends Canvas {
                     ElementSize elementSize = elementGroup.getSize();
 
                     if (elementSize == ElementSize.DEFAULT
-                     || elementSize == ElementSize.SMALL) {
+                            || elementSize == ElementSize.SMALL) {
                         drawRelations(elementType);
                     }
                     drawOrFill(elementGroup);
@@ -298,103 +275,87 @@ public class MapCanvas extends Canvas {
      * Draws every path that dijkstra has investigated.
      */
     private void drawPathTo(float[] destinationCoords) {
-        if (displayOptions.getBool(DisplayOption.DISPLAY_DIJKSTRA)) {
-            DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
+        DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
-            gc.setStroke(Color.DARKSLATEBLUE);
-            gc.setLineWidth(0.0002D * widthModifier);
+        int destinationID = directedGraph.getVertexID(destinationCoords);
+        List<Edge> edgeList = model.getMapData().getDijkstra().pathTo(destinationID);
 
-            gc.beginPath();
-            Edge[] edges = model.getMapData().getDijkstra().getEdgeTo();
-            for (Edge edge : edges) {
-                if (edge != null) {
-                    edge.draw(directedGraph, gc);
-                }
-            }
-            gc.stroke();
+        if (edgeList.size() > 0) {
 
             gc.setStroke(Color.RED);
             gc.setLineWidth(3.0D * (1.0D / Math.sqrt(trans.determinant())));
 
-            int destinationID = directedGraph.getVertexID(destinationCoords);
-            List<Edge> edgeList = model.getMapData().getDijkstra().pathTo(destinationID);
+            currentDirections = new ArrayList<>();
 
-            if (edgeList.size() > 0) {
+            gc.beginPath();
+            float distanceSum = 0;
+            int exitCount = 0;
 
-                currentDirections = new ArrayList<>();
-
-                System.out.println("Directions ------");
-                gc.beginPath();
-                float distanceSum = 0;
-                int exitCount = 0;
-
-                for (int i = 0; i < (edgeList.size() - 1); i++) {
-                    Edge before = edgeList.get(i);
-                    Edge after = edgeList.get(i + 1);
+            for (int i = 0; i < (edgeList.size() - 1); i++) {
+                Edge before = edgeList.get(i);
+                Edge after = edgeList.get(i + 1);
 
 
-                    if (before.isJunction()) {
-                        before.draw(directedGraph, gc);
-                        int fromID = before.getFrom();
-                        if (directedGraph.getOutDegree(fromID) >= 2) {
-                            exitCount++;
-                        }
-                        if (!after.isJunction()) {
-                            currentDirections.add("Take the " + exitCount + ". exit in the roundabout");
-                            exitCount = 0;
-                        }
-
-                    } else {
-                        Direction direction = directedGraph.getDirectionRightLeft(before, after);
-                        float distanceBefore = before.getDistance() * 1_000f;
-                        float distanceAfter = after.getDistance() * 1_000f;
-
-                        distanceSum += distanceBefore;
-
-                        before.draw(directedGraph, gc);
-
-                        String dir = direction.toString().toLowerCase().replace("_", " ");
-
-                        if (direction != Direction.STRAIGHT) {
-                            currentDirections.add("Drive " + (int) distanceSum + "m down " + before.getName());
-                            if (!after.isJunction()) {
-                                currentDirections.add("Then " + dir + " down " + after.getName());
-                            }
-                            distanceSum = 0;
-                        }
-                        if (i == (edgeList.size() - 2)) {
-                            after.draw(directedGraph, gc);
-                            currentDirections.add("Drive " + (int) (distanceSum + distanceAfter) + "m down " + after.getName());
-                        }
+                if (before.isJunction()) {
+                    before.draw(directedGraph, gc);
+                    int fromID = before.getFrom();
+                    if (directedGraph.getOutDegree(fromID) >= 2) {
+                        exitCount++;
                     }
-                    //int fromID = before.getFrom();
-                    //System.out.println(directedGraph.getOutDegree(fromID));
+                    if (!after.isJunction()) {
+                        currentDirections.add("Take the " + exitCount + ". exit in the roundabout");
+                        exitCount = 0;
+                    }
+
+                } else {
+                    Direction direction = directedGraph.getDirectionRightLeft(before, after);
+                    float distanceBefore = before.getDistance() * 1_000f;
+                    float distanceAfter = after.getDistance() * 1_000f;
+
+                    distanceSum += distanceBefore;
+
+                    before.draw(directedGraph, gc);
+
+                    String dir = direction.toString().toLowerCase().replace("_", " ");
+
+                    if (direction != Direction.STRAIGHT) {
+                        currentDirections.add("Drive " + (int) distanceSum + "m down " + before.getName());
+                        if (!after.isJunction()) {
+                            currentDirections.add("Then " + dir + " down " + after.getName());
+                        }
+                        distanceSum = 0;
+                    }
+                    if (i == (edgeList.size() - 2)) {
+                        after.draw(directedGraph, gc);
+                        currentDirections.add("Drive " + (int) (distanceSum + distanceAfter) + "m down " + after.getName());
+                    }
                 }
+            }
 
-                gc.stroke();
+            gc.stroke();
 
-                int start = edgeList.get(0).getFrom();
-                float[] startCoords = directedGraph.getVertexCoords(start);
+            int start = edgeList.get(0).getFrom();
+            float[] startCoords = directedGraph.getVertexCoords(start);
 
-                gc.setStroke(Color.YELLOWGREEN);
-                gc.setLineWidth(0.0005D * widthModifier);
+            gc.setStroke(Color.YELLOWGREEN);
+            gc.setLineWidth(0.0005D * widthModifier);
 
-                gc.beginPath();
-                gc.moveTo(startCoords[0], startCoords[1]);
-                gc.lineTo(startCoords[0], startCoords[1]);
-                gc.stroke();
+            gc.beginPath();
+            gc.moveTo(startCoords[0], startCoords[1]);
+            gc.lineTo(startCoords[0], startCoords[1]);
+            gc.stroke();
 
-                gc.setStroke(Color.PURPLE);
-                gc.setLineWidth(0.0005D * widthModifier);
+            gc.setStroke(Color.PURPLE);
+            gc.setLineWidth(0.0005D * widthModifier);
 
-                gc.beginPath();
-                gc.moveTo(destinationCoords[0], destinationCoords[1]);
-                gc.lineTo(destinationCoords[0], destinationCoords[1]);
-                gc.stroke();
+            gc.beginPath();
+            gc.moveTo(destinationCoords[0], destinationCoords[1]);
+            gc.lineTo(destinationCoords[0], destinationCoords[1]);
+            gc.stroke();
 
-                for (String dir : currentDirections) {
-                    System.out.println(dir);
-                }
+            System.out.println("Directions: ------");
+            for (String dir : currentDirections) {
+                System.out.println(dir);
             }
         }
     }
@@ -542,65 +503,6 @@ public class MapCanvas extends Canvas {
     }
 
     /**
-     * Draws a visualization of the kd-tree if option is enabled.
-     */
-    private void drawKdTree(KdNode kdNode,
-                           float maxX,
-                           float maxY,
-                           float minX,
-                           float minY,
-                           double lineWidth) {
-
-        if (kdNode != null) {
-
-            float kMinX = kdNode.getMinX();
-            float kMaxX = kdNode.getMaxX();
-            float kMinY = kdNode.getMinY();
-            float kMaxY = kdNode.getMaxY();
-
-            gc.setStroke(Color.PURPLE);
-            if (depth == 0) {
-                gc.setStroke(Color.RED);
-            } else if (depth == 1) {
-                gc.setStroke(Color.TURQUOISE);
-            } else if (depth == 2) {
-                gc.setStroke(Color.TEAL);
-            }
-
-            gc.setLineWidth(lineWidth);
-            gc.beginPath();
-
-            lineWidth *= 0.7D;
-
-            if (depth % 2 == 0) {
-                gc.moveTo(kMinX, maxY);
-                gc.lineTo(kMinX, minY);
-                gc.stroke();
-                gc.moveTo(kMaxX, maxY);
-                gc.lineTo(kMaxX, minY);
-                gc.stroke();
-
-                depth++;
-                drawKdTree(kdNode.getLeftChild(), kMaxX, maxY, minX, minY, lineWidth);
-                drawKdTree(kdNode.getRightChild(), maxX, maxY, kMinX, minY, lineWidth);
-
-            } else {
-                gc.moveTo(maxX, kMinY);
-                gc.lineTo(minX, kMinY);
-                gc.stroke();
-                gc.moveTo(maxX, kMaxY);
-                gc.lineTo(minX, kMaxY);
-                gc.stroke();
-
-                depth++;
-                drawKdTree(kdNode.getLeftChild(), maxX, kMaxY, minX, minY, lineWidth);
-                drawKdTree(kdNode.getRightChild(), maxX, maxY, minX, kMinY, lineWidth);
-            }
-            depth--;
-        }
-    }
-
-    /**
      * Converts "screen" coordinates for a Point2D to "map" coordinates.
      * The new coordinates fit the values of OSM nodes.
      */
@@ -665,6 +567,7 @@ public class MapCanvas extends Canvas {
 
     /**
      * Calculate zoom level percentage using the zoom limits.
+     *
      * @return zoom level percentage.
      */
     public String getZoomPercent() {

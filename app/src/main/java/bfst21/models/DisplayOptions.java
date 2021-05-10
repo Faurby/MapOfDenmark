@@ -17,9 +17,7 @@ public class DisplayOptions {
      * Sets the default value of specific DisplayOptions.
      */
     private DisplayOptions() {
-        options.put(DisplayOption.DISPLAY_KD_TREE, false);
         options.put(DisplayOption.DISPLAY_GRAPH, false);
-        options.put(DisplayOption.DISPLAY_DIJKSTRA, false);
     }
 
     /**
