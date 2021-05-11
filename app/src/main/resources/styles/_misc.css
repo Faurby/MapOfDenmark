@@ -15,7 +15,7 @@
     -fx-min-width: 100;
     -fx-alignment: CENTER;
     visibility: hidden;
-    -fx-background-color: #ffffff;
+    -fx-background-color: white;
 }
 
 #loadingText {

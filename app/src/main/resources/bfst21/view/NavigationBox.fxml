@@ -16,7 +16,6 @@
         <HBox>
             <TextArea fx:id="addressTextArea"
                       promptText="Type an address..."
-                      wrapText="true"
                       onKeyPressed="#typingCheck"/>
             <Button fx:id="deleteTextButton"
                     onAction="#deleteUserActions">
@@ -189,7 +188,5 @@
 
             </ListView>
         </VBox>
-
     </VBox>
-
 </AnchorPane>
