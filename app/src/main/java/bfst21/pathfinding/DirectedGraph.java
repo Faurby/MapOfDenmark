@@ -342,6 +342,10 @@ public class DirectedGraph implements Serializable {
         return vertexAmount;
     }
 
+    public int getEdgeAmount() {
+        return edgeAmount;
+    }
+
     public Vertex[] getVertices() {
         return vertices;
     }

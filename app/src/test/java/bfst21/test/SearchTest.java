@@ -7,29 +7,28 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SearchTest {
 
-@Test
-public void emptySearchSuggestions(){
+    @Test
+    public void emptySearchSuggestions() {
 
-}
+    }
 
-@Test
-public void hasSearchSuggestions(){
+    @Test
+    public void hasSearchSuggestions() {
 
-}
+    }
 
-@Test
-public void providesExactMatch(){
+    @Test
+    public void providesExactMatch() {
 
-}
+    }
 
-@Test
-public void providesSuggestionsWhenGibberish(){
+    @Test
+    public void providesSuggestionsWhenGibberish() {
 
-}
+    }
 
-@Test
-public void emptyNavigationTextFieldsProvokeWarning(){
+    @Test
+    public void emptyNavigationTextFieldsProvokeWarning() {
 
-}
-
+    }
 }
