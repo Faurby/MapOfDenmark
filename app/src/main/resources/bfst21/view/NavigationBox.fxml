@@ -12,23 +12,14 @@
             fx:controller="bfst21.view.controllers.NavigationBoxController"
             stylesheets="@../../styles/navigation_default.css">
 
-    <VBox fx:id="searchBox"
-          minWidth="200"
-          visible="false"
-          managed="false"
-          styleClass="searchBox">
+    <VBox fx:id="searchBox" managed="false" styleClass="searchBoxes">
 
         <TextArea fx:id="addressArea"
-                  minHeight="20"
-                  prefHeight="25"
                   promptText="Type an address..."
                   wrapText="true"
                   onKeyPressed="#typingCheck"/>
 
         <ScrollPane minWidth="250"
-                    prefWidth="350"
-                    maxHeight="100"
-                    minHeight="0"
                     fitToWidth="true"
                     styleClass="scrollPane">
 
@@ -59,7 +50,7 @@
           minWidth="250"
           visible="false"
           managed="false"
-          styleClass="searchBox">
+          styleClass="searchBoxes">
 
         <GridPane hgap="2">
             <VBox GridPane.columnIndex="1"
@@ -67,16 +58,11 @@
                   GridPane.rowSpan="3"
                   spacing="5">
                 <TextArea fx:id="startingPoint"
-                          minHeight="25"
-                          prefHeight="25"
                           promptText="From:"
-                          wrapText="true"
-                          onKeyPressed="#typingCheck"/>
+                          onKeyPressed="#typingCheck"
+                          styleClass="searchArea"/>
 
                 <ScrollPane minWidth="200"
-                            prefWidth="350"
-                            maxHeight="100"
-                            minHeight="0"
                             fitToWidth="true"
                             styleClass="scrollPane">
 
@@ -87,16 +73,11 @@
                 </ScrollPane>
 
                 <TextArea fx:id="destinationPoint"
-                          minHeight="25"
-                          prefHeight="25"
                           promptText="To:"
-                          wrapText="true"
-                          onKeyPressed="#typingCheck"/>
+                          onKeyPressed="#typingCheck"
+                          styleClass="searchArea"/>
 
                 <ScrollPane minWidth="200"
-                            prefWidth="350"
-                            maxHeight="100"
-                            minHeight="0"
                             fitToWidth="true"
                             styleClass="scrollPane">
                     <VBox fx:id="destinationSuggestions"
@@ -110,8 +91,6 @@
                     GridPane.columnIndex="2"
                     GridPane.rowIndex="1"
                     GridPane.rowSpan="3"
-                    maxHeight="20"
-                    maxWidth="40"
                     onAction="#switchText">
                 <graphic>
                     <ImageView fitWidth="10.0"
@@ -125,9 +104,6 @@
 
         <HBox fx:id="transportModeHBox">
             <ToggleButton fx:id="CAR"
-                          minHeight="40"
-                          minWidth="35"
-                          prefWidth="120"
                           onAction="#transportationButtonPushed"
                           selected="true">
                 <graphic>
@@ -144,9 +120,6 @@
             </ToggleButton>
 
             <ToggleButton fx:id="BIKE"
-                          minHeight="40"
-                          minWidth="35"
-                          prefWidth="120"
                           onAction="#transportationButtonPushed">
                 <graphic>
                     <ImageView fitHeight="32.0"
@@ -162,9 +135,6 @@
             </ToggleButton>
 
             <ToggleButton fx:id="WALK"
-                          minHeight="40"
-                          minWidth="35"
-                          prefWidth="120"
                           onAction="#transportationButtonPushed">
                 <graphic>
                     <ImageView fitHeight="32.0"

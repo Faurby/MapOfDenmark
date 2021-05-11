@@ -3,7 +3,7 @@
 @import "_navigation.css";
 
 /* EDIT BELOW HERE FOR RESPECTIVE COLOR MODE */
-.searchBox {
+.searchBoxes {
     -fx-background-color: #f6f6f6;
     -fx-border-color: #3E859B;
 }
