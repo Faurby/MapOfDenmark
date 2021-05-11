@@ -284,17 +284,18 @@ public class MapCanvas extends Canvas {
                         before.draw(directedGraph, gc);
 
                         String dir = direction.toString().toLowerCase().replace("_", " ");
+                        dir = dir.substring(0, 1).toUpperCase() + dir.substring(1);
 
                         if (direction != Direction.STRAIGHT) {
-                            currentDirections.add("Drive " + (int) distanceSum + "m down " + before.getName());
+                            currentDirections.add("Follow " + before.getName() + " " + (int) distanceSum + "m");
                             if (!after.isJunction()) {
-                                currentDirections.add("Then " + dir + " down " + after.getName());
+                                currentDirections.add(dir + " down " + after.getName());
                             }
                             distanceSum = 0;
                         }
                         if (i == (edgeList.size() - 2)) {
                             after.draw(directedGraph, gc);
-                            currentDirections.add("Drive " + (int) (distanceSum + distanceAfter) + "m down " + after.getName());
+                            currentDirections.add("Follow " + after.getName() + " " + (int) (distanceSum + distanceAfter) + "m" );
                         }
                     }
                 }

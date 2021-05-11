@@ -7,7 +7,6 @@ import bfst21.models.TransportOption;
 import bfst21.models.TransportOptions;
 import bfst21.address.OsmAddress;
 import bfst21.osm.Pin;
-import bfst21.osm.UserNode;
 import bfst21.view.MapCanvas;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -267,6 +266,23 @@ public class NavigationBoxController extends SubController {
                 }
                 navigationListView.setItems(tempList);
             }
+
+            int navListSize = navigationListView.getItems().size();
+            if (navListSize == 1) {
+                navigationListView.setMaxHeight(27.0D);
+                navigationListView.setMinHeight(27.0D);
+
+            } else if (navListSize < 15) {
+                navigationListView.setMaxHeight(navListSize * 24.0D);
+                navigationListView.setMinHeight(navListSize * 24.0D);
+            } else {
+                navigationListView.setMaxHeight(350.0D);
+                navigationListView.setMinHeight(350.0D);
+            }
+
+            navigationListView.setVisible(true);
+            navigationListView.setManaged(true);
+
         });
         dijkstraTask.setOnFailed(e -> dijkstraTask.getException().printStackTrace());
 
@@ -439,9 +455,9 @@ public class NavigationBoxController extends SubController {
     public void expandNavigationBox() {
         setSearchBoxVisible(false);
         setRouteBoxVisible(true);
-//        if (navigationListView.getItems().isEmpty()) {
-//            navigationDescriptionBox.setVisible(false);
-//        }
+        navigationListView.setVisible(false);
+        navigationListView.setManaged(false);
+
 
         Pin.ORIGIN.setVisible(false);
         Pin.DESTINATION.setVisible(false);
