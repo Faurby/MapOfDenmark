@@ -381,26 +381,8 @@ public class MapCanvas extends Canvas {
     /**
      * Run dijkstra path finding if coords for origin and destination are present.
      */
-    public void runDijkstraTask() {
-        if (dijkstraTask != null) {
-            if (dijkstraTask.isRunning()) {
-                dijkstraTask.cancel();
-            }
-        }
-        dijkstraTask = new Task<>() {
-            @Override
-            protected Void call() {
-                model.getMapData().runDijkstra(originCoords, destinationCoords);
-                return null;
-            }
-        };
-        dijkstraTask.setOnSucceeded(e -> repaint());
-        dijkstraTask.setOnFailed(e -> dijkstraTask.getException().printStackTrace());
-
-        if (originCoords != null && destinationCoords != null) {
-            Thread thread = new Thread(dijkstraTask);
-            thread.start();
-        }
+    public void runDijkstra() {
+        model.getMapData().runDijkstra(originCoords, destinationCoords);
     }
 
     /**

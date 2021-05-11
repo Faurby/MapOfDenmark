@@ -300,7 +300,7 @@ public class MainController extends BaseController {
                 canvas.destinationCoords = null;
             } else {
                 canvas.destinationCoords = nearestCoords;
-                canvas.runDijkstraTask();
+                navigationBoxController.runDijkstraTask();
                 resetDijkstra = true;
             }
         }

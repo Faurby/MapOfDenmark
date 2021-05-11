@@ -7,7 +7,10 @@ import bfst21.models.TransportOption;
 import bfst21.models.TransportOptions;
 import bfst21.address.OsmAddress;
 import bfst21.osm.Pin;
+import bfst21.osm.UserNode;
 import bfst21.view.MapCanvas;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -55,6 +58,10 @@ public class NavigationBoxController extends SubController {
     private VBox searchBox;
     @FXML
     private VBox suggestionsBox;
+    @FXML
+    private VBox navigationDescriptionBox;
+    @FXML
+    private ListView<String> navigationListView;
 
     private final TransportOptions transOptions = TransportOptions.getInstance();
 
@@ -65,6 +72,8 @@ public class NavigationBoxController extends SubController {
     private List<String> shownSuggestionsDestination = new ArrayList<>();
 
     private Task<Void> addressSuggestionTask;
+    private Task<Void> dijkstraTask;
+
     private TST<List<OsmAddress>> addressTries;
 
     private boolean isNavigationBoxExpanded = false;
@@ -222,11 +231,43 @@ public class NavigationBoxController extends SubController {
 
                 mainController.getCanvas().originCoords = nearOriginCoords;
                 mainController.getCanvas().destinationCoords = nearDestinationCoords;
-                mainController.getCanvas().runDijkstraTask();
-
-                mainController.getCanvas().repaint();
+                runDijkstraTask();
             }
         }
+    }
+
+    /**
+     * Run dijkstra path finding if coords for origin and destination are present.
+     */
+    public void runDijkstraTask() {
+        if (dijkstraTask != null) {
+            if (dijkstraTask.isRunning()) {
+                dijkstraTask.cancel();
+            }
+        }
+        dijkstraTask = new Task<>() {
+            @Override
+            protected Void call() {
+                mainController.getCanvas().runDijkstra();
+                return null;
+            }
+        };
+        dijkstraTask.setOnSucceeded(e -> {
+            mainController.getCanvas().repaint();
+
+            List<String> directionsList = mainController.getCanvas().getCurrentDirections();
+            if (directionsList != null) {
+                ObservableList<String> tempList = FXCollections.observableArrayList();
+                for (String direction : directionsList) {
+                    tempList.add(direction);
+                }
+                navigationListView.setItems(tempList);
+            }
+        });
+        dijkstraTask.setOnFailed(e -> dijkstraTask.getException().printStackTrace());
+
+        Thread thread = new Thread(dijkstraTask);
+        thread.start();
     }
 
     private void displayAddressSuggestions(VBox suggestions, TextArea textArea, boolean extended) {
@@ -393,6 +434,9 @@ public class NavigationBoxController extends SubController {
     public void expandNavigationBox() {
         setSearchBoxVisible(false);
         setRouteBoxVisible(true);
+//        if (navigationListView.getItems().isEmpty()) {
+//            navigationDescriptionBox.setVisible(false);
+//        }
 
         Pin.ORIGIN.setVisible(false);
         Pin.DESTINATION.setVisible(false);
@@ -406,6 +450,7 @@ public class NavigationBoxController extends SubController {
 
     @FXML
     public void minimizeNavigationBox() {
+        navigationListView.getItems().removeAll();
         setRouteBoxVisible(false);
         setSearchBoxVisible(true);
 

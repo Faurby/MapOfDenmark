@@ -241,6 +241,12 @@
                     onAction="#findRoute"
                     text="Search"/>
         </HBox>
+        <VBox fx:id="navigationDescriptionBox">
+            <ListView fx:id="navigationListView">
+
+            </ListView>
+        </VBox>
+
     </VBox>
 
 </AnchorPane>
