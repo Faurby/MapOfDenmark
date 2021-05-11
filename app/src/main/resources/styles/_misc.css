@@ -9,12 +9,13 @@
     -fx-padding: 8 0 8 8;
 }
 
-#loadingVBox {
+#loadingScreenBox {
     -fx-padding: 20;
     -fx-min-height: 100;
     -fx-min-width: 100;
     -fx-alignment: CENTER;
     visibility: hidden;
+    -fx-background-color: #ffffff;
 }
 
 #loadingText {
@@ -31,7 +32,7 @@
     -fx-min-height: 25;
 }
 
-#footBox {
+#footerGridPane {
     -fx-font-size: large;
     -fx-max-width: 230;
     -fx-max-height: 30;

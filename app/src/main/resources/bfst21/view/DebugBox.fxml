@@ -4,7 +4,6 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Text?>
-<?import javafx.geometry.Insets?>
 
 
 <VBox xmlns="https://javafx.com/javafx"
