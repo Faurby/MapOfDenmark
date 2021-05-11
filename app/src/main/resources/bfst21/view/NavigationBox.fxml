@@ -2,7 +2,6 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
 
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
@@ -10,39 +9,22 @@
 
 <AnchorPane xmlns="https://javafx.com/javafx"
             xmlns:fx="https://javafx.com/fxml"
-            fx:controller="bfst21.view.controllers.NavigationBoxController">
+            fx:controller="bfst21.view.controllers.NavigationBoxController"
+            stylesheets="@../../styles/navigation_default.css">
 
-    <VBox fx:id="searchBox"
-          minWidth="200"
-          visible="false"
-          managed="false"
-          style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B">
-
-        <padding>
-            <Insets bottom="5"
-                    left="10"
-                    right="10"
-                    top="10"/>
-        </padding>
-
+    <VBox fx:id="searchBox" managed="false" styleClass="searchBoxes">
         <HBox>
             <TextArea fx:id="addressTextArea"
-                      minHeight="20"
-                      prefHeight="25"
                       promptText="Type an address..."
                       wrapText="true"
                       onKeyPressed="#typingCheck"/>
-
-            <Button
-                    minHeight="20"
-                    minWidth="20"
-                    onAction="#deleteUserActions"
-                    style="-fx-border-color: LIGHTGREY">
+            <Button fx:id="deleteTextButton"
+                    onAction="#deleteUserActions">
                 <graphic>
                     <ImageView fitHeight="15.0"
                                preserveRatio="true"
                                opacity="0.8"
-                               style="-fx-background-color: TRANSPARENT">
+                               styleClass="imageView">
                         <Image url="/delete_icon.png"/>
                     </ImageView>
                 </graphic>
@@ -50,21 +32,18 @@
         </HBox>
 
         <ScrollPane minWidth="250"
-                    prefWidth="350"
-                    maxHeight="100"
-                    minHeight="0"
-                    style="-fx-padding: 0 10 0 10 ; -fx-background-color: WHITE"
-                    fitToWidth="true">
+                    fitToWidth="true"
+                    styleClass="scrollPane">
 
             <VBox fx:id="suggestionsBox"
-                  style="-fx-background-color: WHITE"
-                  onKeyPressed="#typingCheck">
+                  onKeyPressed="#typingCheck"
+                  styleClass="suggestions">
             </VBox>
         </ScrollPane>
 
         <HBox alignment="BASELINE_CENTER"
               prefWidth="198.0"
-              style="-fx-padding: 10 0 5 0">
+              styleClass="hboxForButtons">
 
             <Button fx:id="expandButton"
                     onAction="#expandNavigationBox"
@@ -86,55 +65,37 @@
           minWidth="250"
           visible="false"
           managed="false"
-          style="-fx-background-color: #f6f6f6; -fx-border-color: #3E859B">
-
-        <padding>
-            <Insets bottom="5"
-                    left="10"
-                    right="10"
-                    top="10"/>
-        </padding>
+          styleClass="searchBoxes">
 
         <GridPane hgap="2">
-
             <VBox GridPane.columnIndex="1"
                   GridPane.rowIndex="1"
                   GridPane.rowSpan="3"
                   spacing="5">
 
                 <TextArea fx:id="originTextArea"
-                          minHeight="25"
-                          prefHeight="25"
                           promptText="From:"
-                          wrapText="true"
-                          onKeyPressed="#typingCheck"/>
+                          onKeyPressed="#typingCheck"
+                          styleClass="searchArea"/>
 
                 <ScrollPane minWidth="200"
-                            prefWidth="350"
-                            maxHeight="100"
-                            minHeight="0"
-                            style="-fx-padding: 0 10 0 10 ; -fx-background-color: WHITE"
-                            fitToWidth="true">
+                            fitToWidth="true"
+                            styleClass="scrollPane">
 
                     <VBox fx:id="originSuggestionsBox"
-                          style="-fx-background-color: WHITE"
-                          onKeyPressed="#typingCheck">
+                          onKeyPressed="#typingCheck"
+                          styleClass="suggestions">
                     </VBox>
                 </ScrollPane>
 
                 <TextArea fx:id="destinationTextArea"
-                          minHeight="25"
-                          prefHeight="25"
                           promptText="To:"
-                          wrapText="true"
-                          onKeyPressed="#typingCheck"/>
+                          onKeyPressed="#typingCheck"
+                          styleClass="searchArea"/>
 
                 <ScrollPane minWidth="200"
-                            prefWidth="350"
-                            maxHeight="100"
-                            minHeight="0"
-                            style="-fx-padding: 0 10 0 10 ; -fx-background-color: WHITE"
-                            fitToWidth="true">
+                            fitToWidth="true"
+                            styleClass="scrollPane">
 
                     <VBox fx:id="destinationSuggestionsBox"
                           style="-fx-background-color: WHITE"
@@ -147,14 +108,12 @@
                     GridPane.columnIndex="2"
                     GridPane.rowIndex="1"
                     GridPane.rowSpan="3"
-                    maxHeight="20"
-                    maxWidth="40"
                     onAction="#switchAddressText">
 
                 <graphic>
                     <ImageView fitWidth="10.0"
                                preserveRatio="true"
-                               style="-fx-background-color: TRANSPARENT">
+                               styleClass="imageView">
                         <Image url="/arrow.png"/>
                     </ImageView>
                 </graphic>
@@ -162,19 +121,13 @@
             </Button>
         </GridPane>
 
-        <HBox style="-fx-padding: 10 0 0 0 ; -fx-alignment: CENTER ">
-
+        <HBox fx:id="transportModeHBox">
             <ToggleButton fx:id="selectCarButton"
-                          minHeight="40"
-                          minWidth="35"
-                          prefWidth="120"
-                          selected="true"
-                          style="-fx-border-color: LIGHTGREY">
-
+                          selected="true">
                 <graphic>
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
-                               style="-fx-background-color: TRANSPARENT">
+                               styleClass="imageView">
                         <Image url="/car_icon.png"/>
                     </ImageView>
                 </graphic>
@@ -185,16 +138,11 @@
 
             </ToggleButton>
 
-            <ToggleButton fx:id="selectBikeButton"
-                          minHeight="40"
-                          minWidth="35"
-                          prefWidth="120"
-                          style="-fx-border-color: LIGHTGREY">
-
+            <ToggleButton fx:id="selectBikeButton">
                 <graphic>
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
-                               style="-fx-background-color: TRANSPARENT">
+                               styleClass="imageView">
                         <Image url="/bike_icon.png"/>
                     </ImageView>
                 </graphic>
@@ -210,7 +158,7 @@
                 <graphic>
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
-                               style="-fx-background-color: TRANSPARENT">
+                               styleClass="imageView">
                         <Image url="/walk_icon.png"/>
                     </ImageView>
                 </graphic>
@@ -222,13 +170,13 @@
             </ToggleButton>
         </HBox>
 
-        <HBox alignment="BASELINE_CENTER" style="-fx-padding: 10 0 5 0" spacing="5">
+        <HBox alignment="BASELINE_CENTER" spacing="5" styleClass="hboxForButtons">
 
             <Button onAction="#minimizeNavigationBox"
                     text="Minimize"/>
 
             <Button onAction="#deleteUserActions"
-                    text="Clear" />
+                    text="Clear"/>
 
             <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
 

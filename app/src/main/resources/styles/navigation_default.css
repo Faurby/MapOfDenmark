@@ -19,3 +19,7 @@
 .toggle-button {
     -fx-border-color: LIGHTGREY;
 }
+
+#deleteTextButton {
+    -fx-border-color: LIGHTGREY;
+}
