@@ -38,7 +38,6 @@ public class MapCanvas extends Canvas {
     private final GraphicsContext gc = getGraphicsContext2D();
 
     private Task<Void> rangeSearchTask;
-    private Task<Void> dijkstraTask;
 
     public float[] originCoords;
     public float[] destinationCoords;
@@ -47,7 +46,7 @@ public class MapCanvas extends Canvas {
     private Affine trans = new Affine();
 
     private List<String> currentDirections = new ArrayList<>();
-    private double currentRouteWeight;
+    private int currentRouteWeight;
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -260,13 +259,11 @@ public class MapCanvas extends Canvas {
                 int exitCount = 0;
                 double weightSum = 0;
 
-
                 for (int i = 0; i < (edgeList.size() - 1); i++) {
                     Edge before = edgeList.get(i);
                     Edge after = edgeList.get(i + 1);
 
                     weightSum += before.getWeight();
-
 
                     if (before.isJunction()) {
                         before.draw(directedGraph, gc);
@@ -285,9 +282,6 @@ public class MapCanvas extends Canvas {
                         float distanceAfter = after.getDistance() * 1_000f;
 
                         distanceSum += distanceBefore;
-                        if (distanceSum > 10) {
-                            distanceSum = Math.round(distanceSum / 10.0) * 10;
-                        }
 
                         before.draw(directedGraph, gc);
 
@@ -295,7 +289,7 @@ public class MapCanvas extends Canvas {
                         dir = dir.substring(0, 1).toUpperCase() + dir.substring(1);
 
                         if (direction != Direction.STRAIGHT) {
-                            currentDirections.add("Follow " + before.getName() + " " + (int) distanceSum + "m");
+                            currentDirections.add("Follow " + before.getName() + " " + distanceSumToString(distanceSum));
                             if (!after.isJunction()) {
                                 currentDirections.add(dir + " down " + after.getName());
                             }
@@ -304,8 +298,8 @@ public class MapCanvas extends Canvas {
                         if (i == (edgeList.size() - 2)) {
                             after.draw(directedGraph, gc);
                             weightSum += after.getWeight();
-                            currentRouteWeight = weightSum;
-                            currentDirections.add("Follow " + after.getName() + " " + (int) (distanceSum + distanceAfter) + "m" );
+                            currentRouteWeight = (int) Math.ceil(weightSum);
+                            currentDirections.add("Follow " + after.getName() + " " + distanceSumToString(distanceSum + distanceAfter));
                         }
                     }
                 }
@@ -533,7 +527,31 @@ public class MapCanvas extends Canvas {
         return currentDirections;
     }
 
-    public double getCurrentRouteWeight() {
-        return currentRouteWeight;
+    public String getCurrentRouteWeightToString() {
+        if (currentRouteWeight > 60) {
+            int hours = currentRouteWeight / 60;
+            int minutes = currentRouteWeight % 60;
+            String minutesString = "";
+            if (minutes != 0) {
+                minutesString = minutes + " minute(s)";
+            }
+            return "Route duration: " + hours + " hour(s) " + minutesString;
+        } else {
+            return "Route duration: " + currentRouteWeight + " min";
+        }
+    }
+
+    public String distanceSumToString(float distance) {
+        if (distance >= 1_000.0f) {
+            distance /= 1_000.0f;
+            String distanceString = "" + distance;
+            return distanceString.substring(0, 3) + " km";
+
+        } else if (distance > 10.0f) {
+            distance = (Math.round(distance / 10.0f) * 10.0f);
+            return (int) distance + " m";
+
+        }
+        return (int) distance + " m";
     }
 }
