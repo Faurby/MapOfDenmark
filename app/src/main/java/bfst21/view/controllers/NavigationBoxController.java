@@ -263,14 +263,12 @@ public class NavigationBoxController extends SubController {
             List<String> directionsList = mainController.getCanvas().getCurrentDirections();
             if (directionsList != null) {
                 ObservableList<String> tempList = FXCollections.observableArrayList();
-                for (String direction : directionsList) {
-                    tempList.add(direction);
-                }
+                tempList.addAll(directionsList);
                 navigationListView.setItems(tempList);
             }
 
-            navigationListView.setVisible(true);
-            navigationListView.setManaged(true);
+            navigationDescriptionBox.setVisible(true);
+            navigationDescriptionBox.setManaged(true);
 
             durationText.setText("" + mainController.getCanvas().getCurrentRouteWeight());
 
@@ -460,8 +458,8 @@ public class NavigationBoxController extends SubController {
     public void expandNavigationBox() {
         setSearchBoxVisible(false);
         setRouteBoxVisible(true);
-        navigationListView.setVisible(false);
-        navigationListView.setManaged(false);
+        navigationDescriptionBox.setVisible(false);
+        navigationDescriptionBox.setManaged(false);
 
 
         Pin.ORIGIN.setVisible(false);
@@ -532,8 +530,9 @@ public class NavigationBoxController extends SubController {
         suggestionsBox.getChildren().clear();
         originSuggestionsBox.getChildren().clear();
         destinationSuggestionsBox.getChildren().clear();
-        navigationListView.setVisible(false);
-        navigationListView.setManaged(false);
+        durationText.setText("");
+        navigationDescriptionBox.setVisible(false);
+        navigationDescriptionBox.setManaged(false);
 
         Pin.ORIGIN.setVisible(false);
         Pin.DESTINATION.setVisible(false);
