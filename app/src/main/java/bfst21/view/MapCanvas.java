@@ -285,12 +285,7 @@ public class MapCanvas extends Canvas {
                         float distanceAfter = after.getDistance() * 1_000f;
 
                         distanceSum += distanceBefore;
-                        if (distanceSum > 10) {
-                            distanceSum = Math.round(distanceSum / 10.0) * 10;
-                        }
-                        if (distanceSum >= 1000) {
-                            distanceSum /= 1000;
-                        }
+
 
                         before.draw(directedGraph, gc);
 
@@ -298,7 +293,7 @@ public class MapCanvas extends Canvas {
                         dir = dir.substring(0, 1).toUpperCase() + dir.substring(1);
 
                         if (direction != Direction.STRAIGHT) {
-                            currentDirections.add("Follow " + before.getName() + " " + (int) distanceSum + "m");
+                            currentDirections.add("Follow " + before.getName() + " " +distanceSumToString(distanceSum));
                             if (!after.isJunction()) {
                                 currentDirections.add(dir + " down " + after.getName());
                             }
@@ -308,7 +303,7 @@ public class MapCanvas extends Canvas {
                             after.draw(directedGraph, gc);
                             weightSum += after.getWeight();
                             currentRouteWeight = (int) Math.ceil(weightSum);
-                            currentDirections.add("Follow " + after.getName() + " " + (int) (distanceSum + distanceAfter) + "m" );
+                            currentDirections.add("Follow " + after.getName() + " " + distanceSumToString(distanceSum + distanceAfter));
                         }
                     }
                 }
@@ -548,6 +543,19 @@ public class MapCanvas extends Canvas {
         } else {
             return "Route duration: " + currentRouteWeight + " min";
         }
+    }
 
+    public String distanceSumToString(float distance) {
+        if (distance >= 1_000.0f) {
+            distance /= 1_000.0f;
+            String distanceString = "" + distance;
+            return distanceString.substring(0,3) + " km";
+
+        } else if (distance > 10.0f) {
+            distance = (Math.round(distance / 10.0f) * 10.0f);
+            return (int) distance + " m";
+
+        }
+        return (int) distance + " m";
     }
 }
