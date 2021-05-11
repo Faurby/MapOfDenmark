@@ -10,9 +10,17 @@
 
 #newUserNodeButton, #userNodeListView {
     -fx-border-color: #1c3d47;
+    -fx-background-color: #a5a5a5;
 }
 
-#footbox {
+#userNodeListView .list-cell:even {
+    -fx-background-color: #a5a5a5;
+}
+#userNodeListView .list-cell:odd {
+    -fx-background-color: #8e8e8e;
+}
+
+#footerGridPane {
     -fx-background-color: #9e9e9e;
     -fx-border-color: #1c3f49;
 }

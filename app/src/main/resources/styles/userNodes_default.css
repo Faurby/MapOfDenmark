@@ -12,7 +12,11 @@
     -fx-border-color: #3E859B;
 }
 
-#footbox {
+#newUserNodeButton {
+    -fx-background-color: #f6f6f6;
+}
+
+#footerGridPane {
     -fx-background-color: #f6f6f6;
     -fx-border-color: #3E859B;
 }

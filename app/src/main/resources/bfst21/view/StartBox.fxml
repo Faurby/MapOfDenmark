@@ -16,7 +16,7 @@
 
     <HBox fx:id="startboxHBox">
         <Button text="Load Denmark" onAction="#loadDefault"/>
-        <Button text="Choose file" onAction="#loadFile"/>
+        <Button text="Choose custom file" onAction="#loadFile"/>
     </HBox>
 </VBox>
 

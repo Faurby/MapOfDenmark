@@ -93,7 +93,7 @@
             </MenuBar>
         </HBox>
 
-        <VBox fx:id="userNodeVBox" StackPane.alignment="TOP_RIGHT">
+        <VBox fx:id="userNodeVBox" visible="false" StackPane.alignment="TOP_RIGHT">
             <Button fx:id="newUserNodeButton"
                     onAction="#userNodeButtonClicked"
                     text="Add point of interest"/>
@@ -198,7 +198,7 @@
             </HBox>
         </VBox>
 
-        <GridPane fx:id="footerGridPane" StackPane.alignment="BOTTOM_RIGHT">
+        <GridPane fx:id="footerGridPane" visible="false" StackPane.alignment="BOTTOM_RIGHT">
             <Text text=""
                   fx:id="nearestRoadText"
                   GridPane.columnIndex="1"/>

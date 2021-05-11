@@ -20,6 +20,10 @@
     -fx-border-color: LIGHTGREY;
 }
 
+.searchBoxes > .button {
+    -fx-background-color: default;
+}
+
 #deleteTextButton {
     -fx-border-color: LIGHTGREY;
 }

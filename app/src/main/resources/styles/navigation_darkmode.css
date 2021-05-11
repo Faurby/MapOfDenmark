@@ -3,19 +3,27 @@
 @import "_navigation.css";
 
 /* EDIT BELOW HERE FOR RESPECTIVE COLOR MODE */
-.searchBox {
-    -fx-background-color: #747474;
-    -fx-border-color: #244e58;
+.searchBoxes {
+    -fx-background-color: #797979;
+    -fx-border-color: #264f5e;
 }
 
 .scrollPane {
-    -fx-background-color: GREY;
+    -fx-background-color: #797979;
 }
 
 .suggestions {
-    -fx-background-color: GREY;
+    -fx-background-color: #797979;
 }
 
 .toggle-button {
     -fx-border-color: LIGHTGREY;
+}
+
+.searchBoxes > .button {
+    -fx-background-color: #797979;
+}
+
+#deleteTextButton {
+    -fx-border-color: #797979;
 }

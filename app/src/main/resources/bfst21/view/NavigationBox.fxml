@@ -13,7 +13,7 @@
             fx:controller="bfst21.view.controllers.NavigationBoxController"
             stylesheets="@../../styles/navigation_default.css">
 
-    <VBox fx:id="searchBox" managed="false" styleClass="searchBoxes">
+    <VBox fx:id="searchBox" visible="false" managed="false" styleClass="searchBoxes">
         <HBox>
             <TextArea fx:id="addressTextArea"
                       promptText="Type an address..."

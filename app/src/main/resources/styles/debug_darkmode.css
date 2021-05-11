@@ -9,3 +9,7 @@
     -fx-border-color: #234b57;
 }
 
+#debugOptionsVBox > * {
+    -fx-padding: 2;
+
+}

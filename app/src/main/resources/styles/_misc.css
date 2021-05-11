@@ -37,7 +37,6 @@
     -fx-max-width: 230;
     -fx-max-height: 30;
     -fx-pref-height: 30;
-    visibility: hidden;
     -fx-hgap: 5;
     -fx-alignment: CENTER_RIGHT;
     -fx-padding: 0 10 0 10;

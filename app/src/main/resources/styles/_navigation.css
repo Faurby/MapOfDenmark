@@ -28,7 +28,6 @@
 
 #searchBox {
     -fx-min-width: 200;
-    visibility: hidden;
 }
 
 #addressTextArea {

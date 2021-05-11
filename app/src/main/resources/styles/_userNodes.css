@@ -34,7 +34,6 @@
 }
 
 #userNodeVBox {
-    visibility: hidden;
     -fx-max-width: 185;
     -fx-max-height: 120;
     -fx-spacing: 8;
