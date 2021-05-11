@@ -270,7 +270,7 @@ public class NavigationBoxController extends SubController {
             navigationDescriptionBox.setVisible(true);
             navigationDescriptionBox.setManaged(true);
 
-            durationText.setText("" + mainController.getCanvas().getCurrentRouteWeight());
+            durationText.setText(mainController.getCanvas().getCurrentRouteWeightToString());
 
             int navListSize = navigationListView.getItems().size();
             if (navListSize == 1) {

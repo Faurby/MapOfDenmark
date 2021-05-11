@@ -47,7 +47,7 @@ public class MapCanvas extends Canvas {
     private Affine trans = new Affine();
 
     private List<String> currentDirections = new ArrayList<>();
-    private double currentRouteWeight;
+    private int currentRouteWeight;
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -288,6 +288,9 @@ public class MapCanvas extends Canvas {
                         if (distanceSum > 10) {
                             distanceSum = Math.round(distanceSum / 10.0) * 10;
                         }
+                        if (distanceSum >= 1000) {
+                            distanceSum /= 1000;
+                        }
 
                         before.draw(directedGraph, gc);
 
@@ -304,7 +307,7 @@ public class MapCanvas extends Canvas {
                         if (i == (edgeList.size() - 2)) {
                             after.draw(directedGraph, gc);
                             weightSum += after.getWeight();
-                            currentRouteWeight = weightSum;
+                            currentRouteWeight = (int) Math.ceil(weightSum);
                             currentDirections.add("Follow " + after.getName() + " " + (int) (distanceSum + distanceAfter) + "m" );
                         }
                     }
@@ -538,7 +541,18 @@ public class MapCanvas extends Canvas {
         return currentDirections;
     }
 
-    public double getCurrentRouteWeight() {
-        return currentRouteWeight;
+    public String getCurrentRouteWeightToString() {
+        if (currentRouteWeight > 60) {
+            int hours = currentRouteWeight / 60;
+            int minutes = currentRouteWeight % 60;
+            String minutesString = "";
+            if (minutes != 0) {
+                minutesString = minutes + " minute(s)";
+            }
+            return "Route duration: " + hours + " hour(s) " + minutesString ;
+        } else {
+            return "Route duration: " + currentRouteWeight + " min";
+        }
+
     }
 }
