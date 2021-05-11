@@ -31,13 +31,18 @@
     visibility: hidden;
 }
 
-#addressArea {
+#addressTextArea {
     -fx-min-height: 20;
     -fx-pref-height: 25;
 
 }
 
-#switchButton {
+#deleteTextButton {
+    -fx-min-height: 20;
+    -fx-min-width: 20;
+}
+
+#switchAddressButton {
     -fx-max-height: 20;
     -fx-max-width: 40;
 }
