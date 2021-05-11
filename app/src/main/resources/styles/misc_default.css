@@ -1,0 +1,8 @@
+
+/* IMPORT MAIN FILE */
+@import "_misc.css";
+
+/* EDIT BELOW HERE FOR RESPECTIVE COLOR MODE */
+#loadingVBox {
+    -fx-background-color: WHITE;
+}

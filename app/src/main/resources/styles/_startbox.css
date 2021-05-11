@@ -1,0 +1,19 @@
+
+/* THIS STYLESHEET CONTAINS THE STYLING THAT SHOULDN'T BE CHANGED BY COLOR MODES */
+
+#startboxVBox {
+    -fx-padding: 20;
+    -fx-alignment: CENTER;
+    -fx-max-width: 250;
+    -fx-max-height: 100;
+}
+
+#startboxTitle {
+    -fx-font-size: 15;
+}
+
+#startboxHBox {
+    -fx-alignment: CENTER;
+    -fx-padding: 10 0 0 0;
+    -fx-spacing: 10;
+}

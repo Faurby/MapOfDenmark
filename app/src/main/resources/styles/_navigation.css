@@ -1,0 +1,54 @@
+
+/* THIS STYLESHEET CONTAINS THE STYLING THAT SHOULDN'T BE CHANGED BY COLOR MODES */
+
+.searchBoxes {
+    -fx-padding: 10 10 5 10;
+}
+
+.scrollPane {
+    -fx-padding: 0 10 0 10;
+    -fx-pref-width: 350;
+    -fx-max-height: 100;
+    -fx-min-height: 0;
+}
+
+.hboxForButtons {
+    -fx-padding: 10 0 5 0;
+}
+
+.searchArea {
+    -fx-min-height: 25;
+    -fx-pref-height: 25;
+    -fx-wrap-text: true;
+}
+
+.imageView {
+    -fx-background-color: TRANSPARENT;
+}
+
+#searchBox {
+    -fx-min-width: 200;
+    visibility: hidden;
+}
+
+#addressArea {
+    -fx-min-height: 20;
+    -fx-pref-height: 25;
+
+}
+
+#switchButton {
+    -fx-max-height: 20;
+    -fx-max-width: 40;
+}
+
+#transportModeHBox {
+    -fx-padding: 10 0 0 0;
+    -fx-alignment: CENTER;
+}
+
+#transportModeHBox > .toggle-button {
+    -fx-min-height: 40;
+    -fx-min-width: 35;
+    -fx-pref-width: 120;
+}

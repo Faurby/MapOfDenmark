@@ -6,7 +6,6 @@
 
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<?import javafx.scene.text.Text?>
 
 
 <AnchorPane xmlns="https://javafx.com/javafx"
@@ -206,11 +205,7 @@
 
             </ToggleButton>
 
-            <ToggleButton fx:id="selectWalkButton"
-                          minHeight="40"
-                          minWidth="35"
-                          prefWidth="120"
-                          style="-fx-border-color: LIGHTGREY">
+            <ToggleButton fx:id="selectWalkButton" >
 
                 <graphic>
                     <ImageView fitHeight="32.0"

@@ -93,7 +93,7 @@ public class NavigationBoxController extends SubController {
 
             for (OsmAddress osmAddress : allSuggestionsOrigin) {
                 if (osmAddress.toString().toLowerCase().contains(address)
-                 || osmAddress.omitHouseNumberToString().toLowerCase().contains(address)) {
+                        || osmAddress.omitHouseNumberToString().toLowerCase().contains(address)) {
 
                     Pin.DESTINATION.setCoords(osmAddress.getNodeCoords());
                     Pin.DESTINATION.setVisible(true);
@@ -102,9 +102,9 @@ public class NavigationBoxController extends SubController {
                     return;
                 }
             }
-            displayAlert(Alert.AlertType.ERROR, "Error", "Unable to find address: "+address);
+            displayAlert(Alert.AlertType.ERROR, "Error", "Unable to find address: " + address);
         } else {
-            displayAlert(Alert.AlertType.ERROR, "Error", "Search field is empty");
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address into the search field");
         }
     }
 
@@ -180,54 +180,57 @@ public class NavigationBoxController extends SubController {
         if (originTextArea.getText().trim().isEmpty()) {
             displayAlert(Alert.AlertType.ERROR, "Error", "Starting point search field is empty");
 
-        } else if (destinationTextArea.getText().trim().isEmpty()) {
-            displayAlert(Alert.AlertType.ERROR, "Error", "Destination point search field is empty");
+            if (originTextArea.getText().trim().isEmpty() && destinationTextArea.getText().trim().isEmpty()) {
+                displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting and destination point");
 
-        } else {
-            String startingAddress = originTextArea.getText().trim().toLowerCase();
-            String destinationAddress = destinationTextArea.getText().trim().toLowerCase();
+            } else if (destinationTextArea.getText().trim().isEmpty()) {
+                displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the destination point");
 
-            originSuggestionsBox.getChildren().clear();
-            destinationSuggestionsBox.getChildren().clear();
+            } else {
+                String startingAddress = originTextArea.getText().trim().toLowerCase();
+                String destinationAddress = destinationTextArea.getText().trim().toLowerCase();
 
-            float[] originCoords = null;
-            float[] destinationCoords = null;
+                originSuggestionsBox.getChildren().clear();
+                destinationSuggestionsBox.getChildren().clear();
 
-            for (OsmAddress osmAddressS : allSuggestionsOrigin) {
-                if (osmAddressS.toString().toLowerCase().contains(startingAddress)
-                        || osmAddressS.omitHouseNumberToString().toLowerCase().contains(startingAddress)) {
-                    originCoords = new float[]{osmAddressS.getNode().getX(), osmAddressS.getNode().getY()};
-                    break;
+                float[] originCoords = null;
+                float[] destinationCoords = null;
+
+                for (OsmAddress osmAddressS : allSuggestionsOrigin) {
+                    if (osmAddressS.toString().toLowerCase().contains(startingAddress)
+                            || osmAddressS.omitHouseNumberToString().toLowerCase().contains(startingAddress)) {
+                        originCoords = new float[]{osmAddressS.getNode().getX(), osmAddressS.getNode().getY()};
+                        break;
+                    }
                 }
-            }
 
-            for (OsmAddress osmAddressD : allSuggestionsDestination) {
-                if (osmAddressD.toString().toLowerCase().contains(destinationAddress)
-                        || osmAddressD.omitHouseNumberToString().toLowerCase().contains(destinationAddress)) {
-                    destinationCoords = new float[]{osmAddressD.getNode().getX(), osmAddressD.getNode().getY()};
-                    break;
+                for (OsmAddress osmAddressD : allSuggestionsDestination) {
+                    if (osmAddressD.toString().toLowerCase().contains(destinationAddress)
+                            || osmAddressD.omitHouseNumberToString().toLowerCase().contains(destinationAddress)) {
+                        destinationCoords = new float[]{osmAddressD.getNode().getX(), osmAddressD.getNode().getY()};
+                        break;
+                    }
                 }
-            }
 
-            if (originCoords != null && destinationCoords != null) {
+                if (originCoords != null && destinationCoords != null) {
 
-                Pin.ORIGIN.setCoords(originCoords[0], originCoords[1]);
-                Pin.ORIGIN.setVisible(true);
+                    Pin.ORIGIN.setCoords(originCoords[0], originCoords[1]);
+                    Pin.ORIGIN.setVisible(true);
 
-                Pin.DESTINATION.setCoords(destinationCoords[0], destinationCoords[1]);
-                Pin.DESTINATION.setVisible(true);
+                    Pin.DESTINATION.setCoords(destinationCoords[0], destinationCoords[1]);
+                    Pin.DESTINATION.setVisible(true);
 
-                float avgX = (originCoords[0] + destinationCoords[0]) / 2;
-                float avgY = (originCoords[1] + destinationCoords[1]) / 2;
+                    float avgX = (originCoords[0] + destinationCoords[0]) / 2;
+                    float avgY = (originCoords[1] + destinationCoords[1]) / 2;
 
-                mainController.getCanvas().changeView(avgX, avgY);
-                mainController.changeZoomToShowPoints(originCoords, destinationCoords);
+                    mainController.getCanvas().changeView(avgX, avgY);
+                    mainController.changeZoomToShowPoints(originCoords, destinationCoords);
 
-                TransportOptions transportOptions = TransportOptions.getInstance();
-                TransportOption currentTransportOption = transportOptions.getCurrentlyEnabled();
+                    TransportOptions transportOptions = TransportOptions.getInstance();
+                    TransportOption currentTransportOption = transportOptions.getCurrentlyEnabled();
 
-                float[] nearOriginCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(originCoords, currentTransportOption);
-                float[] nearDestinationCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(destinationCoords, currentTransportOption);
+                    float[] nearOriginCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(originCoords, currentTransportOption);
+                    float[] nearDestinationCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(destinationCoords, currentTransportOption);
 
                 mainController.getCanvas().originCoords = nearOriginCoords;
                 mainController.getCanvas().destinationCoords = nearDestinationCoords;
@@ -297,7 +300,8 @@ public class NavigationBoxController extends SubController {
         }
     }
 
-    private void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended) {if (addressSuggestionTask != null) {
+    private void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended) {
+        if (addressSuggestionTask != null) {
             if (addressSuggestionTask.isRunning()) {
                 addressSuggestionTask.cancel();
             }
@@ -426,7 +430,7 @@ public class NavigationBoxController extends SubController {
             transOptions.setCurrentlyEnabled(transportOption);
             toggleButton.setSelected(true);
 
-            System.out.println("Selected TransportOption."+transportOption.toString());
+            System.out.println("Selected TransportOption." + transportOption.toString());
         }
     }
 
@@ -497,7 +501,8 @@ public class NavigationBoxController extends SubController {
         routeBox.setMaxWidth(stage.getWidth() * 0.25D);
     }
 
-    public void deleteUserActions(ActionEvent actionEvent) {
+    @FXML
+    public void deleteUserActions() {
         originTextArea.setText("");
         destinationTextArea.setText("");
         addressTextArea.setText("");
@@ -508,5 +513,9 @@ public class NavigationBoxController extends SubController {
 
         Pin.ORIGIN.setVisible(false);
         Pin.DESTINATION.setVisible(false);
+
+        mainController.getCanvas().originCoords = null;
+        mainController.getCanvas().destinationCoords = null;
+        mainController.getCanvas().repaint();
     }
 }

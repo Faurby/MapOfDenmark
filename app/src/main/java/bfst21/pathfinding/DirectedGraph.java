@@ -250,7 +250,12 @@ public class DirectedGraph implements Serializable {
         }
         return outDegree;
     }
-
+    
+    /**
+     * Start Dijkstra pathfinding from the origin point.
+     * Finds all the shortest paths in the graph from the origin point.
+     * Stops when the destination point has been found.
+     */
     private float[] getVector(Edge edge) {
         Vertex fromVertex = vertices[edge.getFrom()];
         Vertex toVertex = vertices[edge.getTo()];
