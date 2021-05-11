@@ -176,65 +176,64 @@ public class NavigationBoxController extends SubController {
 
     @FXML
     public void findRoute() {
-        if (originTextArea.getText().trim().isEmpty()) {
+        if (originTextArea.getText().trim().isEmpty() && destinationTextArea.getText().trim().isEmpty()) {
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting and destination point");
+
+        } else if (originTextArea.getText().trim().isEmpty()) {
             displayAlert(Alert.AlertType.ERROR, "Error", "Starting point search field is empty");
 
-            if (originTextArea.getText().trim().isEmpty() && destinationTextArea.getText().trim().isEmpty()) {
-                displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting and destination point");
+        } else if (destinationTextArea.getText().trim().isEmpty()) {
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the destination point");
 
-            } else if (destinationTextArea.getText().trim().isEmpty()) {
-                displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the destination point");
+        } else {
+            String startingAddress = originTextArea.getText().trim().toLowerCase();
+            String destinationAddress = destinationTextArea.getText().trim().toLowerCase();
 
-            } else {
-                String startingAddress = originTextArea.getText().trim().toLowerCase();
-                String destinationAddress = destinationTextArea.getText().trim().toLowerCase();
+            originSuggestionsBox.getChildren().clear();
+            destinationSuggestionsBox.getChildren().clear();
 
-                originSuggestionsBox.getChildren().clear();
-                destinationSuggestionsBox.getChildren().clear();
+            float[] originCoords = null;
+            float[] destinationCoords = null;
 
-                float[] originCoords = null;
-                float[] destinationCoords = null;
-
-                for (OsmAddress osmAddressS : allSuggestionsOrigin) {
-                    if (osmAddressS.toString().toLowerCase().contains(startingAddress)
-                            || osmAddressS.omitHouseNumberToString().toLowerCase().contains(startingAddress)) {
-                        originCoords = new float[]{osmAddressS.getNode().getX(), osmAddressS.getNode().getY()};
-                        break;
-                    }
+            for (OsmAddress osmAddressS : allSuggestionsOrigin) {
+                if (osmAddressS.toString().toLowerCase().contains(startingAddress)
+                        || osmAddressS.omitHouseNumberToString().toLowerCase().contains(startingAddress)) {
+                    originCoords = new float[]{osmAddressS.getNode().getX(), osmAddressS.getNode().getY()};
+                    break;
                 }
+            }
 
-                for (OsmAddress osmAddressD : allSuggestionsDestination) {
-                    if (osmAddressD.toString().toLowerCase().contains(destinationAddress)
-                            || osmAddressD.omitHouseNumberToString().toLowerCase().contains(destinationAddress)) {
-                        destinationCoords = new float[]{osmAddressD.getNode().getX(), osmAddressD.getNode().getY()};
-                        break;
-                    }
+            for (OsmAddress osmAddressD : allSuggestionsDestination) {
+                if (osmAddressD.toString().toLowerCase().contains(destinationAddress)
+                        || osmAddressD.omitHouseNumberToString().toLowerCase().contains(destinationAddress)) {
+                    destinationCoords = new float[]{osmAddressD.getNode().getX(), osmAddressD.getNode().getY()};
+                    break;
                 }
+            }
 
-                if (originCoords != null && destinationCoords != null) {
+            if (originCoords != null && destinationCoords != null) {
 
-                    Pin.ORIGIN.setCoords(originCoords[0], originCoords[1]);
-                    Pin.ORIGIN.setVisible(true);
+                Pin.ORIGIN.setCoords(originCoords[0], originCoords[1]);
+                Pin.ORIGIN.setVisible(true);
 
-                    Pin.DESTINATION.setCoords(destinationCoords[0], destinationCoords[1]);
-                    Pin.DESTINATION.setVisible(true);
+                Pin.DESTINATION.setCoords(destinationCoords[0], destinationCoords[1]);
+                Pin.DESTINATION.setVisible(true);
 
-                    float avgX = (originCoords[0] + destinationCoords[0]) / 2;
-                    float avgY = (originCoords[1] + destinationCoords[1]) / 2;
+                float avgX = (originCoords[0] + destinationCoords[0]) / 2;
+                float avgY = (originCoords[1] + destinationCoords[1]) / 2;
 
-                    mainController.getCanvas().changeView(avgX, avgY);
-                    mainController.changeZoomToShowPoints(originCoords, destinationCoords);
+                mainController.getCanvas().changeView(avgX, avgY);
+                mainController.changeZoomToShowPoints(originCoords, destinationCoords);
 
-                    TransportOptions transportOptions = TransportOptions.getInstance();
-                    TransportOption currentTransportOption = transportOptions.getCurrentlyEnabled();
+                TransportOptions transportOptions = TransportOptions.getInstance();
+                TransportOption currentTransportOption = transportOptions.getCurrentlyEnabled();
 
-                    float[] nearOriginCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(originCoords, currentTransportOption);
-                    float[] nearDestinationCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(destinationCoords, currentTransportOption);
+                float[] nearOriginCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(originCoords, currentTransportOption);
+                float[] nearDestinationCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(destinationCoords, currentTransportOption);
 
-                    mainController.getCanvas().originCoords = nearOriginCoords;
-                    mainController.getCanvas().destinationCoords = nearDestinationCoords;
-                    runDijkstraTask();
-                }
+                mainController.getCanvas().originCoords = nearOriginCoords;
+                mainController.getCanvas().destinationCoords = nearDestinationCoords;
+                runDijkstraTask();
             }
         }
     }

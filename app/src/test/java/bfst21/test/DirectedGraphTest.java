@@ -4,6 +4,7 @@ import bfst21.models.TransportOption;
 import bfst21.models.TransportOptions;
 import bfst21.pathfinding.DijkstraPath;
 import bfst21.pathfinding.DirectedGraph;
+import bfst21.pathfinding.Direction;
 import bfst21.pathfinding.Edge;
 import org.junit.jupiter.api.Test;
 
@@ -219,5 +220,30 @@ public class DirectedGraphTest {
         boolean actualEdge = counter == 5;
 
         assertTrue(actualEdge);
+    }
+
+    @Test
+    public void getDirectionRightLeft_correctDirection() {
+        DirectedGraph directedGraph = new DirectedGraph();
+
+        float[] coords0 = new float[]{1, 3};
+        float[] coords1 = new float[]{3, 1};
+        float[] coords2 = new float[]{6, 3};
+
+        directedGraph.createVertex(coords0);
+        directedGraph.createVertex(coords1);
+        directedGraph.createVertex(coords2);
+
+        directedGraph.addEdge("Way1", coords0, coords1, 10, false, false, false, true, true, true);
+        directedGraph.addEdge("Way2", coords1, coords2, 10, false, false, false, true, true, true);
+
+        Edge edge0 = directedGraph.getEdge(0);
+        Edge edge1 = directedGraph.getEdge(2);
+
+        Direction direction0 = directedGraph.getDirectionRightLeft(edge0, edge1);
+        Direction direction1 = directedGraph.getDirectionRightLeft(edge1, edge0);
+
+        assertEquals(Direction.TURN_RIGHT, direction0);
+        assertEquals(Direction.TURN_LEFT, direction1);
     }
 }
