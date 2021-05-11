@@ -232,9 +232,10 @@ public class NavigationBoxController extends SubController {
                     float[] nearOriginCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(originCoords, currentTransportOption);
                     float[] nearDestinationCoords = mainController.getCanvas().getModel().getMapData().kdTreeNearestNeighborSearch(destinationCoords, currentTransportOption);
 
-                mainController.getCanvas().originCoords = nearOriginCoords;
-                mainController.getCanvas().destinationCoords = nearDestinationCoords;
-                runDijkstraTask();
+                    mainController.getCanvas().originCoords = nearOriginCoords;
+                    mainController.getCanvas().destinationCoords = nearDestinationCoords;
+                    runDijkstraTask();
+                }
             }
         }
     }
