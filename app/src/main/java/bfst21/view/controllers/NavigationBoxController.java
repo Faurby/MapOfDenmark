@@ -18,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -61,6 +62,8 @@ public class NavigationBoxController extends SubController {
     private VBox navigationDescriptionBox;
     @FXML
     private ListView<String> navigationListView;
+    @FXML
+    private Text durationText;
 
     private final TransportOptions transOptions = TransportOptions.getInstance();
 
@@ -266,6 +269,11 @@ public class NavigationBoxController extends SubController {
                 navigationListView.setItems(tempList);
             }
 
+            navigationListView.setVisible(true);
+            navigationListView.setManaged(true);
+
+            durationText.setText("" + mainController.getCanvas().getCurrentRouteWeight());
+
             int navListSize = navigationListView.getItems().size();
             if (navListSize == 1) {
                 navigationListView.setMaxHeight(27.0D);
@@ -279,8 +287,6 @@ public class NavigationBoxController extends SubController {
                 navigationListView.setMinHeight(350.0D);
             }
 
-            navigationListView.setVisible(true);
-            navigationListView.setManaged(true);
 
         });
         dijkstraTask.setOnFailed(e -> dijkstraTask.getException().printStackTrace());
@@ -518,7 +524,7 @@ public class NavigationBoxController extends SubController {
     }
 
     @FXML
-    public void deleteUserActions() {
+    public void clearRoute() {
         originTextArea.setText("");
         destinationTextArea.setText("");
         addressTextArea.setText("");
@@ -526,6 +532,8 @@ public class NavigationBoxController extends SubController {
         suggestionsBox.getChildren().clear();
         originSuggestionsBox.getChildren().clear();
         destinationSuggestionsBox.getChildren().clear();
+        navigationListView.setVisible(false);
+        navigationListView.setManaged(false);
 
         Pin.ORIGIN.setVisible(false);
         Pin.DESTINATION.setVisible(false);
