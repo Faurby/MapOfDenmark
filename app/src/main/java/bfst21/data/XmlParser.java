@@ -448,6 +448,10 @@ public class XmlParser {
         );
     }
 
+    /**
+     * Merge list of coastlines.
+     * A Way may have the same first coordinate as the last coordinate of another Way.
+     */
     private List<Way> mergeCoastLines(List<Way> coastlines) {
         Map<Node, Way> pieces = new HashMap<>();
 

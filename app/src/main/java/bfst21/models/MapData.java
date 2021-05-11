@@ -119,7 +119,7 @@ public class MapData {
     }
 
     /**
-     * Builds a directed graph used for path finding if option is enabled.
+     * Builds a directed graph used for path finding.
      */
     public void buildDirectedGraph(List<Way> wayList) {
 
@@ -252,7 +252,7 @@ public class MapData {
 
     /**
      * @return HashMap containing every ElementGroup and their list of Ways
-     * The lists are built using the elements from the wayLongIndex
+     * The lists are built using the elements from the wayList
      */
     private HashMap<ElementGroup, List<Way>> getElementMap(List<Way> wayList) {
         HashMap<ElementGroup, List<Way>> elementMap = new HashMap<>();
