@@ -101,6 +101,7 @@
                       visible="false"
                       maxWidth="${newUserNodeButton.width}"/>
         </VBox>
+
         <VBox fx:id="newUserNodeVBox" styleClass="userNodeVBoxes">
             <Text text="New Point of Interest" styleClass="largeText"/>
 
@@ -152,6 +153,7 @@
                         styleClass="userNodeButton"/>
             </HBox>
         </VBox>
+
         <VBox fx:id="userNodeNewNameVBox" styleClass="userNodeVBoxes, userNodeNewNameOrDescVBoxes">
             <Text text="Enter new name" styleClass="largeText"/>
 
@@ -173,6 +175,7 @@
                         styleClass="userNodeButton"/>
             </HBox>
         </VBox>
+
         <VBox fx:id="userNodeNewDescriptionVBox" styleClass="userNodeVBoxes, userNodeNewNameOrDescVBoxes">
             <Text text="Enter new description" styleClass="largeText"/>
 

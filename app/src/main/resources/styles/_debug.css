@@ -5,10 +5,10 @@
     -fx-padding: 175 20 0 0;
 }
 
-#debugOptionsVBox > * {
-    -fx-padding: 2;
-}
-
 #debugOptionsVBox {
     -fx-padding: 5 10 5 10;
+}
+
+#debugOptionsVBox > * {
+    -fx-padding: 2;
 }

@@ -17,7 +17,6 @@
         <HBox>
             <TextArea fx:id="addressTextArea"
                       promptText="Type an address..."
-                      wrapText="true"
                       onKeyPressed="#typingCheck"/>
             <Button fx:id="deleteTextButton"
                     onAction="#clearRoute">
@@ -189,7 +188,5 @@
             <Text fx:id="durationText"></Text>
             <ListView fx:id="navigationListView"/>
         </VBox>
-
     </VBox>
-
 </AnchorPane>

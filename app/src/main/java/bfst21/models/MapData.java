@@ -121,7 +121,7 @@ public class MapData {
     /**
      * Builds a directed graph used for path finding.
      */
-    public void buildDirectedGraph(List<Way> wayList) {
+    private void buildDirectedGraph(List<Way> wayList) {
 
         long time = -System.nanoTime();
         directedGraph = new DirectedGraph();
@@ -188,7 +188,7 @@ public class MapData {
      * The tree is only built if no tree is given in the constructor of this class.
      * There is no need to build any tree if we loaded an .obj file.
      */
-    public void buildKdTreeForMapText(List<MapText> mapTexts) {
+    private void buildKdTreeForMapText(List<MapText> mapTexts) {
         if (kdTreeMapTexts == null) {
             long time = -System.nanoTime();
 
@@ -206,7 +206,7 @@ public class MapData {
      * The tree is only built if no tree is given in the constructor of this class.
      * There is no need to build any tree if we loaded an .obj file.
      */
-    public void buildKdTreeForRelations(List<Relation> relationList) {
+    private void buildKdTreeForRelations(List<Relation> relationList) {
         if (kdTreeRelations == null) {
             long time = -System.nanoTime();
 
@@ -226,7 +226,7 @@ public class MapData {
      * The trees are only built if no trees are given in the constructor of this class.
      * There is no need to build any trees if we loaded an .obj file.
      */
-    public void buildKdTreeForWays(List<Way> wayList) {
+    private void buildKdTreeForWays(List<Way> wayList) {
 
         if (kdTreeMap == null) {
             kdTreeMap = new HashMap<>();

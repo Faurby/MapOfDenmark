@@ -313,11 +313,6 @@ public class MapCanvas extends Canvas {
                     }
                 }
                 gc.stroke();
-
-                System.out.println("Directions: ------");
-                for (String dir : currentDirections) {
-                    System.out.println(dir);
-                }
             }
         }
     }

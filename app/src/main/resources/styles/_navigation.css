@@ -34,7 +34,7 @@
 #addressTextArea {
     -fx-min-height: 20;
     -fx-pref-height: 25;
-
+    -fx-wrap-text: true;
 }
 
 #deleteTextButton {
