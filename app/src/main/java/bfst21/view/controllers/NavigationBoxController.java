@@ -95,7 +95,7 @@ public class NavigationBoxController extends SubController {
             }
             displayAlert(Alert.AlertType.ERROR, "Error", "Unable to find address: "+address);
         } else {
-            displayAlert(Alert.AlertType.ERROR, "Error", "Search field is empty");
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address into the search field");
         }
     }
 
@@ -171,8 +171,11 @@ public class NavigationBoxController extends SubController {
         if (originTextArea.getText().trim().isEmpty()) {
             displayAlert(Alert.AlertType.ERROR, "Error", "Starting point search field is empty");
 
+        if (originTextArea.getText().trim().isEmpty() && destinationTextArea.getText().trim().isEmpty()) {
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting and destination point");
+
         } else if (destinationTextArea.getText().trim().isEmpty()) {
-            displayAlert(Alert.AlertType.ERROR, "Error", "Destination point search field is empty");
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the destination point");
 
         } else {
             String startingAddress = originTextArea.getText().trim().toLowerCase();

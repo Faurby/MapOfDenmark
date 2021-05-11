@@ -1,0 +1,21 @@
+
+/* IMPORT MAIN FILE */
+@import "_navigation.css";
+
+/* EDIT BELOW HERE FOR RESPECTIVE COLOR MODE */
+.searchBox {
+    -fx-background-color: #747474;
+    -fx-border-color: #244e58;
+}
+
+.scrollPane {
+    -fx-background-color: GREY;
+}
+
+.suggestions {
+    -fx-background-color: GREY;
+}
+
+.toggle-button {
+    -fx-border-color: LIGHTGREY;
+}
