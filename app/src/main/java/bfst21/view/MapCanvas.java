@@ -47,6 +47,7 @@ public class MapCanvas extends Canvas {
     private Affine trans = new Affine();
 
     private List<String> currentDirections = new ArrayList<>();
+    private double currentRouteWeight;
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -257,10 +258,14 @@ public class MapCanvas extends Canvas {
                 gc.beginPath();
                 float distanceSum = 0;
                 int exitCount = 0;
+                double weightSum = 0;
+
 
                 for (int i = 0; i < (edgeList.size() - 1); i++) {
                     Edge before = edgeList.get(i);
                     Edge after = edgeList.get(i + 1);
+
+                    weightSum += before.getWeight();
 
 
                     if (before.isJunction()) {
@@ -280,6 +285,9 @@ public class MapCanvas extends Canvas {
                         float distanceAfter = after.getDistance() * 1_000f;
 
                         distanceSum += distanceBefore;
+                        if (distanceSum > 10) {
+                            distanceSum = Math.round(distanceSum / 10.0) * 10;
+                        }
 
                         before.draw(directedGraph, gc);
 
@@ -295,16 +303,13 @@ public class MapCanvas extends Canvas {
                         }
                         if (i == (edgeList.size() - 2)) {
                             after.draw(directedGraph, gc);
+                            weightSum += after.getWeight();
+                            currentRouteWeight = weightSum;
                             currentDirections.add("Follow " + after.getName() + " " + (int) (distanceSum + distanceAfter) + "m" );
                         }
                     }
                 }
                 gc.stroke();
-
-                System.out.println("Directions: ------");
-                for (String dir : currentDirections) {
-                    System.out.println(dir);
-                }
             }
         }
     }
@@ -526,5 +531,9 @@ public class MapCanvas extends Canvas {
 
     public List<String> getCurrentDirections() {
         return currentDirections;
+    }
+
+    public double getCurrentRouteWeight() {
+        return currentRouteWeight;
     }
 }

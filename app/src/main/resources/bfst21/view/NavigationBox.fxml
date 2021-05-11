@@ -7,6 +7,7 @@
 <?import javafx.scene.image.Image?>
 
 
+<?import javafx.scene.text.Text?>
 <AnchorPane xmlns="https://javafx.com/javafx"
             xmlns:fx="https://javafx.com/fxml"
             fx:controller="bfst21.view.controllers.NavigationBoxController"
@@ -18,7 +19,7 @@
                       promptText="Type an address..."
                       onKeyPressed="#typingCheck"/>
             <Button fx:id="deleteTextButton"
-                    onAction="#deleteUserActions">
+                    onAction="#clearRoute">
                 <graphic>
                     <ImageView fitHeight="15.0"
                                preserveRatio="true"
@@ -174,7 +175,7 @@
             <Button onAction="#minimizeNavigationBox"
                     text="Minimize"/>
 
-            <Button onAction="#deleteUserActions"
+            <Button onAction="#clearRoute"
                     text="Clear"/>
 
             <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
@@ -184,9 +185,8 @@
                     text="Search"/>
         </HBox>
         <VBox fx:id="navigationDescriptionBox">
-            <ListView fx:id="navigationListView">
-
-            </ListView>
+            <Text fx:id="durationText"></Text>
+            <ListView fx:id="navigationListView"/>
         </VBox>
     </VBox>
 </AnchorPane>
