@@ -8,7 +8,9 @@ import bfst21.models.DistanceUtil;
 import bfst21.models.TransportOption;
 import bfst21.osm.*;
 import bfst21.tree.BoundingBox;
+import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,13 +24,9 @@ public class XmlParserTest {
     private Model model;
 
     @BeforeEach
-    void setUp() throws XMLStreamException, IOException, ClassNotFoundException {
+    void setup() throws XMLStreamException, IOException, ClassNotFoundException {
         model = new Model("data/amager.zip", false);
         model.load(true);
-    }
-
-    @AfterEach
-    void tearDown() {
     }
 
     @Test
