@@ -298,26 +298,6 @@ public class MapCanvas extends Canvas {
                         }
                     }
                 }
-
-                gc.stroke();
-
-                int start = edgeList.get(0).getFrom();
-                float[] startCoords = directedGraph.getVertexCoords(start);
-
-                gc.setStroke(Color.YELLOWGREEN);
-                gc.setLineWidth(0.0005D * widthModifier);
-
-                gc.beginPath();
-                gc.moveTo(startCoords[0], startCoords[1]);
-                gc.lineTo(startCoords[0], startCoords[1]);
-                gc.stroke();
-
-                gc.setStroke(Color.PURPLE);
-                gc.setLineWidth(0.0005D * widthModifier);
-
-                gc.beginPath();
-                gc.moveTo(destinationCoords[0], destinationCoords[1]);
-                gc.lineTo(destinationCoords[0], destinationCoords[1]);
                 gc.stroke();
 
                 System.out.println("Directions: ------");

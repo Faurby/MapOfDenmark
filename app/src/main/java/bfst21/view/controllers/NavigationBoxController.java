@@ -452,7 +452,7 @@ public class NavigationBoxController extends SubController {
         routeBox.setMaxWidth(stage.getWidth() * 0.25D);
     }
 
-    public void deleteUserActions(ActionEvent actionEvent) {
+    public void deleteUserActions() {
         originTextArea.setText("");
         destinationTextArea.setText("");
         addressTextArea.setText("");
@@ -463,5 +463,9 @@ public class NavigationBoxController extends SubController {
 
         Pin.ORIGIN.setVisible(false);
         Pin.DESTINATION.setVisible(false);
+
+        mainController.getCanvas().originCoords = null;
+        mainController.getCanvas().destinationCoords = null;
+        mainController.getCanvas().repaint();
     }
 }
