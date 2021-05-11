@@ -220,4 +220,22 @@ public class DirectedGraphTest {
 
         assertTrue(actualEdge);
     }
+
+    @Test
+    public void testPath() {
+        DirectedGraph directedGraph = new DirectedGraph();
+
+        float[] coords0 = new float[]{1, 1};
+        float[] coords1 = new float[]{2, 1};
+        float[] coords2 = new float[]{2, 2};
+
+
+        directedGraph.createVertex(coords0);
+        directedGraph.createVertex(coords1);
+        directedGraph.createVertex(coords2);
+
+        directedGraph.addEdge(null, coords0, coords1, 10, false, false, false, true, true, true);
+        directedGraph.addEdge(null, coords1, coords2, 10, false, false, false, true, true, true);
+
+    }
 }
