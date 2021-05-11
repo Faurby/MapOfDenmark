@@ -461,6 +461,10 @@ public class NavigationBoxController extends SubController {
         navigationDescriptionBox.setVisible(false);
         navigationDescriptionBox.setManaged(false);
 
+        if (mainController.getCanvas().getCurrentDirections() != null) {
+            navigationDescriptionBox.setVisible(true);
+            navigationDescriptionBox.setManaged(true);
+        }
 
         Pin.ORIGIN.setVisible(false);
         Pin.DESTINATION.setVisible(false);
