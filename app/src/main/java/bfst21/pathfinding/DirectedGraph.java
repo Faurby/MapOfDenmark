@@ -250,7 +250,7 @@ public class DirectedGraph implements Serializable {
         }
         return outDegree;
     }
-    
+
     /**
      * Start Dijkstra pathfinding from the origin point.
      * Finds all the shortest paths in the graph from the origin point.
@@ -269,7 +269,9 @@ public class DirectedGraph implements Serializable {
     public Direction getDirectionRightLeft(Edge before, Edge after) {
         if (before.getName() != null && after.getName() != null) {
             if (before.getName().equals(after.getName())) {
-                return Direction.STRAIGHT;
+                if (!before.getName().equals("Unnamed way")) {
+                    return Direction.STRAIGHT;
+                }
             }
         }
         float[] beforeVector = getVector(before);

@@ -38,7 +38,6 @@ public class MapCanvas extends Canvas {
     private final GraphicsContext gc = getGraphicsContext2D();
 
     private Task<Void> rangeSearchTask;
-    private Task<Void> dijkstraTask;
 
     public float[] originCoords;
     public float[] destinationCoords;
@@ -260,13 +259,11 @@ public class MapCanvas extends Canvas {
                 int exitCount = 0;
                 double weightSum = 0;
 
-
                 for (int i = 0; i < (edgeList.size() - 1); i++) {
                     Edge before = edgeList.get(i);
                     Edge after = edgeList.get(i + 1);
 
                     weightSum += before.getWeight();
-
 
                     if (before.isJunction()) {
                         before.draw(directedGraph, gc);
@@ -286,14 +283,13 @@ public class MapCanvas extends Canvas {
 
                         distanceSum += distanceBefore;
 
-
                         before.draw(directedGraph, gc);
 
                         String dir = direction.toString().toLowerCase().replace("_", " ");
                         dir = dir.substring(0, 1).toUpperCase() + dir.substring(1);
 
                         if (direction != Direction.STRAIGHT) {
-                            currentDirections.add("Follow " + before.getName() + " " +distanceSumToString(distanceSum));
+                            currentDirections.add("Follow " + before.getName() + " " + distanceSumToString(distanceSum));
                             if (!after.isJunction()) {
                                 currentDirections.add(dir + " down " + after.getName());
                             }
@@ -539,7 +535,7 @@ public class MapCanvas extends Canvas {
             if (minutes != 0) {
                 minutesString = minutes + " minute(s)";
             }
-            return "Route duration: " + hours + " hour(s) " + minutesString ;
+            return "Route duration: " + hours + " hour(s) " + minutesString;
         } else {
             return "Route duration: " + currentRouteWeight + " min";
         }
@@ -549,7 +545,7 @@ public class MapCanvas extends Canvas {
         if (distance >= 1_000.0f) {
             distance /= 1_000.0f;
             String distanceString = "" + distance;
-            return distanceString.substring(0,3) + " km";
+            return distanceString.substring(0, 3) + " km";
 
         } else if (distance > 10.0f) {
             distance = (Math.round(distance / 10.0f) * 10.0f);
