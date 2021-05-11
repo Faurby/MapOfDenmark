@@ -7,10 +7,8 @@ import bfst21.models.Model;
 import bfst21.models.DistanceUtil;
 import bfst21.models.TransportOption;
 import bfst21.osm.*;
+import bfst21.pathfinding.DirectedGraph;
 import bfst21.tree.BoundingBox;
-import org.junit.Before;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,6 +40,15 @@ public class XmlParserTest {
         List<Relation> relations = model.getMapData().getKdTreeRelations().getAllElements();
 
         assertEquals(807, relations.size());
+    }
+
+    @Test
+    public void buildDirectedGraph_correctVertexAndEdgeAmount() {
+        MapData mapData = model.getMapData();
+        DirectedGraph directedGraph = mapData.getDirectedGraph();
+
+        assertEquals(88858, directedGraph.getVertexAmount());
+        assertEquals(201916, directedGraph.getEdgeAmount());
     }
 
     @Test
