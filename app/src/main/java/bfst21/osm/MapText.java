@@ -1,6 +1,10 @@
 package bfst21.osm;
 
 
+import bfst21.view.Drawable;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.text.Font;
+
 /**
  * MapText is used to display text on the map such as cities, towns, villages, etc...
  * <p>
@@ -9,7 +13,7 @@ package bfst21.osm;
  * <p>
  * Extends BoundingBoxElement so it can be placed in a KD-tree.
  */
-public class MapText extends BoundingBoxElement {
+public class MapText extends BoundingBoxElement implements Drawable {
 
     private static final long serialVersionUID = -2287560037258388900L;
 
@@ -40,7 +44,17 @@ public class MapText extends BoundingBoxElement {
         return coords;
     }
 
-    public boolean canDraw(double zoomLevel) {
-        return mapTextType.getZoomLevelRequired() <= zoomLevel;
+    @Override
+    public void trace(GraphicsContext gc, double zoomLevel) {
+
+        if (mapTextType.getZoomLevelRequired() <= zoomLevel) {
+
+            double size = mapTextType.getFontSizeMultiplier() / zoomLevel;
+            if (zoomLevel <= 200.0D) {
+                size = mapTextType.getFontSizeMultiplier() / 220.0D;
+            }
+            gc.setFont(new Font("Calibri", size));
+            gc.fillText(name, coords[0], coords[1]);
+        }
     }
 }
