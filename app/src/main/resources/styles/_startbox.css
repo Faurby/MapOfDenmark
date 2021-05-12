@@ -4,7 +4,7 @@
 #startboxVBox {
     -fx-padding: 20;
     -fx-alignment: CENTER;
-    -fx-max-width: 250;
+    -fx-max-width: 300;
     -fx-max-height: 100;
 }
 

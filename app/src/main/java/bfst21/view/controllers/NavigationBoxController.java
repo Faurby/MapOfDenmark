@@ -171,6 +171,10 @@ public class NavigationBoxController extends SubController {
 
                 if (keyEvent.getSource().toString().contains("originTextArea")) {
                     originTextArea.setText(originTextArea.getText().trim());
+                    originScrollPane.setVisible(false);
+                    originScrollPane.setManaged(false);
+                    destinationScrollPane.setVisible(true);
+                    destinationScrollPane.setManaged(true);
                     destinationTextArea.requestFocus();
 
                 } else if (keyEvent.getSource().toString().contains("destinationTextArea")) {
@@ -193,7 +197,6 @@ public class NavigationBoxController extends SubController {
                     destinationSuggestionsBox.getChildren().get(0).requestFocus();
                 }
             } else {
-
                 if (keyEvent.getSource().toString().contains("originTextArea")) {
                     int textLength = originTextArea.getText().trim().length();
 
