@@ -363,6 +363,12 @@ public class MapCanvas extends Canvas {
      */
     public void runDijkstra() {
         model.getMapData().runDijkstra(originCoords, destinationCoords);
+
+        Pin.ORIGIN.setCoords(originCoords);
+        Pin.ORIGIN.setVisible(true);
+        
+        Pin.DESTINATION.setCoords(destinationCoords);
+        Pin.DESTINATION.setVisible(true);
     }
 
     /**

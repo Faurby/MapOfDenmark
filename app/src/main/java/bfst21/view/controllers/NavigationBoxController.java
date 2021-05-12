@@ -272,12 +272,6 @@ public class NavigationBoxController extends SubController {
             }
 
             if (originCoords != null && destinationCoords != null) {
-                Pin.ORIGIN.setCoords(originCoords[0], originCoords[1]);
-                Pin.ORIGIN.setVisible(true);
-
-                Pin.DESTINATION.setCoords(destinationCoords[0], destinationCoords[1]);
-                Pin.DESTINATION.setVisible(true);
-
                 float avgX = (originCoords[0] + destinationCoords[0]) / 2;
                 float avgY = (originCoords[1] + destinationCoords[1]) / 2;
 

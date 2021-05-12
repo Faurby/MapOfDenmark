@@ -299,6 +299,12 @@ public class MainController extends BaseController {
                 resetDijkstra = false;
                 canvas.originCoords = nearestCoords;
                 canvas.destinationCoords = null;
+
+                Pin.ORIGIN.setVisible(true);
+                Pin.ORIGIN.setCoords(nearestCoords);
+
+                Pin.DESTINATION.setVisible(false);
+                
             } else {
                 canvas.destinationCoords = nearestCoords;
                 navigationBoxController.runDijkstraTask();
