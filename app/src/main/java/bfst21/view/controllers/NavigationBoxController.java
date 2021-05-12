@@ -211,7 +211,7 @@ public class NavigationBoxController extends SubController {
                         destinationSuggestionsBox.getChildren().clear();
 
                     } else if (!(keyEvent.getCode() == KeyCode.BACK_SPACE || keyEvent.getCode() == KeyCode.DELETE)) {
-                        runAddressSuggestionTask(destinationSuggestionsBox, destinationTextArea, false, destinationScrollPane);
+                        runAddressSuggestionTask(destinationSuggestionsBox, destinationTextArea, true, destinationScrollPane);
                     }
                 }
             }
@@ -270,9 +270,8 @@ public class NavigationBoxController extends SubController {
                     break;
                 }
             }
-            System.out.println("I got here");
+
             if (originCoords != null && destinationCoords != null) {
-                System.out.println("but not here");
                 Pin.ORIGIN.setCoords(originCoords[0], originCoords[1]);
                 Pin.ORIGIN.setVisible(true);
 
@@ -379,7 +378,7 @@ public class NavigationBoxController extends SubController {
                     }
                 });
 
-                //TODO investigate why these lines can't be deleted without ruining the "downarrow" function
+                //TODO investigate why this line can't be deleted without ruining the "downarrow" function
                 suggestions.setOnKeyPressed((event) -> {});
 
                 b.setOnKeyPressed((event) -> {
