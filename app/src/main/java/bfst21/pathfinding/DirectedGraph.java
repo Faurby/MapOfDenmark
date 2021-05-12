@@ -310,9 +310,7 @@ public class DirectedGraph implements Serializable {
     public Direction getDirectionRightLeft(Edge before, Edge after) {
         if (before.getName() != null && after.getName() != null) {
             if (before.getName().equals(after.getName())) {
-                if (!before.getName().equals("Unnamed way")) {
-                    return Direction.STRAIGHT;
-                }
+                return Direction.STRAIGHT;
             }
         }
         float[] beforeVector = getVector(before);

@@ -294,6 +294,9 @@ public class MapCanvas extends Canvas {
                                 currentDirections.add(dir + " down " + after.getName());
                             }
                             distanceSum = 0;
+                        } else if (!before.getName().equals(after.getName())) {
+                            currentDirections.add("Follow " + before.getName() + " " + distanceSumToString(distanceSum));
+                            distanceSum = 0;
                         }
                         if (i == (edgeList.size() - 2)) {
                             after.draw(directedGraph, gc);
@@ -303,6 +306,7 @@ public class MapCanvas extends Canvas {
                         }
                     }
                 }
+                currentDirections.add("Arrive at your destination");
                 gc.stroke();
             }
         }
@@ -366,7 +370,7 @@ public class MapCanvas extends Canvas {
 
         Pin.ORIGIN.setCoords(originCoords);
         Pin.ORIGIN.setVisible(true);
-        
+
         Pin.DESTINATION.setCoords(destinationCoords);
         Pin.DESTINATION.setVisible(true);
     }
@@ -531,6 +535,11 @@ public class MapCanvas extends Canvas {
 
     public List<String> getCurrentDirections() {
         return currentDirections;
+    }
+
+    public void resetCurrentRoute() {
+        currentDirections = new ArrayList<>();
+        currentRouteWeight = 0;
     }
 
     public String getCurrentRouteWeightToString() {

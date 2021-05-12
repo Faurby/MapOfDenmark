@@ -296,6 +296,9 @@ public class MainController extends BaseController {
             float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords, currentTransportOption);
 
             if (resetDijkstra) {
+                canvas.resetCurrentRoute();
+                navigationBoxController.clearRoute();
+
                 resetDijkstra = false;
                 canvas.originCoords = nearestCoords;
                 canvas.destinationCoords = null;
@@ -304,7 +307,7 @@ public class MainController extends BaseController {
                 Pin.ORIGIN.setCoords(nearestCoords);
 
                 Pin.DESTINATION.setVisible(false);
-                
+
             } else {
                 canvas.destinationCoords = nearestCoords;
                 navigationBoxController.runDijkstraTask();
