@@ -30,7 +30,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -419,12 +418,14 @@ public class MainController extends BaseController {
             scene.getStylesheets().add(getClass().getResource("/styles/misc_default.css").toExternalForm());
             debugBox.getStylesheets().setAll(getClass().getResource("/styles/debug_default.css").toExternalForm());
             navigationBox.getStylesheets().setAll(getClass().getResource("/styles/navigation_default.css").toExternalForm());
+
         } else if (text.contains("darkmode")) {
             scene.getStylesheets().removeAll();
             scene.getStylesheets().add(getClass().getResource("/styles/userNodes_darkmode.css").toExternalForm());
             scene.getStylesheets().add(getClass().getResource("/styles/misc_darkmode.css").toExternalForm());
             debugBox.getStylesheets().setAll(getClass().getResource("/styles/debug_darkmode.css").toExternalForm());
             navigationBox.getStylesheets().setAll(getClass().getResource("/styles/navigation_darkmode.css").toExternalForm());
+
         } else if (text.contains("colorblind")) {
 
         }

@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  * Relation is a group of elements.
- * It may contain coordinates, Ways and/or other Relations.
+ * It may contain coordinates and/or Ways.
  * <p>
  * Every Way in the Relation will be given the ElementType of
  * the Relation if it does not already have an ElementType.
@@ -26,7 +26,6 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
 
     private static final long serialVersionUID = 4549832550595113105L;
 
-    private final List<Relation> relations;
     private List<Way> ways;
 
     private ElementType elementType;
@@ -34,7 +33,6 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
 
     public Relation() {
         ways = new ArrayList<>();
-        relations = new ArrayList<>();
     }
 
     /**
@@ -182,14 +180,6 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
 
     public List<Way> getWays() {
         return ways;
-    }
-
-    public void addRelation(Relation relation) {
-        relations.add(relation);
-    }
-
-    public List<Relation> getRelations() {
-        return relations;
     }
 
     public void setType(ElementType elementType) {

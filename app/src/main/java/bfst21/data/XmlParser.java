@@ -130,11 +130,6 @@ public class XmlParser {
                                         }
                                         relation.addWay(memWay);
                                     }
-                                } else if (type.equalsIgnoreCase("relation")) {
-                                    Element<Relation> element = relationLongIndex.get(Long.parseLong(memRef));
-                                    if (element != null) {
-                                        relation.addRelation(element.getInnerElement());
-                                    }
                                 }
                             }
                             break;
