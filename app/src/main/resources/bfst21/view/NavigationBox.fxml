@@ -34,7 +34,7 @@
                       wrapText="true"
                       onKeyPressed="#typingCheck"/>
 
-            <Button
+            <Button fx:id="clearButton"
                     minHeight="20"
                     minWidth="20"
                     onAction="#deleteUserActions"
@@ -50,7 +50,8 @@
             </Button>
         </HBox>
 
-        <ScrollPane minWidth="250"
+        <ScrollPane fx:id="addressScrollPane"
+                    minWidth="250"
                     prefWidth="350"
                     maxHeight="100"
                     minHeight="0"
@@ -67,8 +68,7 @@
               prefWidth="198.0"
               style="-fx-padding: 10 0 5 0">
 
-            <Button fx:id="expandButton"
-                    onAction="#expandNavigationBox"
+            <Button onAction="#expandNavigationBox"
                     text="Directions"
                     GridPane.columnIndex="0"
                     GridPane.rowIndex="0"/>

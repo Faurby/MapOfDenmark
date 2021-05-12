@@ -12,6 +12,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -53,9 +54,11 @@ public class NavigationBoxController extends SubController {
     @FXML
     private ScrollPane destinationScrollPane;
     @FXML
-    private Button expandButton;
+    private ScrollPane addressScrollPane;
     @FXML
     private Button searchButton;
+    @FXML
+    private Button clearButton;
     @FXML
     private VBox searchBox;
     @FXML
@@ -90,6 +93,10 @@ public class NavigationBoxController extends SubController {
             originScrollPane.setManaged(false);
             destinationScrollPane.setVisible(true);
             destinationScrollPane.setManaged(true);
+        });
+        addressTextArea.setOnMouseClicked(event -> {
+            addressScrollPane.setVisible(true);
+            addressScrollPane.setManaged(true);
         });
     }
 
@@ -128,32 +135,26 @@ public class NavigationBoxController extends SubController {
         if (!isNavigationBoxExpanded) {
 
             if (keyEvent.getCode() == KeyCode.TAB) {
-                if (keyEvent.getSource().toString().contains("addressTextArea")) {
+                clearButton.requestFocus();
 
-                    //TODO: What is the point in trimming the text in addressArea?
-                    addressTextArea.setText(addressTextArea.getText().trim());
-                    expandButton.requestFocus();
-                }
             } else if (keyEvent.getCode() == KeyCode.ENTER) {
 
-                //TODO: What is the point in trimming the text in addressArea?
-                addressTextArea.setText(addressTextArea.getText().trim());
                 suggestionsBox.getChildren().clear();
                 searchButton.requestFocus();
                 searchSingleAddress();
 
-            } else if (keyEvent.getCode() == KeyCode.BACK_SPACE
-                    && addressTextArea.getText().trim().length() <= 2) {
-
-                suggestionsBox.getChildren().clear();
-
             } else if (keyEvent.getCode() == KeyCode.DOWN && shownSuggestionsOrigin.size() > 0) {
-                suggestionsBox.requestFocus();
+                suggestionsBox.getChildren().get(0).requestFocus();
 
             } else {
                 int textLength = addressTextArea.getText().trim().length();
-                if (textLength >= 2) {
-                    runAddressSuggestionTask(suggestionsBox, addressTextArea, false);
+
+                if (addressTextArea.getText().trim().length() <= 2) {
+                    suggestionsBox.getChildren().clear();
+
+                } else if (!(keyEvent.getCode() == KeyCode.BACK_SPACE || keyEvent.getCode() == KeyCode.DELETE) && textLength >= 2) {
+
+                    runAddressSuggestionTask(suggestionsBox, addressTextArea, false, addressScrollPane);
                 }
             }
         } else {
@@ -175,16 +176,23 @@ public class NavigationBoxController extends SubController {
                 originSuggestionsBox.getChildren().clear();
                 destinationSuggestionsBox.getChildren().clear();
                 findRoute();
+
+            } else if (keyEvent.getCode() == KeyCode.DOWN) {
+                if (keyEvent.getSource().toString().contains("originTextArea") && shownSuggestionsOrigin.size() > 0) {
+                    originSuggestionsBox.getChildren().get(0).requestFocus();
+                } else if (keyEvent.getSource().toString().contains("destinationTextArea") && shownSuggestionsDestination.size() > 0) {
+                    destinationSuggestionsBox.getChildren().get(0).requestFocus();
+                }
             } else {
                 if (keyEvent.getSource().toString().contains("originTextArea")) {
                     int textLength = originTextArea.getText().trim().length();
                     if (textLength >= 2) {
-                        runAddressSuggestionTask(originSuggestionsBox, originTextArea, false);
+                        runAddressSuggestionTask(originSuggestionsBox, originTextArea, false, originScrollPane);
                     }
                 } else if (keyEvent.getSource().toString().contains("destinationTextArea")) {
                     int textLength = destinationTextArea.getText().trim().length();
                     if (textLength >= 2) {
-                        runAddressSuggestionTask(destinationSuggestionsBox, destinationTextArea, true);
+                        runAddressSuggestionTask(destinationSuggestionsBox, destinationTextArea, true, destinationScrollPane);
                     }
                 }
             }
@@ -270,7 +278,7 @@ public class NavigationBoxController extends SubController {
         }
     }
 
-    private void displayAddressSuggestions(VBox suggestions, TextArea textArea, boolean extended) {
+    private void displayAddressSuggestions(VBox suggestions, TextArea textArea, boolean extended, ScrollPane scrollPane) {
         int count = 0;
         suggestions.getChildren().clear();
 
@@ -291,6 +299,30 @@ public class NavigationBoxController extends SubController {
                 });
                 b.setOnMouseEntered((event) -> b.setStyle("-fx-background-color:#dae7f3;"));
                 b.setOnMouseExited((event) -> b.setStyle("-fx-background-color: transparent;"));
+                b.focusedProperty().addListener((obs, oldVal, newVal) -> {
+                    if (newVal){
+                        b.setStyle("-fx-background-color:#dae7f3;");
+                    } else {
+                        b.setStyle("-fx-background-color: transparent;");
+                    }
+                });
+                suggestions.setOnKeyPressed((event) -> {
+
+                });
+                b.setOnKeyPressed((event) -> {
+                    if (event.getCode() == KeyCode.UP && suggestions.getChildren().size() > 0 && suggestions.getChildren().indexOf(b) > 0){
+                        Node a = suggestions.getChildren().get(suggestions.getChildren().indexOf(b)-1);
+                        a.requestFocus();
+                    } else if ((event.getCode() == KeyCode.DOWN && suggestions.getChildren().size() > 0)) {
+                        if (suggestions.getChildren().indexOf(b) < suggestions.getChildren().size()-1) {
+                            suggestions.getChildren().get(suggestions.getChildren().indexOf(b)+1).requestFocus();
+                        }
+                    } else if (event.getCode() == KeyCode.ENTER) {
+                        textArea.setText(b.getText());
+                        scrollPane.setVisible(false);
+                        scrollPane.setManaged(false);
+                    }
+                });
 
                 suggestions.getChildren().add(b);
                 count++;
@@ -298,7 +330,7 @@ public class NavigationBoxController extends SubController {
         }
     }
 
-    private void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended) {if (addressSuggestionTask != null) {
+    private void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended, ScrollPane scrollPane) {if (addressSuggestionTask != null) {
             if (addressSuggestionTask.isRunning()) {
                 addressSuggestionTask.cancel();
             }
@@ -377,7 +409,7 @@ public class NavigationBoxController extends SubController {
             }
         };
 
-        addressSuggestionTask.setOnSucceeded(e -> displayAddressSuggestions(suggestions, textArea, extended));
+        addressSuggestionTask.setOnSucceeded(e -> displayAddressSuggestions(suggestions, textArea, extended, scrollPane));
         addressSuggestionTask.setOnFailed(e -> addressSuggestionTask.getException().printStackTrace());
         Thread thread = new Thread(addressSuggestionTask);
         thread.start();
@@ -453,6 +485,7 @@ public class NavigationBoxController extends SubController {
 
         if (!destinationTextArea.getText().isEmpty() && originTextArea.getText().isEmpty()) {
             addressTextArea.setText(destinationTextArea.getText());
+            allSuggestionsOrigin = allSuggestionsDestination;
 
         } else if (!originTextArea.getText().isEmpty()) {
             addressTextArea.setText(originTextArea.getText());
