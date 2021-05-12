@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -48,6 +49,10 @@ public class NavigationBoxController extends SubController {
     @FXML
     private TextArea addressTextArea;
     @FXML
+    private ScrollPane originScrollPane;
+    @FXML
+    private ScrollPane destinationScrollPane;
+    @FXML
     private Button expandButton;
     @FXML
     private Button searchButton;
@@ -73,6 +78,19 @@ public class NavigationBoxController extends SubController {
         selectWalkButton.setOnAction(new ToggleTransportListener(TransportOption.WALK, selectWalkButton));
         selectBikeButton.setOnAction(new ToggleTransportListener(TransportOption.BIKE, selectBikeButton));
         selectCarButton.setOnAction(new ToggleTransportListener(TransportOption.CAR, selectCarButton));
+
+        originTextArea.setOnMouseClicked(event -> {
+            destinationScrollPane.setVisible(false);
+            destinationScrollPane.setManaged(false);
+            originScrollPane.setVisible(true);
+            originScrollPane.setManaged(true);
+        });
+        destinationTextArea.setOnMouseClicked(event -> {
+            originScrollPane.setVisible(false);
+            originScrollPane.setManaged(false);
+            destinationScrollPane.setVisible(true);
+            destinationScrollPane.setManaged(true);
+        });
     }
 
     @FXML
@@ -82,10 +100,17 @@ public class NavigationBoxController extends SubController {
 
         if (!address.isEmpty()) {
 
+            boolean found = false;
             for (OsmAddress osmAddress : allSuggestionsOrigin) {
-                if (osmAddress.toString().toLowerCase().contains(address)
-                 || osmAddress.omitHouseNumberToString().toLowerCase().contains(address)) {
-
+                if (osmAddress.toString().toLowerCase().contains(address)) {
+                    found = true;
+                    addressTextArea.setText(osmAddress.toString());
+                }
+                if (osmAddress.omitHouseNumberToString().toLowerCase().contains(address)) {
+                    found = true;
+                    addressTextArea.setText(osmAddress.omitHouseNumberToString());
+                }
+                if (found) {
                     Pin.DESTINATION.setCoords(osmAddress.getNodeCoords());
                     Pin.DESTINATION.setVisible(true);
 
@@ -184,17 +209,33 @@ public class NavigationBoxController extends SubController {
             float[] originCoords = null;
             float[] destinationCoords = null;
 
+            boolean originFound = false;
             for (OsmAddress osmAddressS : allSuggestionsOrigin) {
-                if (osmAddressS.toString().toLowerCase().contains(startingAddress)
-                        || osmAddressS.omitHouseNumberToString().toLowerCase().contains(startingAddress)) {
+                if (osmAddressS.toString().toLowerCase().contains(startingAddress)) {
+                    originFound = true;
+                    originTextArea.setText(osmAddressS.toString());
+                }
+                if (osmAddressS.omitHouseNumberToString().toLowerCase().contains(startingAddress)) {
+                    originFound = true;
+                    originTextArea.setText(osmAddressS.omitHouseNumberToString());
+                }
+                if (originFound) {
                     originCoords = new float[]{osmAddressS.getNode().getX(), osmAddressS.getNode().getY()};
                     break;
                 }
             }
 
+            boolean destinationFound = false;
             for (OsmAddress osmAddressD : allSuggestionsDestination) {
-                if (osmAddressD.toString().toLowerCase().contains(destinationAddress)
-                        || osmAddressD.omitHouseNumberToString().toLowerCase().contains(destinationAddress)) {
+                if (osmAddressD.toString().toLowerCase().contains(destinationAddress)){
+                    destinationFound = true;
+                    destinationTextArea.setText(osmAddressD.toString());
+                }
+                if (osmAddressD.omitHouseNumberToString().toLowerCase().contains(destinationAddress)) {
+                    destinationFound = true;
+                    destinationTextArea.setText(osmAddressD.omitHouseNumberToString());
+                }
+                if (destinationFound) {
                     destinationCoords = new float[]{osmAddressD.getNode().getX(), osmAddressD.getNode().getY()};
                     break;
                 }
@@ -246,6 +287,7 @@ public class NavigationBoxController extends SubController {
                     textArea.setText(b.getText());
                     suggestions.getChildren().clear();
                     textArea.requestFocus();
+                    textArea.end();
                 });
                 b.setOnMouseEntered((event) -> b.setStyle("-fx-background-color:#dae7f3;"));
                 b.setOnMouseExited((event) -> b.setStyle("-fx-background-color: transparent;"));
