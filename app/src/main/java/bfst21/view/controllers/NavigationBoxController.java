@@ -18,7 +18,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -61,7 +60,7 @@ public class NavigationBoxController extends SubController {
     @FXML
     private Button searchButton;
     @FXML
-    private Button clearButton;
+    private Button deleteTextButton;
     @FXML
     private VBox searchBox;
     @FXML
@@ -146,7 +145,7 @@ public class NavigationBoxController extends SubController {
         if (!isNavigationBoxExpanded) {
 
             if (keyEvent.getCode() == KeyCode.TAB) {
-                clearButton.requestFocus();
+                deleteTextButton.requestFocus();
 
             } else if (keyEvent.getCode() == KeyCode.ENTER) {
 
@@ -271,9 +270,9 @@ public class NavigationBoxController extends SubController {
                     break;
                 }
             }
-
+            System.out.println("I got here");
             if (originCoords != null && destinationCoords != null) {
-
+                System.out.println("but not here");
                 Pin.ORIGIN.setCoords(originCoords[0], originCoords[1]);
                 Pin.ORIGIN.setVisible(true);
 
