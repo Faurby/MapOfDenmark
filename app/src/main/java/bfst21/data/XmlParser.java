@@ -150,12 +150,9 @@ public class XmlParser {
                                         break;
                                     case "place":
                                         switch (value) {
-                                            case "peninsula":
-                                            case "island":
                                             case "city":
                                             case "village":
                                             case "suburb":
-                                            case "islet":
                                             case "hamlet":
                                             case "town":
                                                 mapText = new MapText(name, MapTextType.valueOf(value.toUpperCase()));
