@@ -251,6 +251,52 @@ public class DirectedGraph implements Serializable {
         return outDegree;
     }
 
+    public double getAngle(Edge before, Edge after) {
+        Vertex fromVertex = vertices[before.getFrom()];
+        Vertex middleVertex = vertices[before.getTo()];
+        Vertex toVertex = vertices[after.getTo()];
+
+        float fromX = fromVertex.getCoords()[0];
+        float fromY = fromVertex.getCoords()[1];
+
+        float middleX = middleVertex.getCoords()[0];
+        float middleY = middleVertex.getCoords()[1];
+
+        float toX = toVertex.getCoords()[0];
+        float toY = toVertex.getCoords()[1];
+
+        double output = Math.atan2(toY - middleY, toX - middleX)
+                - Math.atan2(fromY - middleY, fromX - middleX);
+
+        while (output > Math.PI) {
+            output -= 2 * Math.PI;
+        }
+        while (output < -Math.PI) {
+            output += 2 * Math.PI;
+        }
+        return output;
+    }
+
+    public Direction getDirectionFromAngle(Edge before, Edge after) {
+        double angle = getAngle(before, after);
+
+        if (angle > -Math.PI / 3 && angle < Math.PI / 3) {
+            return Direction.STRAIGHT;
+
+        } else if (angle >= Math.PI / 3) {
+            return Direction.TURN_LEFT;
+
+        } else if (angle <= -Math.PI / 3) {
+            return Direction.TURN_RIGHT;
+        }
+        return Direction.STRAIGHT;
+    }
+
+    /**
+     * Start Dijkstra pathfinding from the origin point.
+     * Finds all the shortest paths in the graph from the origin point.
+     * Stops when the destination point has been found.
+     */
     private float[] getVector(Edge edge) {
         Vertex fromVertex = vertices[edge.getFrom()];
         Vertex toVertex = vertices[edge.getTo()];
@@ -264,7 +310,9 @@ public class DirectedGraph implements Serializable {
     public Direction getDirectionRightLeft(Edge before, Edge after) {
         if (before.getName() != null && after.getName() != null) {
             if (before.getName().equals(after.getName())) {
-                return Direction.STRAIGHT;
+                if (!before.getName().equals("Unnamed way")) {
+                    return Direction.STRAIGHT;
+                }
             }
         }
         float[] beforeVector = getVector(before);
@@ -337,7 +385,15 @@ public class DirectedGraph implements Serializable {
         return vertexAmount;
     }
 
+    public int getEdgeAmount() {
+        return edgeAmount;
+    }
+
     public Vertex[] getVertices() {
         return vertices;
+    }
+
+    public Edge getEdge(int id) {
+        return edges[id];
     }
 }

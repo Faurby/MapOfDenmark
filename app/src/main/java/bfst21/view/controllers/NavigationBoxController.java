@@ -8,6 +8,8 @@ import bfst21.models.TransportOptions;
 import bfst21.address.OsmAddress;
 import bfst21.osm.Pin;
 import bfst21.view.MapCanvas;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,6 +20,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -63,6 +66,12 @@ public class NavigationBoxController extends SubController {
     private VBox searchBox;
     @FXML
     private VBox suggestionsBox;
+    @FXML
+    private VBox navigationDescriptionBox;
+    @FXML
+    private ListView<String> navigationListView;
+    @FXML
+    private Text durationText;
 
     private final TransportOptions transOptions = TransportOptions.getInstance();
 
@@ -73,6 +82,8 @@ public class NavigationBoxController extends SubController {
     private List<String> shownSuggestionsDestination = new ArrayList<>();
 
     private Task<Void> addressSuggestionTask;
+    private Task<Void> dijkstraTask;
+
     private TST<List<OsmAddress>> addressTries;
 
     private boolean isNavigationBoxExpanded = false;
@@ -125,9 +136,9 @@ public class NavigationBoxController extends SubController {
                     return;
                 }
             }
-            displayAlert(Alert.AlertType.ERROR, "Error", "Unable to find address: "+address);
+            displayAlert(Alert.AlertType.ERROR, "Error", "Unable to find address: " + address);
         } else {
-            displayAlert(Alert.AlertType.ERROR, "Error", "Search field is empty");
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address into the search field");
         }
     }
 
@@ -210,11 +221,14 @@ public class NavigationBoxController extends SubController {
 
     @FXML
     public void findRoute() {
-        if (originTextArea.getText().trim().isEmpty()) {
+        if (originTextArea.getText().trim().isEmpty() && destinationTextArea.getText().trim().isEmpty()) {
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting and destination point");
+
+        } else if (originTextArea.getText().trim().isEmpty()) {
             displayAlert(Alert.AlertType.ERROR, "Error", "Starting point search field is empty");
 
         } else if (destinationTextArea.getText().trim().isEmpty()) {
-            displayAlert(Alert.AlertType.ERROR, "Error", "Destination point search field is empty");
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the destination point");
 
         } else {
             String startingAddress = originTextArea.getText().trim().toLowerCase();
@@ -244,7 +258,7 @@ public class NavigationBoxController extends SubController {
 
             boolean destinationFound = false;
             for (OsmAddress osmAddressD : allSuggestionsDestination) {
-                if (osmAddressD.toString().toLowerCase().contains(destinationAddress)){
+                if (osmAddressD.toString().toLowerCase().contains(destinationAddress)) {
                     destinationFound = true;
                     destinationTextArea.setText(osmAddressD.toString());
                 }
@@ -280,11 +294,61 @@ public class NavigationBoxController extends SubController {
 
                 mainController.getCanvas().originCoords = nearOriginCoords;
                 mainController.getCanvas().destinationCoords = nearDestinationCoords;
-                mainController.getCanvas().runDijkstraTask();
-
-                mainController.getCanvas().repaint();
+                runDijkstraTask();
             }
         }
+    }
+
+    /**
+     * Run dijkstra path finding if coords for origin and destination are present.
+     */
+    public void runDijkstraTask() {
+        if (dijkstraTask != null) {
+            if (dijkstraTask.isRunning()) {
+                dijkstraTask.cancel();
+            }
+        }
+        dijkstraTask = new Task<>() {
+            @Override
+            protected Void call() {
+                mainController.getCanvas().runDijkstra();
+                return null;
+            }
+        };
+        dijkstraTask.setOnSucceeded(e -> {
+            mainController.getCanvas().repaint();
+
+            List<String> directionsList = mainController.getCanvas().getCurrentDirections();
+            if (directionsList != null) {
+                ObservableList<String> tempList = FXCollections.observableArrayList();
+                tempList.addAll(directionsList);
+                navigationListView.setItems(tempList);
+            }
+
+            navigationDescriptionBox.setVisible(true);
+            navigationDescriptionBox.setManaged(true);
+
+            durationText.setText(mainController.getCanvas().getCurrentRouteWeightToString());
+
+            int navListSize = navigationListView.getItems().size();
+            if (navListSize == 1) {
+                navigationListView.setMaxHeight(27.0D);
+                navigationListView.setMinHeight(27.0D);
+
+            } else if (navListSize < 15) {
+                navigationListView.setMaxHeight(navListSize * 24.0D);
+                navigationListView.setMinHeight(navListSize * 24.0D);
+            } else {
+                navigationListView.setMaxHeight(350.0D);
+                navigationListView.setMinHeight(350.0D);
+            }
+
+
+        });
+        dijkstraTask.setOnFailed(e -> dijkstraTask.getException().printStackTrace());
+
+        Thread thread = new Thread(dijkstraTask);
+        thread.start();
     }
 
     private void displayAddressSuggestions(VBox suggestions, TextArea textArea, boolean extended, ScrollPane scrollPane) {
@@ -350,8 +414,9 @@ public class NavigationBoxController extends SubController {
         double v = scrollPane.getViewportBounds().getHeight();
         scrollPane.setVvalue(scrollPane.getVmax() * ((y - 0.5 * v) / (h - v)));
     }
-
-    private void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended, ScrollPane scrollPane) {if (addressSuggestionTask != null) {
+    
+    private void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended, ScrollPane scrollPane)
+        {if (addressSuggestionTask != null) {
             if (addressSuggestionTask.isRunning()) {
                 addressSuggestionTask.cancel();
             }
@@ -480,7 +545,7 @@ public class NavigationBoxController extends SubController {
             transOptions.setCurrentlyEnabled(transportOption);
             toggleButton.setSelected(true);
 
-            System.out.println("Selected TransportOption."+transportOption.toString());
+            System.out.println("Selected TransportOption." + transportOption.toString());
         }
     }
 
@@ -488,6 +553,16 @@ public class NavigationBoxController extends SubController {
     public void expandNavigationBox() {
         setSearchBoxVisible(false);
         setRouteBoxVisible(true);
+        navigationDescriptionBox.setVisible(false);
+        navigationDescriptionBox.setManaged(false);
+
+        if (mainController.getCanvas().getCurrentDirections() != null) {
+            if (mainController.getCanvas().getCurrentDirections().size() > 0) {
+
+                navigationDescriptionBox.setVisible(true);
+                navigationDescriptionBox.setManaged(true);
+            }
+        }
 
         Pin.ORIGIN.setVisible(false);
         Pin.DESTINATION.setVisible(false);
@@ -501,6 +576,7 @@ public class NavigationBoxController extends SubController {
 
     @FXML
     public void minimizeNavigationBox() {
+        navigationListView.getItems().removeAll();
         setRouteBoxVisible(false);
         setSearchBoxVisible(true);
 
@@ -548,7 +624,8 @@ public class NavigationBoxController extends SubController {
         routeBox.setMaxWidth(stage.getWidth() * 0.25D);
     }
 
-    public void deleteUserActions(ActionEvent actionEvent) {
+    @FXML
+    public void clearRoute() {
         originTextArea.setText("");
         destinationTextArea.setText("");
         addressTextArea.setText("");
@@ -556,8 +633,15 @@ public class NavigationBoxController extends SubController {
         suggestionsBox.getChildren().clear();
         originSuggestionsBox.getChildren().clear();
         destinationSuggestionsBox.getChildren().clear();
+        durationText.setText("");
+        navigationDescriptionBox.setVisible(false);
+        navigationDescriptionBox.setManaged(false);
 
         Pin.ORIGIN.setVisible(false);
         Pin.DESTINATION.setVisible(false);
+
+        mainController.getCanvas().originCoords = null;
+        mainController.getCanvas().destinationCoords = null;
+        mainController.getCanvas().repaint();
     }
 }

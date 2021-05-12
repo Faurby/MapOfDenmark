@@ -4,6 +4,7 @@ import bfst21.models.TransportOption;
 import bfst21.models.TransportOptions;
 import bfst21.pathfinding.DijkstraPath;
 import bfst21.pathfinding.DirectedGraph;
+import bfst21.pathfinding.Direction;
 import bfst21.pathfinding.Edge;
 import org.junit.jupiter.api.Test;
 
@@ -219,5 +220,56 @@ public class DirectedGraphTest {
         boolean actualEdge = counter == 5;
 
         assertTrue(actualEdge);
+    }
+
+    @Test
+    public void getDirectionRightLeft_correctDirection() {
+        DirectedGraph directedGraph = new DirectedGraph();
+
+        float[] coords0 = new float[]{1, 1};
+        float[] coords1 = new float[]{1, 6};
+        float[] coords2 = new float[]{3, 3};
+        float[] coords3 = new float[]{6, 6};
+        float[] coords4 = new float[]{6, 1};
+
+        directedGraph.createVertex(coords0);
+        directedGraph.createVertex(coords1);
+        directedGraph.createVertex(coords2);
+        directedGraph.createVertex(coords3);
+        directedGraph.createVertex(coords4);
+
+        directedGraph.addEdge("Way1", coords0, coords2, 10, false, false, false, true, true, true);
+        directedGraph.addEdge("Way2", coords1, coords2, 10, false, false, false, true, true, true);
+        directedGraph.addEdge("Way3", coords3, coords2, 10, false, false, false, true, true, true);
+        directedGraph.addEdge("Way4", coords4, coords2, 10, false, false, false, true, true, true);
+
+        Edge edge0 = directedGraph.getEdge(0);
+        Edge edge1 = directedGraph.getEdge(2);
+        Edge edge2 = directedGraph.getEdge(4);
+        Edge edge3 = directedGraph.getEdge(6);
+
+        Direction direction0 = directedGraph.getDirectionRightLeft(edge0, edge1);
+        Direction direction1 = directedGraph.getDirectionRightLeft(edge1, edge0);
+
+        Direction direction2 = directedGraph.getDirectionRightLeft(edge1, edge2);
+        Direction direction3 = directedGraph.getDirectionRightLeft(edge2, edge1);
+
+        Direction direction4 = directedGraph.getDirectionRightLeft(edge2, edge3);
+        Direction direction5 = directedGraph.getDirectionRightLeft(edge3, edge2);
+
+        Direction direction6 = directedGraph.getDirectionRightLeft(edge3, edge1);
+        Direction direction7 = directedGraph.getDirectionRightLeft(edge1, edge3);
+
+        assertEquals(Direction.TURN_LEFT, direction0);
+        assertEquals(Direction.TURN_RIGHT, direction1);
+
+        assertEquals(Direction.TURN_LEFT, direction2);
+        assertEquals(Direction.TURN_RIGHT, direction3);
+
+        assertEquals(Direction.TURN_LEFT, direction4);
+        assertEquals(Direction.TURN_RIGHT, direction5);
+
+        assertEquals(Direction.STRAIGHT, direction6);
+        assertEquals(Direction.STRAIGHT, direction7);
     }
 }

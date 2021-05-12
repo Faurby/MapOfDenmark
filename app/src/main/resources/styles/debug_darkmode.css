@@ -1,0 +1,15 @@
+
+/* IMPORT MAIN FILE */
+@import "_debug.css";
+
+
+/* EDIT BELOW HERE FOR RESPECTIVE COLOR MODE */
+#debugOptionsVBox {
+    -fx-background-color: #383838;
+    -fx-border-color: #234b57;
+}
+
+#debugOptionsVBox > * {
+    -fx-padding: 2;
+
+}

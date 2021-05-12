@@ -38,7 +38,6 @@ public class MapCanvas extends Canvas {
     private final GraphicsContext gc = getGraphicsContext2D();
 
     private Task<Void> rangeSearchTask;
-    private Task<Void> dijkstraTask;
 
     public float[] originCoords;
     public float[] destinationCoords;
@@ -47,6 +46,7 @@ public class MapCanvas extends Canvas {
     private Affine trans = new Affine();
 
     private List<String> currentDirections = new ArrayList<>();
+    private int currentRouteWeight;
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -257,11 +257,13 @@ public class MapCanvas extends Canvas {
                 gc.beginPath();
                 float distanceSum = 0;
                 int exitCount = 0;
+                double weightSum = 0;
 
                 for (int i = 0; i < (edgeList.size() - 1); i++) {
                     Edge before = edgeList.get(i);
                     Edge after = edgeList.get(i + 1);
 
+                    weightSum += before.getWeight();
 
                     if (before.isJunction()) {
                         before.draw(directedGraph, gc);
@@ -284,46 +286,24 @@ public class MapCanvas extends Canvas {
                         before.draw(directedGraph, gc);
 
                         String dir = direction.toString().toLowerCase().replace("_", " ");
+                        dir = dir.substring(0, 1).toUpperCase() + dir.substring(1);
 
                         if (direction != Direction.STRAIGHT) {
-                            currentDirections.add("Drive " + (int) distanceSum + "m down " + before.getName());
+                            currentDirections.add("Follow " + before.getName() + " " + distanceSumToString(distanceSum));
                             if (!after.isJunction()) {
-                                currentDirections.add("Then " + dir + " down " + after.getName());
+                                currentDirections.add(dir + " down " + after.getName());
                             }
                             distanceSum = 0;
                         }
                         if (i == (edgeList.size() - 2)) {
                             after.draw(directedGraph, gc);
-                            currentDirections.add("Drive " + (int) (distanceSum + distanceAfter) + "m down " + after.getName());
+                            weightSum += after.getWeight();
+                            currentRouteWeight = (int) Math.ceil(weightSum);
+                            currentDirections.add("Follow " + after.getName() + " " + distanceSumToString(distanceSum + distanceAfter));
                         }
                     }
                 }
-
                 gc.stroke();
-
-                int start = edgeList.get(0).getFrom();
-                float[] startCoords = directedGraph.getVertexCoords(start);
-
-                gc.setStroke(Color.YELLOWGREEN);
-                gc.setLineWidth(0.0005D * widthModifier);
-
-                gc.beginPath();
-                gc.moveTo(startCoords[0], startCoords[1]);
-                gc.lineTo(startCoords[0], startCoords[1]);
-                gc.stroke();
-
-                gc.setStroke(Color.PURPLE);
-                gc.setLineWidth(0.0005D * widthModifier);
-
-                gc.beginPath();
-                gc.moveTo(destinationCoords[0], destinationCoords[1]);
-                gc.lineTo(destinationCoords[0], destinationCoords[1]);
-                gc.stroke();
-
-                System.out.println("Directions: ------");
-                for (String dir : currentDirections) {
-                    System.out.println(dir);
-                }
             }
         }
     }
@@ -381,26 +361,8 @@ public class MapCanvas extends Canvas {
     /**
      * Run dijkstra path finding if coords for origin and destination are present.
      */
-    public void runDijkstraTask() {
-        if (dijkstraTask != null) {
-            if (dijkstraTask.isRunning()) {
-                dijkstraTask.cancel();
-            }
-        }
-        dijkstraTask = new Task<>() {
-            @Override
-            protected Void call() {
-                model.getMapData().runDijkstra(originCoords, destinationCoords);
-                return null;
-            }
-        };
-        dijkstraTask.setOnSucceeded(e -> repaint());
-        dijkstraTask.setOnFailed(e -> dijkstraTask.getException().printStackTrace());
-
-        if (originCoords != null && destinationCoords != null) {
-            Thread thread = new Thread(dijkstraTask);
-            thread.start();
-        }
+    public void runDijkstra() {
+        model.getMapData().runDijkstra(originCoords, destinationCoords);
     }
 
     /**
@@ -563,5 +525,33 @@ public class MapCanvas extends Canvas {
 
     public List<String> getCurrentDirections() {
         return currentDirections;
+    }
+
+    public String getCurrentRouteWeightToString() {
+        if (currentRouteWeight > 60) {
+            int hours = currentRouteWeight / 60;
+            int minutes = currentRouteWeight % 60;
+            String minutesString = "";
+            if (minutes != 0) {
+                minutesString = minutes + " minute(s)";
+            }
+            return "Route duration: " + hours + " hour(s) " + minutesString;
+        } else {
+            return "Route duration: " + currentRouteWeight + " min";
+        }
+    }
+
+    public String distanceSumToString(float distance) {
+        if (distance >= 1_000.0f) {
+            distance /= 1_000.0f;
+            String distanceString = "" + distance;
+            return distanceString.substring(0, 3) + " km";
+
+        } else if (distance > 10.0f) {
+            distance = (Math.round(distance / 10.0f) * 10.0f);
+            return (int) distance + " m";
+
+        }
+        return (int) distance + " m";
     }
 }

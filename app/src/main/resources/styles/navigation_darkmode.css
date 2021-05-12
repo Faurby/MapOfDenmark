@@ -1,0 +1,29 @@
+
+/* IMPORT MAIN FILE */
+@import "_navigation.css";
+
+/* EDIT BELOW HERE FOR RESPECTIVE COLOR MODE */
+.searchBoxes {
+    -fx-background-color: #797979;
+    -fx-border-color: #264f5e;
+}
+
+.scrollPane {
+    -fx-background-color: #797979;
+}
+
+.suggestions {
+    -fx-background-color: #797979;
+}
+
+.toggle-button {
+    -fx-border-color: LIGHTGREY;
+}
+
+.searchBoxes > .button {
+    -fx-background-color: #797979;
+}
+
+#deleteTextButton {
+    -fx-border-color: #797979;
+}
