@@ -315,17 +315,21 @@ public class NavigationBoxController extends SubController {
                         b.setStyle("-fx-background-color: transparent;");
                     }
                 });
-                suggestions.setOnKeyPressed((event) -> {
 
-                });
+                //TODO investigate why these lines can't be deleted without ruining the "downarrow" function
+                suggestions.setOnKeyPressed((event) -> {});
+
                 b.setOnKeyPressed((event) -> {
                     if (event.getCode() == KeyCode.UP && suggestions.getChildren().size() > 0 && suggestions.getChildren().indexOf(b) > 0){
-                        Node a = suggestions.getChildren().get(suggestions.getChildren().indexOf(b)-1);
-                        a.requestFocus();
-                    } else if ((event.getCode() == KeyCode.DOWN && suggestions.getChildren().size() > 0)) {
-                        if (suggestions.getChildren().indexOf(b) < suggestions.getChildren().size()-1) {
-                            suggestions.getChildren().get(suggestions.getChildren().indexOf(b)+1).requestFocus();
-                        }
+                        Node node = suggestions.getChildren().get(suggestions.getChildren().indexOf(b)-1);
+                        node.requestFocus();
+                        centerLabelInScrollPane(scrollPane, node);
+
+                    } else if ((event.getCode() == KeyCode.DOWN && suggestions.getChildren().size() > 0) && suggestions.getChildren().indexOf(b) < suggestions.getChildren().size()-1) {
+                        Node node = suggestions.getChildren().get(suggestions.getChildren().indexOf(b)+1);
+                        node.requestFocus();
+                        centerLabelInScrollPane(scrollPane, node);
+
                     } else if (event.getCode() == KeyCode.ENTER) {
                         textArea.setText(b.getText());
                         scrollPane.setVisible(false);
@@ -337,6 +341,14 @@ public class NavigationBoxController extends SubController {
                 count++;
             }
         }
+    }
+
+    //TODO this is almost directly from stackoverflow, should I rewrite it more?
+    public void centerLabelInScrollPane(ScrollPane scrollPane, Node b) {
+        double h = scrollPane.getContent().getBoundsInLocal().getHeight();
+        double y = (b.getBoundsInParent().getMaxY() + b.getBoundsInParent().getMinY()) / 2.0;
+        double v = scrollPane.getViewportBounds().getHeight();
+        scrollPane.setVvalue(scrollPane.getVmax() * ((y - 0.5 * v) / (h - v)));
     }
 
     private void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended, ScrollPane scrollPane) {if (addressSuggestionTask != null) {
