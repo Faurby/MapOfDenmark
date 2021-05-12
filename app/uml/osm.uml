@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>bfst21.osm</OriginalElement>
+  <nodes>
+    <node x="0.0" y="434.0">bfst21.osm.ElementLongIndex</node>
+    <node x="692.7717171717172" y="81.0">bfst21.osm.MapTextType</node>
+    <node x="34.0" y="353.0">bfst21.osm.Element</node>
+    <node x="233.76792929292932" y="0.0">bfst21.osm.Node</node>
+    <node x="221.37436868686873" y="184.0">bfst21.osm.ElementGroup</node>
+    <node x="139.00000000000003" y="81.0">bfst21.osm.ElementType</node>
+    <node x="481.7717171717172" y="81.0">bfst21.osm.BoundingBoxElement</node>
+    <node x="269.4787878787879" y="277.0">bfst21.osm.Relation</node>
+    <node x="386.3743686868687" y="184.0">bfst21.osm.Way</node>
+    <node x="689.4333333333333" y="184.0">bfst21.osm.MapText</node>
+    <node x="245.0" y="353.0">bfst21.osm.Pin</node>
+    <node x="323.1037878787879" y="81.0">bfst21.osm.ElementSize</node>
+    <node x="0.0" y="81.0">bfst21.osm.UserNode</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="bfst21.osm.Relation" target="bfst21.osm.Way" relationship="TO_MANY">
+      <point x="8.666666666666686" y="-15.5" />
+      <point x="330.14545454545464" y="236.0" />
+      <point x="406.6243686868687" y="236.0" />
+      <point x="-20.25" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.ElementGroup" target="bfst21.osm.ElementSize" relationship="DEPENDENCY">
+      <point x="54.375" y="-15.5" />
+      <point x="348.2493686868687" y="143.0" />
+      <point x="412.2092171717172" y="143.0" />
+      <point x="412.2092171717172" y="133.0" />
+      <point x="420.6037878787879" y="133.0" />
+      <point x="32.5" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.MapText" target="bfst21.osm.MapTextType" relationship="TO_ONE">
+      <point x="36.33333333333337" y="-15.5" />
+      <point x="780.2666666666667" y="163.0" />
+      <point x="798.5217171717172" y="163.0" />
+      <point x="35.25" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.UserNode" target="bfst21.osm.Node" relationship="GENERALIZATION">
+      <point x="0.0" y="-15.5" />
+      <point x="59.0" y="51.0" />
+      <point x="255.76792929292932" y="51.0" />
+      <point x="-22.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.BoundingBoxElement" target="bfst21.osm.Node" relationship="DEPENDENCY">
+      <point x="0.0" y="-15.5" />
+      <point x="577.2717171717172" y="61.0" />
+      <point x="469.08042929292935" y="61.0" />
+      <point x="469.08042929292935" y="51.0" />
+      <point x="299.76792929292935" y="51.0" />
+      <point x="22.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.Way" target="bfst21.osm.Node" relationship="CREATE">
+      <point x="16.19999999999999" y="-15.5" />
+      <point x="443.07436868686875" y="153.0" />
+      <point x="471.2717171717172" y="153.0" />
+      <point x="471.2717171717172" y="61.0" />
+      <point x="469.08042929292935" y="61.0" />
+      <point x="469.08042929292935" y="51.0" />
+      <point x="299.76792929292935" y="51.0" />
+      <point x="22.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.Relation" target="bfst21.osm.Node" relationship="DEPENDENCY">
+      <point x="-43.333333333333314" y="-15.5" />
+      <point x="278.14545454545464" y="256.0" />
+      <point x="128.50000000000003" y="256.0" />
+      <point x="128.50000000000003" y="61.0" />
+      <point x="469.08042929292935" y="61.0" />
+      <point x="469.08042929292935" y="51.0" />
+      <point x="299.76792929292935" y="51.0" />
+      <point x="22.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.ElementGroup" target="bfst21.osm.ElementType" relationship="DEPENDENCY">
+      <point x="-18.125" y="-15.5" />
+      <point x="275.7493686868687" y="153.0" />
+      <point x="212.50000000000003" y="153.0" />
+      <point x="212.50000000000003" y="143.0" />
+      <point x="241.00000000000003" y="143.0" />
+      <point x="34.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.ElementGroup" target="bfst21.osm.ElementType" relationship="TO_ONE">
+      <point x="-54.375" y="-15.5" />
+      <point x="239.49936868686873" y="163.0" />
+      <point x="202.00000000000003" y="163.0" />
+      <point x="202.00000000000003" y="153.0" />
+      <point x="173.00000000000003" y="153.0" />
+      <point x="-34.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.ElementGroup" target="bfst21.osm.ElementSize" relationship="TO_ONE">
+      <point x="18.125" y="-15.5" />
+      <point x="311.9993686868687" y="133.0" />
+      <point x="355.6037878787879" y="133.0" />
+      <point x="-32.5" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.ElementLongIndex" target="bfst21.osm.Element" relationship="DEPENDENCY">
+      <point x="0.0" y="-15.5" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.Way" target="bfst21.osm.ElementType" relationship="TO_ONE">
+      <point x="-32.39999999999998" y="-15.5" />
+      <point x="394.47436868686873" y="163.0" />
+      <point x="202.00000000000003" y="163.0" />
+      <point x="202.00000000000003" y="153.0" />
+      <point x="173.00000000000003" y="153.0" />
+      <point x="-34.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.Way" target="bfst21.osm.ElementType" relationship="DEPENDENCY">
+      <point x="-16.19999999999999" y="-15.5" />
+      <point x="410.6743686868688" y="153.0" />
+      <point x="212.50000000000003" y="153.0" />
+      <point x="212.50000000000003" y="143.0" />
+      <point x="241.00000000000003" y="143.0" />
+      <point x="34.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.Relation" target="bfst21.osm.BoundingBoxElement" relationship="GENERALIZATION">
+      <point x="43.333333333333314" y="-15.5" />
+      <point x="364.81212121212127" y="256.0" />
+      <point x="577.2717171717172" y="256.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.MapText" target="bfst21.osm.MapTextType" relationship="DEPENDENCY">
+      <point x="0.0" y="-15.5" />
+      <point x="743.9333333333333" y="163.0" />
+      <point x="728.0217171717172" y="163.0" />
+      <point x="-35.25" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.Relation" target="bfst21.osm.Way" relationship="DEPENDENCY">
+      <point x="26.0" y="-15.5" />
+      <point x="347.4787878787879" y="246.0" />
+      <point x="447.1243686868687" y="246.0" />
+      <point x="20.25" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.Way" target="bfst21.osm.BoundingBoxElement" relationship="GENERALIZATION">
+      <point x="32.39999999999998" y="-15.5" />
+      <point x="459.2743686868687" y="163.0" />
+      <point x="577.2717171717172" y="163.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.Way" target="bfst21.osm.ElementSize" relationship="DEPENDENCY">
+      <point x="0.0" y="-15.5" />
+      <point x="426.8743686868687" y="143.0" />
+      <point x="412.2092171717172" y="143.0" />
+      <point x="412.2092171717172" y="133.0" />
+      <point x="420.6037878787879" y="133.0" />
+      <point x="32.5" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.Relation" target="bfst21.osm.ElementType" relationship="DEPENDENCY">
+      <point x="-8.666666666666686" y="-15.5" />
+      <point x="312.81212121212127" y="236.0" />
+      <point x="208.35378787878793" y="236.0" />
+      <point x="208.35378787878793" y="153.0" />
+      <point x="212.50000000000003" y="153.0" />
+      <point x="212.50000000000003" y="143.0" />
+      <point x="241.00000000000003" y="143.0" />
+      <point x="34.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.MapText" target="bfst21.osm.BoundingBoxElement" relationship="GENERALIZATION">
+      <point x="-36.33333333333337" y="-15.5" />
+      <point x="707.5999999999999" y="163.0" />
+      <point x="577.2717171717172" y="163.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.osm.Relation" target="bfst21.osm.ElementType" relationship="TO_ONE">
+      <point x="-26.0" y="-15.5" />
+      <point x="295.4787878787879" y="246.0" />
+      <point x="197.35378787878793" y="246.0" />
+      <point x="197.35378787878793" y="163.0" />
+      <point x="202.00000000000003" y="163.0" />
+      <point x="202.00000000000003" y="153.0" />
+      <point x="173.00000000000003" y="153.0" />
+      <point x="-34.0" y="15.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.8500000000000001" showDependencies="true" x="352.53781512605053" y="223.6470588235294" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

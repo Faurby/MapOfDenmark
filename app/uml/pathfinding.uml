@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>bfst21.pathfinding</OriginalElement>
+  <nodes>
+    <node x="26.567982456140356" y="277.0">bfst21.pathfinding.DijkstraPath</node>
+    <node x="-106.0" y="33.0">bfst21.pathfinding.Vertex</node>
+    <node x="8.567982456140356" y="81.0">bfst21.pathfinding.DirectedGraph</node>
+    <node x="-106.0" y="137.0">bfst21.pathfinding.Edge</node>
+    <node x="225.0" y="81.0">bfst21.pathfinding.Direction</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="bfst21.pathfinding.DirectedGraph" target="bfst21.pathfinding.Edge" relationship="CREATE">
+      <point x="1.7543859641477866E-5" y="15.5" />
+      <point x="81.568" y="233.0" />
+      <point x="3.0" y="233.0" />
+      <point x="3.0" y="152.5" />
+      <point x="42.5" y="0.0" />
+    </edge>
+    <edge source="bfst21.pathfinding.Edge" target="bfst21.pathfinding.DirectedGraph" relationship="DEPENDENCY">
+      <point x="-15.0" y="15.5" />
+      <point x="-78.5" y="325.5" />
+      <point x="172.068" y="325.5" />
+      <point x="172.068" y="133.0" />
+      <point x="66.568" y="133.0" />
+      <point x="-14.999982456140359" y="15.5" />
+    </edge>
+    <edge source="bfst21.pathfinding.DirectedGraph" target="bfst21.pathfinding.Direction" relationship="DEPENDENCY">
+      <point x="73.0" y="0.0" />
+      <point x="-55.0" y="0.0" />
+    </edge>
+    <edge source="bfst21.pathfinding.DirectedGraph" target="bfst21.pathfinding.Vertex" relationship="TO_MANY">
+      <point x="-73.0" y="0.0" />
+      <point x="-59.0" y="96.5" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.pathfinding.DijkstraPath" target="bfst21.pathfinding.Edge" relationship="TO_MANY">
+      <point x="6.0000175438596415" y="-15.5" />
+      <point x="96.568" y="201.0" />
+      <point x="-63.5" y="201.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.pathfinding.DirectedGraph" target="bfst21.pathfinding.Edge" relationship="TO_MANY">
+      <point x="-57.567982456140356" y="15.5" />
+      <point x="24.0" y="201.0" />
+      <point x="-63.5" y="201.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.pathfinding.DirectedGraph" target="bfst21.pathfinding.Vertex" relationship="CREATE">
+      <point x="0.0" y="-15.5" />
+      <point x="81.56798245614036" y="48.5" />
+      <point x="47.0" y="0.0" />
+    </edge>
+    <edge source="bfst21.pathfinding.DijkstraPath" target="bfst21.pathfinding.Edge" relationship="CREATE">
+      <point x="-63.99998245614036" y="0.0" />
+      <point x="3.0" y="292.5" />
+      <point x="3.0" y="152.5" />
+      <point x="42.5" y="0.0" />
+    </edge>
+    <edge source="bfst21.pathfinding.DijkstraPath" target="bfst21.pathfinding.DirectedGraph" relationship="DEPENDENCY">
+      <point x="21.00001754385964" y="-15.5" />
+      <point x="111.568" y="133.0" />
+      <point x="66.568" y="133.0" />
+      <point x="-14.999982456140359" y="15.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.0" showDependencies="true" x="124.5" y="129.5" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

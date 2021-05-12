@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>bfst21.address</OriginalElement>
+  <nodes>
+    <node x="0.0" y="157.0">bfst21.address.OsmAddress</node>
+    <node x="62.75" y="81.0">bfst21.address.TST</node>
+    <node x="0.0" y="0.0">bfst21.address.Alphabet</node>
+    <node x="130.0" y="0.0">bfst21.address.Queue</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="bfst21.address.TST" target="bfst21.address.Queue" relationship="CREATE">
+      <point x="33.0" y="-15.5" />
+      <point x="161.75" y="56.0" />
+      <point x="202.5" y="56.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="bfst21.address.TST" target="bfst21.address.Alphabet" relationship="DEPENDENCY">
+      <point x="-33.0" y="-15.5" />
+      <point x="95.75" y="56.0" />
+      <point x="55.0" y="56.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.4499999999999997" showDependencies="true" x="166.97826086956522" y="76.7241379310345" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

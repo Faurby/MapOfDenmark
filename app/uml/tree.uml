@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>bfst21.tree</OriginalElement>
+  <nodes>
+    <node x="-45.21739130434784" y="0.0">bfst21.tree.BoundingBox</node>
+    <node x="258.0" y="0.0">bfst21.tree.KdNode</node>
+    <node x="101.2028985507246" y="200.13043478260866">bfst21.tree.KdTree</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="bfst21.tree.KdTree" target="bfst21.tree.KdNode" relationship="CREATE">
+      <point x="0.0" y="-15.5" />
+      <point x="164.7028985507246" y="17.065217391304344" />
+      <point x="-67.0" y="1.5652173913043441" />
+    </edge>
+    <edge source="bfst21.tree.KdTree" target="bfst21.tree.BoundingBox" relationship="DEPENDENCY">
+      <point x="-15.0" y="-15.5" />
+      <point x="149.7028985507246" y="17.065217391304344" />
+      <point x="69.0" y="1.5652173913043441" />
+    </edge>
+    <edge source="bfst21.tree.KdTree" target="bfst21.tree.KdNode" relationship="TO_ONE">
+      <point x="63.5" y="0.0" />
+      <point x="325.0" y="215.63043478260866" />
+      <point x="0.0" y="15.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.15" showDependencies="true" x="197.56521739130437" y="91.5" />
+  <SelectedNodes>
+    <node>bfst21.tree.BoundingBox</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
