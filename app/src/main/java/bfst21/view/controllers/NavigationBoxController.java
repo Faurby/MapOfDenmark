@@ -371,7 +371,7 @@ public class NavigationBoxController extends SubController {
                 b.setOnMouseEntered((event) -> b.setStyle("-fx-background-color:#dae7f3;"));
                 b.setOnMouseExited((event) -> b.setStyle("-fx-background-color: transparent;"));
                 b.focusedProperty().addListener((obs, oldVal, newVal) -> {
-                    if (newVal){
+                    if (newVal) {
                         b.setStyle("-fx-background-color:#dae7f3;");
                     } else {
                         b.setStyle("-fx-background-color: transparent;");
@@ -379,16 +379,17 @@ public class NavigationBoxController extends SubController {
                 });
 
                 //TODO investigate why this line can't be deleted without ruining the "downarrow" function
-                suggestions.setOnKeyPressed((event) -> {});
+                suggestions.setOnKeyPressed((event) -> {
+                });
 
                 b.setOnKeyPressed((event) -> {
-                    if (event.getCode() == KeyCode.UP && suggestions.getChildren().size() > 0 && suggestions.getChildren().indexOf(b) > 0){
-                        Node node = suggestions.getChildren().get(suggestions.getChildren().indexOf(b)-1);
+                    if (event.getCode() == KeyCode.UP && suggestions.getChildren().size() > 0 && suggestions.getChildren().indexOf(b) > 0) {
+                        Node node = suggestions.getChildren().get(suggestions.getChildren().indexOf(b) - 1);
                         node.requestFocus();
                         centerLabelInScrollPane(scrollPane, node);
 
-                    } else if ((event.getCode() == KeyCode.DOWN && suggestions.getChildren().size() > 0) && suggestions.getChildren().indexOf(b) < suggestions.getChildren().size()-1) {
-                        Node node = suggestions.getChildren().get(suggestions.getChildren().indexOf(b)+1);
+                    } else if ((event.getCode() == KeyCode.DOWN && suggestions.getChildren().size() > 0) && suggestions.getChildren().indexOf(b) < suggestions.getChildren().size() - 1) {
+                        Node node = suggestions.getChildren().get(suggestions.getChildren().indexOf(b) + 1);
                         node.requestFocus();
                         centerLabelInScrollPane(scrollPane, node);
 
@@ -412,9 +413,9 @@ public class NavigationBoxController extends SubController {
         double v = scrollPane.getViewportBounds().getHeight();
         scrollPane.setVvalue(scrollPane.getVmax() * ((y - 0.5 * v) / (h - v)));
     }
-    
-    private void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended, ScrollPane scrollPane)
-        {if (addressSuggestionTask != null) {
+
+    private void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended, ScrollPane scrollPane) {
+        if (addressSuggestionTask != null) {
             if (addressSuggestionTask.isRunning()) {
                 addressSuggestionTask.cancel();
             }
