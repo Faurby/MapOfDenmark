@@ -153,7 +153,6 @@ public class NavigationBoxController extends SubController {
                     suggestionsBox.getChildren().clear();
 
                 } else if (!(keyEvent.getCode() == KeyCode.BACK_SPACE || keyEvent.getCode() == KeyCode.DELETE) && textLength >= 2) {
-
                     runAddressSuggestionTask(suggestionsBox, addressTextArea, false, addressScrollPane);
                 }
             }
@@ -184,15 +183,25 @@ public class NavigationBoxController extends SubController {
                     destinationSuggestionsBox.getChildren().get(0).requestFocus();
                 }
             } else {
+
                 if (keyEvent.getSource().toString().contains("originTextArea")) {
                     int textLength = originTextArea.getText().trim().length();
-                    if (textLength >= 2) {
+
+                    if (textLength <= 2) {
+                        originSuggestionsBox.getChildren().clear();
+
+                    } else if (!(keyEvent.getCode() == KeyCode.BACK_SPACE || keyEvent.getCode() == KeyCode.DELETE)) {
                         runAddressSuggestionTask(originSuggestionsBox, originTextArea, false, originScrollPane);
                     }
+
                 } else if (keyEvent.getSource().toString().contains("destinationTextArea")) {
                     int textLength = destinationTextArea.getText().trim().length();
-                    if (textLength >= 2) {
-                        runAddressSuggestionTask(destinationSuggestionsBox, destinationTextArea, true, destinationScrollPane);
+
+                    if (textLength <= 2) {
+                        destinationSuggestionsBox.getChildren().clear();
+
+                    } else if (!(keyEvent.getCode() == KeyCode.BACK_SPACE || keyEvent.getCode() == KeyCode.DELETE)) {
+                        runAddressSuggestionTask(destinationSuggestionsBox, destinationTextArea, false, destinationScrollPane);
                     }
                 }
             }
@@ -418,7 +427,7 @@ public class NavigationBoxController extends SubController {
     private String findLongestSubstringWithMatches(String addressInput) {
 
         int endIndex = addressInput.length() - 1;
-        while (endIndex > 0) {
+        while (endIndex >= 0) {
             String subStringInput = addressInput.substring(0, endIndex);
             Iterator<String> it = addressTries.keysWithPrefix(subStringInput).iterator();
 
