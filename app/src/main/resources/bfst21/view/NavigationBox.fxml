@@ -94,10 +94,10 @@
                           promptText="To:"
                           onKeyPressed="#typingCheck"
                           styleClass="searchArea">
-                <VBox.margin>
-                    <Insets top="10"/>
-                </VBox.margin>
-            </TextArea>
+                    <VBox.margin>
+                        <Insets top="10"/>
+                    </VBox.margin>
+                </TextArea>
 
                 <ScrollPane fx:id="destinationScrollPane"
                             minWidth="200"
@@ -160,7 +160,7 @@
 
             </ToggleButton>
 
-            <ToggleButton fx:id="selectWalkButton" >
+            <ToggleButton fx:id="selectWalkButton">
 
                 <graphic>
                     <ImageView fitHeight="32.0"
