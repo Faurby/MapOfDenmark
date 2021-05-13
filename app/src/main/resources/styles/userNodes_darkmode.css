@@ -8,8 +8,18 @@
     -fx-border-color: #3d3d3d;
 }
 
+.textField {
+    -fx-background-color: #afafaf;
+}
+
+.userNodeButton {
+    -fx-background-color: #afafaf;
+}
+.userNodeButton:hover {
+    -fx-background-color: #8e8e8e;
+}
+
 #newUserNodeButton, #userNodeListView {
-    -fx-border-color: #1c3d47;
     -fx-background-color: #a5a5a5;
 }
 
@@ -17,7 +27,11 @@
     -fx-background-color: #a5a5a5;
 }
 #userNodeListView .list-cell:odd {
-    -fx-background-color: #8e8e8e;
+    -fx-background-color: #afafaf;
+}
+
+#userNodeChangeNameOrDescButtons {
+    -fx-background-color: #afafaf;
 }
 
 #footerGridPane {

@@ -3,6 +3,6 @@
 @import "_misc.css";
 
 /* EDIT BELOW HERE FOR RESPECTIVE COLOR MODE */
-#loadingVBox {
+#loadingScreenBox {
     -fx-background-color: DARKGREY;
 }
