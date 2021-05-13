@@ -277,6 +277,49 @@ public class DirectedGraph implements Serializable {
         return output;
     }
 
+    private float calculateBearing(Edge edge) {
+        Vertex fromVertex = vertices[edge.getFrom()];
+        Vertex toVertex = vertices[edge.getTo()];
+
+        float[] fromCoords = fromVertex.getCoords();
+        float[] toCoords = toVertex.getCoords();
+
+        float lat1Radian = (float) Math.toRadians(fromCoords[0]);
+        float lon1Radian = (float) Math.toRadians(-fromCoords[1] * 0.56f);
+
+        float lat2Radian = (float) Math.toRadians(toCoords[0]);
+        float lon2Radian = (float) Math.toRadians(-toCoords[1] * 0.56f);
+
+        float deltaLon = lon2Radian - lon1Radian;
+
+        float y = (float) (Math.sin(deltaLon) * Math.cos(lat2Radian));
+        float x = (float) (Math.cos(lat1Radian) * Math.sin(lat2Radian) - (Math.sin(lat1Radian)
+                         * Math.cos(lat2Radian) * Math.cos(deltaLon)));
+
+        float bearing = (float) Math.atan2(y, x);
+        bearing = (float) (((bearing * 180) / Math.PI + 360) % 360);
+        bearing = 360 - bearing; // count degrees counter-clockwise - remove to make clockwise
+        return bearing;
+    }
+
+    public Direction getDirectionFromBearing(Edge before, Edge after) {
+        float angle;
+        Direction output = Direction.STRAIGHT;
+
+        if (calculateBearing(before) > calculateBearing(after)) {
+            angle = 360 - (Math.abs(calculateBearing(after) - calculateBearing(before)));
+        } else {
+            angle = calculateBearing(after) - calculateBearing(before);
+        }
+        if (angle >= 45.0f && angle <= 180.0f) {
+            return Direction.TURN_RIGHT;
+
+        } else if (angle >= 180.0f && angle <= 315.0f) {
+            return Direction.TURN_LEFT;
+        }
+        return output;
+    }
+
     public Direction getDirectionFromAngle(Edge before, Edge after) {
         double angle = getAngle(before, after);
 

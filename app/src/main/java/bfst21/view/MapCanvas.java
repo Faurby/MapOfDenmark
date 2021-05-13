@@ -267,7 +267,7 @@ public class MapCanvas extends Canvas {
                         }
 
                     } else {
-                        Direction direction = directedGraph.getDirectionRightLeft(before, after);
+                        Direction direction = directedGraph.getDirectionFromBearing(before, after);
                         float distanceBefore = before.getDistance() * 1_000f;
                         float distanceAfter = after.getDistance() * 1_000f;
 
