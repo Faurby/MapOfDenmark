@@ -500,7 +500,7 @@ public class NavigationBoxController extends SubController {
     private String findLongestSubstringWithMatches(String addressInput) {
 
         int endIndex = addressInput.length() - 1;
-        while (endIndex >= 0) {
+        while (endIndex >= 1) {
             String subStringInput = addressInput.substring(0, endIndex);
             Iterator<String> it = addressTries.keysWithPrefix(subStringInput).iterator();
 
