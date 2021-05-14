@@ -129,7 +129,7 @@
             </HBox>
         </VBox>
 
-        <VBox fx:id="userNodeClickedVBox" styleClass="userNodeVBoxes">
+        <VBox fx:id="userNodeClickedVBox" styleClass="userNodeVBoxes" onKeyPressed="#userNodeClickedVBoxOnKeyPressed">
             <Text text="Failed to load name" fx:id="userNodeClickedName"/>
             <Text text="Failed to load description" fx:id="userNodeClickedDescription"/>
             <Text text="Failed to load coordinates" fx:id="userNodeClickedCoords"/>
