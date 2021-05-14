@@ -390,14 +390,14 @@ public class NavigationBoxController extends SubController {
 
                 label.setOnKeyPressed((event) -> {
                     if (event.getCode() == KeyCode.UP && suggestions.getChildren().size() > 0 && suggestions.getChildren().indexOf(label) > 0) {
-                        Node node = suggestions.getChildren().get(suggestions.getChildren().indexOf(label) - 1);
-                        node.requestFocus();
-                        centerLabelInScrollPane(scrollPane, node);
+                        Node previous = suggestions.getChildren().get(suggestions.getChildren().indexOf(label) - 1);
+                        previous.requestFocus();
+                        centerLabelInScrollPane(scrollPane, previous);
 
                     } else if ((event.getCode() == KeyCode.DOWN && suggestions.getChildren().size() > 0) && suggestions.getChildren().indexOf(label) < suggestions.getChildren().size() - 1) {
-                        Node node = suggestions.getChildren().get(suggestions.getChildren().indexOf(label) + 1);
-                        node.requestFocus();
-                        centerLabelInScrollPane(scrollPane, node);
+                        Node next = suggestions.getChildren().get(suggestions.getChildren().indexOf(label) + 1);
+                        next.requestFocus();
+                        centerLabelInScrollPane(scrollPane, next);
 
                     } else if (event.getCode() == KeyCode.ENTER) {
                         textArea.setText(label.getText());
@@ -413,10 +413,11 @@ public class NavigationBoxController extends SubController {
     }
 
     //TODO this is almost directly from stackoverflow, should I rewrite it more?
-    public void centerLabelInScrollPane(ScrollPane scrollPane, Node b) {
+    public void centerLabelInScrollPane(ScrollPane scrollPane, Node node) {
         double h = scrollPane.getContent().getBoundsInLocal().getHeight();
-        double y = (b.getBoundsInParent().getMaxY() + b.getBoundsInParent().getMinY()) / 2.0;
+        double y = (node.getBoundsInParent().getMaxY() + node.getBoundsInParent().getMinY()) / 2.0;
         double v = scrollPane.getViewportBounds().getHeight();
+
         scrollPane.setVvalue(scrollPane.getVmax() * ((y - 0.5 * v) / (h - v)));
     }
 
