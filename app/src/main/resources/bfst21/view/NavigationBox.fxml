@@ -18,7 +18,8 @@
         <HBox spacing="5">
             <TextArea fx:id="addressTextArea"
                       promptText="Type an address..."
-                      onKeyPressed="#typingCheck"/>
+                      onKeyPressed="#typingCheck"
+                      styleClass="searchArea"/>
             <Button fx:id="deleteTextButton"
                     onAction="#clearRoute">
                 <tooltip>
@@ -90,8 +91,7 @@
         <GridPane hgap="2">
             <VBox GridPane.columnIndex="1"
                   GridPane.rowIndex="1"
-                  GridPane.rowSpan="3"
-            >
+                  GridPane.rowSpan="3">
 
                 <TextArea fx:id="originTextArea"
                           promptText="From:"
@@ -124,8 +124,8 @@
                             styleClass="scrollPane">
 
                     <VBox fx:id="destinationSuggestionsBox"
-                          style="-fx-background-color: WHITE"
-                          onKeyPressed="#typingCheck">
+                          onKeyPressed="#typingCheck"
+                          styleClass="suggestions">
                     </VBox>
                 </ScrollPane>
             </VBox>

@@ -15,9 +15,13 @@
 .userNodeButton {
     -fx-background-color: #afafaf;
 }
+.userNodeButton:focused {
+    -fx-background-color: #979797;
+}
 .userNodeButton:hover {
     -fx-background-color: #8e8e8e;
 }
+
 
 #newUserNodeButton, #userNodeListView {
     -fx-background-color: #a5a5a5;

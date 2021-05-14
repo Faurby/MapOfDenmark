@@ -4,5 +4,40 @@
 
 /* EDIT BELOW HERE FOR RESPECTIVE COLOR MODE */
 #loadingScreenBox {
-    -fx-background-color: DARKGREY;
+    -fx-background-color: #979797;
+}
+
+#menuBar {
+    -fx-background-color: #797979;
+}
+
+#menuBar .menu:hover {
+    -fx-background-color: #979797;
+}
+#menuBar .menu:focused {
+    -fx-background-color: #979797;
+}
+#menuBar .menu:showing {
+    -fx-background-color: #979797;
+}
+
+#menuBar .context-menu {
+    -fx-background-color: #797979;
+}
+
+.menu-item {
+    -fx-background-color: #797979;
+}
+.menu-item:hover {
+    -fx-background-color: #979797;
+}
+.menu-item:focused {
+    -fx-background-color: #979797;
+}
+
+.menu-item:hover .label {
+    -fx-text-fill: WHITE;
+}
+.menu-item:focused .label {
+    -fx-text-fill: WHITE;
 }

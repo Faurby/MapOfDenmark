@@ -13,7 +13,7 @@ public enum Pin {
 
     ORIGIN("grey_marker.png"),
     DESTINATION("red_pin32.png"),
-    USER_NODE("blue_pin32.png");
+    USER_NODE("red_pin32.png");
 
     private boolean visible = false;
     private float[] coords;
