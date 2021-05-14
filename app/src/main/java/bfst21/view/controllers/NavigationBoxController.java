@@ -235,7 +235,7 @@ public class NavigationBoxController extends SubController {
             displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the destination point");
 
         } else {
-            String startingAddress = originTextArea.getText().trim().toLowerCase();
+            String originAddress = originTextArea.getText().trim().toLowerCase();
             String destinationAddress = destinationTextArea.getText().trim().toLowerCase();
 
             originSuggestionsBox.getChildren().clear();
@@ -245,7 +245,7 @@ public class NavigationBoxController extends SubController {
             float[] destinationCoords = null;
 
             for (OsmAddress osmAddress : allSuggestionsOrigin) {
-                if (osmAddress.matches(startingAddress)) {
+                if (osmAddress.matches(originAddress)) {
                     originTextArea.setText(osmAddress.toString());
                     originCoords = new float[]{osmAddress.getNode().getX(), osmAddress.getNode().getY()};
                     break;
@@ -428,7 +428,8 @@ public class NavigationBoxController extends SubController {
 
     @FXML
     public void switchAddressText() {
-        List<OsmAddress> temp = allSuggestionsOrigin;
+        List<OsmAddress> temp = new ArrayList<>(allSuggestionsOrigin);
+
         allSuggestionsOrigin.clear();
         allSuggestionsOrigin.addAll(allSuggestionsDestination);
         allSuggestionsDestination.clear();
