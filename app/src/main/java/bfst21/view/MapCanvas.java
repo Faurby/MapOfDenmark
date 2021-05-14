@@ -8,6 +8,7 @@ import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.StrokeLineCap;
@@ -216,11 +217,8 @@ public class MapCanvas extends Canvas {
      * Draws every point of interest created by the user.
      */
     private void drawUserNodes() {
-        gc.setStroke(Color.BLUE);
-        gc.setLineWidth(10.0D * (1.0D / Math.sqrt(trans.determinant())));
-
         for (UserNode userNode : model.getMapData().getUserNodes()) {
-            userNode.draw(gc, 0.0D);
+            userNode.draw(gc, zoomLevel, colorMode);
         }
     }
 

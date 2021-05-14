@@ -246,8 +246,8 @@ public class MainController extends BaseController {
                     }
                 }
                 if (closestNode != null) {
-                    // 300 is a number chosen by trial and error. It seems to fit perfectly.
-                    if (nodeAtMouse.distTo(closestNode) < 300.0D * (1.0D / Math.sqrt(canvas.getTrans().determinant()))) {
+                    // 420 is a number chosen by trial and error. It seems to fit perfectly.
+                    if (nodeAtMouse.distTo(closestNode) < 420.0D * (1.0D / Math.sqrt(canvas.getTrans().determinant()))) {
                         userNodeClickedVBox.setVisible(true);
                         userNodeClickedName.setText(closestNode.getName());
                         userNodeClickedDescription.setText((closestNode.getDescription().equals("") ? "No description entered" : closestNode.getDescription()));
