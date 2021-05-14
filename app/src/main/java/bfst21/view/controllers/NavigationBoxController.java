@@ -70,7 +70,7 @@ public class NavigationBoxController extends SubController {
     @FXML
     private ListView<String> navigationListView;
     @FXML
-    private Text durationText;
+    private Text routeDetails;
 
     private final TransportOptions transOptions = TransportOptions.getInstance();
 
@@ -310,7 +310,7 @@ public class NavigationBoxController extends SubController {
             navigationDescriptionBox.setVisible(true);
             navigationDescriptionBox.setManaged(true);
 
-            durationText.setText(mainController.getCanvas().getCurrentRouteDuration());
+            routeDetails.setText(mainController.getCanvas().getCurrentRouteDuration() + "\n" + mainController.getCanvas().getRouteDistanceToString());
 
             int navListSize = navigationListView.getItems().size();
             if (navListSize == 1) {
@@ -606,7 +606,7 @@ public class NavigationBoxController extends SubController {
         suggestionsBox.getChildren().clear();
         originSuggestionsBox.getChildren().clear();
         destinationSuggestionsBox.getChildren().clear();
-        durationText.setText("");
+        routeDetails.setText("");
         navigationDescriptionBox.setVisible(false);
         navigationDescriptionBox.setManaged(false);
 

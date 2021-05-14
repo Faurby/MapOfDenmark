@@ -192,7 +192,7 @@
                     text="Search"/>
         </HBox>
         <VBox fx:id="navigationDescriptionBox">
-            <Text fx:id="durationText"></Text>
+            <Text fx:id="routeDetails"></Text>
             <ListView fx:id="navigationListView"/>
         </VBox>
     </VBox>
