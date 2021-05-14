@@ -101,7 +101,7 @@ public class MainController extends BaseController {
     private boolean userNodeToggle = false;
     private UserNode currentUserNode = null;
 
-    private final ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_transparent.png"))));
+    private final ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_orange.png"))));
     private final ObservableList<UserNode> userNodeListItems = FXCollections.observableArrayList();
     private HashMap<String, UserNode> userNodesMap = new HashMap<>();
 
@@ -505,7 +505,9 @@ public class MainController extends BaseController {
 
     private void saveUserNode() {
         Point2D point = canvas.mouseToModelCoords(lastMouse);
-        UserNode userNode = new UserNode((float) point.getX(), (float) point.getY(), userNodeNameText.getText(), userNodeDescriptionText.getText());
+        double x = point.getX() + (15.0D / getCanvas().getZoomLevel());
+        double y = point.getY() + (30.0D / getCanvas().getZoomLevel());
+        UserNode userNode = new UserNode((float) x, (float) y, userNodeNameText.getText(), userNodeDescriptionText.getText());
 
         model.getMapData().addUserNode(userNode);
         model.getMapData().updateUserNodesMap();
