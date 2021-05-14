@@ -226,7 +226,7 @@ public class NavigationBoxController extends SubController {
     @FXML
     public void findRoute() {
         if (originTextArea.getText().trim().isEmpty() && destinationTextArea.getText().trim().isEmpty()) {
-            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting and destination point");
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting point and destination point");
 
         } else if (originTextArea.getText().trim().isEmpty()) {
             displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting point");
@@ -350,15 +350,6 @@ public class NavigationBoxController extends SubController {
                     suggestions.getChildren().clear();
                     textArea.requestFocus();
                     textArea.end();
-                });
-                label.setOnMouseEntered((event) -> label.setStyle("-fx-background-color:#dae7f3;"));
-                label.setOnMouseExited((event) -> label.setStyle("-fx-background-color: transparent;"));
-                label.focusedProperty().addListener((obs, oldVal, newVal) -> {
-                    if (newVal) {
-                        label.setStyle("-fx-background-color:#dae7f3;");
-                    } else {
-                        label.setStyle("-fx-background-color: transparent;");
-                    }
                 });
 
                 //This line is necessary to remove other functionality

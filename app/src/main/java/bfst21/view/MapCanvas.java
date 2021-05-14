@@ -97,7 +97,6 @@ public class MapCanvas extends Canvas {
             adjustWidthModifier();
             drawElementGroups();
             drawUserNodes();
-            drawMapText();
 
             if (destinationCoords != null) {
                 drawPathTo(destinationCoords);
@@ -105,6 +104,8 @@ public class MapCanvas extends Canvas {
             for (Pin pin : Pin.values()) {
                 pin.draw(gc, zoomLevel);
             }
+
+            drawMapText();
         }
         gc.restore();
 
@@ -247,6 +248,15 @@ public class MapCanvas extends Canvas {
                 int exitCount = 0;
                 double weightSum = 0;
 
+                if (edgeList.size() == 1) {
+                    Edge before = edgeList.get(0);
+
+                    before.draw(directedGraph, gc);
+                    distanceSum = before.getDistance() * 1_000.0f;
+                    routeDistance = distanceSum;
+                    currentDirections.add("Follow " + before.getName() + " " + distanceSumToString(distanceSum));
+                }
+                
                 for (int i = 0; i < (edgeList.size() - 1); i++) {
                     Edge before = edgeList.get(i);
                     Edge after = edgeList.get(i + 1);
@@ -560,7 +570,14 @@ public class MapCanvas extends Canvas {
         if (distance >= 1_000.0f) {
             distance /= 1_000.0f;
             String distanceString = "" + distance;
-            return distanceString.substring(0, 3) + " km";
+
+            if (distanceString.contains(".")) {
+                String[] split = distanceString.split("\\.");
+                return split[0] + "." + split[1].charAt(0) + " km";
+
+            } else {
+                return distanceString + " km";
+            }
 
         } else if (distance > 10.0f) {
             distance = (Math.round(distance / 10.0f) * 10.0f);
