@@ -21,7 +21,8 @@
                       onKeyPressed="#typingCheck"
                       styleClass="searchArea"/>
             <Button fx:id="deleteTextButton"
-                    onAction="#clearRoute">
+                    onAction="#clearRoute"
+                    styleClass="navigationButton">
                 <tooltip>
                     <Tooltip text="Clear text"/>
                 </tooltip>
@@ -51,7 +52,8 @@
 
             <Button onAction="#expandNavigationBox"
                     GridPane.columnIndex="0"
-                    GridPane.rowIndex="0">
+                    GridPane.rowIndex="0"
+                    styleClass="navigationButton">
                 <tooltip>
                     <Tooltip text="Directions"/>
                 </tooltip>
@@ -68,7 +70,8 @@
             <Button fx:id="searchButton"
                     onAction="#searchSingleAddress"
                     GridPane.columnIndex="2"
-                    GridPane.rowIndex="0">
+                    GridPane.rowIndex="0"
+                    styleClass="navigationButton">
                 <tooltip>
                     <Tooltip text="Search"/>
                 </tooltip>
@@ -134,7 +137,8 @@
                     GridPane.columnIndex="2"
                     GridPane.rowIndex="1"
                     GridPane.rowSpan="3"
-                    onAction="#switchAddressText">
+                    onAction="#switchAddressText"
+                    styleClass="navigationButton">
                 <tooltip>
                     <Tooltip text="Switch from and to"/>
                 </tooltip>
@@ -207,7 +211,7 @@
 
         <HBox alignment="BASELINE_CENTER" spacing="5" styleClass="hboxForButtons">
 
-            <Button onAction="#minimizeNavigationBox">
+            <Button onAction="#minimizeNavigationBox" styleClass="navigationButton">
                 <tooltip>
                     <Tooltip text="Minimize"/>
                 </tooltip>
@@ -219,7 +223,7 @@
                 </graphic>
             </Button>
 
-            <Button onAction="#clearRoute">
+            <Button onAction="#clearRoute" styleClass="navigationButton">
                 <tooltip>
                     <Tooltip text="Delete route"/>
                 </tooltip>
@@ -234,7 +238,8 @@
             <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
 
             <Button fx:id="findRouteButton"
-                    onAction="#findRoute">
+                    onAction="#findRoute"
+                    styleClass="navigationButton">
                 <tooltip>
                     <Tooltip text="Search"/>
                 </tooltip>

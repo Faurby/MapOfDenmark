@@ -35,13 +35,13 @@
 }
 
 .navigationButton {
-    -fx-background-color: #afafaf;
+    -fx-background-color: LIGHTGREY;
 }
 .navigationButton:focused {
-    -fx-background-color: #979797;
+    -fx-background-color: GREY;
 }
 .navigationButton:hover {
-    -fx-background-color: #8e8e8e;
+    -fx-background-color: DARKGREY;
 }
 
 
