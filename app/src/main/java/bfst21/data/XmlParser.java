@@ -23,6 +23,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  * XmlParser is used to parse the XML data given by OpenStreetMaps.
  * Nodes are parsed and added to Ways or Relations as a float array of coordinates.
  * Ways may have additional tags such as oneway, junction, maxspeed which is parsed.
+ * Ways are "converted" to MapWays to decrease memory usage after parsing.
  * <p>
  * An ElementType can be found by looking at the tags of a Way or Relation.
  * <p>
@@ -63,7 +64,7 @@ public class XmlParser {
 
         List<Node> nodes = new ArrayList<>();
         List<Way> coastlines = new ArrayList<>();
-        List<Way> islands;
+        List<MapWay> islands;
 
         float mapMinX = 0.0f, mapMinY = 0.0f, mapMaxX = 0.0f, mapMaxY = 0.0f;
         boolean isCoastline = false;
@@ -199,6 +200,63 @@ public class XmlParser {
                                     case "bridge":
                                         if (value.equals("yes")) {
                                             elementType = ElementType.TERTIARY;
+                                        }
+                                        break;
+                                    case "sidewalk":
+                                        if (way != null) {
+                                            if (value.equals("both") || value.equals("yes")) {
+                                                way.setTransportOption(TransportOption.WALK, true);
+
+                                            } else if (value.equals("none") || value.equals("no")) {
+                                                way.setTransportOption(TransportOption.WALK, false);
+                                            }
+                                        }
+                                        break;
+                                    case "foot":
+                                        if (way != null) {
+                                            if (value.equals("yes") || value.equals("designated")) {
+                                                way.setTransportOption(TransportOption.WALK, true);
+
+                                            } else if (value.equals("no")) {
+                                                way.setTransportOption(TransportOption.WALK, false);
+                                            }
+                                        }
+                                        break;
+                                    case "bicycle":
+                                        if (way != null) {
+                                            if (value.equals("yes") || value.equals("designated")) {
+                                                way.setTransportOption(TransportOption.BIKE, true);
+
+                                            } else if (value.equals("no")) {
+                                                way.setTransportOption(TransportOption.BIKE, false);
+                                            }
+                                        }
+                                        break;
+                                    case "vehicle":
+                                        if (way != null) {
+                                            if (value.equals("no")) {
+                                                way.setTransportOption(TransportOption.BIKE, false);
+                                                way.setTransportOption(TransportOption.CAR, false);
+                                            }
+                                        }
+                                        break;
+                                    case "motor_vehicle":
+                                        if (way != null) {
+                                            if (value.equals("yes")) {
+                                                way.setTransportOption(TransportOption.CAR, true);
+
+                                            } else if (value.equals("no")) {
+                                                way.setTransportOption(TransportOption.CAR, false);
+                                            }
+                                        }
+                                        break;
+                                    case "access":
+                                        if (way != null) {
+                                            if (value.equals("no") || value.equals("private")) {
+                                                way.setTransportOption(TransportOption.WALK, false);
+                                                way.setTransportOption(TransportOption.BIKE, false);
+                                                way.setTransportOption(TransportOption.CAR, false);
+                                            }
                                         }
                                         break;
                                     case "highway":
@@ -444,7 +502,7 @@ public class XmlParser {
      * Merge list of coastlines.
      * A Way may have the same first coordinate as the last coordinate of another Way.
      */
-    private List<Way> mergeCoastLines(List<Way> coastlines) {
+    private List<MapWay> mergeCoastLines(List<Way> coastlines) {
         Map<Node, Way> pieces = new HashMap<>();
 
         for (Way coast : coastlines) {
@@ -457,10 +515,10 @@ public class XmlParser {
             pieces.put(merged.first(), merged);
             pieces.put(merged.last(), merged);
         }
-        List<Way> merged = new ArrayList<>();
+        List<MapWay> merged = new ArrayList<>();
         pieces.forEach((node, way) -> {
             if (way.last().equals(node)) {
-                merged.add(way);
+                merged.add(way.getMapWay());
             }
         });
         return merged;

@@ -2,10 +2,7 @@ package bfst21.test;
 
 import bfst21.models.TransportOption;
 import bfst21.models.TransportOptions;
-import bfst21.pathfinding.DijkstraPath;
-import bfst21.pathfinding.DirectedGraph;
-import bfst21.pathfinding.Direction;
-import bfst21.pathfinding.Edge;
+import bfst21.pathfinding.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -226,39 +223,46 @@ public class DirectedGraphTest {
     public void getDirectionRightLeft_correctDirection() {
         DirectedGraph directedGraph = new DirectedGraph();
 
-        float[] coords0 = new float[]{1, 1};
-        float[] coords1 = new float[]{1, 6};
-        float[] coords2 = new float[]{3, 3};
-        float[] coords3 = new float[]{6, 6};
-        float[] coords4 = new float[]{6, 1};
+        float[] bottomLeft = new float[]{1, 1};
+        float[] topLeft = new float[]{1, 5};
+        float[] middle = new float[]{3, 3};
+        float[] topRight = new float[]{5, 5};
+        float[] bottomRight = new float[]{5, 1};
 
-        directedGraph.createVertex(coords0);
-        directedGraph.createVertex(coords1);
-        directedGraph.createVertex(coords2);
-        directedGraph.createVertex(coords3);
-        directedGraph.createVertex(coords4);
+        directedGraph.createVertex(bottomLeft);
+        directedGraph.createVertex(topLeft);
+        directedGraph.createVertex(middle);
+        directedGraph.createVertex(topRight);
+        directedGraph.createVertex(bottomRight);
 
-        directedGraph.addEdge("Way1", coords0, coords2, 10, false, false, false, true, true, true);
-        directedGraph.addEdge("Way2", coords1, coords2, 10, false, false, false, true, true, true);
-        directedGraph.addEdge("Way3", coords3, coords2, 10, false, false, false, true, true, true);
-        directedGraph.addEdge("Way4", coords4, coords2, 10, false, false, false, true, true, true);
+        directedGraph.addEdge("Way1", bottomLeft, middle, 10, false, false, false, true, true, true);
+        directedGraph.addEdge("Way2", topLeft, middle, 10, false, false, false, true, true, true);
+        directedGraph.addEdge("Way3", topRight, middle, 10, false, false, false, true, true, true);
+        directedGraph.addEdge("Way4", bottomRight, middle, 10, false, false, false, true, true, true);
 
-        Edge edge0 = directedGraph.getEdge(0);
-        Edge edge1 = directedGraph.getEdge(2);
-        Edge edge2 = directedGraph.getEdge(4);
-        Edge edge3 = directedGraph.getEdge(6);
+        Edge bottomLeftToMiddle = directedGraph.getEdge(0);
+        Edge middleToBottomLeft = directedGraph.getEdge(1);
+        Edge topLeftToMiddle = directedGraph.getEdge(2);
+        Edge middleToTopLeft = directedGraph.getEdge(3);
+        Edge topRightToMiddle = directedGraph.getEdge(4);
+        Edge middleToTopRight = directedGraph.getEdge(5);
+        Edge bottomRightToMiddle = directedGraph.getEdge(6);
+        Edge middleToBottomRight = directedGraph.getEdge(7);
 
-        Direction direction0 = directedGraph.getDirectionRightLeft(edge0, edge1);
-        Direction direction1 = directedGraph.getDirectionRightLeft(edge1, edge0);
+        Direction direction0 = directedGraph.getDirectionFromBearing(bottomLeftToMiddle, topLeftToMiddle);
+        Direction direction1 = directedGraph.getDirectionFromBearing(topLeftToMiddle, bottomLeftToMiddle);
 
-        Direction direction2 = directedGraph.getDirectionRightLeft(edge1, edge2);
-        Direction direction3 = directedGraph.getDirectionRightLeft(edge2, edge1);
+        Direction direction2 = directedGraph.getDirectionFromBearing(topLeftToMiddle, topRightToMiddle);
+        Direction direction3 = directedGraph.getDirectionFromBearing(topRightToMiddle, topLeftToMiddle);
 
-        Direction direction4 = directedGraph.getDirectionRightLeft(edge2, edge3);
-        Direction direction5 = directedGraph.getDirectionRightLeft(edge3, edge2);
+        Direction direction4 = directedGraph.getDirectionFromBearing(topRightToMiddle, bottomRightToMiddle);
+        Direction direction5 = directedGraph.getDirectionFromBearing(bottomRightToMiddle, topRightToMiddle);
 
-        Direction direction6 = directedGraph.getDirectionRightLeft(edge3, edge1);
-        Direction direction7 = directedGraph.getDirectionRightLeft(edge1, edge3);
+        Direction direction6 = directedGraph.getDirectionFromBearing(bottomRightToMiddle, middleToTopLeft);
+        Direction direction7 = directedGraph.getDirectionFromBearing(topRightToMiddle, middleToBottomLeft);
+
+        Direction direction8 = directedGraph.getDirectionFromBearing(bottomLeftToMiddle, middleToTopRight);
+        Direction direction9 = directedGraph.getDirectionFromBearing(topLeftToMiddle, middleToBottomRight);
 
         assertEquals(Direction.TURN_LEFT, direction0);
         assertEquals(Direction.TURN_RIGHT, direction1);
@@ -271,5 +275,8 @@ public class DirectedGraphTest {
 
         assertEquals(Direction.STRAIGHT, direction6);
         assertEquals(Direction.STRAIGHT, direction7);
+
+        assertEquals(Direction.STRAIGHT, direction8);
+        assertEquals(Direction.STRAIGHT, direction9);
     }
 }

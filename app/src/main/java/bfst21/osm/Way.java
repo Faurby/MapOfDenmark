@@ -1,21 +1,22 @@
 package bfst21.osm;
 
-import java.io.Serializable;
-import java.util.Arrays;
+import bfst21.models.TransportOption;
 
-import bfst21.view.Drawable;
-import javafx.scene.canvas.GraphicsContext;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
- * Way is an ordered list of coordinates that
- * represents a line such as a road, river, wall, etc...
+ * Way is used to organize and construct MapWays for MapData.
  * <p>
- * Extends BoundingBoxElement so it can be placed in a KD-tree.
+ * Way is mostly while parsing and building MapData.
+ * When pre-construction is complete, MapWay is used for drawing elements on the map.
+ * This decreases memory usage as we don't need specific fields after constructing MapData.
  */
-public class Way extends BoundingBoxElement implements Drawable, Serializable {
+public class Way implements Serializable {
 
-    private static final long serialVersionUID = 3139576893143362100L;
+    private static final long serialVersionUID = -1621640480144599897L;
 
     private ElementType elementType;
     private String role;
@@ -24,38 +25,21 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
     private boolean oneWay;
     private boolean oneWayBike;
     private int maxSpeed = 30;
+    private final MapWay mapWay = new MapWay();
+
+    private final HashMap<TransportOption, Boolean> transportOptions = new HashMap<>();
 
     /**
      * Calculate and return the ElementSize of Way by getting the area of its bounding box.
      */
     public ElementSize getElementSize() {
         if (elementType.hasMultipleSizes()) {
-            double xLength = Math.abs(maxX - minX);
-            double yLength = Math.abs(maxY - minY);
+            double xLength = Math.abs(mapWay.maxX - mapWay.minX);
+            double yLength = Math.abs(mapWay.maxY - mapWay.minY);
             double areaSize = (xLength * yLength * Math.pow(10.0D, 9.0D));
             return ElementSize.getSize(areaSize);
         }
         return ElementSize.DEFAULT;
-    }
-
-    /**
-     * Draw a Way by iterating through all the coordinates.
-     * At certain zoom levels, nodes may be skipped to increase drawing performance.
-     * <p>
-     * To avoid incorrect drawings, the first and last coordinate
-     * will always be drawn, no matter the amount of nodes to skip.
-     */
-    @Override
-    public void trace(GraphicsContext gc, double zoomLevel) {
-        gc.moveTo(coords[0], coords[1]);
-
-        int nodeSkipAmount = getNodeSkipAmount(zoomLevel);
-        int size = coords.length;
-
-        for (int i = 2; i < (size - 2); i += 2 * nodeSkipAmount) {
-            gc.lineTo(coords[i], coords[i + 1]);
-        }
-        gc.lineTo(coords[size - 2], coords[size - 1]);
     }
 
     /**
@@ -75,24 +59,24 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
         if (second == null) {
             return first;
         }
-        int firstSize = first.coords.length;
-        int secondSize = second.coords.length;
+        int firstSize = first.mapWay.coords.length;
+        int secondSize = second.mapWay.coords.length;
         int mergedSize = firstSize + secondSize - 2;
         //mergedSize needs to be 2 less because we are removing a common node when merging.
 
         if (reverse) {
-            second.coords = reverseCoordsArray(second.coords);
+            second.mapWay.coords = reverseCoordsArray(second.mapWay.coords);
         }
 
         Way merged = new Way();
-        merged.coords = new float[mergedSize];
+        merged.mapWay.coords = new float[mergedSize];
 
-        for (int i = 0; i < first.coords.length; i++) {
-            merged.coords[i] = first.coords[i];
+        for (int i = 0; i < first.mapWay.coords.length; i++) {
+            merged.mapWay.coords[i] = first.mapWay.coords[i];
         }
-        for (int i = 2; i < second.coords.length; i++) {
+        for (int i = 2; i < second.mapWay.coords.length; i++) {
             int position = i - 2 + firstSize;
-            merged.coords[position] = second.coords[i];
+            merged.mapWay.coords[position] = second.mapWay.coords[i];
         }
         return merged;
     }
@@ -121,27 +105,15 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
         return reversed;
     }
 
-    public static int getNodeSkipAmount(double zoomLevel) {
-        if (zoomLevel <= 100.0D) {
-            return 10;
-        } else if (zoomLevel <= 140.0D) {
-            return 9;
-        } else if (zoomLevel <= 190.0D) {
-            return 8;
-        } else if (zoomLevel <= 270.0D) {
-            return 7;
-        } else if (zoomLevel <= 350.0D) {
-            return 6;
-        } else if (zoomLevel <= 500.0D) {
-            return 5;
-        } else if (zoomLevel <= 700.0D) {
-            return 4;
-        } else if (zoomLevel <= 950.0D) {
-            return 3;
-        } else if (zoomLevel <= 1_350.0D) {
-            return 2;
+    public boolean canNavigate(TransportOption transportOption) {
+        if (transportOptions.containsKey(transportOption)) {
+            return transportOptions.get(transportOption);
         }
-        return 1;
+        return elementType.canNavigate(transportOption);
+    }
+
+    public void setTransportOption(TransportOption transportOption, boolean allowed) {
+        transportOptions.put(transportOption, allowed);
     }
 
     public void setOneWay(boolean oneWay) {
@@ -200,42 +172,19 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
         return role;
     }
 
-    public float[] getCoords() {
-        return coords;
-    }
-
     public Node first() {
-        return new Node(coords[0], coords[1]);
+        return new Node(mapWay.coords[0], mapWay.coords[1]);
     }
 
     public Node last() {
-        return new Node(coords[coords.length - 2], coords[coords.length - 1]);
+        return new Node(mapWay.coords[mapWay.coords.length - 2], mapWay.coords[mapWay.coords.length - 1]);
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((coords == null) ? 0 : Arrays.hashCode(coords));
-        return result;
+    public MapWay getMapWay() {
+        return mapWay;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Way other = (Way) obj;
-        if (coords == null) {
-            return other.coords == null;
-        } else {
-            return Arrays.equals(coords, other.coords);
-        }
+    public void setNodes(List<Node> nodes) {
+        mapWay.setNodes(nodes);
     }
 }

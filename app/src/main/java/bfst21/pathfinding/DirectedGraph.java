@@ -251,32 +251,6 @@ public class DirectedGraph implements Serializable {
         return outDegree;
     }
 
-    public double getAngle(Edge before, Edge after) {
-        Vertex fromVertex = vertices[before.getFrom()];
-        Vertex middleVertex = vertices[before.getTo()];
-        Vertex toVertex = vertices[after.getTo()];
-
-        float fromX = fromVertex.getCoords()[0];
-        float fromY = fromVertex.getCoords()[1];
-
-        float middleX = middleVertex.getCoords()[0];
-        float middleY = middleVertex.getCoords()[1];
-
-        float toX = toVertex.getCoords()[0];
-        float toY = toVertex.getCoords()[1];
-
-        double output = Math.atan2(toY - middleY, toX - middleX)
-                - Math.atan2(fromY - middleY, fromX - middleX);
-
-        while (output > Math.PI) {
-            output -= 2 * Math.PI;
-        }
-        while (output < -Math.PI) {
-            output += 2 * Math.PI;
-        }
-        return output;
-    }
-
     private float calculateBearing(Edge edge) {
         Vertex fromVertex = vertices[edge.getFrom()];
         Vertex toVertex = vertices[edge.getTo()];
@@ -294,7 +268,7 @@ public class DirectedGraph implements Serializable {
 
         float y = (float) (Math.sin(deltaLon) * Math.cos(lat2Radian));
         float x = (float) (Math.cos(lat1Radian) * Math.sin(lat2Radian) - (Math.sin(lat1Radian)
-                         * Math.cos(lat2Radian) * Math.cos(deltaLon)));
+                * Math.cos(lat2Radian) * Math.cos(deltaLon)));
 
         float bearing = (float) Math.atan2(y, x);
         bearing = (float) (((bearing * 180) / Math.PI + 360) % 360);
@@ -308,7 +282,7 @@ public class DirectedGraph implements Serializable {
                 return Direction.STRAIGHT;
             }
         }
-        
+
         float angle;
         Direction output = Direction.STRAIGHT;
 
@@ -324,108 +298,6 @@ public class DirectedGraph implements Serializable {
             return Direction.TURN_LEFT;
         }
         return output;
-    }
-
-    public Direction getDirectionFromAngle(Edge before, Edge after) {
-        double angle = getAngle(before, after);
-
-        if (angle > -Math.PI / 3 && angle < Math.PI / 3) {
-            return Direction.STRAIGHT;
-
-        } else if (angle >= Math.PI / 3) {
-            return Direction.TURN_LEFT;
-
-        } else if (angle <= -Math.PI / 3) {
-            return Direction.TURN_RIGHT;
-        }
-        return Direction.STRAIGHT;
-    }
-
-    /**
-     * Start Dijkstra pathfinding from the origin point.
-     * Finds all the shortest paths in the graph from the origin point.
-     * Stops when the destination point has been found.
-     */
-    private float[] getVector(Edge edge) {
-        Vertex fromVertex = vertices[edge.getFrom()];
-        Vertex toVertex = vertices[edge.getTo()];
-
-        float[] fromCoords = fromVertex.getCoords();
-        float[] toCoords = toVertex.getCoords();
-
-        return new float[]{fromCoords[0] - toCoords[0], fromCoords[1] - toCoords[1]};
-    }
-
-    public Direction getDirectionRightLeft(Edge before, Edge after) {
-        if (before.getName() != null && after.getName() != null) {
-            if (before.getName().equals(after.getName())) {
-                return Direction.STRAIGHT;
-            }
-        }
-        float[] beforeVector = getVector(before);
-        float[] afterVector = getVector(after);
-
-        Direction beforeDirection = getDirection(beforeVector);
-        Direction afterDirection = getDirection(afterVector);
-
-        if (beforeDirection == Direction.NORTH_WEST) {
-            if (afterDirection == Direction.NORTH_EAST) {
-                return Direction.TURN_LEFT;
-
-            } else if (afterDirection == Direction.SOUTH_WEST) {
-                return Direction.TURN_RIGHT;
-            }
-        } else if (beforeDirection == Direction.NORTH_EAST) {
-            if (afterDirection == Direction.SOUTH_EAST) {
-                return Direction.TURN_LEFT;
-
-            } else if (afterDirection == Direction.NORTH_WEST) {
-                return Direction.TURN_RIGHT;
-            }
-        } else if (beforeDirection == Direction.SOUTH_EAST) {
-            if (afterDirection == Direction.SOUTH_WEST) {
-                return Direction.TURN_LEFT;
-
-            } else if (afterDirection == Direction.NORTH_EAST) {
-                return Direction.TURN_RIGHT;
-            }
-        } else if (beforeDirection == Direction.SOUTH_WEST) {
-            if (afterDirection == Direction.NORTH_WEST) {
-                return Direction.TURN_LEFT;
-
-            } else if (afterDirection == Direction.SOUTH_EAST) {
-                return Direction.TURN_RIGHT;
-            }
-        }
-        return Direction.STRAIGHT;
-    }
-
-    private Direction getDirection(float[] vector) {
-        if (vector[0] == 0 && vector[1] > 0) {
-            return Direction.NORTH;
-        }
-        if (vector[0] < 0 && vector[1] == 0) {
-            return Direction.WEST;
-        }
-        if (vector[0] == 0 && vector[1] < 0) {
-            return Direction.SOUTH;
-        }
-        if (vector[0] > 0 && vector[1] == 0) {
-            return Direction.EAST;
-        }
-        if (vector[0] > 0 && vector[1] > 0) {
-            return Direction.NORTH_EAST;
-        }
-        if (vector[0] > 0 && vector[1] < 0) {
-            return Direction.SOUTH_EAST;
-        }
-        if (vector[0] < 0 && vector[1] > 0) {
-            return Direction.NORTH_WEST;
-        }
-        if (vector[0] < 0 && vector[1] < 0) {
-            return Direction.SOUTH_WEST;
-        }
-        return Direction.UNKNOWN;
     }
 
     public int getVertexAmount() {
