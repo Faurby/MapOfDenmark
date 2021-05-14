@@ -412,7 +412,7 @@ public class NavigationBoxController extends SubController {
         }
     }
 
-    //TODO this is almost directly from stackoverflow, should I rewrite it more?
+    //TODO this is directly from stackoverflow, should I rewrite it more?
     public void centerLabelInScrollPane(ScrollPane scrollPane, Node node) {
         double h = scrollPane.getContent().getBoundsInLocal().getHeight();
         double y = (node.getBoundsInParent().getMaxY() + node.getBoundsInParent().getMinY()) / 2.0;
