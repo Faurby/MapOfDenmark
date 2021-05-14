@@ -246,9 +246,10 @@ public class MainController extends BaseController {
                     }
                 }
                 if (closestNode != null) {
-                    // 300 is a number chosen by trial and error. It seems to fit perfectly.
-                    if (nodeAtMouse.distTo(closestNode) < 300.0D * (1.0D / Math.sqrt(canvas.getTrans().determinant()))) {
+                    // 420 is a number chosen by trial and error. It seems to fit perfectly.
+                    if (nodeAtMouse.distTo(closestNode) < 420.0D * (1.0D / Math.sqrt(canvas.getTrans().determinant()))) {
                         userNodeClickedVBox.setVisible(true);
+                        userNodeClickedVBox.requestFocus();
                         userNodeClickedName.setText(closestNode.getName());
                         userNodeClickedDescription.setText((closestNode.getDescription().equals("") ? "No description entered" : closestNode.getDescription()));
                         String x = String.format(Locale.ENGLISH, "%.6f", closestNode.getX());
@@ -443,6 +444,15 @@ public class MainController extends BaseController {
         } else {
             userNodeToggle = true;
             scene.setCursor(userNodeCursorImage);
+        }
+    }
+
+    @FXML
+    public void userNodeClickedVBoxOnKeyPressed(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.ESCAPE) {
+            userNodeClickedVBox.setVisible(false);
+        } else if (keyEvent.getCode() == KeyCode.DELETE || keyEvent.getCode() == KeyCode.BACK_SPACE) {
+            userNodeDeleteClicked();
         }
     }
 
