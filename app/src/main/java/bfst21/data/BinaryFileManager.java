@@ -1,6 +1,5 @@
 package bfst21.data;
 
-import bfst21.address.OsmAddress;
 import bfst21.address.TST;
 import bfst21.osm.*;
 import bfst21.pathfinding.DirectedGraph;
@@ -30,14 +29,14 @@ public class BinaryFileManager {
             input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fileName)));
         }
         return new MapData(
-                (List<Way>) input.readObject(),
+                (List<MapWay>) input.readObject(),
                 (List<Way>) input.readObject(),
                 (List<Relation>) input.readObject(),
                 (List<MapText>) input.readObject(),
 
                 (TST) input.readObject(),
 
-                (HashMap<ElementGroup, KdTree<Way>>) input.readObject(),
+                (HashMap<ElementGroup, KdTree<MapWay>>) input.readObject(),
                 (KdTree<Relation>) input.readObject(),
                 (KdTree<MapText>) input.readObject(),
                 (DirectedGraph) input.readObject(),

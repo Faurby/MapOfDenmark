@@ -8,7 +8,6 @@ import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.StrokeLineCap;
@@ -80,6 +79,7 @@ public class MapCanvas extends Canvas {
      * Draws Ways for every ElementGroup to display at the current zoom level.
      * Draws every multipolygon relation.
      * Draws point of interests added by the user.
+     * Draws dijkstra path if available.
      */
     public void repaint() {
         long time = -System.nanoTime();
@@ -99,12 +99,11 @@ public class MapCanvas extends Canvas {
             drawUserNodes();
 
             if (destinationCoords != null) {
-                drawPathTo(destinationCoords);
+                drawPathTo();
             }
             for (Pin pin : Pin.values()) {
                 pin.draw(gc, zoomLevel);
             }
-
             drawMapText();
         }
         gc.restore();
@@ -176,7 +175,7 @@ public class MapCanvas extends Canvas {
                     ElementSize elementSize = elementGroup.getSize();
 
                     if (elementSize == ElementSize.DEFAULT
-                            || elementSize == ElementSize.SMALL) {
+                     || elementSize == ElementSize.SMALL) {
                         drawRelations(elementType);
                     }
                     drawOrFill(elementGroup);
@@ -199,7 +198,7 @@ public class MapCanvas extends Canvas {
 
             if (elementType.doFillDraw()) {
                 gc.setFill(getColor(elementType));
-                for (Way way : model.getMapData().getWays(elementGroup)) {
+                for (MapWay way : model.getMapData().getWays(elementGroup)) {
                     way.fill(gc, zoomLevel);
                 }
             } else {
@@ -207,7 +206,7 @@ public class MapCanvas extends Canvas {
 
                 gc.setStroke(getColor(elementType));
                 gc.setLineWidth(size);
-                for (Way line : model.getMapData().getWays(elementGroup)) {
+                for (MapWay line : model.getMapData().getWays(elementGroup)) {
                     line.draw(gc, zoomLevel);
                 }
             }
@@ -224,16 +223,38 @@ public class MapCanvas extends Canvas {
     }
 
     /**
-     * Draws a path from the origin coords to the destination coords.
-     * Draws every path that dijkstra has investigated.
+     * Determine if a dijkstra path currently exists.
+     * A path exists if there are more than zero edges when calling pathTo().
      */
-    private void drawPathTo(float[] destinationCoords) {
+    public boolean doesDijkstraPathExist() {
+        if (destinationCoords != null) {
+
+            if (model.getMapData().getDijkstra() != null) {
+
+                DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
+                int destinationID = directedGraph.getVertexID(destinationCoords);
+
+                List<Edge> edgeList = model.getMapData().getDijkstra().pathTo(destinationID);
+
+                return edgeList.size() > 0;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Draws a path from the origin coords to the destination coords.
+     * <p>
+     * Updates currentDirections to a list of readable directions.
+     */
+    private void drawPathTo() {
         DirectedGraph directedGraph = model.getMapData().getDirectedGraph();
 
         int destinationID = directedGraph.getVertexID(destinationCoords);
 
         if (model.getMapData().getDijkstra() != null) {
-            List<Edge> edgeList = model.getMapData().getDijkstra().pathTo(destinationID);
+            DijkstraPath dijkstraPath = model.getMapData().getDijkstra();
+            List<Edge> edgeList = dijkstraPath.pathTo(destinationID);
 
             if (edgeList.size() > 0) {
 
@@ -256,7 +277,7 @@ public class MapCanvas extends Canvas {
                     routeDistance = distanceSum;
                     currentDirections.add("Follow " + before.getName() + " " + distanceSumToString(distanceSum));
                 }
-                
+
                 for (int i = 0; i < (edgeList.size() - 1); i++) {
                     Edge before = edgeList.get(i);
                     Edge after = edgeList.get(i + 1);
@@ -364,7 +385,7 @@ public class MapCanvas extends Canvas {
     }
 
     /**
-     * Run dijkstra path finding if coords for origin and destination are present.
+     * Run dijkstra path finding for origin and destination coordinates.
      */
     public void runDijkstra() {
         model.getMapData().runDijkstra(originCoords, destinationCoords);
@@ -526,23 +547,19 @@ public class MapCanvas extends Canvas {
         return value;
     }
 
-    public Model getModel() {
-        return model;
-    }
-
-    public Affine getTrans() {
-        return trans;
-    }
-
-    public List<String> getCurrentDirections() {
-        return currentDirections;
-    }
-
+    /**
+     * Reset current route values.
+     */
     public void resetCurrentRoute() {
         currentDirections = new ArrayList<>();
         currentRouteWeight = 0;
     }
 
+    /**
+     * Format route duration to a readable String.
+     *
+     * @return route duration as a formatted String.
+     */
     public String getCurrentRouteDuration() {
         int duration = currentRouteWeight;
 
@@ -566,7 +583,12 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    public String distanceSumToString(float distance) {
+    /**
+     * Format distance sum to a readable String.
+     *
+     * @return distance as a formatted String.
+     */
+    private String distanceSumToString(float distance) {
         if (distance >= 1_000.0f) {
             distance /= 1_000.0f;
             String distanceString = "" + distance;
@@ -588,9 +610,18 @@ public class MapCanvas extends Canvas {
     }
 
     public String getRouteDistanceToString() {
-        //for dijkstra test
-        System.out.println(routeDistance + " m");
-
         return "Distance: " + distanceSumToString(routeDistance);
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public Affine getTrans() {
+        return trans;
+    }
+
+    public List<String> getCurrentDirections() {
+        return currentDirections;
     }
 }

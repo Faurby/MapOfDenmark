@@ -2,10 +2,7 @@ package bfst21.view.controllers;
 
 import bfst21.data.BinaryFileManager;
 import bfst21.models.*;
-import bfst21.osm.Node;
-import bfst21.osm.Pin;
-import bfst21.osm.UserNode;
-import bfst21.osm.Way;
+import bfst21.osm.*;
 import bfst21.pathfinding.DirectedGraph;
 import bfst21.pathfinding.Edge;
 import bfst21.view.ColorMode;
@@ -35,9 +32,6 @@ import java.util.*;
 
 
 public class MainController extends BaseController {
-
-    @FXML
-    private Button testButton;
 
     @FXML
     private AnchorPane navigationBox;
@@ -117,7 +111,7 @@ public class MainController extends BaseController {
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
 
     private void updateZoomBox() {
-        int nodeSkip = Way.getNodeSkipAmount(canvas.getZoomLevel());
+        int nodeSkip = MapWay.getNodeSkipAmount(canvas.getZoomLevel());
 
         zoomPercentText.setText(canvas.getZoomPercent());
         debugBoxController.setZoomText("Zoom level: " + canvas.getZoomLevelText());
@@ -233,8 +227,6 @@ public class MainController extends BaseController {
 
     @FXML
     public void onMouseReleased() {
-        canvas.runRangeSearchTask();
-
         if (model.getMapData() != null) {
             if (!model.getMapData().getUserNodes().isEmpty()) {
 
@@ -307,6 +299,7 @@ public class MainController extends BaseController {
                 Pin.ORIGIN.setCoords(nearestCoords);
 
                 Pin.DESTINATION.setVisible(false);
+                canvas.repaint();
 
             } else {
                 canvas.destinationCoords = nearestCoords;
@@ -333,6 +326,7 @@ public class MainController extends BaseController {
         thread.start();
 
     }
+
     @FXML
     public void loadNewFile() {
         FileChooser fileChooser = new FileChooser();
@@ -372,19 +366,24 @@ public class MainController extends BaseController {
     }
 
     private void finishedLoadingFile() {
-        startBox.setVisible(false);
-        startBox.setManaged(false);
-        loadingScreenBox.setVisible(false);
-        navigationBoxController.setSearchBoxVisible(true);
-        userNodeVBox.setVisible(true);
-        footerGridPane.setVisible(true);
-        canvas.runRangeSearchTask();
-        menuBarHBox.setVisible(true);
+        if (!model.failedToLoadFile()) {
+            startBox.setVisible(false);
+            startBox.setManaged(false);
+            loadingScreenBox.setVisible(false);
+            navigationBoxController.setSearchBoxVisible(true);
+            userNodeVBox.setVisible(true);
+            footerGridPane.setVisible(true);
+            canvas.runRangeSearchTask();
+            menuBarHBox.setVisible(true);
 
-        if (model.getMapData() != null) {
-            updateUserNodeList();
+            if (model.getMapData() != null) {
+                updateUserNodeList();
+            }
+            canvas.repaint();
+
+        } else {
+            displayAlert(Alert.AlertType.ERROR, "Error", "Failed to load file. File does not exist!");
         }
-        canvas.repaint();
     }
 
     @FXML

@@ -54,7 +54,7 @@ public class RelationTest {
 
         float[] actual = new float[1];
         if (rel.getWays().size() > 0) {
-            actual = rel.getWays().get(0).getCoords();
+            actual = rel.getWays().get(0).getMapWay().getCoords();
         }
         for (int i = 0; i < actual.length; i++) {
             assertEquals(expected[i], actual[i]);

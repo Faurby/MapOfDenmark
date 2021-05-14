@@ -299,32 +299,36 @@ public class NavigationBoxController extends SubController {
         dijkstraTask.setOnSucceeded(e -> {
             mainController.getCanvas().repaint();
 
-            List<String> directionsList = mainController.getCanvas().getCurrentDirections();
-            if (directionsList != null) {
-                ObservableList<String> tempList = FXCollections.observableArrayList();
-                tempList.addAll(directionsList);
-                navigationListView.setItems(tempList);
-            }
+            if (mainController.getCanvas().doesDijkstraPathExist()) {
 
-            navigationDescriptionBox.setVisible(true);
-            navigationDescriptionBox.setManaged(true);
+                List<String> directionsList = mainController.getCanvas().getCurrentDirections();
+                if (directionsList != null) {
+                    ObservableList<String> tempList = FXCollections.observableArrayList();
+                    tempList.addAll(directionsList);
+                    navigationListView.setItems(tempList);
+                }
 
-            routeDetails.setText(mainController.getCanvas().getCurrentRouteDuration() + "\n" + mainController.getCanvas().getRouteDistanceToString());
+                navigationDescriptionBox.setVisible(true);
+                navigationDescriptionBox.setManaged(true);
 
-            int navListSize = navigationListView.getItems().size();
-            if (navListSize == 1) {
-                navigationListView.setMaxHeight(27.0D);
-                navigationListView.setMinHeight(27.0D);
+                routeDetails.setText(mainController.getCanvas().getCurrentRouteDuration()
+                        + "\n" + mainController.getCanvas().getRouteDistanceToString());
 
-            } else if (navListSize < 15) {
-                navigationListView.setMaxHeight(navListSize * 24.0D);
-                navigationListView.setMinHeight(navListSize * 24.0D);
+                int navListSize = navigationListView.getItems().size();
+                if (navListSize == 1) {
+                    navigationListView.setMaxHeight(27.0D);
+                    navigationListView.setMinHeight(27.0D);
+
+                } else if (navListSize < 15) {
+                    navigationListView.setMaxHeight(navListSize * 24.0D);
+                    navigationListView.setMinHeight(navListSize * 24.0D);
+                } else {
+                    navigationListView.setMaxHeight(350.0D);
+                    navigationListView.setMinHeight(350.0D);
+                }
             } else {
-                navigationListView.setMaxHeight(350.0D);
-                navigationListView.setMinHeight(350.0D);
+                displayAlert(Alert.AlertType.ERROR, "Error", "Unable to find legal route between these points!");
             }
-
-
         });
         dijkstraTask.setOnFailed(e -> dijkstraTask.getException().printStackTrace());
 

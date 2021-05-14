@@ -29,10 +29,10 @@ public class WayTest {
 
         Way merged = Way.merge(way1, way2, false);
 
-        float[] expectedCoords = way3.getCoords();
-        float[] mergedCoords = merged.getCoords();
+        float[] expectedCoords = way3.getMapWay().getCoords();
+        float[] mergedCoords = merged.getMapWay().getCoords();
 
-        for (int i = 0; i < way3.getCoords().length; i++) {
+        for (int i = 0; i < way3.getMapWay().getCoords().length; i++) {
             assertEquals(expectedCoords[i], mergedCoords[i]);
         }
     }

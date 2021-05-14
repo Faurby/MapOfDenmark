@@ -42,13 +42,13 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
 
         int size = 0; //First we need to sum the amount of coordinates for every Way.
         for (Way way : ways) {
-            size += way.getCoords().length;
+            size += way.getMapWay().getCoords().length;
         }
         float[] relationCoords = new float[size];
 
         int relationCoordsAmount = 0;
         for (Way way : ways) {
-            float[] wayCoords = way.getCoords();
+            float[] wayCoords = way.getMapWay().getCoords();
 
             for (int i = 0; i < wayCoords.length; i++) {
                 relationCoords[i + relationCoordsAmount] = wayCoords[i];
@@ -65,7 +65,7 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
     public void addWay(Way way) {
         ways.add(way);
 
-        float[] coords = way.getCoords();
+        float[] coords = way.getMapWay().getCoords();
         for (int i = 0; i < coords.length; i += 2) {
 
             float x = coords[i];
@@ -154,7 +154,7 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
         for (Way way : ways) {
             String role = way.getRole();
             if (role != null) {
-                float[] coords = way.getCoords();
+                float[] coords = way.getMapWay().getCoords();
 
                 if (role.equals("outer") || role.equals("inner")) {
                     gc.moveTo(coords[0], coords[1]);

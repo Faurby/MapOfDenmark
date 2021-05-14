@@ -1,6 +1,5 @@
 package bfst21.models;
 
-import bfst21.address.OsmAddress;
 import bfst21.address.TST;
 import bfst21.osm.*;
 import bfst21.pathfinding.DijkstraPath;
@@ -19,8 +18,8 @@ public class MapData {
     private DirectedGraph directedGraph;
     private DijkstraPath dijkstraPath;
 
-    private HashMap<ElementGroup, KdTree<Way>> kdTreeMap;
-    private final HashMap<ElementGroup, List<Way>> kdTreeSearchMap = new HashMap<>();
+    private HashMap<ElementGroup, KdTree<MapWay>> kdTreeMap;
+    private final HashMap<ElementGroup, List<MapWay>> kdTreeSearchMap = new HashMap<>();
 
     private KdTree<Relation> kdTreeRelations;
     private List<Relation> kdTreeRelationSearchList = new ArrayList<>();
@@ -31,7 +30,7 @@ public class MapData {
     private List<UserNode> userNodes;
     private final HashMap<String, UserNode> userNodesMap;
 
-    private final List<Way> islands;
+    private final List<MapWay> islands;
 
     private final float minX, minY, maxX, maxY;
 
@@ -43,12 +42,12 @@ public class MapData {
      * Builds kd-trees for Ways and Relations.
      */
     public MapData(
-            List<Way> islands,
+            List<MapWay> islands,
             List<Way> wayList,
             List<Relation> relationList,
             List<MapText> mapTexts,
             TST addressTries,
-            HashMap<ElementGroup, KdTree<Way>> kdTreeMap,
+            HashMap<ElementGroup, KdTree<MapWay>> kdTreeMap,
             KdTree<Relation> kdTreeRelations,
             KdTree<MapText> kdTreeMapTexts,
             DirectedGraph directedGraph,
@@ -132,16 +131,15 @@ public class MapData {
 
                     boolean junction = way.isJunction();
 
-                    ElementType type = way.getType();
-                    boolean canDrive = type.canNavigate(TransportOption.CAR);
-                    boolean canBike = type.canNavigate(TransportOption.BIKE);
-                    boolean canWalk = type.canNavigate(TransportOption.WALK);
+                    boolean canDrive = way.canNavigate(TransportOption.CAR);
+                    boolean canBike = way.canNavigate(TransportOption.BIKE);
+                    boolean canWalk = way.canNavigate(TransportOption.WALK);
                     boolean oneWay = way.isOneWay();
                     boolean oneWayBike = way.isOneWayBike();
                     int maxSpeed = way.getMaxSpeed();
                     String name = way.getName();
 
-                    float[] coords = way.getCoords();
+                    float[] coords = way.getMapWay().getCoords();
 
                     for (int i = 0; i < (coords.length - 2); i += 2) {
                         float vX = coords[i];
@@ -231,15 +229,15 @@ public class MapData {
         if (kdTreeMap == null) {
             kdTreeMap = new HashMap<>();
 
-            HashMap<ElementGroup, List<Way>> wayMap = getElementMap(wayList);
+            HashMap<ElementGroup, List<MapWay>> wayMap = getElementMap(wayList);
 
             for (ElementGroup elementGroup : ElementGroup.values()) {
-                List<Way> innerWayList = wayMap.get(elementGroup);
+                List<MapWay> innerWayList = wayMap.get(elementGroup);
 
                 if (innerWayList.size() > 0) {
                     long time = -System.nanoTime();
 
-                    KdTree<Way> kdTree = new KdTree<>();
+                    KdTree<MapWay> kdTree = new KdTree<>();
                     this.kdTreeMap.put(elementGroup, kdTree);
                     kdTree.build(innerWayList);
 
@@ -254,8 +252,8 @@ public class MapData {
      * @return HashMap containing every ElementGroup and their list of Ways
      * The lists are built using the elements from the wayList
      */
-    private HashMap<ElementGroup, List<Way>> getElementMap(List<Way> wayList) {
-        HashMap<ElementGroup, List<Way>> elementMap = new HashMap<>();
+    private HashMap<ElementGroup, List<MapWay>> getElementMap(List<Way> wayList) {
+        HashMap<ElementGroup, List<MapWay>> elementMap = new HashMap<>();
 
         for (ElementGroup elementGroup : ElementGroup.values()) {
             elementMap.put(elementGroup, new ArrayList<>());
@@ -271,8 +269,8 @@ public class MapData {
                     if (elementGroup.getType() == type) {
                         if (elementGroup.getSize() == size) {
 
-                            List<Way> elementList = elementMap.get(elementGroup);
-                            elementList.add(way);
+                            List<MapWay> elementList = elementMap.get(elementGroup);
+                            elementList.add(way.getMapWay());
                             elementMap.put(elementGroup, elementList);
                         }
                     }
@@ -317,7 +315,7 @@ public class MapData {
      * @param elementGroup specific ElementGroup.
      * @return list of Ways with the specific ElementGroup.
      */
-    public List<Way> getWays(ElementGroup elementGroup) {
+    public List<MapWay> getWays(ElementGroup elementGroup) {
         if (elementGroup.getType() == ElementType.ISLAND) {
             return islands;
         }
@@ -333,7 +331,7 @@ public class MapData {
         for (ElementGroup elementGroup : ElementGroup.values()) {
             if (elementGroup.doShowElement(zoomLevel)) {
                 if (kdTreeMap.containsKey(elementGroup)) {
-                    List<Way> wayList = kdTreeMap.get(elementGroup).rangeSearch(boundingBox);
+                    List<MapWay> wayList = kdTreeMap.get(elementGroup).rangeSearch(boundingBox);
                     kdTreeSearchMap.put(elementGroup, wayList);
                 }
             }
@@ -380,7 +378,7 @@ public class MapData {
         return nearest;
     }
 
-    public HashMap<ElementGroup, KdTree<Way>> getKdTreeMap() {
+    public HashMap<ElementGroup, KdTree<MapWay>> getKdTreeMap() {
         return kdTreeMap;
     }
 
@@ -392,7 +390,7 @@ public class MapData {
         return kdTreeMapTexts;
     }
 
-    public KdTree<Way> getKdTree(ElementGroup elementGroup) {
+    public KdTree<MapWay> getKdTree(ElementGroup elementGroup) {
         return kdTreeMap.get(elementGroup);
     }
 
