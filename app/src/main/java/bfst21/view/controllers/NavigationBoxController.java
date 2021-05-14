@@ -366,7 +366,7 @@ public class NavigationBoxController extends SubController {
         }
 
         for (String s : localShownSuggestions) {
-            if (count <= 500) {
+            if (count <= 1000) {
                 Label label = new Label(s);
                 label.setPrefWidth(800.0D);
                 label.setOnMouseClicked((event) -> {
