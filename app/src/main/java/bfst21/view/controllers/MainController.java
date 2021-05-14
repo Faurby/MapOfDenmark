@@ -107,6 +107,8 @@ public class MainController extends BaseController {
 
     private Model model;
     private Point2D lastMouse;
+
+    private Point2D currentMousePos;
     private Task<Void> roadTask;
 
     private final DisplayOptions displayOptions = DisplayOptions.getInstance();
@@ -167,10 +169,6 @@ public class MainController extends BaseController {
         progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
         updateZoomBox();
 
-        scene.setOnMouseMoved(event -> {
-            Point2D currentMousePos = new Point2D(event.getX(), event.getY());
-            updateMouseCoords(currentMousePos);
-        });
         userNodeListView.setOnMouseClicked(event -> {
             userNodeClickedInListView(userNodeListView.getSelectionModel().getSelectedItem());
         });
@@ -717,7 +715,10 @@ public class MainController extends BaseController {
 
     @FXML
     public void onMouseMoved(MouseEvent mouseEvent) {
-        lastMouse = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+
+        currentMousePos = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+        updateMouseCoords(currentMousePos);
+
         if (model.getMapData() != null) {
             if (counter == 5) {
                 updateRoadTask();
@@ -736,7 +737,7 @@ public class MainController extends BaseController {
 
             @Override
             protected Void call() {
-                Point2D point = canvas.mouseToModelCoords(lastMouse);
+                Point2D point = canvas.mouseToModelCoords(currentMousePos);
                 float[] queryCoords = new float[]{(float) point.getX(), (float) point.getY()};
                 float[] nearestCoords = model.getMapData().kdTreeNearestNeighborSearch(queryCoords, TransportOption.ALL);
 
