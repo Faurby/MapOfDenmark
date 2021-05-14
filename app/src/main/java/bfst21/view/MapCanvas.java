@@ -540,10 +540,11 @@ public class MapCanvas extends Canvas {
 
         TransportOption current = TransportOptions.getInstance().getCurrentlyEnabled();
         if (current == TransportOption.BIKE) {
-            duration = (int) (routeDistance / 1000.0f * 60.0f / 15.0f);
+            duration = (int) Math.ceil(routeDistance / 1000.0f * 60.0f / 15.0f);
         } else if (current == TransportOption.WALK) {
-            duration = (int) (routeDistance / 1000.0f * 60.0f / 5.0f);
+            duration = (int) Math.ceil(routeDistance / 1000.0f * 60.0f / 5.0f);
         }
+
         if (duration > 60) {
             int hours = duration / 60;
             int minutes = duration % 60;
