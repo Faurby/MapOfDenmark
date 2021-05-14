@@ -23,7 +23,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -83,7 +82,7 @@ public class NavigationBoxController extends SubController {
     private Task<Void> addressSuggestionTask;
     private Task<Void> dijkstraTask;
 
-    private TST<List<OsmAddress>> addressTries;
+    private TST addressTries;
 
     private boolean isNavigationBoxExpanded = false;
 
@@ -399,50 +398,6 @@ public class NavigationBoxController extends SubController {
         scrollPane.setVvalue(scrollPane.getVmax() * ((y - 0.5 * v) / (h - v)));
     }
 
-    public void updateSuggestions(String input, List<String> suggestions, List<OsmAddress> osmSuggestions) {
-        suggestions.clear();
-        osmSuggestions.clear();
-        updateAddressTries();
-
-        String addressInput = input.replace(" ", "").toLowerCase();
-
-        Iterator<String> it = addressTries.keysWithPrefix(addressInput).iterator();
-
-        //If the string doesn't return matches, find a substring that does
-        if (!it.hasNext()) {
-            addressInput = findLongestSubstringWithMatches(addressInput);
-            it = addressTries.keysWithPrefix(addressInput).iterator();
-        }
-
-        //Has a valid street name been typed? Either street names or house numbers are then suggested
-        String streetName = null;
-        if (it.hasNext()) {
-            String streetInfo = addressTries.keysWithPrefix(addressInput).iterator().next();
-            streetName = streetInfo.substring(0, streetInfo.length() - 4);
-        }
-
-        if (addressInput.equals(streetName)) {
-
-            if (it.hasNext()) {
-                for (OsmAddress osmAddress : addressTries.get(it.next())) {
-                    osmSuggestions.add(osmAddress);
-
-                    String address = osmAddress.toString();
-                    suggestions.add(address);
-                }
-            }
-        } else {
-            while (it.hasNext()) {
-                osmSuggestions.add(addressTries.get(it.next()).get(0));
-            }
-            for (OsmAddress osmAddress : osmSuggestions) {
-                String address = osmAddress.omitHouseNumberToString();
-
-                suggestions.add(address);
-            }
-        }
-    }
-
     private void runAddressSuggestionTask(VBox suggestions, TextArea textArea, boolean extended, ScrollPane scrollPane) {
         if (addressSuggestionTask != null) {
             if (addressSuggestionTask.isRunning()) {
@@ -454,11 +409,12 @@ public class NavigationBoxController extends SubController {
             @Override
             protected Void call() {
                 String input = textArea.getText();
+                updateAddressTries();
 
                 if (extended) {
-                    updateSuggestions(input, shownSuggestionsDestination, allSuggestionsDestination);
+                    addressTries.updateSuggestions(input, shownSuggestionsDestination, allSuggestionsDestination);
                 } else {
-                    updateSuggestions(input, shownSuggestionsOrigin, allSuggestionsOrigin);
+                    addressTries.updateSuggestions(input, shownSuggestionsOrigin, allSuggestionsOrigin);
                 }
                 return null;
             }
@@ -468,22 +424,6 @@ public class NavigationBoxController extends SubController {
         addressSuggestionTask.setOnFailed(e -> addressSuggestionTask.getException().printStackTrace());
         Thread thread = new Thread(addressSuggestionTask);
         thread.start();
-    }
-
-    private String findLongestSubstringWithMatches(String addressInput) {
-
-        int endIndex = addressInput.length() - 1;
-        while (endIndex >= 1) {
-            String subStringInput = addressInput.substring(0, endIndex);
-            Iterator<String> it = addressTries.keysWithPrefix(subStringInput).iterator();
-
-            if (it.hasNext()) {
-                return subStringInput;
-            } else {
-                endIndex--;
-            }
-        }
-        return addressInput;
     }
 
     @FXML

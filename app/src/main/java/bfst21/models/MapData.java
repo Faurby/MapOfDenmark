@@ -35,7 +35,7 @@ public class MapData {
 
     private final float minX, minY, maxX, maxY;
 
-    private final TST<List<OsmAddress>> addressTries;
+    private final TST addressTries;
 
     /**
      * MapData constructor.
@@ -47,7 +47,7 @@ public class MapData {
             List<Way> wayList,
             List<Relation> relationList,
             List<MapText> mapTexts,
-            TST<List<OsmAddress>> addressTries,
+            TST addressTries,
             HashMap<ElementGroup, KdTree<Way>> kdTreeMap,
             KdTree<Relation> kdTreeRelations,
             KdTree<MapText> kdTreeMapTexts,
@@ -439,7 +439,7 @@ public class MapData {
         return dijkstraPath;
     }
 
-    public TST<List<OsmAddress>> getAddressTries() {
+    public TST getAddressTries() {
         return addressTries;
     }
 }
