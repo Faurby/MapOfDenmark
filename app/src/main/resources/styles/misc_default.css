@@ -3,6 +3,41 @@
 @import "_misc.css";
 
 /* EDIT BELOW HERE FOR RESPECTIVE COLOR MODE */
-#loadingVBox {
+#loadingScreenBox {
     -fx-background-color: WHITE;
+}
+
+#menuBar {
+    -fx-background-color: #f8f8f8;
+}
+
+#menuBar .menu:hover {
+    -fx-background-color: #3993d0;
+}
+#menuBar .menu:focused {
+    -fx-background-color: #3993d0;
+}
+#menuBar .menu:showing {
+    -fx-background-color: #3993d0;
+}
+
+#menuBar .context-menu {
+    -fx-background-color: #f8f8f8;
+}
+
+.menu-item {
+    -fx-background-color: #f8f8f8;
+}
+.menu-item:hover {
+    -fx-background-color: #3993d0;
+}
+.menu-item:focused {
+    -fx-background-color: #3993d0;
+}
+
+.menu-item:hover .label {
+    -fx-text-fill: WHITE;
+}
+.menu-item:focused .label {
+    -fx-text-fill: WHITE;
 }

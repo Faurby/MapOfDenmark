@@ -61,9 +61,10 @@
 
         <HBox fx:id="menuBarHBox"
               minWidth="${scene.width}"
-              StackPane.alignment="TOP_LEFT">
+              StackPane.alignment="TOP_LEFT"
+              visible="false">
 
-            <MenuBar minWidth="${menuBarHBox.width}">
+            <MenuBar fx:id="menuBar" minWidth="${menuBarHBox.width}">
 
                 <Menu text="File">
                     <MenuItem text="Load default" onAction="#loadDefault"/>
@@ -124,7 +125,7 @@
                         styleClass="userNodeButton"/>
 
                 <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
-                <Button text="Save"
+                <Button fx:id="testButton" text="Save"
                         onAction="#userNodeSaveClicked"
                         styleClass="userNodeButton"/>
             </HBox>

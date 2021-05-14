@@ -18,7 +18,8 @@
         <HBox>
             <TextArea fx:id="addressTextArea"
                       promptText="Type an address..."
-                      onKeyPressed="#typingCheck"/>
+                      onKeyPressed="#typingCheck"
+                      styleClass="searchArea"/>
             <Button fx:id="deleteTextButton"
                     onAction="#clearRoute">
                 <graphic>
@@ -50,7 +51,8 @@
             <Button onAction="#expandNavigationBox"
                     text="Directions"
                     GridPane.columnIndex="0"
-                    GridPane.rowIndex="0"/>
+                    GridPane.rowIndex="0"
+                    styleClass="navigationButton"/>
 
             <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
 
@@ -58,7 +60,8 @@
                     onAction="#searchSingleAddress"
                     text="Search"
                     GridPane.columnIndex="2"
-                    GridPane.rowIndex="0"/>
+                    GridPane.rowIndex="0"
+                    styleClass="navigationButton"/>
         </HBox>
     </VBox>
 
@@ -71,8 +74,7 @@
         <GridPane hgap="2">
             <VBox GridPane.columnIndex="1"
                   GridPane.rowIndex="1"
-                  GridPane.rowSpan="3"
-            >
+                  GridPane.rowSpan="3">
 
                 <TextArea fx:id="originTextArea"
                           promptText="From:"
@@ -105,8 +107,8 @@
                             styleClass="scrollPane">
 
                     <VBox fx:id="destinationSuggestionsBox"
-                          style="-fx-background-color: WHITE"
-                          onKeyPressed="#typingCheck">
+                          onKeyPressed="#typingCheck"
+                          styleClass="suggestions">
                     </VBox>
                 </ScrollPane>
             </VBox>
@@ -180,19 +182,22 @@
         <HBox alignment="BASELINE_CENTER" spacing="5" styleClass="hboxForButtons">
 
             <Button onAction="#minimizeNavigationBox"
-                    text="Minimize"/>
+                    text="Minimize"
+                    styleClass="navigationButton"/>
 
             <Button onAction="#clearRoute"
-                    text="Clear"/>
+                    text="Clear"
+                    styleClass="navigationButton"/>
 
             <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
 
             <Button fx:id="findRouteButton"
                     onAction="#findRoute"
-                    text="Search"/>
+                    text="Search"
+                    styleClass="navigationButton"/>
         </HBox>
         <VBox fx:id="navigationDescriptionBox">
-            <Text fx:id="durationText"></Text>
+            <Text fx:id="durationText"/>
             <ListView fx:id="navigationListView"/>
         </VBox>
     </VBox>

@@ -8,22 +8,50 @@
     -fx-border-color: #264f5e;
 }
 
+.searchArea .content {
+    -fx-background-color: #f3f3f3;
+}
+
 .scrollPane {
-    -fx-background-color: #797979;
+    -fx-background-color: #d5d5d5;
 }
 
 .suggestions {
-    -fx-background-color: #797979;
+    -fx-background-color: #d5d5d5;
+}
+.suggestions .label:hover {
+    -fx-background-color: #afafaf;
+}
+.suggestions .label:focused {
+    -fx-background-color: #afafaf;
 }
 
 .toggle-button {
-    -fx-border-color: LIGHTGREY;
+    -fx-border-color: #bababa;
 }
 
 .searchBoxes > .button {
     -fx-background-color: #797979;
 }
 
+.navigationButton {
+    -fx-background-color: #afafaf;
+}
+.navigationButton:focused {
+    -fx-background-color: #979797;
+}
+.navigationButton:hover {
+    -fx-background-color: #8e8e8e;
+}
+
+
 #deleteTextButton {
     -fx-border-color: #797979;
+}
+
+#navigationListView .list-cell:even {
+    -fx-background-color: #a5a5a5;
+}
+#navigationListView .list-cell:odd {
+    -fx-background-color: #afafaf;
 }

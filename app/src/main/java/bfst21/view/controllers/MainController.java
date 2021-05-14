@@ -37,9 +37,12 @@ import java.util.*;
 public class MainController extends BaseController {
 
     @FXML
-    public AnchorPane navigationBox;
+    private Button testButton;
+
     @FXML
-    public HBox menuBarHBox;
+    private AnchorPane navigationBox;
+    @FXML
+    private HBox menuBarHBox;
     @FXML
     private MapCanvas canvas;
     @FXML
@@ -412,20 +415,24 @@ public class MainController extends BaseController {
 
         if (text.contains("standard")) {
             scene.getStylesheets().removeAll();
-            scene.getStylesheets().add(getClass().getResource("/styles/userNodes_default.css").toExternalForm());
-            scene.getStylesheets().add(getClass().getResource("/styles/misc_default.css").toExternalForm());
+            scene.getStylesheets().setAll(
+                    getClass().getResource("/styles/userNodes_default.css").toExternalForm(),
+                    getClass().getResource("/styles/misc_default.css").toExternalForm()
+            );
             debugBox.getStylesheets().setAll(getClass().getResource("/styles/debug_default.css").toExternalForm());
             navigationBox.getStylesheets().setAll(getClass().getResource("/styles/navigation_default.css").toExternalForm());
 
         } else if (text.contains("darkmode")) {
             scene.getStylesheets().removeAll();
-            scene.getStylesheets().add(getClass().getResource("/styles/userNodes_darkmode.css").toExternalForm());
-            scene.getStylesheets().add(getClass().getResource("/styles/misc_darkmode.css").toExternalForm());
+            scene.getStylesheets().setAll(
+                    getClass().getResource("/styles/userNodes_darkmode.css").toExternalForm(),
+                    getClass().getResource("/styles/misc_darkmode.css").toExternalForm()
+            );
             debugBox.getStylesheets().setAll(getClass().getResource("/styles/debug_darkmode.css").toExternalForm());
             navigationBox.getStylesheets().setAll(getClass().getResource("/styles/navigation_darkmode.css").toExternalForm());
 
         } else if (text.contains("colorblind")) {
-
+            //TODO: add color blind colors
         }
     }
 

@@ -234,10 +234,10 @@ public class NavigationBoxController extends SubController {
     @FXML
     public void findRoute() {
         if (originTextArea.getText().trim().isEmpty() && destinationTextArea.getText().trim().isEmpty()) {
-            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting and destination point");
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting point and destination point");
 
         } else if (originTextArea.getText().trim().isEmpty()) {
-            displayAlert(Alert.AlertType.ERROR, "Error", "Starting point search field is empty");
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting point");
 
         } else if (destinationTextArea.getText().trim().isEmpty()) {
             displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the destination point");
@@ -374,15 +374,6 @@ public class NavigationBoxController extends SubController {
                     suggestions.getChildren().clear();
                     textArea.requestFocus();
                     textArea.end();
-                });
-                b.setOnMouseEntered((event) -> b.setStyle("-fx-background-color:#dae7f3;"));
-                b.setOnMouseExited((event) -> b.setStyle("-fx-background-color: transparent;"));
-                b.focusedProperty().addListener((obs, oldVal, newVal) -> {
-                    if (newVal) {
-                        b.setStyle("-fx-background-color:#dae7f3;");
-                    } else {
-                        b.setStyle("-fx-background-color: transparent;");
-                    }
                 });
 
                 //TODO investigate why this line can't be deleted without ruining the "downarrow" function

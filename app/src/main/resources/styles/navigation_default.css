@@ -8,11 +8,21 @@
     -fx-border-color: #3E859B;
 }
 
+.searchArea .content {
+    -fx-background-color: WHITE;
+}
+
 .scrollPane {
     -fx-background-color: WHITE;
 }
 
 .suggestions {
+    -fx-background-color: WHITE;
+}
+.suggestions .label:hover {
+    -fx-background-color: WHITE;
+}
+.suggestions .label:focused {
     -fx-background-color: WHITE;
 }
 
@@ -24,6 +34,27 @@
     -fx-background-color: default;
 }
 
+.navigationButton {
+    -fx-background-color: #e2e2e2;
+    -fx-border-color: lightgrey;
+    -fx-border-width: 1;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+}
+.navigationButton:focused {
+    -fx-background-color: LIGHTGREY;
+}
+.navigationButton:hover {
+    -fx-background-color: DARKGREY;
+}
+
 #deleteTextButton {
     -fx-border-color: LIGHTGREY;
+}
+
+#navigationListView .list-cell:even {
+    -fx-background-color: WHITE;
+}
+#navigationListView .list-cell:odd {
+    -fx-background-color: GREY;
 }
