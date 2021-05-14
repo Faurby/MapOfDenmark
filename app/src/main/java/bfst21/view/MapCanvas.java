@@ -99,11 +99,11 @@ public class MapCanvas extends Canvas {
             drawUserNodes();
             drawMapText();
 
-            for (Pin pin : Pin.values()) {
-                pin.draw(gc, zoomLevel);
-            }
             if (destinationCoords != null) {
                 drawPathTo(destinationCoords);
+            }
+            for (Pin pin : Pin.values()) {
+                pin.draw(gc, zoomLevel);
             }
         }
         gc.restore();
