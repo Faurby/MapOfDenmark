@@ -286,7 +286,7 @@ public class MapData {
     public List<Relation> getRelations(ElementType elementType) {
         List<Relation> relationList = new ArrayList<>();
 
-        for (Relation relation : getRelations()) {
+        for (Relation relation : kdTreeRelationSearchList) {
             if (relation.getType() == elementType) {
                 relationList.add(relation);
             }

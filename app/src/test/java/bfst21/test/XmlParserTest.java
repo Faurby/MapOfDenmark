@@ -66,6 +66,8 @@ public class XmlParserTest {
 
         ElementGroup eg2 = new ElementGroup(ElementType.PRIMARY, ElementSize.DEFAULT);
         assertEquals(204, mapData.getWays(eg2).size());
+
+        assertEquals(716, mapData.getRelations().size());
     }
 
     @Test

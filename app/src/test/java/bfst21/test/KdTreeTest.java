@@ -2,7 +2,6 @@ package bfst21.test;
 
 import bfst21.osm.MapWay;
 import bfst21.osm.Node;
-import bfst21.osm.Way;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdTree;
 import org.junit.jupiter.api.Test;
