@@ -20,10 +20,10 @@
     -fx-background-color: WHITE;
 }
 .suggestions .label:hover {
-    -fx-background-color: WHITE;
+    -fx-background-color: #c1c1c1;
 }
 .suggestions .label:focused {
-    -fx-background-color: WHITE;
+    -fx-background-color: c1c1c1;
 }
 
 .toggle-button {
@@ -35,26 +35,19 @@
 }
 
 .navigationButton {
-    -fx-background-color: #e2e2e2;
-    -fx-border-color: lightgrey;
-    -fx-border-width: 1;
-    -fx-background-radius: 5;
-    -fx-border-radius: 5;
+    -fx-background-color: none;
 }
 .navigationButton:focused {
     -fx-background-color: LIGHTGREY;
 }
 .navigationButton:hover {
-    -fx-background-color: DARKGREY;
+    -fx-background-color: LIGHTGREY;
 }
 
-#deleteTextButton {
-    -fx-border-color: LIGHTGREY;
-}
 
 #navigationListView .list-cell:even {
     -fx-background-color: WHITE;
 }
 #navigationListView .list-cell:odd {
-    -fx-background-color: GREY;
+    -fx-background-color: LIGHTGREY;
 }
