@@ -19,9 +19,9 @@ public class UserNode extends Node implements Serializable {
     private String name;
     private String description;
 
-    Image blueStar = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("blue_star.png")));
-    Image lightBlueStar = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("light_blue_star.png")));
-    Image whiteStar = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("white_star.png")));
+    Image blueStar = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("orange_star.png")));
+    Image lightBlueStar = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("orange_star.png")));
+    Image whiteStar = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("orange_star.png")));
 
     public UserNode(float lat, float lon, String name, String description) {
         super(lat, lon);
@@ -46,16 +46,16 @@ public class UserNode extends Node implements Serializable {
     }
 
     public void draw(GraphicsContext gc, double zoomLevel, ColorMode colorMode) {
-        double x = getX() - (7.0D / zoomLevel);
-        double y = getY() - (7.0D / zoomLevel);
+        double x = getX() - (14.0D / zoomLevel);
+        double y = getY() - (14.0D / zoomLevel);
 
 
         if (colorMode == ColorMode.DARK_MODE) {
-            gc.drawImage(whiteStar, x, y, 14.0D / zoomLevel, 14.0D / zoomLevel);
+            gc.drawImage(whiteStar, x, y, 28.0D / zoomLevel, 28.0D / zoomLevel);
         } else if (colorMode == ColorMode.COLOR_BLIND) {
-            gc.drawImage(blueStar, x, y, 14.0D / zoomLevel, 14.0D / zoomLevel);
+            gc.drawImage(blueStar, x, y, 28.0D / zoomLevel, 28.0D / zoomLevel);
         } else {
-            gc.drawImage(lightBlueStar, x, y, 14.0D / zoomLevel, 14.0D / zoomLevel);
+            gc.drawImage(lightBlueStar, x, y, 28.0D / zoomLevel, 28.0D / zoomLevel);
         }
     }
 }
