@@ -15,18 +15,19 @@
             stylesheets="@../../styles/navigation_default.css">
 
     <VBox fx:id="searchBox" visible="false" managed="false" styleClass="searchBoxes">
-        <HBox>
+        <HBox spacing="5">
             <TextArea fx:id="addressTextArea"
                       promptText="Type an address..."
                       onKeyPressed="#typingCheck"/>
             <Button fx:id="deleteTextButton"
                     onAction="#clearRoute">
+                <tooltip>
+                    <Tooltip text="Clear text"/>
+                </tooltip>
                 <graphic>
-                    <ImageView fitHeight="15.0"
-                               preserveRatio="true"
-                               opacity="0.8"
+                    <ImageView preserveRatio="true"
                                styleClass="imageView">
-                        <Image url="/delete_icon.png"/>
+                        <Image url="/delete_icon16.png"/>
                     </ImageView>
                 </graphic>
             </Button>
@@ -48,17 +49,35 @@
               styleClass="hboxForButtons">
 
             <Button onAction="#expandNavigationBox"
-                    text="Directions"
                     GridPane.columnIndex="0"
-                    GridPane.rowIndex="0"/>
+                    GridPane.rowIndex="0">
+                <tooltip>
+                    <Tooltip text="Directions"/>
+                </tooltip>
+                <graphic>
+                    <ImageView preserveRatio="true"
+                               styleClass="imageView">
+                        <Image url="/directions24.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
 
             <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
 
             <Button fx:id="searchButton"
                     onAction="#searchSingleAddress"
-                    text="Search"
                     GridPane.columnIndex="2"
-                    GridPane.rowIndex="0"/>
+                    GridPane.rowIndex="0">
+                <tooltip>
+                    <Tooltip text="Search"/>
+                </tooltip>
+                <graphic>
+                    <ImageView preserveRatio="true"
+                               styleClass="imageView">
+                        <Image url="/search_icon24.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
         </HBox>
     </VBox>
 
@@ -116,12 +135,13 @@
                     GridPane.rowIndex="1"
                     GridPane.rowSpan="3"
                     onAction="#switchAddressText">
-
+                <tooltip>
+                    <Tooltip text="Switch from and to"/>
+                </tooltip>
                 <graphic>
-                    <ImageView fitWidth="10.0"
-                               preserveRatio="true"
+                    <ImageView preserveRatio="true"
                                styleClass="imageView">
-                        <Image url="/arrow19.png"/>
+                        <Image url="/switch_icon16.png"/>
                     </ImageView>
                 </graphic>
 
@@ -131,6 +151,9 @@
         <HBox fx:id="transportModeHBox">
             <ToggleButton fx:id="selectCarButton"
                           selected="true">
+                <tooltip>
+                    <Tooltip text="By Car"/>
+                </tooltip>
                 <graphic>
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
@@ -146,6 +169,9 @@
             </ToggleButton>
 
             <ToggleButton fx:id="selectBikeButton">
+                <tooltip>
+                    <Tooltip text="By Bike"/>
+                </tooltip>
                 <graphic>
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
@@ -161,7 +187,9 @@
             </ToggleButton>
 
             <ToggleButton fx:id="selectWalkButton">
-
+                <tooltip>
+                    <Tooltip text="Walking"/>
+                </tooltip>
                 <graphic>
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
@@ -179,17 +207,45 @@
 
         <HBox alignment="BASELINE_CENTER" spacing="5" styleClass="hboxForButtons">
 
-            <Button onAction="#minimizeNavigationBox"
-                    text="Minimize"/>
+            <Button onAction="#minimizeNavigationBox">
+                <tooltip>
+                    <Tooltip text="Minimize"/>
+                </tooltip>
+                <graphic>
+                    <ImageView preserveRatio="true"
+                               styleClass="imageView">
+                        <Image url="/minimize_icon24.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
 
-            <Button onAction="#clearRoute"
-                    text="Clear"/>
+            <Button onAction="#clearRoute">
+                <tooltip>
+                    <Tooltip text="Delete route"/>
+                </tooltip>
+                <graphic>
+                    <ImageView preserveRatio="true"
+                               styleClass="imageView">
+                        <Image url="/clear_icon24.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
 
             <ToolBar visible="false" HBox.hgrow="ALWAYS"/>
 
             <Button fx:id="findRouteButton"
-                    onAction="#findRoute"
-                    text="Search"/>
+                    onAction="#findRoute">
+                <tooltip>
+                    <Tooltip text="Search"/>
+                </tooltip>
+                <graphic>
+                    <ImageView preserveRatio="true"
+                               styleClass="imageView">
+                        <Image url="/search_icon24.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+
         </HBox>
         <VBox fx:id="navigationDescriptionBox">
             <Text fx:id="durationText"></Text>
