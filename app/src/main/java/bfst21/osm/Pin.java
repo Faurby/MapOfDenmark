@@ -11,9 +11,9 @@ import java.util.Objects;
  */
 public enum Pin {
 
-    ORIGIN("grey_pin.png"),
-    DESTINATION("red_pin.png"),
-    USER_NODE("blue_pin.png");
+    ORIGIN("grey_pin32.png"),
+    DESTINATION("red_pin32.png"),
+    USER_NODE("blue_pin32.png");
 
     private boolean visible = false;
     private float[] coords;
@@ -28,7 +28,6 @@ public enum Pin {
         if (visible && coords != null) {
             double x = coords[0] - (10.0D / zoomLevel);
             double y = coords[1] - (30.0D / zoomLevel);
-
             gc.drawImage(image, x, y, 20.0D / zoomLevel, 30.0D / zoomLevel);
         }
     }
