@@ -98,12 +98,22 @@ public class NavigationBoxController extends SubController {
             originScrollPane.setVisible(true);
             originScrollPane.setManaged(true);
         });
+
         destinationTextArea.setOnMouseClicked(event -> {
             originScrollPane.setVisible(false);
             originScrollPane.setManaged(false);
             destinationScrollPane.setVisible(true);
             destinationScrollPane.setManaged(true);
         });
+
+        //Necessary if destinationTextArea is reached from originTextArea without clicking
+        destinationTextArea.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                destinationScrollPane.setVisible(true);
+                destinationScrollPane.setManaged(true);
+            }
+        });
+
         addressTextArea.setOnMouseClicked(event -> {
             addressScrollPane.setVisible(true);
             addressScrollPane.setManaged(true);
@@ -227,7 +237,7 @@ public class NavigationBoxController extends SubController {
             displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting and destination point");
 
         } else if (originTextArea.getText().trim().isEmpty()) {
-            displayAlert(Alert.AlertType.ERROR, "Error", "Starting point search field is empty");
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting point");
 
         } else if (destinationTextArea.getText().trim().isEmpty()) {
             displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the destination point");
@@ -323,7 +333,7 @@ public class NavigationBoxController extends SubController {
             navigationDescriptionBox.setVisible(true);
             navigationDescriptionBox.setManaged(true);
 
-            durationText.setText(mainController.getCanvas().getCurrentRouteWeightToString());
+            durationText.setText(mainController.getCanvas().getCurrentRouteDuration());
 
             int navListSize = navigationListView.getItems().size();
             if (navListSize == 1) {
@@ -376,8 +386,7 @@ public class NavigationBoxController extends SubController {
                 });
 
                 //TODO investigate why this line can't be deleted without ruining the "downarrow" function
-                suggestions.setOnKeyPressed((event) -> {
-                });
+                suggestions.setOnKeyPressed((event) -> {});
 
                 b.setOnKeyPressed((event) -> {
                     if (event.getCode() == KeyCode.UP && suggestions.getChildren().size() > 0 && suggestions.getChildren().indexOf(b) > 0) {
