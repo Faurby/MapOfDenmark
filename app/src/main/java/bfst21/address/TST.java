@@ -113,53 +113,6 @@ public class TST<Value> implements Serializable {
     }
 
     /**
-     * Returns the string in the symbol table that is the longest prefix of {@code query},
-     * or {@code null}, if no such string.
-     *
-     * @param query the query string
-     * @return the string in the symbol table that is the longest prefix of {@code query},
-     * or {@code null} if no such string
-     * @throws IllegalArgumentException if {@code query} is {@code null}
-     */
-    public String longestPrefixOf(String query) {
-        if (query == null) {
-            throw new IllegalArgumentException("calls longestPrefixOf() with null argument");
-        }
-        if (query.length() == 0) {
-            return null;
-        }
-        int length = 0;
-        Node<Value> x = root;
-        int i = 0;
-        while (x != null && i < query.length()) {
-            byte c = Alphabet.getByteValue(query.charAt(i));
-            if (c < x.c) {
-                x = x.left;
-            } else if (c > x.c) {
-                x = x.right;
-            } else {
-                i++;
-                if (x.val != null) length = i;
-                x = x.mid;
-            }
-        }
-        return query.substring(0, length);
-    }
-
-    /**
-     * Returns all keys in the symbol table as an {@code Iterable}.
-     * To iterate over all of the keys in the symbol table named {@code st},
-     * use the foreach notation: {@code for (Key key : st.keys())}.
-     *
-     * @return all keys in the symbol table as an {@code Iterable}
-     */
-    public Iterable<String> keys() {
-        Queue<String> queue = new Queue<>();
-        collect(root, new StringBuilder(), queue);
-        return queue;
-    }
-
-    /**
      * Returns all of the keys in the set that start with {@code prefix}.
      *
      * @param prefix the prefix
@@ -195,40 +148,5 @@ public class TST<Value> implements Serializable {
         collect(x.mid, prefix.append(Alphabet.getCharValue(x.c)), queue);
         prefix.deleteCharAt(prefix.length() - 1);
         collect(x.right, prefix, queue);
-    }
-
-
-    /**
-     * Returns all of the keys in the symbol table that match {@code pattern},
-     * where . symbol is treated as a wildcard character.
-     *
-     * @param pattern the pattern
-     * @return all of the keys in the symbol table that match {@code pattern},
-     * as an iterable, where . is treated as a wildcard character.
-     */
-    public Iterable<String> keysThatMatch(String pattern) {
-        Queue<String> queue = new Queue<>();
-        collect(root, new StringBuilder(), 0, pattern, queue);
-        return queue;
-    }
-
-    private void collect(Node<Value> x, StringBuilder prefix, int i, String pattern, Queue<String> queue) {
-        if (x == null) {
-            return;
-        }
-        byte c = Alphabet.getByteValue(pattern.charAt(i));
-        if (c == '.' || c < x.c) {
-            collect(x.left, prefix, i, pattern, queue);
-        }
-        if (c == '.' || c == x.c) {
-            if (i == pattern.length() - 1 && x.val != null) {
-                queue.enqueue(prefix.toString() + Alphabet.getCharValue(x.c));
-            }
-            if (i < pattern.length() - 1) {
-                collect(x.mid, prefix.append(Alphabet.getCharValue(x.c)), i + 1, pattern, queue);
-                prefix.deleteCharAt(prefix.length() - 1);
-            }
-        }
-        if (c == '.' || c > x.c) collect(x.right, prefix, i, pattern, queue);
     }
 }
