@@ -23,7 +23,7 @@ public class Way extends BoundingBoxElement implements Drawable, Serializable {
     private boolean junction;
     private boolean oneWay;
     private boolean oneWayBike;
-    private int maxSpeed = 50;
+    private int maxSpeed = 30;
 
     /**
      * Calculate and return the ElementSize of Way by getting the area of its bounding box.

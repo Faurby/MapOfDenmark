@@ -328,8 +328,8 @@ public class MainController extends BaseController {
         task.setOnFailed(e -> task.getException().printStackTrace());
         Thread thread = new Thread(task);
         thread.start();
-    }
 
+    }
     @FXML
     public void loadNewFile() {
         FileChooser fileChooser = new FileChooser();
