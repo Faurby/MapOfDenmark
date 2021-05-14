@@ -98,12 +98,22 @@ public class NavigationBoxController extends SubController {
             originScrollPane.setVisible(true);
             originScrollPane.setManaged(true);
         });
+
         destinationTextArea.setOnMouseClicked(event -> {
             originScrollPane.setVisible(false);
             originScrollPane.setManaged(false);
             destinationScrollPane.setVisible(true);
             destinationScrollPane.setManaged(true);
         });
+
+        //Necessary if destinationTextArea is reached from originTextArea without clicking
+        destinationTextArea.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                destinationScrollPane.setVisible(true);
+                destinationScrollPane.setManaged(true);
+            }
+        });
+
         addressTextArea.setOnMouseClicked(event -> {
             addressScrollPane.setVisible(true);
             addressScrollPane.setManaged(true);
