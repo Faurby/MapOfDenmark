@@ -1,69 +1,93 @@
 package bfst21.test;
 
-
 import bfst21.address.OsmAddress;
 import bfst21.address.TST;
-import bfst21.osm.Node;
-import bfst21.view.controllers.MainController;
-import bfst21.view.controllers.NavigationBoxController;
+import bfst21.models.Model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class AddressSearchTest {
 
+    private TST addressTries;
+    private List<String> suggestions;
+    private List<OsmAddress> osmSuggestions;
+
     @BeforeEach
-    void setup() {
+    void setup() throws XMLStreamException, IOException, ClassNotFoundException {
+        Model model = new Model("data/amager.zip", false);
+        model.load(true);
 
+        addressTries = model.getMapData().getAddressTries();
+        suggestions = new ArrayList<>();
+        osmSuggestions = new ArrayList<>();
     }
 
     @Test
-    public void emptySearchSuggestions() {
-        List<String> suggestions = new ArrayList<>();
-        List<OsmAddress> osmSuggestions = new ArrayList<>();
+    public void updateSuggestions_partialStreet_correctOutput() {
+        addressTries.updateSuggestions("Amag", suggestions, osmSuggestions);
 
-        String input = "amager";
-
-        TST tst = new TST();
-        tst.put("amagerbro1234", Arrays.asList(new OsmAddress(new Node(1, 1))));
-        tst.updateSuggestions(input, suggestions, osmSuggestions);
-
-        System.out.println(suggestions.size());
-        System.out.println(osmSuggestions.size());
+        assertEquals(10, suggestions.size());
+        assertEquals(10, osmSuggestions.size());
     }
 
     @Test
-    public void emptyTextAreaProvokesWarning() {
-        //Type ""
+    public void updateSuggestions_fullStreet_correctOutput() {
+        addressTries.updateSuggestions("Amagerbrogade", suggestions, osmSuggestions);
+
+        assertEquals(330, suggestions.size());
+        assertEquals(330, osmSuggestions.size());
     }
 
     @Test
-    public void hasSearchSuggestions() {
-        //Type Amar
-        //Type Gyld
-        //Type negativeTest
+    public void updateSuggestions_streetWithNumber_correctOutput() {
+        addressTries.updateSuggestions("Amagerbrogade 2,", suggestions, osmSuggestions);
+
+        assertEquals(1, suggestions.size());
+        assertEquals(1, osmSuggestions.size());
+    }
+
+
+    @Test
+    public void updateSuggestions_fullAddress_correctOutput() {
+        addressTries.updateSuggestions("Amagerbrogade 2, København S 2300", suggestions, osmSuggestions);
+
+        assertEquals(1, suggestions.size());
+        assertEquals(1, osmSuggestions.size());
     }
 
     @Test
-    public void providesExactMatch() {
-        //Type Rued Langgards Vej
-    }
+    public void updateSuggestions_randomSearch_correctOutput() {
+        addressTries.updateSuggestions("AAAAAAAAAAAAAA", suggestions, osmSuggestions);
 
-    @Test
-    public void providesCorrectSuggestionsWhenExactMatch() {
-        //Type Rued Langgards Vej 7
-    }
+        assertEquals(1, suggestions.size());
+        assertEquals(1, osmSuggestions.size());
 
-    @Test
-    public void providesSuggestionsWhenGibberish() {
-        //Type AAAAA
-        //Type trfdfh
-        //Type 6789
-        //Type ?!!!?
-        //Type A?!!!?
+        addressTries.updateSuggestions("trfdfhha", suggestions, osmSuggestions);
+
+        assertEquals(20, suggestions.size());
+        assertEquals(20, osmSuggestions.size());
+
+        addressTries.updateSuggestions("67899425", suggestions, osmSuggestions);
+
+        assertEquals(0, suggestions.size());
+        assertEquals(0, osmSuggestions.size());
+
+        addressTries.updateSuggestions("?!!!?!", suggestions, osmSuggestions);
+
+        assertEquals(0, suggestions.size());
+        assertEquals(0, osmSuggestions.size());
+
+        addressTries.updateSuggestions("A?!!!?", suggestions, osmSuggestions);
+
+        assertEquals(128, suggestions.size());
+        assertEquals(128, osmSuggestions.size());
     }
 }
