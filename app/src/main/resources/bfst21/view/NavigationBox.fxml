@@ -154,7 +154,8 @@
 
         <HBox fx:id="transportModeHBox">
             <ToggleButton fx:id="selectCarButton"
-                          selected="true">
+                          selected="true"
+                          styleClass="navigationButton">
                 <tooltip>
                     <Tooltip text="By Car"/>
                 </tooltip>
@@ -172,7 +173,7 @@
 
             </ToggleButton>
 
-            <ToggleButton fx:id="selectBikeButton">
+            <ToggleButton fx:id="selectBikeButton" styleClass="navigationButton">
                 <tooltip>
                     <Tooltip text="By Bike"/>
                 </tooltip>
@@ -190,7 +191,7 @@
 
             </ToggleButton>
 
-            <ToggleButton fx:id="selectWalkButton">
+            <ToggleButton fx:id="selectWalkButton" styleClass="navigationButton">
                 <tooltip>
                     <Tooltip text="Walking"/>
                 </tooltip>
@@ -253,7 +254,7 @@
 
         </HBox>
         <VBox fx:id="navigationDescriptionBox">
-            <Text fx:id="routeDetails"></Text>
+            <Text fx:id="routeDetails"/>
             <ListView fx:id="navigationListView"/>
         </VBox>
     </VBox>

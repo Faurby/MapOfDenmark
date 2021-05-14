@@ -317,8 +317,8 @@ public class NavigationBoxController extends SubController {
                 navigationListView.setMinHeight(27.0D);
 
             } else if (navListSize < 15) {
-                navigationListView.setMaxHeight(navListSize * 24.0D);
-                navigationListView.setMinHeight(navListSize * 24.0D);
+                navigationListView.setMaxHeight(navListSize * 23.2D);
+                navigationListView.setMinHeight(navListSize * 23.2D);
             } else {
                 navigationListView.setMaxHeight(350.0D);
                 navigationListView.setMinHeight(350.0D);
