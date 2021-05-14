@@ -49,11 +49,12 @@ public class UserNode extends Node implements Serializable {
         double x = getX() - (7.0D / zoomLevel);
         double y = getY() - (7.0D / zoomLevel);
 
-
         if (colorMode == ColorMode.DARK_MODE) {
             gc.drawImage(whiteStar, x, y, 14.0D / zoomLevel, 14.0D / zoomLevel);
+
         } else if (colorMode == ColorMode.COLOR_BLIND) {
             gc.drawImage(blueStar, x, y, 14.0D / zoomLevel, 14.0D / zoomLevel);
+
         } else {
             gc.drawImage(lightBlueStar, x, y, 14.0D / zoomLevel, 14.0D / zoomLevel);
         }
