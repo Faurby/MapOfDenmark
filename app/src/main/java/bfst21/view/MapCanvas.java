@@ -1,15 +1,14 @@
 package bfst21.view;
 
-import bfst21.models.DisplayOptions;
-import bfst21.models.DisplayOption;
+import bfst21.models.*;
 import bfst21.osm.*;
 import bfst21.pathfinding.*;
 import bfst21.tree.BoundingBox;
-import bfst21.models.Model;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.StrokeLineCap;
@@ -27,7 +26,7 @@ public class MapCanvas extends Canvas {
 
     private Model model;
 
-    private final double zoomLevelMin = 50.0D, zoomLevelMax = 100_000.0D;
+    private final double zoomLevelMin = 50.0D, zoomLevelMax = 200_000.0D;
     private double zoomLevel;
     private double widthModifier = 1.0D;
 
@@ -46,6 +45,7 @@ public class MapCanvas extends Canvas {
 
     private List<String> currentDirections = new ArrayList<>();
     private int currentRouteWeight;
+    private float routeDistance;
 
     /**
      * Initializes MapCanvas with the given Model.
@@ -217,11 +217,8 @@ public class MapCanvas extends Canvas {
      * Draws every point of interest created by the user.
      */
     private void drawUserNodes() {
-        gc.setStroke(Color.BLUE);
-        gc.setLineWidth(10.0D * (1.0D / Math.sqrt(trans.determinant())));
-
         for (UserNode userNode : model.getMapData().getUserNodes()) {
-            userNode.draw(gc, 0.0D);
+            userNode.draw(gc, zoomLevel, colorMode);
         }
     }
 
@@ -239,16 +236,26 @@ public class MapCanvas extends Canvas {
 
             if (edgeList.size() > 0) {
 
-                gc.setStroke(Color.RED);
+                gc.setStroke(Color.rgb(66, 133, 244));
                 gc.setLineWidth(3.0D * (1.0D / Math.sqrt(trans.determinant())));
 
                 currentDirections = new ArrayList<>();
 
                 gc.beginPath();
+                routeDistance = 0;
                 float distanceSum = 0;
                 int exitCount = 0;
                 double weightSum = 0;
 
+                if (edgeList.size() == 1) {
+                    Edge before = edgeList.get(0);
+
+                    before.draw(directedGraph, gc);
+                    distanceSum = before.getDistance() * 1_000.0f;
+                    routeDistance = distanceSum;
+                    currentDirections.add("Follow " + before.getName() + " " + distanceSumToString(distanceSum));
+                }
+                
                 for (int i = 0; i < (edgeList.size() - 1); i++) {
                     Edge before = edgeList.get(i);
                     Edge after = edgeList.get(i + 1);
@@ -272,6 +279,7 @@ public class MapCanvas extends Canvas {
                         float distanceAfter = after.getDistance() * 1_000f;
 
                         distanceSum += distanceBefore;
+                        routeDistance += distanceBefore;
 
                         before.draw(directedGraph, gc);
 
@@ -292,7 +300,9 @@ public class MapCanvas extends Canvas {
                             after.draw(directedGraph, gc);
                             weightSum += after.getWeight();
                             currentRouteWeight = (int) Math.ceil(weightSum);
-                            currentDirections.add("Follow " + after.getName() + " " + distanceSumToString(distanceSum + distanceAfter));
+                            distanceSum += distanceAfter;
+                            routeDistance += distanceAfter;
+                            currentDirections.add("Follow " + after.getName() + " " + distanceSumToString(distanceSum));
                         }
                     }
                 }
@@ -532,17 +542,26 @@ public class MapCanvas extends Canvas {
         currentRouteWeight = 0;
     }
 
-    public String getCurrentRouteWeightToString() {
-        if (currentRouteWeight > 60) {
-            int hours = currentRouteWeight / 60;
-            int minutes = currentRouteWeight % 60;
+    public String getCurrentRouteDuration() {
+        int duration = currentRouteWeight;
+
+        TransportOption current = TransportOptions.getInstance().getCurrentlyEnabled();
+        if (current == TransportOption.BIKE) {
+            duration = (int) Math.ceil(routeDistance / 1000.0f * 60.0f / 15.0f);
+        } else if (current == TransportOption.WALK) {
+            duration = (int) Math.ceil(routeDistance / 1000.0f * 60.0f / 5.0f);
+        }
+
+        if (duration > 60) {
+            int hours = duration / 60;
+            int minutes = duration % 60;
             String minutesString = "";
             if (minutes != 0) {
                 minutesString = minutes + " minute(s)";
             }
-            return "Route duration: " + hours + " hour(s) " + minutesString;
+            return "Estimated duration: " + hours + " hour(s) " + minutesString;
         } else {
-            return "Route duration: " + currentRouteWeight + " min";
+            return "Estimated duration: " + duration + " min";
         }
     }
 
@@ -550,7 +569,14 @@ public class MapCanvas extends Canvas {
         if (distance >= 1_000.0f) {
             distance /= 1_000.0f;
             String distanceString = "" + distance;
-            return distanceString.substring(0, 3) + " km";
+
+            if (distanceString.contains(".")) {
+                String[] split = distanceString.split("\\.");
+                return split[0] + "." + split[1].charAt(0) + " km";
+
+            } else {
+                return distanceString + " km";
+            }
 
         } else if (distance > 10.0f) {
             distance = (Math.round(distance / 10.0f) * 10.0f);
@@ -558,5 +584,12 @@ public class MapCanvas extends Canvas {
 
         }
         return (int) distance + " m";
+    }
+
+    public String getRouteDistanceToString() {
+        //for dijkstra test
+        System.out.println(routeDistance + " m");
+
+        return "Distance: " + distanceSumToString(routeDistance);
     }
 }

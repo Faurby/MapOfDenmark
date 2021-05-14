@@ -303,6 +303,12 @@ public class DirectedGraph implements Serializable {
     }
 
     public Direction getDirectionFromBearing(Edge before, Edge after) {
+        if (before.getName() != null && after.getName() != null) {
+            if (before.getName().equals(after.getName())) {
+                return Direction.STRAIGHT;
+            }
+        }
+        
         float angle;
         Direction output = Direction.STRAIGHT;
 

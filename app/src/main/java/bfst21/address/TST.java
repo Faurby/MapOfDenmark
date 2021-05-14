@@ -1,25 +1,27 @@
 package bfst21.address;
 
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
  * Ternary search trie from the algs4 library by Robert Sedgewick and Kevin Wayne.
  * Implements Serializable so it can be saved in an .obj file.
  */
-public class TST<Value> implements Serializable {
+public class TST implements Serializable {
 
     private static final long serialVersionUID = -3195198871698251378L;
 
     private int n;              // size
-    private Node<Value> root;   // root of TST
+    private Node root;   // root of TST
 
-    private static class Node<Value> implements Serializable {
+    private static class Node implements Serializable {
         private static final long serialVersionUID = 1097052710816157996L;
 
         private byte c;                        // character
-        private Node<Value> left, mid, right;  // left, middle, and right subtries
-        private Value val;                     // value associated with string
+        private Node left, mid, right;  // left, middle, and right subtries
+        private List<OsmAddress> val;                     // value associated with string
     }
 
     /**
@@ -60,18 +62,18 @@ public class TST<Value> implements Serializable {
      * and {@code null} if the key is not in the symbol table
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
-    public Value get(String key) {
+    public List<OsmAddress> get(String key) {
         if (key == null) {
             throw new IllegalArgumentException("calls get() with null argument");
         }
         if (key.length() == 0) throw new IllegalArgumentException("key must have length >= 1");
-        Node<Value> x = get(root, key, 0);
+        Node x = get(root, key, 0);
         if (x == null) return null;
         return x.val;
     }
 
     // return subtrie corresponding to given key
-    private Node<Value> get(Node<Value> x, String key, int d) {
+    private Node get(Node x, String key, int d) {
         if (x == null) return null;
         if (key.length() == 0) throw new IllegalArgumentException("key must have length >= 1");
         byte c = Alphabet.getByteValue(key.charAt(d));
@@ -90,7 +92,7 @@ public class TST<Value> implements Serializable {
      * @param val the value
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
-    public void put(String key, Value val) {
+    public void put(String key, List<OsmAddress> val) {
         if (key == null) {
             throw new IllegalArgumentException("calls put() with null key");
         }
@@ -99,10 +101,10 @@ public class TST<Value> implements Serializable {
         root = put(root, key, val, 0);
     }
 
-    private Node<Value> put(Node<Value> x, String key, Value val, int d) {
+    private Node put(Node x, String key, List<OsmAddress> val, int d) {
         byte c = Alphabet.getByteValue(key.charAt(d));
         if (x == null) {
-            x = new Node<>();
+            x = new Node();
             x.c = c;
         }
         if (c < x.c) x.left = put(x.left, key, val, d);
@@ -110,53 +112,6 @@ public class TST<Value> implements Serializable {
         else if (d < key.length() - 1) x.mid = put(x.mid, key, val, d + 1);
         else x.val = val;
         return x;
-    }
-
-    /**
-     * Returns the string in the symbol table that is the longest prefix of {@code query},
-     * or {@code null}, if no such string.
-     *
-     * @param query the query string
-     * @return the string in the symbol table that is the longest prefix of {@code query},
-     * or {@code null} if no such string
-     * @throws IllegalArgumentException if {@code query} is {@code null}
-     */
-    public String longestPrefixOf(String query) {
-        if (query == null) {
-            throw new IllegalArgumentException("calls longestPrefixOf() with null argument");
-        }
-        if (query.length() == 0) {
-            return null;
-        }
-        int length = 0;
-        Node<Value> x = root;
-        int i = 0;
-        while (x != null && i < query.length()) {
-            byte c = Alphabet.getByteValue(query.charAt(i));
-            if (c < x.c) {
-                x = x.left;
-            } else if (c > x.c) {
-                x = x.right;
-            } else {
-                i++;
-                if (x.val != null) length = i;
-                x = x.mid;
-            }
-        }
-        return query.substring(0, length);
-    }
-
-    /**
-     * Returns all keys in the symbol table as an {@code Iterable}.
-     * To iterate over all of the keys in the symbol table named {@code st},
-     * use the foreach notation: {@code for (Key key : st.keys())}.
-     *
-     * @return all keys in the symbol table as an {@code Iterable}
-     */
-    public Iterable<String> keys() {
-        Queue<String> queue = new Queue<>();
-        collect(root, new StringBuilder(), queue);
-        return queue;
     }
 
     /**
@@ -172,7 +127,7 @@ public class TST<Value> implements Serializable {
             throw new IllegalArgumentException("calls keysWithPrefix() with null argument");
         }
         Queue<String> queue = new Queue<>();
-        Node<Value> x = get(root, prefix, 0);
+        Node x = get(root, prefix, 0);
         if (x == null) {
             return queue;
         }
@@ -184,7 +139,7 @@ public class TST<Value> implements Serializable {
     }
 
     // all keys in subtrie rooted at x with given prefix
-    private void collect(Node<Value> x, StringBuilder prefix, Queue<String> queue) {
+    private void collect(Node x, StringBuilder prefix, Queue<String> queue) {
         if (x == null) {
             return;
         }
@@ -197,38 +152,62 @@ public class TST<Value> implements Serializable {
         collect(x.right, prefix, queue);
     }
 
+    public void updateSuggestions(String input, List<String> suggestions, List<OsmAddress> osmSuggestions) {
+        suggestions.clear();
+        osmSuggestions.clear();
 
-    /**
-     * Returns all of the keys in the symbol table that match {@code pattern},
-     * where . symbol is treated as a wildcard character.
-     *
-     * @param pattern the pattern
-     * @return all of the keys in the symbol table that match {@code pattern},
-     * as an iterable, where . is treated as a wildcard character.
-     */
-    public Iterable<String> keysThatMatch(String pattern) {
-        Queue<String> queue = new Queue<>();
-        collect(root, new StringBuilder(), 0, pattern, queue);
-        return queue;
+        String addressInput = input.replace(" ", "").toLowerCase();
+
+        Iterator<String> it = keysWithPrefix(addressInput).iterator();
+
+        //If the string doesn't return matches, find a substring that does
+        if (!it.hasNext()) {
+            addressInput = findLongestSubstringWithMatches(addressInput);
+            it = keysWithPrefix(addressInput).iterator();
+        }
+
+        //Has a valid street name been typed? Either street names or house numbers are then suggested
+        String streetName = null;
+        if (it.hasNext()) {
+            String streetInfo = keysWithPrefix(addressInput).iterator().next();
+            streetName = streetInfo.substring(0, streetInfo.length() - 4);
+        }
+
+        if (addressInput.equals(streetName)) {
+
+            if (it.hasNext()) {
+                for (OsmAddress osmAddress : get(it.next())) {
+                    osmSuggestions.add(osmAddress);
+
+                    String address = osmAddress.toString();
+                    suggestions.add(address);
+                }
+            }
+        } else {
+            while (it.hasNext()) {
+                osmSuggestions.add(get(it.next()).get(0));
+            }
+            for (OsmAddress osmAddress : osmSuggestions) {
+                String address = osmAddress.omitHouseNumberToString();
+
+                suggestions.add(address);
+            }
+        }
     }
 
-    private void collect(Node<Value> x, StringBuilder prefix, int i, String pattern, Queue<String> queue) {
-        if (x == null) {
-            return;
-        }
-        byte c = Alphabet.getByteValue(pattern.charAt(i));
-        if (c == '.' || c < x.c) {
-            collect(x.left, prefix, i, pattern, queue);
-        }
-        if (c == '.' || c == x.c) {
-            if (i == pattern.length() - 1 && x.val != null) {
-                queue.enqueue(prefix.toString() + Alphabet.getCharValue(x.c));
-            }
-            if (i < pattern.length() - 1) {
-                collect(x.mid, prefix.append(Alphabet.getCharValue(x.c)), i + 1, pattern, queue);
-                prefix.deleteCharAt(prefix.length() - 1);
+    private String findLongestSubstringWithMatches(String addressInput) {
+
+        int endIndex = addressInput.length() - 1;
+        while (endIndex >= 1) {
+            String subStringInput = addressInput.substring(0, endIndex);
+            Iterator<String> it = keysWithPrefix(subStringInput).iterator();
+
+            if (it.hasNext()) {
+                return subStringInput;
+            } else {
+                endIndex--;
             }
         }
-        if (c == '.' || c > x.c) collect(x.right, prefix, i, pattern, queue);
+        return addressInput;
     }
 }

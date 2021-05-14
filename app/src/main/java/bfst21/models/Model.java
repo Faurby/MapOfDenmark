@@ -2,6 +2,8 @@ package bfst21.models;
 
 import bfst21.data.BinaryFileManager;
 import bfst21.data.XmlParser;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,6 +17,7 @@ public class Model {
 
     private final String defaultFileName;
     private final boolean jarFile;
+    boolean errorLoading;
 
     private MapData mapData;
     private String fileName;
@@ -63,11 +66,20 @@ public class Model {
                 mapData = binaryFileManager.loadOBJ(fileName, jarFile);
             }
         } else {
-            System.out.println("File does not exist: " + fileName);
-            //TODO: Present an error to the user if the file doesn't exist.
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("ERROR");
+                alert.setHeaderText("File doesn't exist!");
+                alert.setContentText("It seems the default file doesn't exist");
+                alert.showAndWait();
+            });
         }
         totalTime += System.nanoTime();
         System.out.println("Total load time: " + totalTime / 1_000_000L + "ms");
+    }
+
+    public boolean isErrorLoading() {
+        return errorLoading;
     }
 
     public MapData getMapData() {

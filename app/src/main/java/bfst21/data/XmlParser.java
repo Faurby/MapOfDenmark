@@ -55,7 +55,7 @@ public class XmlParser {
         Relation relation = null;
         OsmAddress osmAddress = null;
         ElementType elementType = null;
-        TST<List<OsmAddress>> addressTries = new TST<>();
+        TST addressTries = new TST();
 
         ElementLongIndex<Element<Node>> nodeLongIndex = new ElementLongIndex<>();
         ElementLongIndex<Element<Way>> wayLongIndex = new ElementLongIndex<>();
@@ -253,7 +253,7 @@ public class XmlParser {
                                         }
                                         break;
                                     case "railway":
-                                        if (value.equals("rail")) {
+                                        if (value.equals("rail") || value.equals("subway")) {
                                             elementType = ElementType.RAILWAY;
                                         }
                                         break;

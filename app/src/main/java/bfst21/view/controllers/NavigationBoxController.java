@@ -23,7 +23,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -70,20 +69,20 @@ public class NavigationBoxController extends SubController {
     @FXML
     private ListView<String> navigationListView;
     @FXML
-    private Text durationText;
+    private Text routeDetails;
 
     private final TransportOptions transOptions = TransportOptions.getInstance();
 
-    private List<OsmAddress> allSuggestionsOrigin = new ArrayList<>();
-    private List<OsmAddress> allSuggestionsDestination = new ArrayList<>();
+    private final List<OsmAddress> allSuggestionsOrigin = new ArrayList<>();
+    private final List<OsmAddress> allSuggestionsDestination = new ArrayList<>();
 
-    private List<String> shownSuggestionsOrigin = new ArrayList<>();
-    private List<String> shownSuggestionsDestination = new ArrayList<>();
+    private final List<String> shownSuggestionsOrigin = new ArrayList<>();
+    private final List<String> shownSuggestionsDestination = new ArrayList<>();
 
     private Task<Void> addressSuggestionTask;
     private Task<Void> dijkstraTask;
 
-    private TST<List<OsmAddress>> addressTries;
+    private TST addressTries;
 
     private boolean isNavigationBoxExpanded = false;
 
@@ -127,17 +126,10 @@ public class NavigationBoxController extends SubController {
 
         if (!address.isEmpty()) {
 
-            boolean found = false;
             for (OsmAddress osmAddress : allSuggestionsOrigin) {
-                if (osmAddress.toString().toLowerCase().contains(address)) {
-                    found = true;
+                if (osmAddress.matches(address)) {
+
                     addressTextArea.setText(osmAddress.toString());
-                }
-                if (osmAddress.omitHouseNumberToString().toLowerCase().contains(address)) {
-                    found = true;
-                    addressTextArea.setText(osmAddress.omitHouseNumberToString());
-                }
-                if (found) {
                     Pin.DESTINATION.setCoords(osmAddress.getNodeCoords());
                     Pin.DESTINATION.setVisible(true);
 
@@ -243,7 +235,7 @@ public class NavigationBoxController extends SubController {
             displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the destination point");
 
         } else {
-            String startingAddress = originTextArea.getText().trim().toLowerCase();
+            String originAddress = originTextArea.getText().trim().toLowerCase();
             String destinationAddress = destinationTextArea.getText().trim().toLowerCase();
 
             originSuggestionsBox.getChildren().clear();
@@ -252,34 +244,18 @@ public class NavigationBoxController extends SubController {
             float[] originCoords = null;
             float[] destinationCoords = null;
 
-            boolean originFound = false;
-            for (OsmAddress osmAddressS : allSuggestionsOrigin) {
-                if (osmAddressS.toString().toLowerCase().contains(startingAddress)) {
-                    originFound = true;
-                    originTextArea.setText(osmAddressS.toString());
-                }
-                if (osmAddressS.omitHouseNumberToString().toLowerCase().contains(startingAddress)) {
-                    originFound = true;
-                    originTextArea.setText(osmAddressS.omitHouseNumberToString());
-                }
-                if (originFound) {
-                    originCoords = new float[]{osmAddressS.getNode().getX(), osmAddressS.getNode().getY()};
+            for (OsmAddress osmAddress : allSuggestionsOrigin) {
+                if (osmAddress.matches(originAddress)) {
+                    originTextArea.setText(osmAddress.toString());
+                    originCoords = new float[]{osmAddress.getNode().getX(), osmAddress.getNode().getY()};
                     break;
                 }
             }
 
-            boolean destinationFound = false;
-            for (OsmAddress osmAddressD : allSuggestionsDestination) {
-                if (osmAddressD.toString().toLowerCase().contains(destinationAddress)) {
-                    destinationFound = true;
-                    destinationTextArea.setText(osmAddressD.toString());
-                }
-                if (osmAddressD.omitHouseNumberToString().toLowerCase().contains(destinationAddress)) {
-                    destinationFound = true;
-                    destinationTextArea.setText(osmAddressD.omitHouseNumberToString());
-                }
-                if (destinationFound) {
-                    destinationCoords = new float[]{osmAddressD.getNode().getX(), osmAddressD.getNode().getY()};
+            for (OsmAddress osmAddress : allSuggestionsDestination) {
+                if (osmAddress.matches(destinationAddress)) {
+                    destinationTextArea.setText(osmAddress.toString());
+                    destinationCoords = new float[]{osmAddress.getNode().getX(), osmAddress.getNode().getY()};
                     break;
                 }
             }
@@ -333,7 +309,7 @@ public class NavigationBoxController extends SubController {
             navigationDescriptionBox.setVisible(true);
             navigationDescriptionBox.setManaged(true);
 
-            durationText.setText(mainController.getCanvas().getCurrentRouteWeightToString());
+            routeDetails.setText(mainController.getCanvas().getCurrentRouteDuration() + "\n" + mainController.getCanvas().getRouteDistanceToString());
 
             int navListSize = navigationListView.getItems().size();
             if (navListSize == 1) {
@@ -366,49 +342,50 @@ public class NavigationBoxController extends SubController {
         }
 
         for (String s : localShownSuggestions) {
-            if (count <= 500) {
-                Label b = new Label(s);
-                b.setPrefWidth(800.0D);
-                b.setOnMouseClicked((event) -> {
-                    textArea.setText(b.getText());
+            if (count <= 1000) {
+                Label label = new Label(s);
+                label.setPrefWidth(800.0D);
+                label.setOnMouseClicked((event) -> {
+                    textArea.setText(label.getText());
                     suggestions.getChildren().clear();
                     textArea.requestFocus();
                     textArea.end();
                 });
 
-                //TODO investigate why this line can't be deleted without ruining the "downarrow" function
+                //This line is necessary to remove other functionality
                 suggestions.setOnKeyPressed((event) -> {
                 });
 
-                b.setOnKeyPressed((event) -> {
-                    if (event.getCode() == KeyCode.UP && suggestions.getChildren().size() > 0 && suggestions.getChildren().indexOf(b) > 0) {
-                        Node node = suggestions.getChildren().get(suggestions.getChildren().indexOf(b) - 1);
-                        node.requestFocus();
-                        centerLabelInScrollPane(scrollPane, node);
+                label.setOnKeyPressed((event) -> {
+                    if (event.getCode() == KeyCode.UP && suggestions.getChildren().size() > 0 && suggestions.getChildren().indexOf(label) > 0) {
+                        Node previous = suggestions.getChildren().get(suggestions.getChildren().indexOf(label) - 1);
+                        previous.requestFocus();
+                        centerLabelInScrollPane(scrollPane, previous);
 
-                    } else if ((event.getCode() == KeyCode.DOWN && suggestions.getChildren().size() > 0) && suggestions.getChildren().indexOf(b) < suggestions.getChildren().size() - 1) {
-                        Node node = suggestions.getChildren().get(suggestions.getChildren().indexOf(b) + 1);
-                        node.requestFocus();
-                        centerLabelInScrollPane(scrollPane, node);
+                    } else if ((event.getCode() == KeyCode.DOWN && suggestions.getChildren().size() > 0) && suggestions.getChildren().indexOf(label) < suggestions.getChildren().size() - 1) {
+                        Node next = suggestions.getChildren().get(suggestions.getChildren().indexOf(label) + 1);
+                        next.requestFocus();
+                        centerLabelInScrollPane(scrollPane, next);
 
                     } else if (event.getCode() == KeyCode.ENTER) {
-                        textArea.setText(b.getText());
+                        textArea.setText(label.getText());
                         scrollPane.setVisible(false);
                         scrollPane.setManaged(false);
                     }
                 });
 
-                suggestions.getChildren().add(b);
+                suggestions.getChildren().add(label);
                 count++;
             }
         }
     }
 
-    //TODO this is almost directly from stackoverflow, should I rewrite it more?
-    public void centerLabelInScrollPane(ScrollPane scrollPane, Node b) {
+    //TODO this is directly from stackoverflow, should I rewrite it more?
+    public void centerLabelInScrollPane(ScrollPane scrollPane, Node node) {
         double h = scrollPane.getContent().getBoundsInLocal().getHeight();
-        double y = (b.getBoundsInParent().getMaxY() + b.getBoundsInParent().getMinY()) / 2.0;
+        double y = (node.getBoundsInParent().getMaxY() + node.getBoundsInParent().getMinY()) / 2.0;
         double v = scrollPane.getViewportBounds().getHeight();
+
         scrollPane.setVvalue(scrollPane.getVmax() * ((y - 0.5 * v) / (h - v)));
     }
 
@@ -422,71 +399,13 @@ public class NavigationBoxController extends SubController {
 
             @Override
             protected Void call() {
-                List<OsmAddress> localAllSuggestions;
-                if (extended) {
-                    shownSuggestionsDestination = new ArrayList<>();
-                    localAllSuggestions = allSuggestionsDestination;
-                } else {
-                    shownSuggestionsOrigin = new ArrayList<>();
-                    localAllSuggestions = allSuggestionsOrigin;
-                }
+                String input = textArea.getText();
                 updateAddressTries();
 
-                String input = textArea.getText();
-                String addressInput = input.replace(" ", "").toLowerCase();
-
-                Iterator<String> it = addressTries.keysWithPrefix(addressInput).iterator();
-
-                //If the string doesn't return matches, find a substring that does
-                if (!it.hasNext()) {
-                    addressInput = findLongestSubstringWithMatches(addressInput);
-                    it = addressTries.keysWithPrefix(addressInput).iterator();
-                }
-
-                //Has a valid street name been typed? Either street names or house numbers are then suggested
-                String streetName = null;
-                if (it.hasNext()) {
-                    String streetInfo = addressTries.keysWithPrefix(addressInput).iterator().next();
-                    streetName = streetInfo.substring(0, streetInfo.length() - 4);
-                }
-
-                if (addressInput.equals(streetName)) {
-
-                    if (it.hasNext()) {
-                        localAllSuggestions = addressTries.get(it.next());
-                    }
-                    if (localAllSuggestions.size() > 0) {
-                        for (OsmAddress osmAddress : localAllSuggestions) {
-                            String address = osmAddress.toString();
-
-                            if (extended) {
-                                shownSuggestionsDestination.add(address);
-                            } else {
-                                shownSuggestionsOrigin.add(address);
-                            }
-                        }
-                    }
-                } else {
-
-                    localAllSuggestions = new ArrayList<>();
-
-                    while (it.hasNext()) {
-                        localAllSuggestions.add(addressTries.get(it.next()).get(0));
-                    }
-                    for (OsmAddress osmAddress : localAllSuggestions) {
-                        String address = osmAddress.omitHouseNumberToString();
-
-                        if (extended) {
-                            shownSuggestionsDestination.add(address);
-                        } else {
-                            shownSuggestionsOrigin.add(address);
-                        }
-                    }
-                }
                 if (extended) {
-                    allSuggestionsDestination = localAllSuggestions;
+                    addressTries.updateSuggestions(input, shownSuggestionsDestination, allSuggestionsDestination);
                 } else {
-                    allSuggestionsOrigin = localAllSuggestions;
+                    addressTries.updateSuggestions(input, shownSuggestionsOrigin, allSuggestionsOrigin);
                 }
                 return null;
             }
@@ -498,27 +417,14 @@ public class NavigationBoxController extends SubController {
         thread.start();
     }
 
-    private String findLongestSubstringWithMatches(String addressInput) {
-
-        int endIndex = addressInput.length() - 1;
-        while (endIndex >= 1) {
-            String subStringInput = addressInput.substring(0, endIndex);
-            Iterator<String> it = addressTries.keysWithPrefix(subStringInput).iterator();
-
-            if (it.hasNext()) {
-                return subStringInput;
-            } else {
-                endIndex--;
-            }
-        }
-        return addressInput;
-    }
-
     @FXML
     public void switchAddressText() {
-        List<OsmAddress> temp = allSuggestionsOrigin;
-        allSuggestionsOrigin = allSuggestionsDestination;
-        allSuggestionsDestination = temp;
+        List<OsmAddress> temp = new ArrayList<>(allSuggestionsOrigin);
+
+        allSuggestionsOrigin.clear();
+        allSuggestionsOrigin.addAll(allSuggestionsDestination);
+        allSuggestionsDestination.clear();
+        allSuggestionsDestination.addAll(temp);
 
         String s = originTextArea.getText();
         originTextArea.setText(destinationTextArea.getText());
@@ -567,7 +473,8 @@ public class NavigationBoxController extends SubController {
         if (addressTextArea.getText() != null) {
             destinationTextArea.setText(addressTextArea.getText());
             originTextArea.setText("");
-            allSuggestionsDestination = allSuggestionsOrigin;
+            allSuggestionsDestination.clear();
+            allSuggestionsDestination.addAll(allSuggestionsOrigin);
         }
     }
 
@@ -579,7 +486,8 @@ public class NavigationBoxController extends SubController {
 
         if (!destinationTextArea.getText().isEmpty() && originTextArea.getText().isEmpty()) {
             addressTextArea.setText(destinationTextArea.getText());
-            allSuggestionsOrigin = allSuggestionsDestination;
+            allSuggestionsOrigin.clear();
+            allSuggestionsOrigin.addAll(allSuggestionsDestination);
 
         } else if (!originTextArea.getText().isEmpty()) {
             addressTextArea.setText(originTextArea.getText());
@@ -630,7 +538,7 @@ public class NavigationBoxController extends SubController {
         suggestionsBox.getChildren().clear();
         originSuggestionsBox.getChildren().clear();
         destinationSuggestionsBox.getChildren().clear();
-        durationText.setText("");
+        routeDetails.setText("");
         navigationDescriptionBox.setVisible(false);
         navigationDescriptionBox.setManaged(false);
 
