@@ -550,9 +550,9 @@ public class MapCanvas extends Canvas {
             if (minutes != 0) {
                 minutesString = minutes + " minute(s)";
             }
-            return "Route duration: " + hours + " hour(s) " + minutesString;
+            return "Estimated duration: " + hours + " hour(s) " + minutesString;
         } else {
-            return "Route duration: " + duration + " min";
+            return "Estimated duration: " + duration + " min";
         }
     }
 
@@ -568,5 +568,12 @@ public class MapCanvas extends Canvas {
 
         }
         return (int) distance + " m";
+    }
+
+    public String getRouteDistanceToString() {
+        //for dijkstra test
+        System.out.println(routeDistance + " m");
+
+        return "Distance: " + distanceSumToString(routeDistance);
     }
 }

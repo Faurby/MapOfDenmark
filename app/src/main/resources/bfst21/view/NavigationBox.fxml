@@ -121,7 +121,7 @@
                     <ImageView fitWidth="10.0"
                                preserveRatio="true"
                                styleClass="imageView">
-                        <Image url="/arrow.png"/>
+                        <Image url="/arrow19.png"/>
                     </ImageView>
                 </graphic>
 
@@ -135,7 +135,7 @@
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
                                styleClass="imageView">
-                        <Image url="/car_icon.png"/>
+                        <Image url="/car_icon32.png"/>
                     </ImageView>
                 </graphic>
 
@@ -150,7 +150,7 @@
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
                                styleClass="imageView">
-                        <Image url="/bike_icon.png"/>
+                        <Image url="/bike_icon32.png"/>
                     </ImageView>
                 </graphic>
 
@@ -166,7 +166,7 @@
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
                                styleClass="imageView">
-                        <Image url="/walk_icon.png"/>
+                        <Image url="/walk_icon32.png"/>
                     </ImageView>
                 </graphic>
 
@@ -192,7 +192,7 @@
                     text="Search"/>
         </HBox>
         <VBox fx:id="navigationDescriptionBox">
-            <Text fx:id="durationText"></Text>
+            <Text fx:id="routeDetails"></Text>
             <ListView fx:id="navigationListView"/>
         </VBox>
     </VBox>

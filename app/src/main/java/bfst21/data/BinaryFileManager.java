@@ -35,7 +35,7 @@ public class BinaryFileManager {
                 (List<Relation>) input.readObject(),
                 (List<MapText>) input.readObject(),
 
-                (TST<List<OsmAddress>>) input.readObject(),
+                (TST) input.readObject(),
 
                 (HashMap<ElementGroup, KdTree<Way>>) input.readObject(),
                 (KdTree<Relation>) input.readObject(),

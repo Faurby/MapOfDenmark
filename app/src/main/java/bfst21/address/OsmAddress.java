@@ -80,4 +80,13 @@ public class OsmAddress implements Serializable {
     public String omitHouseNumberToString() {
         return street + ", " + city + " " + postcode;
     }
+
+    public boolean matches(String input) {
+        input = input.toLowerCase();
+
+        if (toString().toLowerCase().contains(input)) {
+            return true;
+
+        } else return omitHouseNumberToString().toLowerCase().contains(input);
+    }
 }
