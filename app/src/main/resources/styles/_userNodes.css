@@ -34,7 +34,7 @@
 }
 
 #userNodeVBox {
-    -fx-max-width: 185;
+    -fx-max-width: 140;
     -fx-max-height: 120;
     -fx-spacing: 8;
     -fx-padding: 40 0 15 0;

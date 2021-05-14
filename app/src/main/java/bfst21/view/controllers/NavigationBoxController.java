@@ -366,57 +366,58 @@ public class NavigationBoxController extends SubController {
         }
 
         for (String s : localShownSuggestions) {
-            if (count <= 500) {
-                Label b = new Label(s);
-                b.setPrefWidth(800.0D);
-                b.setOnMouseClicked((event) -> {
-                    textArea.setText(b.getText());
+            if (count <= 1000) {
+                Label label = new Label(s);
+                label.setPrefWidth(800.0D);
+                label.setOnMouseClicked((event) -> {
+                    textArea.setText(label.getText());
                     suggestions.getChildren().clear();
                     textArea.requestFocus();
                     textArea.end();
                 });
-                b.setOnMouseEntered((event) -> b.setStyle("-fx-background-color:#dae7f3;"));
-                b.setOnMouseExited((event) -> b.setStyle("-fx-background-color: transparent;"));
-                b.focusedProperty().addListener((obs, oldVal, newVal) -> {
+                label.setOnMouseEntered((event) -> label.setStyle("-fx-background-color:#dae7f3;"));
+                label.setOnMouseExited((event) -> label.setStyle("-fx-background-color: transparent;"));
+                label.focusedProperty().addListener((obs, oldVal, newVal) -> {
                     if (newVal) {
-                        b.setStyle("-fx-background-color:#dae7f3;");
+                        label.setStyle("-fx-background-color:#dae7f3;");
                     } else {
-                        b.setStyle("-fx-background-color: transparent;");
+                        label.setStyle("-fx-background-color: transparent;");
                     }
                 });
 
-                //TODO investigate why this line can't be deleted without ruining the "downarrow" function
+                //This line is necessary to remove other functionality
                 suggestions.setOnKeyPressed((event) -> {});
 
-                b.setOnKeyPressed((event) -> {
-                    if (event.getCode() == KeyCode.UP && suggestions.getChildren().size() > 0 && suggestions.getChildren().indexOf(b) > 0) {
-                        Node node = suggestions.getChildren().get(suggestions.getChildren().indexOf(b) - 1);
-                        node.requestFocus();
-                        centerLabelInScrollPane(scrollPane, node);
+                label.setOnKeyPressed((event) -> {
+                    if (event.getCode() == KeyCode.UP && suggestions.getChildren().size() > 0 && suggestions.getChildren().indexOf(label) > 0) {
+                        Node previous = suggestions.getChildren().get(suggestions.getChildren().indexOf(label) - 1);
+                        previous.requestFocus();
+                        centerLabelInScrollPane(scrollPane, previous);
 
-                    } else if ((event.getCode() == KeyCode.DOWN && suggestions.getChildren().size() > 0) && suggestions.getChildren().indexOf(b) < suggestions.getChildren().size() - 1) {
-                        Node node = suggestions.getChildren().get(suggestions.getChildren().indexOf(b) + 1);
-                        node.requestFocus();
-                        centerLabelInScrollPane(scrollPane, node);
+                    } else if ((event.getCode() == KeyCode.DOWN && suggestions.getChildren().size() > 0) && suggestions.getChildren().indexOf(label) < suggestions.getChildren().size() - 1) {
+                        Node next = suggestions.getChildren().get(suggestions.getChildren().indexOf(label) + 1);
+                        next.requestFocus();
+                        centerLabelInScrollPane(scrollPane, next);
 
                     } else if (event.getCode() == KeyCode.ENTER) {
-                        textArea.setText(b.getText());
+                        textArea.setText(label.getText());
                         scrollPane.setVisible(false);
                         scrollPane.setManaged(false);
                     }
                 });
 
-                suggestions.getChildren().add(b);
+                suggestions.getChildren().add(label);
                 count++;
             }
         }
     }
 
-    //TODO this is almost directly from stackoverflow, should I rewrite it more?
-    public void centerLabelInScrollPane(ScrollPane scrollPane, Node b) {
+    //TODO this is directly from stackoverflow, should I rewrite it more?
+    public void centerLabelInScrollPane(ScrollPane scrollPane, Node node) {
         double h = scrollPane.getContent().getBoundsInLocal().getHeight();
-        double y = (b.getBoundsInParent().getMaxY() + b.getBoundsInParent().getMinY()) / 2.0;
+        double y = (node.getBoundsInParent().getMaxY() + node.getBoundsInParent().getMinY()) / 2.0;
         double v = scrollPane.getViewportBounds().getHeight();
+
         scrollPane.setVvalue(scrollPane.getVmax() * ((y - 0.5 * v) / (h - v)));
     }
 

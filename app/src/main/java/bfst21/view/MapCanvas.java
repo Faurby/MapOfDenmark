@@ -238,7 +238,7 @@ public class MapCanvas extends Canvas {
 
             if (edgeList.size() > 0) {
 
-                gc.setStroke(Color.RED);
+                gc.setStroke(Color.rgb(66, 133, 244));
                 gc.setLineWidth(3.0D * (1.0D / Math.sqrt(trans.determinant())));
 
                 currentDirections = new ArrayList<>();

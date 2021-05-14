@@ -98,7 +98,6 @@
                     onAction="#userNodeButtonClicked"
                     text="Add point of interest"/>
             <ListView fx:id="userNodeListView"
-                      visible="false"
                       maxWidth="${newUserNodeButton.width}"/>
         </VBox>
 
