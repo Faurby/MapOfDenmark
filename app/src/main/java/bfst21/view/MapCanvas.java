@@ -25,7 +25,7 @@ public class MapCanvas extends Canvas {
 
     private Model model;
 
-    private final double zoomLevelMin = 50.0D, zoomLevelMax = 100_000.0D;
+    private final double zoomLevelMin = 50.0D, zoomLevelMax = 200_000.0D;
     private double zoomLevel;
     private double widthModifier = 1.0D;
 
