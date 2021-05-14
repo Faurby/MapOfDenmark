@@ -29,6 +29,9 @@ public class DijkstraPath {
     private final boolean isDriving;
     private boolean foundDestination;
 
+    private int edgeCounter;
+    private int vertexCounter;
+
     /**
      * Start Dijkstra pathfinding from the origin point.
      * Finds all the shortest paths in the graph from the origin point.
@@ -37,6 +40,7 @@ public class DijkstraPath {
     public DijkstraPath(DirectedGraph directedGraph,
                         float[] originCoords,
                         float[] destinationCoords) {
+        long totalTime = -System.nanoTime();
 
         int sourceID = directedGraph.getVertexID(originCoords);
         int destinationID = directedGraph.getVertexID(destinationCoords);
@@ -58,6 +62,7 @@ public class DijkstraPath {
         while (!pq.isEmpty() && !foundDestination) {
 
             int vertexID = pq.delMin();
+            vertexCounter++;
 
             if (vertexID == destinationID) {
                 foundDestination = true;
@@ -66,6 +71,10 @@ public class DijkstraPath {
                 relax(edge);
             }
         }
+        totalTime += System.nanoTime();
+        System.out.println("------------DJIKSTRA------------ \nTotal dijkstra time: " + totalTime / 1_000_000L + "ms");
+        System.out.println("Vertex passed: " + vertexCounter + "\nEdge(s) passed: " + edgeCounter);
+
     }
 
     /**
@@ -77,6 +86,7 @@ public class DijkstraPath {
         if (edge.canNavigate()) {
             int v = edge.getFrom();
             int w = edge.getTo();
+            edgeCounter++;
 
             //Use the distance as weight if traveling by foot or bike.
             double weight = edge.getDistance();

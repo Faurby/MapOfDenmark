@@ -249,6 +249,15 @@ public class MapCanvas extends Canvas {
                 int exitCount = 0;
                 double weightSum = 0;
 
+                if (edgeList.size() == 1) {
+                    Edge before = edgeList.get(0);
+
+                    before.draw(directedGraph, gc);
+                    distanceSum = before.getDistance() * 1_000.0f;
+                    routeDistance = distanceSum;
+                    currentDirections.add("Follow " + before.getName() + " " + distanceSumToString(distanceSum));
+                }
+
                 for (int i = 0; i < (edgeList.size() - 1); i++) {
                     Edge before = edgeList.get(i);
                     Edge after = edgeList.get(i + 1);
