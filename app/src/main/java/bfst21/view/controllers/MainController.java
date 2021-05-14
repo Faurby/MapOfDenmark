@@ -454,7 +454,8 @@ public class MainController extends BaseController {
             newUserNodeCheckNameAndSave();
         } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
             newUserNodeVBox.setVisible(false);
-            scene.setCursor(userNodeCursorImage);
+            scene.setCursor(Cursor.DEFAULT);
+            userNodeToggle = false;
         }
     }
 
