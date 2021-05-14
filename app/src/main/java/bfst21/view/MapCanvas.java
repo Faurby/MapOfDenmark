@@ -97,7 +97,6 @@ public class MapCanvas extends Canvas {
             adjustWidthModifier();
             drawElementGroups();
             drawUserNodes();
-            drawMapText();
 
             if (destinationCoords != null) {
                 drawPathTo(destinationCoords);
@@ -105,6 +104,8 @@ public class MapCanvas extends Canvas {
             for (Pin pin : Pin.values()) {
                 pin.draw(gc, zoomLevel);
             }
+
+            drawMapText();
         }
         gc.restore();
 
