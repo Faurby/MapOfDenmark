@@ -333,7 +333,7 @@ public class NavigationBoxController extends SubController {
             navigationDescriptionBox.setVisible(true);
             navigationDescriptionBox.setManaged(true);
 
-            durationText.setText(mainController.getCanvas().getCurrentRouteWeightToString());
+            durationText.setText(mainController.getCanvas().getCurrentRouteDuration());
 
             int navListSize = navigationListView.getItems().size();
             if (navListSize == 1) {
@@ -386,8 +386,7 @@ public class NavigationBoxController extends SubController {
                 });
 
                 //TODO investigate why this line can't be deleted without ruining the "downarrow" function
-                suggestions.setOnKeyPressed((event) -> {
-                });
+                suggestions.setOnKeyPressed((event) -> {});
 
                 b.setOnKeyPressed((event) -> {
                     if (event.getCode() == KeyCode.UP && suggestions.getChildren().size() > 0 && suggestions.getChildren().indexOf(b) > 0) {
