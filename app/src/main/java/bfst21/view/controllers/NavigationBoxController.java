@@ -237,7 +237,7 @@ public class NavigationBoxController extends SubController {
             displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting and destination point");
 
         } else if (originTextArea.getText().trim().isEmpty()) {
-            displayAlert(Alert.AlertType.ERROR, "Error", "Starting point search field is empty");
+            displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the starting point");
 
         } else if (destinationTextArea.getText().trim().isEmpty()) {
             displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address for the destination point");
