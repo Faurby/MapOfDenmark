@@ -32,21 +32,21 @@ public class AddressSearchTest {
     public void findAddress_partialStreet_correctOsmAddress() {
         OsmAddress osmAddress = addressTries.findAddress("Amag");
 
-        assertEquals("Amag", osmAddress.toString());
+        assertEquals("Amager Boulevard 2 København S 2300", osmAddress.toString());
     }
 
     @Test
     public void findAddress_fullStreet_correctOsmAddress() {
         OsmAddress osmAddress = addressTries.findAddress("Amagerbrogade");
 
-        assertEquals("Amagerbrogade", osmAddress.toString());
+        assertEquals("Amagerbrogade 2 København S 2300", osmAddress.toString());
     }
 
     @Test
     public void findAddress_streetWithNumber_correctOsmAddress() {
         OsmAddress osmAddress = addressTries.findAddress("Amagerbrogade 2");
 
-        assertEquals("Amagerbrogade 2", osmAddress.toString());
+        assertEquals("Amagerbrogade 2 København S 2300", osmAddress.toString());
     }
 
     @Test
@@ -59,17 +59,14 @@ public class AddressSearchTest {
     @Test
     public void findAddress_randomSearch_correctOsmAddress() {
         OsmAddress osmAddress1 = addressTries.findAddress("AAAAAAAAAAAAAA");
-        assertEquals("AAAAAAAAAAAAAA", osmAddress1.toString());
+        assertEquals("Aarestrupsvej 1 Valby 2500", osmAddress1.toString());
     }
 
     @Test
     public void updateSuggestions_partialStreet_correctOutput() {
         addressTries.updateAddressSuggestions("Amag", suggestions);
 
-        assertEquals(10, suggestions.size());
-
-        OsmAddress osmAddress = addressTries.findAddress("");
-        assertEquals("", osmAddress.toString());
+        assertEquals(9, suggestions.size());
     }
 
     @Test
@@ -113,6 +110,6 @@ public class AddressSearchTest {
 
         addressTries.updateAddressSuggestions("A?!!!?", suggestions);
 
-        assertEquals(128, suggestions.size());
+        assertEquals(127, suggestions.size());
     }
 }

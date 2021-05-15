@@ -158,8 +158,8 @@ public class TST implements Serializable {
     /**
      * Find a matching OsmAddress with the given address input.
      * <p>
-     * If the TST cannot find any results from the input, use shortest substring that does.
-     * Gradually checks shorter substring of OsmAddress until a match is found.
+     * If the TST cannot find any results from the input, use longest substring that does.
+     * Gradually checks shorter substring of original input until a matching OsmAddress is found.
      */
     public OsmAddress findAddress(String originalInput) {
 
@@ -211,7 +211,7 @@ public class TST implements Serializable {
     /**
      * Update list of address suggestions from the given input.
      * <p>
-     * If the TST cannot find any results from the input, use shortest substring that does.
+     * If the TST cannot find any results from the input, use longest substring that does.
      * Only gives full address suggestions if a full street name has been typed.
      */
     public void updateAddressSuggestions(String originalInput, List<String> suggestions) {
