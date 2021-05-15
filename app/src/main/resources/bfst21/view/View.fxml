@@ -68,29 +68,23 @@
             <MenuBar fx:id="menuBar" minWidth="${menuBarHBox.width}">
 
                 <Menu text="File">
-                    <MenuItem text="Load default" onAction="#loadDefault"/>
-                    <MenuItem text="Load new file" onAction="#loadNewFile"/>
+                    <MenuItem text="Load Denmark" onAction="#loadDefault"/>
+                    <MenuItem text="Load new file..." onAction="#loadNewFile"/>
                     <MenuItem text="Save OBJ file" onAction="#preSaveObjFile"/>
                 </Menu>
 
                 <Menu text="View">
-                    <MenuItem fx:id="zoomin" onAction="#zoomButtonClicked" text="Zoom in"/>
-                    <MenuItem onAction="#zoomButtonClicked" text="Zoom out"/>
-                    <Menu text="Color modes">
-                        <MenuItem fx:id="standard"
-                                  onAction="#changeColorMode"
-                                  text="Standard"/>
-                        <MenuItem fx:id="darkMode"
-                                  onAction="#changeColorMode"
-                                  text="Dark mode"/>
-                        <MenuItem fx:id="colorBlind"
-                                  onAction="#changeColorMode"
-                                  text="Color blind"/>
-                    </Menu>
-                </Menu>
-                <Menu text="Help">
+                    <MenuItem fx:id="standard"
+                              onAction="#changeColorMode"
+                              text="Standard"/>
+                    <MenuItem fx:id="darkMode"
+                              onAction="#changeColorMode"
+                              text="Dark Mode"/>
+                    <MenuItem fx:id="colorBlind"
+                              onAction="#changeColorMode"
+                              text="Color Blind"/>
                     <MenuItem onAction="#toggleDebugVisibility"
-                              text="Toggle debug options"/>
+                              text="Debug options"/>
                 </Menu>
             </MenuBar>
         </HBox>
