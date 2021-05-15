@@ -143,17 +143,6 @@ public class NavigationBoxController extends SubController {
                 mainController.getCanvas().changeView(osmAddress.getNode().getX(), osmAddress.getNode().getY());
                 return;
             }
-//            for (OsmAddress osmAddress : allSuggestionsOrigin) {
-//                if (osmAddress.matches(address)) {
-//
-//                    addressTextArea.setText(osmAddress.toString());
-//                    Pin.DESTINATION.setCoords(osmAddress.getNodeCoords());
-//                    Pin.DESTINATION.setVisible(true);
-//
-//                    mainController.getCanvas().changeView(osmAddress.getNode().getX(), osmAddress.getNode().getY());
-//                    return;
-//                }
-//            }
             displayAlert(Alert.AlertType.ERROR, "Error", "Unable to find address: " + addressInput);
         } else {
             displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address into the search field");
@@ -167,8 +156,13 @@ public class NavigationBoxController extends SubController {
      * or if the user wants to navigate through the UI using keys.
      */
     public void typingCheck(KeyEvent keyEvent) {
+        int maxAddressCharacters = 50;
+
         if (!isNavigationBoxExpanded) {
 
+            if (addressTextArea.getText().length() >= maxAddressCharacters) {
+                addressTextArea.setText(addressTextArea.getText().substring(0, maxAddressCharacters));
+            }
             if (keyEvent.getCode() == KeyCode.TAB) {
                 deleteTextButton.requestFocus();
 
@@ -192,6 +186,14 @@ public class NavigationBoxController extends SubController {
                 }
             }
         } else {
+
+            if (originTextArea.getText().length() >= maxAddressCharacters) {
+                originTextArea.setText(originTextArea.getText().substring(0, maxAddressCharacters));
+            }
+            if (destinationTextArea.getText().length() >= maxAddressCharacters) {
+                destinationTextArea.setText(destinationTextArea.getText().substring(0, maxAddressCharacters));
+            }
+
             if (keyEvent.getCode() == KeyCode.TAB) {
 
                 if (keyEvent.getSource().toString().contains("originTextArea")) {
@@ -479,10 +481,10 @@ public class NavigationBoxController extends SubController {
                 navigationDescriptionBox.setVisible(true);
                 navigationDescriptionBox.setManaged(true);
             }
+        } else {
+            Pin.ORIGIN.setVisible(false);
+            Pin.DESTINATION.setVisible(false);
         }
-
-        Pin.ORIGIN.setVisible(false);
-        Pin.DESTINATION.setVisible(false);
 
         if (addressTextArea.getText() != null) {
             destinationTextArea.setText(addressTextArea.getText());
@@ -505,6 +507,11 @@ public class NavigationBoxController extends SubController {
 
         Pin.ORIGIN.setVisible(false);
         Pin.DESTINATION.setVisible(false);
+        mainController.getCanvas().originCoords = null;
+        mainController.getCanvas().destinationCoords = null;
+        mainController.getCanvas().resetCurrentRoute();
+
+        mainController.getCanvas().repaint();
     }
 
     public void setSearchBoxVisible(boolean visible) {
@@ -554,9 +561,10 @@ public class NavigationBoxController extends SubController {
 
         Pin.ORIGIN.setVisible(false);
         Pin.DESTINATION.setVisible(false);
-
         mainController.getCanvas().originCoords = null;
         mainController.getCanvas().destinationCoords = null;
+        mainController.getCanvas().resetCurrentRoute();
+
         mainController.getCanvas().repaint();
     }
 }

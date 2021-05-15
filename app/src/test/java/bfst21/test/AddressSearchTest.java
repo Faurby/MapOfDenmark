@@ -1,5 +1,6 @@
 package bfst21.test;
 
+import bfst21.address.OsmAddress;
 import bfst21.address.TST;
 import bfst21.models.Model;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,10 +29,44 @@ public class AddressSearchTest {
     }
 
     @Test
+    public void findAddress_partialStreet_correctOsmAddress() {
+        OsmAddress osmAddress = addressTries.findAddress("Amag");
+
+        assertEquals("Amager Boulevard 2 København S 2300", osmAddress.toString());
+    }
+
+    @Test
+    public void findAddress_fullStreet_correctOsmAddress() {
+        OsmAddress osmAddress = addressTries.findAddress("Amagerbrogade");
+
+        assertEquals("Amagerbrogade 2 København S 2300", osmAddress.toString());
+    }
+
+    @Test
+    public void findAddress_streetWithNumber_correctOsmAddress() {
+        OsmAddress osmAddress = addressTries.findAddress("Amagerbrogade 2");
+
+        assertEquals("Amagerbrogade 2 København S 2300", osmAddress.toString());
+    }
+
+    @Test
+    public void findAddress_fullAddress_correctOsmAddress() {
+        OsmAddress osmAddress = addressTries.findAddress("Amagerbrogade 2 København S 2300");
+
+        assertEquals("Amagerbrogade 2 København S 2300", osmAddress.toString());
+    }
+
+    @Test
+    public void findAddress_randomSearch_correctOsmAddress() {
+        OsmAddress osmAddress1 = addressTries.findAddress("AAAAAAAAAAAAAA");
+        assertEquals("Aarestrupsvej 1 Valby 2500", osmAddress1.toString());
+    }
+
+    @Test
     public void updateSuggestions_partialStreet_correctOutput() {
         addressTries.updateAddressSuggestions("Amag", suggestions);
 
-        assertEquals(10, suggestions.size());
+        assertEquals(9, suggestions.size());
     }
 
     @Test
@@ -47,7 +82,6 @@ public class AddressSearchTest {
 
         assertEquals(128, suggestions.size());
     }
-
 
     @Test
     public void updateSuggestions_fullAddress_correctOutput() {
@@ -76,6 +110,6 @@ public class AddressSearchTest {
 
         addressTries.updateAddressSuggestions("A?!!!?", suggestions);
 
-        assertEquals(128, suggestions.size());
+        assertEquals(127, suggestions.size());
     }
 }

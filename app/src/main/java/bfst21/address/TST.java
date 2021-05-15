@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 
 /**
@@ -23,9 +22,9 @@ public class TST implements Serializable {
     private static class Node implements Serializable {
         private static final long serialVersionUID = 1097052710816157996L;
 
-        private byte c;                        // character
+        private byte c;                 // character
         private Node left, mid, right;  // left, middle, and right subtries
-        private List<OsmAddress> val;                     // value associated with string
+        private List<OsmAddress> val;   // value associated with string
     }
 
     /**
@@ -159,8 +158,8 @@ public class TST implements Serializable {
     /**
      * Find a matching OsmAddress with the given address input.
      * <p>
-     * If the TST cannot find any results from the input, use shortest substring that does.
-     * Gradually checks shorter substring of OsmAddress until a match is found.
+     * If the TST cannot find any results from the input, use longest substring that does.
+     * Gradually checks shorter substring of original input until a matching OsmAddress is found.
      */
     public OsmAddress findAddress(String originalInput) {
 
@@ -212,7 +211,7 @@ public class TST implements Serializable {
     /**
      * Update list of address suggestions from the given input.
      * <p>
-     * If the TST cannot find any results from the input, use shortest substring that does.
+     * If the TST cannot find any results from the input, use longest substring that does.
      * Only gives full address suggestions if a full street name has been typed.
      */
     public void updateAddressSuggestions(String originalInput, List<String> suggestions) {
@@ -250,7 +249,7 @@ public class TST implements Serializable {
                     allSuggestions.add(address);
                     allOsmSuggestions.add(osmAddress);
 
-                    //Give suggestions for addresses that contains modified input or original input
+                    //Give suggestions for addresses that contains original input
                     if (address.toLowerCase().contains(originalInput)) {
 
                         osmSuggestions.add(osmAddress);
