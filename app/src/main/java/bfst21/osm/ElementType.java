@@ -58,7 +58,7 @@ public enum ElementType {
             Color.rgb(52, 66, 93)
     ),
     FERRY(
-            0.0004f,
+            0.0002f,
             800.0f,
             0.0003D,
             Color.rgb(126, 142, 244),
