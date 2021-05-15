@@ -19,9 +19,8 @@ public class UserNode extends Node implements Serializable {
     private String name;
     private String description;
 
-    Image blueStar = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("orange_star.png")));
-    Image lightBlueStar = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("orange_star.png")));
-    Image whiteStar = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("orange_star.png")));
+    Image orangeStar = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("orange_star.png")));
+    Image greenStar = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("green_star.png")));
 
     public UserNode(float lat, float lon, String name, String description) {
         super(lat, lon);
@@ -51,11 +50,9 @@ public class UserNode extends Node implements Serializable {
 
 
         if (colorMode == ColorMode.DARK_MODE) {
-            gc.drawImage(whiteStar, x, y, 28.0D / zoomLevel, 28.0D / zoomLevel);
-        } else if (colorMode == ColorMode.COLOR_BLIND) {
-            gc.drawImage(blueStar, x, y, 28.0D / zoomLevel, 28.0D / zoomLevel);
+            gc.drawImage(greenStar, x, y, 28.0D / zoomLevel, 28.0D / zoomLevel);
         } else {
-            gc.drawImage(lightBlueStar, x, y, 28.0D / zoomLevel, 28.0D / zoomLevel);
+            gc.drawImage(orangeStar, x, y, 28.0D / zoomLevel, 28.0D / zoomLevel);
         }
     }
 }
