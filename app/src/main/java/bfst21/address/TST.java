@@ -1,12 +1,16 @@
 package bfst21.address;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
  * Ternary search trie from the algs4 library by Robert Sedgewick and Kevin Wayne.
+ * <p>
+ * Modified to fit the mapping program. Has methods to find address and address suggestions.
  * Implements Serializable so it can be saved in an .obj file.
  */
 public class TST implements Serializable {
@@ -152,11 +156,71 @@ public class TST implements Serializable {
         collect(x.right, prefix, queue);
     }
 
-    public void updateSuggestions(String input, List<String> suggestions, List<OsmAddress> osmSuggestions) {
-        suggestions.clear();
-        osmSuggestions.clear();
+    /**
+     * Find a matching OsmAddress with the given address input.
+     * <p>
+     * If the TST cannot find any results from the input, use shortest substring that does.
+     * Gradually checks shorter substring of OsmAddress until a match is found.
+     */
+    public OsmAddress findAddress(String originalInput) {
 
-        String addressInput = input.replace(" ", "").toLowerCase();
+        originalInput = originalInput.toLowerCase();
+        String addressInput = originalInput.replace(" ", "");
+
+        Iterator<String> it = keysWithPrefix(addressInput).iterator();
+
+        //If the string doesn't return matches, find a substring that does
+        if (!it.hasNext()) {
+            addressInput = findLongestSubstringWithMatches(addressInput);
+            it = keysWithPrefix(addressInput).iterator();
+        }
+
+        List<String> addressKeys = new ArrayList<>();
+        while (it.hasNext()) {
+            addressKeys.add(it.next());
+        }
+        if (addressKeys.size() > 0) {
+
+            for (String key : addressKeys) {
+                for (OsmAddress osmAddress : get(key)) {
+                    String addr = osmAddress.toString().toLowerCase();
+
+                    if (addr.contains(originalInput)) {
+                        return osmAddress;
+                    }
+                }
+            }
+            int endIndex = originalInput.length();
+            while (endIndex >= 1) {
+                originalInput = originalInput.substring(0, endIndex);
+
+                for (String key : addressKeys) {
+                    for (OsmAddress osmAddress : get(key)) {
+                        String addr = osmAddress.toString().toLowerCase();
+
+                        if (addr.contains(originalInput)) {
+                            return osmAddress;
+                        }
+                    }
+                }
+                endIndex--;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Update list of address suggestions from the given input.
+     * <p>
+     * If the TST cannot find any results from the input, use shortest substring that does.
+     * Only gives full address suggestions if a full street name has been typed.
+     */
+    public void updateAddressSuggestions(String originalInput, List<String> suggestions) {
+        suggestions.clear();
+        List<OsmAddress> osmSuggestions = new ArrayList<>();
+
+        originalInput = originalInput.toLowerCase();
+        String addressInput = originalInput.replace(" ", "");
 
         Iterator<String> it = keysWithPrefix(addressInput).iterator();
 
@@ -170,20 +234,38 @@ public class TST implements Serializable {
         String streetName = null;
         if (it.hasNext()) {
             String streetInfo = keysWithPrefix(addressInput).iterator().next();
-            streetName = streetInfo.substring(0, streetInfo.length() - 4);
+            streetName = streetInfo.substring(0, streetInfo.length() - 4).trim();
         }
 
-        if (addressInput.equals(streetName)) {
-
+        //Has a full street named been typed? Start giving suggestions with full address.
+        if (streetName != null && addressInput.contains(streetName)) {
             if (it.hasNext()) {
-                for (OsmAddress osmAddress : get(it.next())) {
-                    osmSuggestions.add(osmAddress);
 
+                List<String> allSuggestions = new ArrayList<>();
+                List<OsmAddress> allOsmSuggestions = new ArrayList<>();
+
+                for (OsmAddress osmAddress : get(it.next())) {
                     String address = osmAddress.toString();
-                    suggestions.add(address);
+
+                    allSuggestions.add(address);
+                    allOsmSuggestions.add(osmAddress);
+
+                    //Give suggestions for addresses that contains modified input or original input
+                    if (address.toLowerCase().contains(originalInput)) {
+
+                        osmSuggestions.add(osmAddress);
+                        suggestions.add(address);
+                    }
+                }
+                //If no suggestions were found, add all suggestions instead.
+                //Happens if someone types an ambiguous address but still with a full street name.
+                if (suggestions.size() == 0) {
+                    suggestions.addAll(allSuggestions);
+                    osmSuggestions.addAll(allOsmSuggestions);
                 }
             }
         } else {
+            //Returns a variation of suggestions if a full street hasn't been typed.
             while (it.hasNext()) {
                 osmSuggestions.add(get(it.next()).get(0));
             }
@@ -195,9 +277,15 @@ public class TST implements Serializable {
         }
     }
 
+    /**
+     * Find longest substring that matches address input.
+     * <p>
+     * Gradually creates a shorter substring of the given address input
+     * until a possible match has been found. Otherwise return address input.
+     */
     private String findLongestSubstringWithMatches(String addressInput) {
 
-        int endIndex = addressInput.length() - 1;
+        int endIndex = addressInput.length();
         while (endIndex >= 1) {
             String subStringInput = addressInput.substring(0, endIndex);
             Iterator<String> it = keysWithPrefix(subStringInput).iterator();
