@@ -22,7 +22,7 @@
     -fx-max-height: 190;
     -fx-pref-height: 190;
     -fx-alignment: CENTER;
-    -fx-spacing: 16;
+    -fx-spacing: 8;
 }
 
 .userNodeNewNameOrDescVBoxes {
