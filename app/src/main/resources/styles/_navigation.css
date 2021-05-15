@@ -57,3 +57,11 @@
     -fx-min-width: 35;
     -fx-pref-width: 120;
 }
+
+#navigationListView .list-cell:even {
+    -fx-text-fill: BLACK;
+}
+#navigationListView .list-cell:odd {
+    -fx-text-fill: BLACK;
+}
+

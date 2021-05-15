@@ -30,8 +30,8 @@ public class View {
 
         stage.widthProperty().addListener(e -> mainController.onWindowResize(stage));
         stage.heightProperty().addListener(e -> mainController.onWindowResize(stage));
-        stage.setMinWidth(400.0D);
-        stage.setMinHeight(300.0D);
+        stage.setMinWidth(450.0D);
+        stage.setMinHeight(500.0D);
 
         stage.maximizedProperty().addListener(e -> {
             System.out.println("Fullscreen");
