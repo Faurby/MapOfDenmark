@@ -86,6 +86,9 @@ public class NavigationBoxController extends SubController {
 
     private boolean isNavigationBoxExpanded = false;
 
+    /**
+     * Activate EventListeners of the Navigation Box
+     */
     public void initialize() {
         selectWalkButton.setOnAction(new ToggleTransportListener(TransportOption.WALK, selectWalkButton));
         selectBikeButton.setOnAction(new ToggleTransportListener(TransportOption.BIKE, selectBikeButton));
@@ -119,6 +122,13 @@ public class NavigationBoxController extends SubController {
         });
     }
 
+    /**
+     * Called when a search is made from the minimized SearchBox.
+     * <p>
+     * If the TextArea is not empty, and a corresponding address (String) is found in
+     * the List<OsmAddress> allSuggestionsOrigin, the view is changed to center the
+     * corresponding Node and a pin is set.
+     */
     @FXML
     public void searchSingleAddress() {
         String address = addressTextArea.getText().trim().toLowerCase();
@@ -143,6 +153,14 @@ public class NavigationBoxController extends SubController {
         }
     }
 
+    /**
+     * Called for all KeyEvents for all TextAreas in the minimized and expanded Navigation Boxes.
+     * <p>
+     * Checks if the displayed suggestions should be updated, if a search should be made,
+     * or if the user wants to navigate through the UI using keys.
+     *
+     * @param keyEvent
+     */
     public void typingCheck(KeyEvent keyEvent) {
         if (!isNavigationBoxExpanded) {
 
