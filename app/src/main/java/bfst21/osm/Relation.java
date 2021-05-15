@@ -83,65 +83,63 @@ public class Relation extends BoundingBoxElement implements Serializable, Drawab
      * so we need to reverse the list of coordinates before correctly merging.
      */
     public void mergeOuterWays() {
-        if (multipolygon) {
-            List<Way> mergedWayList = new ArrayList<>();
+        List<Way> mergedWayList = new ArrayList<>();
 
-            Map<Node, Way> pieces = new HashMap<>();
+        Map<Node, Way> pieces = new HashMap<>();
 
-            for (Way way : ways) {
-                String role = way.getRole();
-                if (role != null) {
+        for (Way way : ways) {
+            String role = way.getRole();
+            if (role != null) {
 
-                    if (role.equals("outer")) {
-                        Way hasFirst = pieces.remove(way.first());
-                        Way hasLast = pieces.remove(way.last());
+                if (role.equals("outer")) {
+                    Way hasFirst = pieces.remove(way.first());
+                    Way hasLast = pieces.remove(way.last());
 
-                        Way merged = null;
+                    Way merged = null;
 
-                        if (hasFirst != null) {
-                            if (way.first().equals(hasFirst.last())) {
-                                //Some way is before this way
-                                merged = Way.merge(hasFirst, way, false);
+                    if (hasFirst != null) {
+                        if (way.first().equals(hasFirst.last())) {
+                            //Some way is before this way
+                            merged = Way.merge(hasFirst, way, false);
 
-                                //Both ways have same node as their first
-                                //So we need to reverse the way and add it AFTER hasFirst way
-                            } else if (way.first().equals(hasFirst.first())) {
-                                merged = Way.merge(hasFirst, way, true);
-                            }
-                        } else if (hasLast != null) {
-                            if (way.last().equals(hasLast.first())) {
-                                //Some way is after this way
-                                merged = Way.merge(way, hasLast, false);
-
-                                //Both ways have same node as their last
-                                //So we need to reverse the way and add it AFTER hasLast way
-                            } else if (way.last().equals(hasLast.last())) {
-                                merged = Way.merge(hasLast, way, true);
-                            }
+                            //Both ways have same node as their first
+                            //So we need to reverse the way and add it AFTER hasFirst way
+                        } else if (way.first().equals(hasFirst.first())) {
+                            merged = Way.merge(hasFirst, way, true);
                         }
-                        if (merged != null) {
-                            merged.setRole("outer");
-                            pieces.put(merged.first(), merged);
-                            pieces.put(merged.last(), merged);
+                    } else if (hasLast != null) {
+                        if (way.last().equals(hasLast.first())) {
+                            //Some way is after this way
+                            merged = Way.merge(way, hasLast, false);
 
-                        } else {
-                            pieces.put(way.first(), way);
-                            pieces.put(way.last(), way);
+                            //Both ways have same node as their last
+                            //So we need to reverse the way and add it AFTER hasLast way
+                        } else if (way.last().equals(hasLast.last())) {
+                            merged = Way.merge(hasLast, way, true);
                         }
+                    }
+                    if (merged != null) {
+                        merged.setRole("outer");
+                        pieces.put(merged.first(), merged);
+                        pieces.put(merged.last(), merged);
+
                     } else {
-                        mergedWayList.add(way);
+                        pieces.put(way.first(), way);
+                        pieces.put(way.last(), way);
                     }
                 } else {
                     mergedWayList.add(way);
                 }
+            } else {
+                mergedWayList.add(way);
             }
-            pieces.forEach((node, way) -> {
-                if (way.last().equals(node)) {
-                    mergedWayList.add(way);
-                }
-            });
-            ways = mergedWayList;
         }
+        pieces.forEach((node, way) -> {
+            if (way.last().equals(node)) {
+                mergedWayList.add(way);
+            }
+        });
+        ways = mergedWayList;
     }
 
     /**

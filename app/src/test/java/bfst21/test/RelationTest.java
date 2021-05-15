@@ -60,4 +60,34 @@ public class RelationTest {
             assertEquals(expected[i], actual[i]);
         }
     }
+
+    @Test
+    public void mergeRelation_roleEqualsNull() {
+        Relation rel = new Relation();
+
+        Way way1 = new Way();
+
+        Node node1 = new Node(12.582717f, -99.42255f);
+        Node node2 = new Node(12.582533f, -99.4223f);
+
+        way1.setNodes(Arrays.asList(node1, node2));
+
+        rel.addWay(way1);
+
+        rel.setMultipolygon(true);
+        rel.mergeOuterWays();
+
+        float[] expected = new float[]{
+                12.582717f, -99.42255f,
+                12.582533f, -99.4223f
+        };
+
+        float[] actual = new float[1];
+        if (rel.getWays().size() > 0) {
+            actual = rel.getWays().get(0).getMapWay().getCoords();
+        }
+        for (int i = 0; i < actual.length; i++) {
+            assertEquals(expected[i], actual[i]);
+        }
+    }
 }
