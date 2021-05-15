@@ -505,6 +505,11 @@ public class NavigationBoxController extends SubController {
 
         Pin.ORIGIN.setVisible(false);
         Pin.DESTINATION.setVisible(false);
+        mainController.getCanvas().originCoords = null;
+        mainController.getCanvas().destinationCoords = null;
+        mainController.getCanvas().resetCurrentRoute();
+
+        mainController.getCanvas().repaint();
     }
 
     public void setSearchBoxVisible(boolean visible) {
@@ -554,9 +559,10 @@ public class NavigationBoxController extends SubController {
 
         Pin.ORIGIN.setVisible(false);
         Pin.DESTINATION.setVisible(false);
-
         mainController.getCanvas().originCoords = null;
         mainController.getCanvas().destinationCoords = null;
+        mainController.getCanvas().resetCurrentRoute();
+
         mainController.getCanvas().repaint();
     }
 }
