@@ -150,7 +150,19 @@
         </HBox>
 
         <GridPane hgap="2">
-            <VBox GridPane.columnIndex="1"
+
+            <StackPane fx:id="toFromImage"
+                       GridPane.columnIndex="1"
+                       GridPane.rowIndex="1"
+                       GridPane.rowSpan="3">
+                <ImageView
+                        fitHeight="50.0"
+                        preserveRatio="true">
+                    <Image url="/to_from_image.png"/>
+                </ImageView>
+            </StackPane>
+
+            <VBox GridPane.columnIndex="2"
                   GridPane.rowIndex="1"
                   GridPane.rowSpan="3">
 
@@ -192,7 +204,7 @@
             </VBox>
 
             <Button fx:id="switchAddressButton"
-                    GridPane.columnIndex="2"
+                    GridPane.columnIndex="3"
                     GridPane.rowIndex="1"
                     GridPane.rowSpan="3"
                     onAction="#switchAddressText"

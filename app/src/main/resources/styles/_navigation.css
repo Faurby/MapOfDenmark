@@ -42,6 +42,10 @@
     -fx-min-width: 20;
 }
 
+#toFromImage {
+    -fx-padding: 5 8 0 0;
+}
+
 #switchAddressButton {
     -fx-max-height: 20;
     -fx-max-width: 40;
