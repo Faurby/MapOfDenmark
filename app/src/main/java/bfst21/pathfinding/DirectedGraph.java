@@ -224,26 +224,20 @@ public class DirectedGraph implements Serializable {
     }
 
     /**
-     * @return degree of vertex with given vertexID.
+     * @return out degree of vertex with given vertexID.
      * <p>
-     * The degree is only increased if the edge can be
-     * navigated using the currently enabled TransportOption.
+     * The out degree is only increased for edges where driving is enabled.
+     * This is to ensure it properly works for oneways in roundabouts.
      */
-    public int getDegree(int vertexID) {
+    public int getOutDegree(int vertexID) {
         List<Edge> edges = getAdjacentEdges(vertexID);
         int outDegree = 0;
 
         for (Edge edge : edges) {
-            TransportOption current = TransportOptions.getInstance().getCurrentlyEnabled();
-
-            if (current == TransportOption.CAR && edge.canDrive()) {
-                outDegree++;
-            }
-            if (current == TransportOption.BIKE && edge.canBike()) {
-                outDegree++;
-            }
-            if (current == TransportOption.WALK && edge.canWalk()) {
-                outDegree++;
+            if (edge.getFrom() == vertexID) {
+                if (edge.canDrive()) {
+                    outDegree++;
+                }
             }
         }
         return outDegree;

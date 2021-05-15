@@ -286,8 +286,8 @@ public class MapCanvas extends Canvas {
 
                     if (before.isJunction()) {
                         before.draw(directedGraph, gc);
-                        int fromID = before.getFrom();
-                        if (directedGraph.getDegree(fromID) >= 3) {
+                        int toID = before.getTo();
+                        if (directedGraph.getOutDegree(toID) >= 2) {
                             exitCount++;
                         }
                         if (!after.isJunction()) {
