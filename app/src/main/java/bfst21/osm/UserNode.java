@@ -51,8 +51,6 @@ public class UserNode extends Node implements Serializable {
 
         if (colorMode == ColorMode.DARK_MODE) {
             gc.drawImage(greenStar, x, y, 28.0D / zoomLevel, 28.0D / zoomLevel);
-        } else if (colorMode == ColorMode.COLOR_BLIND) {
-            gc.drawImage(orangeStar, x, y, 28.0D / zoomLevel, 28.0D / zoomLevel);
         } else {
             gc.drawImage(orangeStar, x, y, 28.0D / zoomLevel, 28.0D / zoomLevel);
         }
