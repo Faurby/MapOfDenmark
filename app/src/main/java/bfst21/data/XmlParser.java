@@ -415,7 +415,8 @@ public class XmlParser {
 
                         case "node":
                             if (osmAddress != null && osmAddress.isValid()) {
-                                String inputAddress = osmAddress.getStreet().trim().replace(" ", "").toLowerCase() + osmAddress.getPostcode();
+                                //String inputAddress = osmAddress.getStreet().trim().replace(" ", "").toLowerCase() + osmAddress.getPostcode();
+                                String inputAddress = osmAddress.getStreet().trim().replaceAll(" ", "").toLowerCase();
 
                                 List<OsmAddress> addresses = new ArrayList<>();
                                 if (addressTries.contains(inputAddress)) {

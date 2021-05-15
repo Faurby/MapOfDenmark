@@ -1,5 +1,6 @@
 package bfst21.test;
 
+import bfst21.address.OsmAddress;
 import bfst21.address.TST;
 import bfst21.models.Model;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,10 +29,47 @@ public class AddressSearchTest {
     }
 
     @Test
+    public void findAddress_partialStreet_correctOsmAddress() {
+        OsmAddress osmAddress = addressTries.findAddress("Amag");
+
+        assertEquals("Amag", osmAddress.toString());
+    }
+
+    @Test
+    public void findAddress_fullStreet_correctOsmAddress() {
+        OsmAddress osmAddress = addressTries.findAddress("Amagerbrogade");
+
+        assertEquals("Amagerbrogade", osmAddress.toString());
+    }
+
+    @Test
+    public void findAddress_streetWithNumber_correctOsmAddress() {
+        OsmAddress osmAddress = addressTries.findAddress("Amagerbrogade 2");
+
+        assertEquals("Amagerbrogade 2", osmAddress.toString());
+    }
+
+    @Test
+    public void findAddress_fullAddress_correctOsmAddress() {
+        OsmAddress osmAddress = addressTries.findAddress("Amagerbrogade 2 København S 2300");
+
+        assertEquals("Amagerbrogade 2 København S 2300", osmAddress.toString());
+    }
+
+    @Test
+    public void findAddress_randomSearch_correctOsmAddress() {
+        OsmAddress osmAddress1 = addressTries.findAddress("AAAAAAAAAAAAAA");
+        assertEquals("AAAAAAAAAAAAAA", osmAddress1.toString());
+    }
+
+    @Test
     public void updateSuggestions_partialStreet_correctOutput() {
         addressTries.updateAddressSuggestions("Amag", suggestions);
 
         assertEquals(10, suggestions.size());
+
+        OsmAddress osmAddress = addressTries.findAddress("");
+        assertEquals("", osmAddress.toString());
     }
 
     @Test
@@ -47,7 +85,6 @@ public class AddressSearchTest {
 
         assertEquals(128, suggestions.size());
     }
-
 
     @Test
     public void updateSuggestions_fullAddress_correctOutput() {

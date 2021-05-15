@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 
 /**
@@ -23,9 +22,9 @@ public class TST implements Serializable {
     private static class Node implements Serializable {
         private static final long serialVersionUID = 1097052710816157996L;
 
-        private byte c;                        // character
+        private byte c;                 // character
         private Node left, mid, right;  // left, middle, and right subtries
-        private List<OsmAddress> val;                     // value associated with string
+        private List<OsmAddress> val;   // value associated with string
     }
 
     /**
@@ -250,7 +249,7 @@ public class TST implements Serializable {
                     allSuggestions.add(address);
                     allOsmSuggestions.add(osmAddress);
 
-                    //Give suggestions for addresses that contains modified input or original input
+                    //Give suggestions for addresses that contains original input
                     if (address.toLowerCase().contains(originalInput)) {
 
                         osmSuggestions.add(osmAddress);
