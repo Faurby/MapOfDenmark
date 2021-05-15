@@ -266,12 +266,12 @@ public class TST implements Serializable {
         } else {
             //Returns a variation of suggestions if a full street hasn't been typed.
             while (it.hasNext()) {
-                osmSuggestions.add(get(it.next()).get(0));
-            }
-            for (OsmAddress osmAddress : osmSuggestions) {
-                String address = osmAddress.omitHouseNumberToString();
-
-                suggestions.add(address);
+                OsmAddress osmAddress = get(it.next()).get(0);
+                
+                if (osmAddress != null) {
+                    String address = osmAddress.omitHouseNumberToString();
+                    suggestions.add(address);
+                }
             }
         }
     }
