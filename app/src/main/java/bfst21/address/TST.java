@@ -1,8 +1,10 @@
 package bfst21.address;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -152,9 +154,45 @@ public class TST implements Serializable {
         collect(x.right, prefix, queue);
     }
 
-    public void updateSuggestions(String input, List<String> suggestions, List<OsmAddress> osmSuggestions) {
+    public OsmAddress findAddress(String input) {
+
+        input = input.toLowerCase();
+        String addressInput = input.replace(" ", "");
+
+        Iterator<String> it = keysWithPrefix(addressInput).iterator();
+
+        //If the string doesn't return matches, find a substring that does
+        if (!it.hasNext()) {
+            addressInput = findLongestSubstringWithMatches(addressInput);
+            it = keysWithPrefix(addressInput).iterator();
+        }
+
+        List<String> addressKeys = new ArrayList<>();
+        while (it.hasNext()) {
+            addressKeys.add(it.next());
+        }
+        if (addressKeys.size() > 0) {
+            int endIndex = addressInput.length();
+            while (endIndex >= 1) {
+
+                for (String key : addressKeys) {
+                    for (OsmAddress osmAddress : get(key)) {
+                        String addr = osmAddress.toString().substring(0, endIndex).toLowerCase();
+
+                        if (input.contains(addr) || addressInput.contains(addr)) {
+                            return osmAddress;
+                        }
+                    }
+                }
+                endIndex--;
+            }
+        }
+        return null;
+    }
+
+    public void updateSuggestions(String input, List<String> suggestions) {
         suggestions.clear();
-        osmSuggestions.clear();
+        List<OsmAddress> osmSuggestions = new ArrayList<>();
 
         String addressInput = input.replace(" ", "").toLowerCase();
 
@@ -170,17 +208,30 @@ public class TST implements Serializable {
         String streetName = null;
         if (it.hasNext()) {
             String streetInfo = keysWithPrefix(addressInput).iterator().next();
-            streetName = streetInfo.substring(0, streetInfo.length() - 4);
+            streetName = streetInfo.substring(0, streetInfo.length() - 4).trim();
         }
 
-        if (addressInput.equals(streetName)) {
-
+        if (streetName != null && addressInput.contains(streetName)) {
             if (it.hasNext()) {
-                for (OsmAddress osmAddress : get(it.next())) {
-                    osmSuggestions.add(osmAddress);
 
+                List<String> allSuggestions = new ArrayList<>();
+                List<OsmAddress> allOsmSuggestions = new ArrayList<>();
+
+                for (OsmAddress osmAddress : get(it.next())) {
                     String address = osmAddress.toString();
-                    suggestions.add(address);
+
+                    allSuggestions.add(address);
+                    allOsmSuggestions.add(osmAddress);
+
+                    if (address.contains(addressInput) || address.contains(input)) {
+
+                        osmSuggestions.add(osmAddress);
+                        suggestions.add(address);
+                    }
+                }
+                if (suggestions.size() == 0) {
+                    suggestions.addAll(allSuggestions);
+                    osmSuggestions.addAll(allOsmSuggestions);
                 }
             }
         } else {
@@ -197,7 +248,7 @@ public class TST implements Serializable {
 
     private String findLongestSubstringWithMatches(String addressInput) {
 
-        int endIndex = addressInput.length() - 1;
+        int endIndex = addressInput.length();
         while (endIndex >= 1) {
             String subStringInput = addressInput.substring(0, endIndex);
             Iterator<String> it = keysWithPrefix(subStringInput).iterator();

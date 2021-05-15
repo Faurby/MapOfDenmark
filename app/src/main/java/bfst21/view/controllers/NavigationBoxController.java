@@ -73,9 +73,6 @@ public class NavigationBoxController extends SubController {
 
     private final TransportOptions transOptions = TransportOptions.getInstance();
 
-    private final List<OsmAddress> allSuggestionsOrigin = new ArrayList<>();
-    private final List<OsmAddress> allSuggestionsDestination = new ArrayList<>();
-
     private final List<String> shownSuggestionsOrigin = new ArrayList<>();
     private final List<String> shownSuggestionsDestination = new ArrayList<>();
 
@@ -131,23 +128,33 @@ public class NavigationBoxController extends SubController {
      */
     @FXML
     public void searchSingleAddress() {
-        String address = addressTextArea.getText().trim().toLowerCase();
+        String addressInput = addressTextArea.getText().trim().toLowerCase();
         suggestionsBox.getChildren().clear();
 
-        if (!address.isEmpty()) {
+        if (!addressInput.isEmpty()) {
+            updateAddressTries();
 
-            for (OsmAddress osmAddress : allSuggestionsOrigin) {
-                if (osmAddress.matches(address)) {
+            OsmAddress osmAddress = addressTries.findAddress(addressInput);
+            if (osmAddress != null) {
+                addressTextArea.setText(osmAddress.toString());
+                Pin.DESTINATION.setCoords(osmAddress.getNodeCoords());
+                Pin.DESTINATION.setVisible(true);
 
-                    addressTextArea.setText(osmAddress.toString());
-                    Pin.DESTINATION.setCoords(osmAddress.getNodeCoords());
-                    Pin.DESTINATION.setVisible(true);
-
-                    mainController.getCanvas().changeView(osmAddress.getNode().getX(), osmAddress.getNode().getY());
-                    return;
-                }
+                mainController.getCanvas().changeView(osmAddress.getNode().getX(), osmAddress.getNode().getY());
+                return;
             }
-            displayAlert(Alert.AlertType.ERROR, "Error", "Unable to find address: " + address);
+//            for (OsmAddress osmAddress : allSuggestionsOrigin) {
+//                if (osmAddress.matches(address)) {
+//
+//                    addressTextArea.setText(osmAddress.toString());
+//                    Pin.DESTINATION.setCoords(osmAddress.getNodeCoords());
+//                    Pin.DESTINATION.setVisible(true);
+//
+//                    mainController.getCanvas().changeView(osmAddress.getNode().getX(), osmAddress.getNode().getY());
+//                    return;
+//                }
+//            }
+            displayAlert(Alert.AlertType.ERROR, "Error", "Unable to find address: " + addressInput);
         } else {
             displayAlert(Alert.AlertType.ERROR, "Error", "Please enter an address into the search field");
         }
@@ -158,8 +165,6 @@ public class NavigationBoxController extends SubController {
      * <p>
      * Checks if the displayed suggestions should be updated, if a search should be made,
      * or if the user wants to navigate through the UI using keys.
-     *
-     * @param keyEvent
      */
     public void typingCheck(KeyEvent keyEvent) {
         if (!isNavigationBoxExpanded) {
@@ -179,10 +184,10 @@ public class NavigationBoxController extends SubController {
             } else {
                 int textLength = addressTextArea.getText().trim().length();
 
-                if (addressTextArea.getText().trim().length() <= 2) {
+                if (textLength <= 2) {
                     suggestionsBox.getChildren().clear();
 
-                } else if (!(keyEvent.getCode() == KeyCode.BACK_SPACE || keyEvent.getCode() == KeyCode.DELETE) && textLength >= 2) {
+                } else {
                     runAddressSuggestionTask(suggestionsBox, addressTextArea, false, addressScrollPane);
                 }
             }
@@ -223,7 +228,7 @@ public class NavigationBoxController extends SubController {
                     if (textLength <= 2) {
                         originSuggestionsBox.getChildren().clear();
 
-                    } else if (!(keyEvent.getCode() == KeyCode.BACK_SPACE || keyEvent.getCode() == KeyCode.DELETE)) {
+                    } else {
                         runAddressSuggestionTask(originSuggestionsBox, originTextArea, false, originScrollPane);
                     }
 
@@ -233,7 +238,7 @@ public class NavigationBoxController extends SubController {
                     if (textLength <= 2) {
                         destinationSuggestionsBox.getChildren().clear();
 
-                    } else if (!(keyEvent.getCode() == KeyCode.BACK_SPACE || keyEvent.getCode() == KeyCode.DELETE)) {
+                    } else {
                         runAddressSuggestionTask(destinationSuggestionsBox, destinationTextArea, true, destinationScrollPane);
                     }
                 }
@@ -259,26 +264,17 @@ public class NavigationBoxController extends SubController {
             originSuggestionsBox.getChildren().clear();
             destinationSuggestionsBox.getChildren().clear();
 
-            float[] originCoords = null;
-            float[] destinationCoords = null;
+            OsmAddress osmOrigin = addressTries.findAddress(originAddress);
+            OsmAddress osmDestination = addressTries.findAddress(destinationAddress);
 
-            for (OsmAddress osmAddress : allSuggestionsOrigin) {
-                if (osmAddress.matches(originAddress)) {
-                    originTextArea.setText(osmAddress.toString());
-                    originCoords = new float[]{osmAddress.getNode().getX(), osmAddress.getNode().getY()};
-                    break;
-                }
-            }
+            if (osmOrigin != null && osmDestination != null) {
 
-            for (OsmAddress osmAddress : allSuggestionsDestination) {
-                if (osmAddress.matches(destinationAddress)) {
-                    destinationTextArea.setText(osmAddress.toString());
-                    destinationCoords = new float[]{osmAddress.getNode().getX(), osmAddress.getNode().getY()};
-                    break;
-                }
-            }
+                originTextArea.setText(osmOrigin.toString());
+                float[] originCoords = new float[]{osmOrigin.getNode().getX(), osmOrigin.getNode().getY()};
 
-            if (originCoords != null && destinationCoords != null) {
+                destinationTextArea.setText(osmDestination.toString());
+                float[] destinationCoords = new float[]{osmDestination.getNode().getX(), osmDestination.getNode().getY()};
+
                 float avgX = (originCoords[0] + destinationCoords[0]) / 2;
                 float avgY = (originCoords[1] + destinationCoords[1]) / 2;
 
@@ -428,9 +424,9 @@ public class NavigationBoxController extends SubController {
                 updateAddressTries();
 
                 if (extended) {
-                    addressTries.updateSuggestions(input, shownSuggestionsDestination, allSuggestionsDestination);
+                    addressTries.updateSuggestions(input, shownSuggestionsDestination);
                 } else {
-                    addressTries.updateSuggestions(input, shownSuggestionsOrigin, allSuggestionsOrigin);
+                    addressTries.updateSuggestions(input, shownSuggestionsOrigin);
                 }
                 return null;
             }
@@ -444,13 +440,6 @@ public class NavigationBoxController extends SubController {
 
     @FXML
     public void switchAddressText() {
-        List<OsmAddress> temp = new ArrayList<>(allSuggestionsOrigin);
-
-        allSuggestionsOrigin.clear();
-        allSuggestionsOrigin.addAll(allSuggestionsDestination);
-        allSuggestionsDestination.clear();
-        allSuggestionsDestination.addAll(temp);
-
         String s = originTextArea.getText();
         originTextArea.setText(destinationTextArea.getText());
         destinationTextArea.setText(s);
@@ -498,8 +487,6 @@ public class NavigationBoxController extends SubController {
         if (addressTextArea.getText() != null) {
             destinationTextArea.setText(addressTextArea.getText());
             originTextArea.setText("");
-            allSuggestionsDestination.clear();
-            allSuggestionsDestination.addAll(allSuggestionsOrigin);
         }
     }
 
@@ -511,8 +498,6 @@ public class NavigationBoxController extends SubController {
 
         if (!destinationTextArea.getText().isEmpty() && originTextArea.getText().isEmpty()) {
             addressTextArea.setText(destinationTextArea.getText());
-            allSuggestionsOrigin.clear();
-            allSuggestionsOrigin.addAll(allSuggestionsDestination);
 
         } else if (!originTextArea.getText().isEmpty()) {
             addressTextArea.setText(originTextArea.getText());
