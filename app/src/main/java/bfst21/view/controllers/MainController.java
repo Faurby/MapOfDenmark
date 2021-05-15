@@ -227,6 +227,8 @@ public class MainController extends BaseController {
 
     @FXML
     public void onMouseReleased() {
+        canvas.runRangeSearchTask();
+
         if (model.getMapData() != null) {
             if (!model.getMapData().getUserNodes().isEmpty()) {
 
