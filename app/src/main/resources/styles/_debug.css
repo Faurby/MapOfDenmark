@@ -2,7 +2,7 @@
 /* THIS STYLESHEET CONTAINS THE STYLING THAT SHOULDN'T BE CHANGED BY COLOR MODES */
 
 #debugVBox {
-    -fx-padding: 175 20 0 0;
+    -fx-padding: 65 160 0 0;
 }
 
 #debugOptionsVBox {

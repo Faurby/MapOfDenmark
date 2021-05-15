@@ -60,14 +60,13 @@ public class XmlParserTest {
 
         assertEquals(11, mapData.getMapTexts().size());
         assertEquals(716, mapData.getRelations().size());
+        assertEquals(18, mapData.getRelations(ElementType.LANDUSE).size());
 
         ElementGroup eg1 = new ElementGroup(ElementType.MOTORWAY, ElementSize.DEFAULT);
         assertEquals(3, mapData.getWays(eg1).size());
 
         ElementGroup eg2 = new ElementGroup(ElementType.PRIMARY, ElementSize.DEFAULT);
         assertEquals(204, mapData.getWays(eg2).size());
-
-        assertEquals(716, mapData.getRelations().size());
     }
 
     @Test

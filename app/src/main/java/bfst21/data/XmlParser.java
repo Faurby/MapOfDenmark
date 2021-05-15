@@ -341,13 +341,9 @@ public class XmlParser {
                                         break;
                                     case "maxspeed":
                                         if (way != null) {
-                                            if (way.getType() != null) {
-                                                if (way.getType().canNavigate(TransportOption.CAR)) {
-                                                    try {
-                                                        way.setMaxSpeed(Integer.parseInt(value));
-                                                    } catch (NumberFormatException ignored) {
-                                                    }
-                                                }
+                                            try {
+                                                way.setMaxSpeed(Integer.parseInt(value));
+                                            } catch (NumberFormatException ignored) {
                                             }
                                         }
                                         break;
