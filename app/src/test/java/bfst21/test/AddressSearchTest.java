@@ -1,6 +1,5 @@
 package bfst21.test;
 
-import bfst21.address.OsmAddress;
 import bfst21.address.TST;
 import bfst21.models.Model;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,21 +29,21 @@ public class AddressSearchTest {
 
     @Test
     public void updateSuggestions_partialStreet_correctOutput() {
-        addressTries.updateSuggestions("Amag", suggestions);
+        addressTries.updateAddressSuggestions("Amag", suggestions);
 
         assertEquals(10, suggestions.size());
     }
 
     @Test
     public void updateSuggestions_fullStreet_correctOutput() {
-        addressTries.updateSuggestions("Amagerbrogade", suggestions);
+        addressTries.updateAddressSuggestions("Amagerbrogade", suggestions);
 
         assertEquals(330, suggestions.size());
     }
 
     @Test
     public void updateSuggestions_streetWithNumber_correctOutput() {
-        addressTries.updateSuggestions("Amagerbrogade 2", suggestions);
+        addressTries.updateAddressSuggestions("Amagerbrogade 2", suggestions);
 
         assertEquals(128, suggestions.size());
     }
@@ -52,30 +51,30 @@ public class AddressSearchTest {
 
     @Test
     public void updateSuggestions_fullAddress_correctOutput() {
-        addressTries.updateSuggestions("Amagerbrogade 2 København S 2300", suggestions);
+        addressTries.updateAddressSuggestions("Amagerbrogade 2 København S 2300", suggestions);
 
         assertEquals(1, suggestions.size());
     }
 
     @Test
     public void updateSuggestions_randomSearch_correctOutput() {
-        addressTries.updateSuggestions("AAAAAAAAAAAAAA", suggestions);
+        addressTries.updateAddressSuggestions("AAAAAAAAAAAAAA", suggestions);
 
         assertEquals(1, suggestions.size());
 
-        addressTries.updateSuggestions("trfdfhha", suggestions);
+        addressTries.updateAddressSuggestions("trfdfhha", suggestions);
 
         assertEquals(20, suggestions.size());
 
-        addressTries.updateSuggestions("67899425", suggestions);
+        addressTries.updateAddressSuggestions("67899425", suggestions);
 
         assertEquals(0, suggestions.size());
 
-        addressTries.updateSuggestions("?!!!?!", suggestions);
+        addressTries.updateAddressSuggestions("?!!!?!", suggestions);
 
         assertEquals(0, suggestions.size());
 
-        addressTries.updateSuggestions("A?!!!?", suggestions);
+        addressTries.updateAddressSuggestions("A?!!!?", suggestions);
 
         assertEquals(128, suggestions.size());
     }

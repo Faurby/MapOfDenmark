@@ -4,11 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 
 /**
  * Ternary search trie from the algs4 library by Robert Sedgewick and Kevin Wayne.
+ * <p>
+ * Modified to fit the mapping program. Has methods to find address and address suggestions.
  * Implements Serializable so it can be saved in an .obj file.
  */
 public class TST implements Serializable {
@@ -154,10 +155,16 @@ public class TST implements Serializable {
         collect(x.right, prefix, queue);
     }
 
-    public OsmAddress findAddress(String input) {
+    /**
+     * Find a matching OsmAddress with the given address input.
+     * <p>
+     * If the TST cannot find any results from the input, use shortest substring that does.
+     * Gradually checks shorter substring of OsmAddress until a match is found.
+     */
+    public OsmAddress findAddress(String originalInput) {
 
-        input = input.toLowerCase();
-        String addressInput = input.replace(" ", "");
+        originalInput = originalInput.toLowerCase();
+        String addressInput = originalInput.replace(" ", "");
 
         Iterator<String> it = keysWithPrefix(addressInput).iterator();
 
@@ -177,9 +184,10 @@ public class TST implements Serializable {
 
                 for (String key : addressKeys) {
                     for (OsmAddress osmAddress : get(key)) {
+                        //Check a shorter substring if a match hasn't been found yet.
                         String addr = osmAddress.toString().substring(0, endIndex).toLowerCase();
 
-                        if (input.contains(addr) || addressInput.contains(addr)) {
+                        if (originalInput.contains(addr) || addressInput.contains(addr)) {
                             return osmAddress;
                         }
                     }
@@ -190,11 +198,17 @@ public class TST implements Serializable {
         return null;
     }
 
-    public void updateSuggestions(String input, List<String> suggestions) {
+    /**
+     * Update list of address suggestions from the given input.
+     * <p>
+     * If the TST cannot find any results from the input, use shortest substring that does.
+     * Only gives full address suggestions if a full street name has been typed.
+     */
+    public void updateAddressSuggestions(String originalInput, List<String> suggestions) {
         suggestions.clear();
         List<OsmAddress> osmSuggestions = new ArrayList<>();
 
-        String addressInput = input.replace(" ", "").toLowerCase();
+        String addressInput = originalInput.replace(" ", "").toLowerCase();
 
         Iterator<String> it = keysWithPrefix(addressInput).iterator();
 
@@ -211,6 +225,7 @@ public class TST implements Serializable {
             streetName = streetInfo.substring(0, streetInfo.length() - 4).trim();
         }
 
+        //Has a full street named been typed? Start giving suggestions with full address.
         if (streetName != null && addressInput.contains(streetName)) {
             if (it.hasNext()) {
 
@@ -223,18 +238,22 @@ public class TST implements Serializable {
                     allSuggestions.add(address);
                     allOsmSuggestions.add(osmAddress);
 
-                    if (address.contains(addressInput) || address.contains(input)) {
+                    //Give suggestions for addresses that contains modified input or original input
+                    if (address.contains(addressInput) || address.contains(originalInput)) {
 
                         osmSuggestions.add(osmAddress);
                         suggestions.add(address);
                     }
                 }
+                //If no suggestions were found, add all suggestions instead.
+                //Happens if someone types an ambiguous address but still with a full street name.
                 if (suggestions.size() == 0) {
                     suggestions.addAll(allSuggestions);
                     osmSuggestions.addAll(allOsmSuggestions);
                 }
             }
         } else {
+            //Returns a variation of suggestions if a full street hasn't been typed.
             while (it.hasNext()) {
                 osmSuggestions.add(get(it.next()).get(0));
             }
@@ -246,6 +265,12 @@ public class TST implements Serializable {
         }
     }
 
+    /**
+     * Find longest substring that matches address input.
+     * <p>
+     * Gradually creates a shorter substring of the given address input
+     * until a possible match has been found. Otherwise return address input.
+     */
     private String findLongestSubstringWithMatches(String addressInput) {
 
         int endIndex = addressInput.length();

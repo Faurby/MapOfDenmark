@@ -424,9 +424,9 @@ public class NavigationBoxController extends SubController {
                 updateAddressTries();
 
                 if (extended) {
-                    addressTries.updateSuggestions(input, shownSuggestionsDestination);
+                    addressTries.updateAddressSuggestions(input, shownSuggestionsDestination);
                 } else {
-                    addressTries.updateSuggestions(input, shownSuggestionsOrigin);
+                    addressTries.updateAddressSuggestions(input, shownSuggestionsOrigin);
                 }
                 return null;
             }
