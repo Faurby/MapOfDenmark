@@ -58,12 +58,15 @@ public class RelationTest {
                 12.575649f, -99.42077f
         };
 
+        float[] relationCoords = rel.getCoords();
         float[] actual = new float[1];
+
         if (rel.getWays().size() > 0) {
             actual = rel.getWays().get(0).getMapWay().getCoords();
         }
         for (int i = 0; i < actual.length; i++) {
             assertEquals(expected[i], actual[i]);
+            assertEquals(expected[i], relationCoords[i]);
         }
     }
 
