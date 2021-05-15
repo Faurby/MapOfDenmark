@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -179,15 +180,25 @@ public class TST implements Serializable {
             addressKeys.add(it.next());
         }
         if (addressKeys.size() > 0) {
-            int endIndex = addressInput.length();
+
+            for (String key : addressKeys) {
+                for (OsmAddress osmAddress : get(key)) {
+                    String addr = osmAddress.toString().toLowerCase();
+
+                    if (addr.contains(originalInput)) {
+                        return osmAddress;
+                    }
+                }
+            }
+            int endIndex = originalInput.length();
             while (endIndex >= 1) {
+                originalInput = originalInput.substring(0, endIndex);
 
                 for (String key : addressKeys) {
                     for (OsmAddress osmAddress : get(key)) {
-                        //Check a shorter substring if a match hasn't been found yet.
-                        String addr = osmAddress.toString().substring(0, endIndex).toLowerCase();
+                        String addr = osmAddress.toString().toLowerCase();
 
-                        if (originalInput.contains(addr) || addressInput.contains(addr)) {
+                        if (addr.contains(originalInput)) {
                             return osmAddress;
                         }
                     }
@@ -208,7 +219,8 @@ public class TST implements Serializable {
         suggestions.clear();
         List<OsmAddress> osmSuggestions = new ArrayList<>();
 
-        String addressInput = originalInput.replace(" ", "").toLowerCase();
+        originalInput = originalInput.toLowerCase();
+        String addressInput = originalInput.replace(" ", "");
 
         Iterator<String> it = keysWithPrefix(addressInput).iterator();
 
@@ -239,7 +251,7 @@ public class TST implements Serializable {
                     allOsmSuggestions.add(osmAddress);
 
                     //Give suggestions for addresses that contains modified input or original input
-                    if (address.contains(addressInput) || address.contains(originalInput)) {
+                    if (address.toLowerCase().contains(originalInput)) {
 
                         osmSuggestions.add(osmAddress);
                         suggestions.add(address);
