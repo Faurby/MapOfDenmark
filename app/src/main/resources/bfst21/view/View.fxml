@@ -14,7 +14,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.ToolBar?>
-
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.TextField?>
 
@@ -194,6 +195,27 @@
                         onAction="#userNodeNewDescSaveClicked"
                         styleClass="userNodeButton"/>
             </HBox>
+        </VBox>
+
+        <VBox fx:id="zoomBox" visible="false" StackPane.alignment="BOTTOM_RIGHT">
+            <Button fx:id="zoomin2"
+                    onAction="#zoomButtonClicked">
+                <graphic>
+                    <ImageView preserveRatio="true"
+                               styleClass="imageView">
+                        <Image url="/zoom-in24.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <Button onAction="#zoomButtonClicked">
+                <graphic>
+                    <ImageView preserveRatio="true"
+                               styleClass="imageView">
+                        <Image url="/zoom-out24.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
         </VBox>
 
         <GridPane fx:id="footerGridPane" visible="false" StackPane.alignment="BOTTOM_RIGHT">

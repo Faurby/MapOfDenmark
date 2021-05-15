@@ -42,6 +42,10 @@
     -fx-text-fill: WHITE;
 }
 
+#zoomBox {
+    -fx-color: WHITE;
+}
+
 #footerGridPane {
     -fx-background-color: #f6f6f6;
     -fx-border-color: #3E859B;

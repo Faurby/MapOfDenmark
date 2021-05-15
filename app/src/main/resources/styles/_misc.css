@@ -32,6 +32,12 @@
     -fx-min-height: 25;
 }
 
+#zoomBox {
+    -fx-max-width: 40;
+    -fx-max-height: 60;
+    -fx-padding: 0 5 35 0;
+}
+
 #footerGridPane {
     -fx-font-size: large;
     -fx-max-width: 230;
