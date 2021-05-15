@@ -1,11 +1,13 @@
 package bfst21.view;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import bfst21.models.Model;
 import bfst21.view.controllers.MainController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 
@@ -17,8 +19,10 @@ public class View {
 
         stage.setScene(scene);
         stage.setMaximized(true);
-        stage.setTitle("Map of Denmark");
+        stage.setTitle("Mapster");
         MainController mainController = loader.getController();
+        Image icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("car_icon32.png")));
+        stage.getIcons().add(icon);
         stage.show();
 
         mainController.init(model);
