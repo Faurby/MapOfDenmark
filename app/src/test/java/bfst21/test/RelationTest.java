@@ -20,26 +20,32 @@ public class RelationTest {
         Way way2 = new Way();
         Way way3 = new Way();
         Way way4 = new Way();
+        Way way5 = new Way();
 
         way1.setRole("outer");
         way2.setRole("outer");
         way3.setRole("outer");
         way4.setRole("outer");
+        way5.setRole("outer");
 
         Node node1 = new Node(12.582717f, -99.42255f);
         Node node2 = new Node(12.582533f, -99.4223f);
         Node node3 = new Node(12.575992f, -99.421005f);
         Node node4 = new Node(12.575649f, -99.42077f);
+        Node node5 = new Node(12.575689f, -99.42037f);
+        Node node6 = new Node(12.575639f, -99.42017f);
 
         way1.setNodes(Arrays.asList(node1, node2));
         way2.setNodes(Arrays.asList(node3, node2));
         way3.setNodes(Arrays.asList(node4, node1));
         way4.setNodes(Arrays.asList(node4, node3));
+        way5.setNodes(Arrays.asList(node5, node6));
 
         rel.addWay(way1);
         rel.addWay(way2);
         rel.addWay(way3);
         rel.addWay(way4);
+        rel.addWay(way5);
 
         rel.setMultipolygon(true);
         rel.mergeOuterWays();
