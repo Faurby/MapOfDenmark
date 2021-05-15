@@ -1,7 +1,7 @@
 package bfst21.test;
 
+import bfst21.osm.MapWay;
 import bfst21.osm.Node;
-import bfst21.osm.Way;
 import bfst21.tree.BoundingBox;
 import bfst21.tree.KdTree;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ public class KdTreeTest {
 
     @Test
     public void buildKdTree_correctNearestNeighbor_correctRangeSearch() {
-        KdTree<Way> kdTree = new KdTree<>();
+        KdTree<MapWay> kdTree = new KdTree<>();
 
         float[] coords1 = new float[]{1, 1};
         float[] coords2 = new float[]{2, 2};
@@ -30,22 +30,22 @@ public class KdTreeTest {
         Node node4 = new Node(coords4);
         Node node5 = new Node(coords5);
 
-        Way way1 = new Way();
+        MapWay way1 = new MapWay();
         way1.setNodes(Arrays.asList(node1, node2));
 
-        Way way2 = new Way();
+        MapWay way2 = new MapWay();
         way2.setNodes(Arrays.asList(node2, node3));
 
-        Way way3 = new Way();
+        MapWay way3 = new MapWay();
         way3.setNodes(Arrays.asList(node1, node3));
 
-        Way way4 = new Way();
+        MapWay way4 = new MapWay();
         way4.setNodes(Arrays.asList(node2, node3));
 
-        Way way5 = new Way();
+        MapWay way5 = new MapWay();
         way5.setNodes(Arrays.asList(node4, node5));
 
-        List<Way> wayList = Arrays.asList(way1, way2, way3, way4, way5);
+        List<MapWay> wayList = Arrays.asList(way1, way2, way3, way4, way5);
 
         kdTree.build(wayList);
 
@@ -61,7 +61,7 @@ public class KdTreeTest {
 
         BoundingBox boundingBox = new BoundingBox(4, 5, 4, 5);
 
-        List<Way> searchList = kdTree.rangeSearch(boundingBox);
+        List<MapWay> searchList = kdTree.rangeSearch(boundingBox);
         float[] wayCoords = searchList.get(0).getCoords();
 
         assertEquals(coords4[0], wayCoords[0]);

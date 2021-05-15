@@ -4,7 +4,7 @@
 
 /* EDIT BELOW HERE FOR RESPECTIVE COLOR MODE */
 .searchBoxes {
-    -fx-background-color: #797979;
+    -fx-background-color: DARKGREY;
     -fx-border-color: #264f5e;
 }
 
@@ -30,24 +30,17 @@
     -fx-border-color: #bababa;
 }
 
-.searchBoxes > .button {
-    -fx-background-color: #797979;
-}
-
 .navigationButton {
     -fx-background-color: LIGHTGREY;
+    -fx-border-width: 0;
 }
 .navigationButton:focused {
-    -fx-background-color: GREY;
+    -fx-background-color: #bebebe;
 }
 .navigationButton:hover {
-    -fx-background-color: DARKGREY;
+    -fx-background-color: #bebebe;
 }
 
-
-#deleteTextButton {
-    -fx-border-color: #797979;
-}
 
 #navigationListView .list-cell:even {
     -fx-background-color: #a5a5a5;

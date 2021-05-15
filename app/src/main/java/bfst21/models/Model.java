@@ -2,8 +2,6 @@ package bfst21.models;
 
 import bfst21.data.BinaryFileManager;
 import bfst21.data.XmlParser;
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,7 +15,7 @@ public class Model {
 
     private final String defaultFileName;
     private final boolean jarFile;
-    boolean errorLoading;
+    private boolean failedToLoadFile;
 
     private MapData mapData;
     private String fileName;
@@ -41,6 +39,7 @@ public class Model {
 
     public void load(String fileName) throws IOException, XMLStreamException, FactoryConfigurationError, ClassNotFoundException {
         this.fileName = fileName;
+        failedToLoadFile = false;
 
         System.out.println("Model loading file: " + fileName);
         long totalTime = -System.nanoTime();
@@ -66,20 +65,14 @@ public class Model {
                 mapData = binaryFileManager.loadOBJ(fileName, jarFile);
             }
         } else {
-            Platform.runLater(() -> {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("ERROR");
-                alert.setHeaderText("File doesn't exist!");
-                alert.setContentText("It seems the default file doesn't exist");
-                alert.showAndWait();
-            });
+            failedToLoadFile = true;
         }
         totalTime += System.nanoTime();
         System.out.println("Total load time: " + totalTime / 1_000_000L + "ms");
     }
 
-    public boolean isErrorLoading() {
-        return errorLoading;
+    public boolean failedToLoadFile() {
+        return failedToLoadFile;
     }
 
     public MapData getMapData() {
