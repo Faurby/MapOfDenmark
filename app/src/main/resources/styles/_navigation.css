@@ -48,7 +48,7 @@
 }
 
 #transportModeHBox {
-    -fx-padding: 10 0 0 0;
+    -fx-padding: 0 0 10 0;
     -fx-alignment: CENTER;
 }
 

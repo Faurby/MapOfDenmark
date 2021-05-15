@@ -91,6 +91,64 @@
           managed="false"
           styleClass="searchBoxes">
 
+        <HBox fx:id="transportModeHBox">
+            <ToggleButton fx:id="selectCarButton"
+                          selected="true"
+                          styleClass="navigationButton">
+                <tooltip>
+                    <Tooltip text="By Car"/>
+                </tooltip>
+                <graphic>
+                    <ImageView fitHeight="32.0"
+                               preserveRatio="true"
+                               styleClass="imageView">
+                        <Image url="/car_icon32.png"/>
+                    </ImageView>
+                </graphic>
+
+                <toggleGroup>
+                    <ToggleGroup fx:id="group"/>
+                </toggleGroup>
+
+            </ToggleButton>
+
+            <ToggleButton fx:id="selectBikeButton" styleClass="navigationButton">
+                <tooltip>
+                    <Tooltip text="By Bike"/>
+                </tooltip>
+                <graphic>
+                    <ImageView fitHeight="32.0"
+                               preserveRatio="true"
+                               styleClass="imageView">
+                        <Image url="/bike_icon32.png"/>
+                    </ImageView>
+                </graphic>
+
+                <toggleGroup>
+                    <fx:reference source="group"/>
+                </toggleGroup>
+
+            </ToggleButton>
+
+            <ToggleButton fx:id="selectWalkButton" styleClass="navigationButton">
+                <tooltip>
+                    <Tooltip text="Walking"/>
+                </tooltip>
+                <graphic>
+                    <ImageView fitHeight="32.0"
+                               preserveRatio="true"
+                               styleClass="imageView">
+                        <Image url="/walk_icon32.png"/>
+                    </ImageView>
+                </graphic>
+
+                <toggleGroup>
+                    <fx:reference source="group"/>
+                </toggleGroup>
+
+            </ToggleButton>
+        </HBox>
+
         <GridPane hgap="2">
             <VBox GridPane.columnIndex="1"
                   GridPane.rowIndex="1"
@@ -151,64 +209,6 @@
 
             </Button>
         </GridPane>
-
-        <HBox fx:id="transportModeHBox">
-            <ToggleButton fx:id="selectCarButton"
-                          selected="true"
-                          styleClass="navigationButton">
-                <tooltip>
-                    <Tooltip text="By Car"/>
-                </tooltip>
-                <graphic>
-                    <ImageView fitHeight="32.0"
-                               preserveRatio="true"
-                               styleClass="imageView">
-                        <Image url="/car_icon32.png"/>
-                    </ImageView>
-                </graphic>
-
-                <toggleGroup>
-                    <ToggleGroup fx:id="group"/>
-                </toggleGroup>
-
-            </ToggleButton>
-
-            <ToggleButton fx:id="selectBikeButton" styleClass="navigationButton">
-                <tooltip>
-                    <Tooltip text="By Bike"/>
-                </tooltip>
-                <graphic>
-                    <ImageView fitHeight="32.0"
-                               preserveRatio="true"
-                               styleClass="imageView">
-                        <Image url="/bike_icon32.png"/>
-                    </ImageView>
-                </graphic>
-
-                <toggleGroup>
-                    <fx:reference source="group"/>
-                </toggleGroup>
-
-            </ToggleButton>
-
-            <ToggleButton fx:id="selectWalkButton" styleClass="navigationButton">
-                <tooltip>
-                    <Tooltip text="Walking"/>
-                </tooltip>
-                <graphic>
-                    <ImageView fitHeight="32.0"
-                               preserveRatio="true"
-                               styleClass="imageView">
-                        <Image url="/walk_icon32.png"/>
-                    </ImageView>
-                </graphic>
-
-                <toggleGroup>
-                    <fx:reference source="group"/>
-                </toggleGroup>
-
-            </ToggleButton>
-        </HBox>
 
         <HBox alignment="BASELINE_CENTER" spacing="5" styleClass="hboxForButtons">
 

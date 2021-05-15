@@ -29,6 +29,9 @@
 .toggle-button {
     -fx-border-color: #bababa;
 }
+.toggle-button:selected {
+    -fx-background-color: #bababa;
+}
 
 .navigationButton {
     -fx-background-color: LIGHTGREY;
