@@ -386,7 +386,7 @@ public class NavigationBoxController extends SubController {
 
     /**
      * Calculate and correct scrollPane's scroll position to center a specific label (node).
-     * It is originally written by stackoverflow users Håvard Geithus and Beryllium.
+     * By stackoverflow users Håvard Geithus and Beryllium.
      */
     public void centerLabelInScrollPane(ScrollPane scrollPane, Node node) {
         double h = scrollPane.getContent().getBoundsInLocal().getHeight();
