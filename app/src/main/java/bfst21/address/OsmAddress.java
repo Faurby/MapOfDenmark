@@ -74,19 +74,10 @@ public class OsmAddress implements Serializable {
     }
 
     public String toString() {
-        return street + " " + houseNumber + ", " + city + " " + postcode;
+        return street + " " + houseNumber + " " + city + " " + postcode;
     }
 
     public String omitHouseNumberToString() {
-        return street + ", " + city + " " + postcode;
-    }
-
-    public boolean matches(String input) {
-        input = input.toLowerCase();
-
-        if (toString().toLowerCase().contains(input)) {
-            return true;
-
-        } else return omitHouseNumberToString().toLowerCase().contains(input);
+        return street + " " + city + " " + postcode;
     }
 }
