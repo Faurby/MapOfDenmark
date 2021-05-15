@@ -57,10 +57,18 @@ public enum ElementType {
             Color.rgb(0, 126, 170),
             Color.rgb(52, 66, 93)
     ),
+    SUBWAY(
+            0.00006f,
+            2000.0f,
+            0.00009D,
+            Color.rgb(80, 80, 80),
+            Color.rgb(80, 80, 80),
+            Color.rgb(200, 200, 200)
+    ),
     FERRY(
             0.0002f,
             800.0f,
-            0.0003D,
+            0.0001D,
             Color.rgb(126, 142, 244),
             Color.rgb(126, 142, 244),
             Color.rgb(126, 142, 244)
@@ -68,7 +76,7 @@ public enum ElementType {
     CYCLEWAY(
             0.00005f,
             90000.0f,
-            0.0001D,
+            0.00005D,
             Color.rgb(33, 33, 250),
             Color.rgb(33, 33, 250),
             Color.rgb(52, 66, 130)
@@ -76,7 +84,7 @@ public enum ElementType {
     FOOTWAY(
             0.00005f,
             90000.0f,
-            0.0001D,
+            0.00005D,
             Color.rgb(252, 132, 116),
             Color.rgb(252, 132, 116),
             Color.rgb(152, 32, 116)

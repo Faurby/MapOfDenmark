@@ -311,7 +311,10 @@ public class XmlParser {
                                         }
                                         break;
                                     case "railway":
-                                        if (value.equals("rail") || value.equals("subway")) {
+                                        if (value.equals("subway")) {
+                                            elementType = ElementType.SUBWAY;
+                                        }
+                                        if (value.equals("rail")) {
                                             elementType = ElementType.RAILWAY;
                                         }
                                         break;

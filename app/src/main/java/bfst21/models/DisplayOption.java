@@ -23,5 +23,6 @@ public enum DisplayOption {
     DISPLAY_SERVICE,
     DISPLAY_AEROWAY,
     DISPLAY_FERRY,
-    DISPLAY_TEXT
+    DISPLAY_TEXT,
+    DISPLAY_SUBWAY,
 }
