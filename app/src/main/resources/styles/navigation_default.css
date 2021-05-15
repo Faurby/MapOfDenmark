@@ -30,12 +30,9 @@
     -fx-border-color: LIGHTGREY;
 }
 
-.searchBoxes > .button {
-    -fx-background-color: default;
-}
-
 .navigationButton {
     -fx-background-color: none;
+    -fx-border-width: 0;
 }
 .navigationButton:focused {
     -fx-background-color: LIGHTGREY;
@@ -49,5 +46,5 @@
     -fx-background-color: WHITE;
 }
 #navigationListView .list-cell:odd {
-    -fx-background-color: LIGHTGREY;
+    -fx-background-color: #ececec;
 }

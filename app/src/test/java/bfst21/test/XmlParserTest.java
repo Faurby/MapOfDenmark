@@ -30,7 +30,7 @@ public class XmlParserTest {
     @Test
     public void getBuildingsSize_correctAmount() {
         ElementGroup elementGroup = new ElementGroup(ElementType.BUILDING, ElementSize.SMALL);
-        List<Way> ways = model.getMapData().getKdTree(elementGroup).getAllElements();
+        List<MapWay> ways = model.getMapData().getKdTree(elementGroup).getAllElements();
 
         assertEquals(67292, ways.size());
     }
@@ -47,8 +47,8 @@ public class XmlParserTest {
         MapData mapData = model.getMapData();
         DirectedGraph directedGraph = mapData.getDirectedGraph();
 
-        assertEquals(88858, directedGraph.getVertexAmount());
-        assertEquals(201916, directedGraph.getEdgeAmount());
+        assertEquals(88797, directedGraph.getVertexAmount());
+        assertEquals(201818, directedGraph.getEdgeAmount());
     }
 
     @Test
@@ -66,6 +66,8 @@ public class XmlParserTest {
 
         ElementGroup eg2 = new ElementGroup(ElementType.PRIMARY, ElementSize.DEFAULT);
         assertEquals(204, mapData.getWays(eg2).size());
+
+        assertEquals(716, mapData.getRelations().size());
     }
 
     @Test

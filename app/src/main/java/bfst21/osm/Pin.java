@@ -12,7 +12,7 @@ import java.util.Objects;
 public enum Pin {
 
     ORIGIN("grey_marker.png"),
-    DESTINATION("red_pin32.png"),
+    DESTINATION("destination_pin32.png"),
     USER_NODE("red_pin32.png");
 
     private boolean visible = false;

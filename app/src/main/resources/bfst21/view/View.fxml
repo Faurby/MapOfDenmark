@@ -105,13 +105,11 @@
         <VBox fx:id="newUserNodeVBox" styleClass="userNodeVBoxes">
             <Text text="New Point of Interest" styleClass="largeText"/>
 
-            <Text text="Name:"/>
             <TextField fx:id="userNodeNameText"
                        onKeyPressed="#userNodeTextKeyPressed"
                        promptText="Name"
                        styleClass="textField"/>
 
-            <Text text="Description:"/>
             <TextField fx:id="userNodeDescriptionText"
                        onKeyPressed="#userNodeTextKeyPressed"
                        promptText="Description"
