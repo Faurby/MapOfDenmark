@@ -66,7 +66,7 @@ public enum ElementType {
             Color.rgb(126, 142, 244)
     ),
     CYCLEWAY(
-            0.0001f,
+            0.00005f,
             90000.0f,
             0.0001D,
             Color.rgb(33, 33, 250),
@@ -74,7 +74,7 @@ public enum ElementType {
             Color.rgb(52, 66, 130)
     ),
     FOOTWAY(
-            0.0001f,
+            0.00005f,
             90000.0f,
             0.0001D,
             Color.rgb(252, 132, 116),

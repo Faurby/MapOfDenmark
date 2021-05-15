@@ -287,10 +287,11 @@ public class MapCanvas extends Canvas {
                     if (before.isJunction()) {
                         before.draw(directedGraph, gc);
                         int fromID = before.getFrom();
-                        if (directedGraph.getOutDegree(fromID) >= 2) {
+                        if (directedGraph.getDegree(fromID) >= 3) {
                             exitCount++;
                         }
                         if (!after.isJunction()) {
+                            after.draw(directedGraph, gc);
                             currentDirections.add("Take the " + exitCount + ". exit in the roundabout");
                             exitCount = 0;
                         }
