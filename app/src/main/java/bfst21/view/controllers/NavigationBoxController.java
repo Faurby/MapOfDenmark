@@ -479,10 +479,10 @@ public class NavigationBoxController extends SubController {
                 navigationDescriptionBox.setVisible(true);
                 navigationDescriptionBox.setManaged(true);
             }
+        } else {
+            Pin.ORIGIN.setVisible(false);
+            Pin.DESTINATION.setVisible(false);
         }
-
-        Pin.ORIGIN.setVisible(false);
-        Pin.DESTINATION.setVisible(false);
 
         if (addressTextArea.getText() != null) {
             destinationTextArea.setText(addressTextArea.getText());
