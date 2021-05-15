@@ -275,7 +275,6 @@ public class MainController extends BaseController {
 
         if (userNodeToggle && mouseEvent.isPrimaryButtonDown()) {
             newUserNodeVBox.setVisible(true);
-            userNodeNameText.requestFocus();
             scene.setCursor(Cursor.DEFAULT);
         }
 
@@ -413,7 +412,6 @@ public class MainController extends BaseController {
         }
 
         if (text.contains("standard")) {
-            scene.getStylesheets().removeAll();
             scene.getStylesheets().setAll(
                     getClass().getResource("/styles/userNodes_default.css").toExternalForm(),
                     getClass().getResource("/styles/misc_default.css").toExternalForm()
@@ -422,7 +420,6 @@ public class MainController extends BaseController {
             navigationBox.getStylesheets().setAll(getClass().getResource("/styles/navigation_default.css").toExternalForm());
 
         } else if (text.contains("darkmode")) {
-            scene.getStylesheets().removeAll();
             scene.getStylesheets().setAll(
                     getClass().getResource("/styles/userNodes_darkmode.css").toExternalForm(),
                     getClass().getResource("/styles/misc_darkmode.css").toExternalForm()
@@ -505,7 +502,8 @@ public class MainController extends BaseController {
     @FXML
     public void userNodeCancelClicked() {
         newUserNodeVBox.setVisible(false);
-        scene.setCursor(userNodeCursorImage);
+        scene.setCursor(Cursor.DEFAULT);
+        userNodeToggle = false;
     }
 
     private void saveUserNode() {

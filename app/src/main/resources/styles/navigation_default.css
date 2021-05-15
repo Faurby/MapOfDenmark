@@ -30,16 +30,12 @@
     -fx-border-color: LIGHTGREY;
 }
 
-.searchBoxes > .button {
-    -fx-background-color: default;
-}
-
 .navigationButton {
     -fx-background-color: none;
     -fx-border-width: 0;
 }
 .navigationButton:focused {
-    -fx-background-color: #ececec;
+    -fx-background-color: LIGHTGREY;
 }
 .navigationButton:hover {
     -fx-background-color: LIGHTGREY;

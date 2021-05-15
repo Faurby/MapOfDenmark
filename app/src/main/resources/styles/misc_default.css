@@ -41,3 +41,8 @@
 .menu-item:focused .label {
     -fx-text-fill: WHITE;
 }
+
+#footerGridPane {
+    -fx-background-color: #f6f6f6;
+    -fx-border-color: #3E859B;
+}

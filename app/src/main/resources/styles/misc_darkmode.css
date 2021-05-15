@@ -8,7 +8,7 @@
 }
 
 #menuBar {
-    -fx-background-color: #797979;
+    -fx-background-color: DARKGREY;
 }
 
 #menuBar .menu:hover {
@@ -22,11 +22,11 @@
 }
 
 #menuBar .context-menu {
-    -fx-background-color: #797979;
+    -fx-background-color: DARKGREY;
 }
 
 .menu-item {
-    -fx-background-color: #797979;
+    -fx-background-color: DARKGREY;
 }
 .menu-item:hover {
     -fx-background-color: #979797;
@@ -36,8 +36,14 @@
 }
 
 .menu-item:hover .label {
-    -fx-text-fill: WHITE;
+    -fx-text-fill: BLACK;
 }
 .menu-item:focused .label {
-    -fx-text-fill: WHITE;
+    -fx-text-fill: BLACK;
+}
+
+
+#footerGridPane {
+    -fx-background-color: #979797;
+    -fx-border-color: #1c3f49;
 }
