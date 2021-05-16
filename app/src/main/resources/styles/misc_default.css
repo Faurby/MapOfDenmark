@@ -42,8 +42,16 @@
     -fx-text-fill: WHITE;
 }
 
-#zoomBox {
-    -fx-color: WHITE;
+#zoomBox_inner {
+    -fx-background-color: #f8f8f8;
+    -fx-border-color: #3E859B;
+}
+.zoomButton {
+    -fx-background-color: none;
+    -fx-border-width: 0;
+}
+.zoomButton:hover {
+    -fx-background-color: LIGHTGREY;
 }
 
 #footerGridPane {

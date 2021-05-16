@@ -86,7 +86,7 @@ public class MainController extends BaseController {
     @FXML
     private Text zoomPercentText;
     @FXML
-    private VBox zoomBox;
+    private StackPane zoomBox_outer;
     @FXML
     private GridPane footerGridPane;
     @FXML
@@ -366,7 +366,7 @@ public class MainController extends BaseController {
         loadingScreenBox.setVisible(true);
         menuBarHBox.setVisible(false);
         footerGridPane.setVisible(false);
-        zoomBox.setVisible(false);
+        zoomBox_outer.setVisible(false);
     }
 
     private void finishedLoadingFile() {
@@ -377,7 +377,7 @@ public class MainController extends BaseController {
             navigationBoxController.setSearchBoxVisible(true);
             userNodeVBox.setVisible(true);
             footerGridPane.setVisible(true);
-            zoomBox.setVisible(true);
+            zoomBox_outer.setVisible(true);
             canvas.runRangeSearchTask();
             menuBarHBox.setVisible(true);
 

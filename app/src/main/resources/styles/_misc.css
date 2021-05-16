@@ -32,7 +32,7 @@
     -fx-min-height: 25;
 }
 
-#zoomBox {
+#zoomBox_outer {
     -fx-max-width: 40;
     -fx-max-height: 60;
     -fx-padding: 0 5 35 0;

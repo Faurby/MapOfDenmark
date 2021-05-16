@@ -194,26 +194,30 @@
             </HBox>
         </VBox>
 
-        <VBox fx:id="zoomBox" visible="false" StackPane.alignment="BOTTOM_RIGHT">
-            <Button fx:id="zoomin2"
-                    onAction="#zoomButtonClicked">
-                <graphic>
-                    <ImageView preserveRatio="true"
-                               styleClass="imageView">
-                        <Image url="/zoom-in24.png"/>
-                    </ImageView>
-                </graphic>
-            </Button>
+        <StackPane fx:id="zoomBox_outer" visible="false" StackPane.alignment="BOTTOM_RIGHT">
+            <VBox fx:id="zoomBox_inner">
+                <Button fx:id="zoomin2"
+                        styleClass="zoomButton"
+                        onAction="#zoomButtonClicked">
+                    <graphic>
+                        <ImageView preserveRatio="true"
+                                   styleClass="imageView">
+                            <Image url="/zoom-in24.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
 
-            <Button onAction="#zoomButtonClicked">
-                <graphic>
-                    <ImageView preserveRatio="true"
-                               styleClass="imageView">
-                        <Image url="/zoom-out24.png"/>
-                    </ImageView>
-                </graphic>
-            </Button>
-        </VBox>
+                <Button styleClass="zoomButton"
+                        onAction="#zoomButtonClicked">
+                    <graphic>
+                        <ImageView preserveRatio="true"
+                                   styleClass="imageView">
+                            <Image url="/zoom-out24.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </VBox>
+        </StackPane>
 
         <GridPane fx:id="footerGridPane" visible="false" StackPane.alignment="BOTTOM_RIGHT">
             <Text fx:id="nearestRoadText" GridPane.columnIndex="1"/>
