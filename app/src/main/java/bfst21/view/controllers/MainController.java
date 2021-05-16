@@ -127,11 +127,14 @@ public class MainController extends BaseController {
         float dy = Math.abs(startCoords[1] - destinationCoords[1]);
         double distPoints = Math.sqrt((dx * dx) + (dy * dy));
 
-        double screenHeight = getCanvas().getScreenBoundingBox(false).getMinY() - getCanvas().getScreenBoundingBox(false).getMaxY();
+        float screenMinY = canvas.getScreenBoundingBox(false).getMinY();
+        float screenMaxY = canvas.getScreenBoundingBox(false).getMaxY();
+
+        double screenHeight = screenMinY - screenMaxY;
         double zf = Math.abs(screenHeight) / (distPoints * 1.8);
         Point2D point = new Point2D(stackPane.getWidth() / 2, stackPane.getHeight() / 2);
 
-        getCanvas().zoom(zf, point, false);
+        canvas.zoom(zf, point, false);
         updateZoomBox();
     }
 
@@ -245,13 +248,17 @@ public class MainController extends BaseController {
                     }
                 }
                 if (closestNode != null) {
-                    if (nodeAtMouse.distTo(closestNode) < 840.0D * (1.0D / Math.sqrt(canvas.getTrans().determinant()))) {
+                    //We need to use getTrans().determinant() so it works for different zoom levels
+                    double distanceRequired = 840.0D * (1.0D / Math.sqrt(canvas.getTrans().determinant()));
+
+                    //Is user clicking near a UserNode?
+                    if (nodeAtMouse.distTo(closestNode) < distanceRequired) {
                         userNodeClickedVBox.setVisible(true);
                         userNodeClickedVBox.requestFocus();
                         userNodeClickedName.setText(closestNode.getName());
                         userNodeClickedDescription.setText((closestNode.getDescription().equals("") ? "No description entered" : closestNode.getDescription()));
                         String x = String.format(Locale.ENGLISH, "%.6f", closestNode.getX());
-                        String y = String.format(Locale.ENGLISH, "%.6f", (-1f * closestNode.getY() * 0.56f));
+                        String y = String.format(Locale.ENGLISH, "%.6f", (-1f * closestNode.getY() * 0.56f)); //Convert to "real" coords
                         userNodeClickedCoords.setText(x + ", " + y);
                         currentUserNode = closestNode;
                     }
@@ -327,7 +334,6 @@ public class MainController extends BaseController {
         task.setOnFailed(e -> task.getException().printStackTrace());
         Thread thread = new Thread(task);
         thread.start();
-
     }
 
     @FXML
@@ -459,7 +465,10 @@ public class MainController extends BaseController {
     public void userNodeClickedVBoxOnKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ESCAPE) {
             userNodeClickedVBox.setVisible(false);
-        } else if (keyEvent.getCode() == KeyCode.DELETE || keyEvent.getCode() == KeyCode.BACK_SPACE) {
+
+        } else if (keyEvent.getCode() == KeyCode.DELETE
+                || keyEvent.getCode() == KeyCode.BACK_SPACE) {
+
             userNodeDeleteClicked();
         }
     }
@@ -468,6 +477,7 @@ public class MainController extends BaseController {
     public void userNodeTextKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ENTER) {
             newUserNodeCheckNameAndSave();
+
         } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
             newUserNodeVBox.setVisible(false);
             scene.setCursor(Cursor.DEFAULT);
@@ -514,8 +524,9 @@ public class MainController extends BaseController {
 
     private void saveUserNode() {
         Point2D point = canvas.mouseToModelCoords(lastMouse);
-        double x = point.getX() + (15.0D / getCanvas().getZoomLevel());
-        double y = point.getY() + (30.0D / getCanvas().getZoomLevel());
+
+        double x = point.getX() + (15.0D / canvas.getZoomLevel());
+        double y = point.getY() + (30.0D / canvas.getZoomLevel());
         UserNode userNode = new UserNode((float) x, (float) y, userNodeNameText.getText(), userNodeDescriptionText.getText());
 
         model.getMapData().addUserNode(userNode);
@@ -548,6 +559,7 @@ public class MainController extends BaseController {
         } else if (userNodeListItems.size() < 4) {
             userNodeListView.setMaxHeight(userNodeListItems.size() * 25.0D);
             userNodeListView.setMinHeight(userNodeListItems.size() * 25.0D);
+
         } else {
             userNodeListView.setMaxHeight(85.0D);
             userNodeListView.setMinHeight(85.0D);
@@ -695,6 +707,7 @@ public class MainController extends BaseController {
                 new FileChooser.ExtensionFilter("OBJ file", ".obj")));
 
         File file = fileSaver.showSaveDialog(new Stage());
+
         if (file != null) {
             Task<Void> task = new Task<>() {
                 @Override

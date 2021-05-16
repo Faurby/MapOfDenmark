@@ -210,6 +210,7 @@ public class NavigationBoxController extends SubController {
                     originTextArea.setText(originTextArea.getText().trim());
                     switchAddressButton.requestFocus();
                 }
+
             } else if (keyEvent.getCode() == KeyCode.ENTER) {
                 findRouteButton.requestFocus();
                 originTextArea.setText(originTextArea.getText().trim());
@@ -221,6 +222,7 @@ public class NavigationBoxController extends SubController {
             } else if (keyEvent.getCode() == KeyCode.DOWN) {
                 if (keyEvent.getSource().toString().contains("originTextArea") && shownSuggestionsOrigin.size() > 0) {
                     originSuggestionsBox.getChildren().get(0).requestFocus();
+
                 } else if (keyEvent.getSource().toString().contains("destinationTextArea") && shownSuggestionsDestination.size() > 0) {
                     destinationSuggestionsBox.getChildren().get(0).requestFocus();
                 }
