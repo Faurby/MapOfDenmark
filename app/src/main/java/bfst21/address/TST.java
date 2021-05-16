@@ -216,7 +216,6 @@ public class TST implements Serializable {
      */
     public void updateAddressSuggestions(String originalInput, List<String> suggestions) {
         suggestions.clear();
-        List<OsmAddress> osmSuggestions = new ArrayList<>();
 
         originalInput = originalInput.toLowerCase();
         String addressInput = originalInput.replace(" ", "");
@@ -241,26 +240,21 @@ public class TST implements Serializable {
             if (it.hasNext()) {
 
                 List<String> allSuggestions = new ArrayList<>();
-                List<OsmAddress> allOsmSuggestions = new ArrayList<>();
 
                 for (OsmAddress osmAddress : get(it.next())) {
                     String address = osmAddress.toString();
 
                     allSuggestions.add(address);
-                    allOsmSuggestions.add(osmAddress);
 
                     //Give suggestions for addresses that contains original input
                     if (address.toLowerCase().contains(originalInput)) {
-
-                        osmSuggestions.add(osmAddress);
                         suggestions.add(address);
                     }
                 }
                 //If no suggestions were found, add all suggestions instead.
-                //Happens if someone types an ambiguous address but still with a full street name.
+                //Happens if user types an ambiguous address but still with a full street name.
                 if (suggestions.size() == 0) {
                     suggestions.addAll(allSuggestions);
-                    osmSuggestions.addAll(allOsmSuggestions);
                 }
             }
         } else {

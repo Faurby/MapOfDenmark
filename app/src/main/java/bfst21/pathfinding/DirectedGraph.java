@@ -1,7 +1,5 @@
 package bfst21.pathfinding;
 
-import bfst21.models.TransportOption;
-import bfst21.models.TransportOptions;
 import bfst21.models.DistanceUtil;
 import bfst21.osm.Node;
 
@@ -35,6 +33,7 @@ public class DirectedGraph implements Serializable {
      * Clean up vertices and edges by removing unused slots in the array.
      * We count how many elements are actually present, then create a
      * new array with the correct size and copy all elements over.
+     * This decreases overall memory usage.
      */
     public void cleanUp() {
 
@@ -226,6 +225,8 @@ public class DirectedGraph implements Serializable {
     /**
      * @return out degree of vertex with given vertexID.
      * <p>
+     * Used to count the amount of possible exits in a roundabout.
+     * <p>
      * The out degree is only increased for edges where driving is enabled.
      * This is to ensure it properly works for oneways in roundabouts.
      */
@@ -243,6 +244,11 @@ public class DirectedGraph implements Serializable {
         return outDegree;
     }
 
+    /**
+     * Calculate the bearing for an edge.
+     * <p>
+     * This code was written by Jonas Lindvig, all credit goes to him and his group.
+     */
     private float calculateBearing(Edge edge) {
         Vertex fromVertex = vertices[edge.getFrom()];
         Vertex toVertex = vertices[edge.getTo()];
@@ -251,10 +257,10 @@ public class DirectedGraph implements Serializable {
         float[] toCoords = toVertex.getCoords();
 
         float lat1Radian = (float) Math.toRadians(fromCoords[0]);
-        float lon1Radian = (float) Math.toRadians(-fromCoords[1] * 0.56f);
+        float lon1Radian = (float) Math.toRadians(-fromCoords[1] * 0.56f); //Use "real" coordinates
 
         float lat2Radian = (float) Math.toRadians(toCoords[0]);
-        float lon2Radian = (float) Math.toRadians(-toCoords[1] * 0.56f);
+        float lon2Radian = (float) Math.toRadians(-toCoords[1] * 0.56f); //Use "real" coordinates
 
         float deltaLon = lon2Radian - lon1Radian;
 
@@ -268,20 +274,30 @@ public class DirectedGraph implements Serializable {
         return bearing;
     }
 
+    /**
+     * Determine the direction between 2 edges.
+     * <p>
+     * If both edges have the same name return Direction.STRAIGHT
+     * Otherwise calculate the bearing for the two edges to determine the direction.
+     * <p>
+     * This code was written by Jonas Lindvig, all credit goes to him and his group.
+     */
     public Direction getDirectionFromBearing(Edge before, Edge after) {
         if (before.getName() != null && after.getName() != null) {
             if (before.getName().equals(after.getName())) {
                 return Direction.STRAIGHT;
             }
         }
-
         float angle;
         Direction output = Direction.STRAIGHT;
 
-        if (calculateBearing(before) > calculateBearing(after)) {
-            angle = 360 - (Math.abs(calculateBearing(after) - calculateBearing(before)));
+        float bearingBefore = calculateBearing(before);
+        float bearingAfter = calculateBearing(after);
+
+        if (bearingBefore > bearingAfter) {
+            angle = 360 - (Math.abs(bearingAfter - bearingBefore));
         } else {
-            angle = calculateBearing(after) - calculateBearing(before);
+            angle = bearingAfter - bearingBefore;
         }
         if (angle >= 45.0f && angle <= 180.0f) {
             return Direction.TURN_RIGHT;
