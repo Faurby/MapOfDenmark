@@ -246,6 +246,7 @@ public class DirectedGraph implements Serializable {
 
     /**
      * Calculate the bearing for an edge.
+     * Bearing can be defined as a direction or angle between a latitude and longitude point.
      * <p>
      * This code was written by Jonas Lindvig, all credit goes to him and his group.
      */
@@ -279,6 +280,7 @@ public class DirectedGraph implements Serializable {
      * <p>
      * If both edges have the same name return Direction.STRAIGHT
      * Otherwise calculate the bearing for the two edges to determine the direction.
+     * Use the bearing to decide what direction to return.
      * <p>
      * This code was written by Jonas Lindvig, all credit goes to him and his group.
      */

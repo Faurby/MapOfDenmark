@@ -27,8 +27,8 @@ public class DistanceUtil {
         double rLonDistance = Math.toRadians(lon2 - lon1);
 
         double a = (Math.sin(rLatDistance / 2.0D) * Math.sin(rLatDistance / 2.0D)) +
-                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                        Math.sin(rLonDistance / 2.0D) * Math.sin(rLonDistance / 2.0D);
+                    Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                    Math.sin(rLonDistance / 2.0D) * Math.sin(rLonDistance / 2.0D);
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return radius * c;
