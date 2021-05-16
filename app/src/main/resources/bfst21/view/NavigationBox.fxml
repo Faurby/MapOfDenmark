@@ -222,7 +222,9 @@
             </Button>
         </GridPane>
 
-        <HBox alignment="BASELINE_CENTER" spacing="5" styleClass="hboxForButtons">
+        <HBox alignment="BASELINE_CENTER"
+              spacing="5"
+              styleClass="hboxForButtons">
 
             <Button onAction="#minimizeNavigationBox" styleClass="navigationButton">
                 <tooltip>

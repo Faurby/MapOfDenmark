@@ -123,7 +123,9 @@
             </HBox>
         </VBox>
 
-        <VBox fx:id="userNodeClickedVBox" styleClass="userNodeVBoxes" onKeyPressed="#userNodeClickedVBoxOnKeyPressed">
+        <VBox fx:id="userNodeClickedVBox"
+              styleClass="userNodeVBoxes"
+              onKeyPressed="#userNodeClickedVBoxOnKeyPressed">
             <Text text="Failed to load name" fx:id="userNodeClickedName"/>
             <Text text="Failed to load description" fx:id="userNodeClickedDescription"/>
             <Text text="Failed to load coordinates" fx:id="userNodeClickedCoords"/>
@@ -170,7 +172,8 @@
             </HBox>
         </VBox>
 
-        <VBox fx:id="userNodeNewDescriptionVBox" styleClass="userNodeVBoxes, userNodeNewNameOrDescVBoxes">
+        <VBox fx:id="userNodeNewDescriptionVBox"
+              styleClass="userNodeVBoxes, userNodeNewNameOrDescVBoxes">
             <Text text="Enter new description" styleClass="largeText"/>
 
             <TextField fx:id="userNodeNewDescriptionText"
@@ -213,13 +216,9 @@
         </VBox>
 
         <GridPane fx:id="footerGridPane" visible="false" StackPane.alignment="BOTTOM_RIGHT">
-            <Text text=""
-                  fx:id="nearestRoadText"
-                  GridPane.columnIndex="1"/>
-            <Text text=" | "
-                  GridPane.columnIndex="2"/>
-            <Text fx:id="zoomPercentText"
-                  GridPane.columnIndex="3"/>
+            <Text fx:id="nearestRoadText" GridPane.columnIndex="1"/>
+            <Text text=" | " GridPane.columnIndex="2"/>
+            <Text fx:id="zoomPercentText" GridPane.columnIndex="3"/>
         </GridPane>
     </StackPane>
 </Scene>
