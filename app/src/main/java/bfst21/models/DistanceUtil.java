@@ -1,9 +1,6 @@
 package bfst21.models;
 
 
-/**
- * Utility class.
- */
 public class DistanceUtil {
 
     /**

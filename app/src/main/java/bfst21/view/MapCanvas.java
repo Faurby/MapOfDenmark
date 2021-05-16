@@ -284,7 +284,7 @@ public class MapCanvas extends Canvas {
 
                     weightSum += before.getWeight();
 
-                    if (before.isJunction()) {
+                    if (before.isJunction()) { //Is this a roundabout edge?
                         before.draw(directedGraph, gc);
                         int toID = before.getTo();
                         if (directedGraph.getOutDegree(toID) >= 2) {
@@ -309,18 +309,23 @@ public class MapCanvas extends Canvas {
                         String dir = direction.toString().toLowerCase().replace("_", " ");
                         dir = dir.substring(0, 1).toUpperCase() + dir.substring(1);
 
+                        //If direction isn't Direction.STRAIGHT, we know
+                        //that a turn is coming up unless its a roundabout.
                         if (direction != Direction.STRAIGHT) {
                             currentDirections.add("Follow " + before.getName() + " " + distanceSumToString(distanceSum));
                             if (!after.isJunction()) {
                                 currentDirections.add(dir + " down " + after.getName());
                             }
                             distanceSum = 0;
+
+                            //If direction is Direction.STRAIGHT but we find a new Way name.
                         } else if (!before.getName().equals(after.getName())) {
                             currentDirections.add("Follow " + before.getName() + " " + distanceSumToString(distanceSum));
                             distanceSum = 0;
                         }
-                        if (i == (edgeList.size() - 2)) {
+                        if (i == (edgeList.size() - 2)) { //Last iteration in the list
                             after.draw(directedGraph, gc);
+
                             weightSum += after.getWeight();
                             currentRouteWeight = (int) Math.ceil(weightSum);
                             distanceSum += distanceAfter;
@@ -387,6 +392,7 @@ public class MapCanvas extends Canvas {
 
     /**
      * Run dijkstra path finding for origin and destination coordinates.
+     * Set PINs visible for origin and destination.
      */
     public void runDijkstra() {
         model.getMapData().runDijkstra(originCoords, destinationCoords);

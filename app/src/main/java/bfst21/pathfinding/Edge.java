@@ -77,14 +77,6 @@ public class Edge implements Serializable {
         } else return canWalk && transportOption == TransportOption.WALK;
     }
 
-    public boolean canWalk() {
-        return canWalk;
-    }
-
-    public boolean canBike() {
-        return canBike;
-    }
-
     public boolean canDrive() {
         return canDrive;
     }

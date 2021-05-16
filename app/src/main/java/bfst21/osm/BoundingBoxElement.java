@@ -10,6 +10,8 @@ import java.util.List;
  * The bounding box is updated every time a new coordinate is added.
  * This is to increase drawing performance as the values are calculated
  * while parsing OSM data instead of when navigating the map.
+ * <p>
+ * Classes that extend BoundingBoxElement can be placed in a kd-tree.
  */
 public abstract class BoundingBoxElement implements Serializable {
 

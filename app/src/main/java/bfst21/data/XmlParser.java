@@ -328,9 +328,9 @@ public class XmlParser {
                                         break;
                                     case "landuse":
                                         if (value.equals("grass") ||
-                                                value.equals("meadow") ||
-                                                value.equals("orchard") ||
-                                                value.equals("allotments")) {
+                                            value.equals("meadow") ||
+                                            value.equals("orchard") ||
+                                            value.equals("allotments")) {
                                             elementType = ElementType.LANDUSE;
 
                                         } else if (value.equals("forest")) {
@@ -381,7 +381,6 @@ public class XmlParser {
                                                 way.setOneWay(true);
                                                 way.setOneWayBike(true);
                                                 way.setJunction(true);
-
                                             }
                                         }
                                         break;
@@ -418,7 +417,6 @@ public class XmlParser {
 
                         case "node":
                             if (osmAddress != null && osmAddress.isValid()) {
-                                //String inputAddress = osmAddress.getStreet().trim().replace(" ", "").toLowerCase() + osmAddress.getPostcode();
                                 String inputAddress = osmAddress.getStreet().trim().replaceAll(" ", "").toLowerCase();
 
                                 List<OsmAddress> addresses = new ArrayList<>();

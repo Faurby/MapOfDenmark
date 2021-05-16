@@ -84,6 +84,9 @@ public class NavigationBoxController extends SubController {
     private boolean isNavigationBoxExpanded = false;
 
     /**
+     * Standard FXML initialize method for controllers.
+     * <p>
+     * Add ToggleTransportListener to transport selection buttons.
      * Activate EventListeners of the Navigation Box
      */
     public void initialize() {
@@ -112,7 +115,6 @@ public class NavigationBoxController extends SubController {
                 destinationScrollPane.setManaged(true);
             }
         });
-
         addressTextArea.setOnMouseClicked(event -> {
             addressScrollPane.setVisible(true);
             addressScrollPane.setManaged(true);
@@ -122,9 +124,8 @@ public class NavigationBoxController extends SubController {
     /**
      * Called when a search is made from the minimized SearchBox.
      * <p>
-     * If the TextArea is not empty, and a corresponding address (String) is found in
-     * the List<OsmAddress> allSuggestionsOrigin, the view is changed to center the
-     * corresponding Node and a pin is set.
+     * If the TextArea is not empty, and a corresponding address is found in the addressTries,
+     * the view is changed to center the corresponding address coordinates and a pin is set.
      */
     @FXML
     public void searchSingleAddress() {
@@ -297,7 +298,7 @@ public class NavigationBoxController extends SubController {
     }
 
     /**
-     * Run dijkstra path finding if coords for origin and destination are present.
+     * Run dijkstra path finding if coords for origin and destination coordinates.
      */
     public void runDijkstraTask() {
         if (dijkstraTask != null) {
@@ -328,7 +329,7 @@ public class NavigationBoxController extends SubController {
                 navigationDescriptionBox.setManaged(true);
 
                 routeDetails.setText(mainController.getCanvas().getCurrentRouteDuration()
-                        + "\n" + mainController.getCanvas().getRouteDistanceToString());
+                            + "\n" + mainController.getCanvas().getRouteDistanceToString());
 
                 int navListSize = navigationListView.getItems().size();
                 if (navListSize == 1) {
@@ -373,8 +374,7 @@ public class NavigationBoxController extends SubController {
                 });
 
                 //This line is necessary to remove other functionality
-                suggestions.setOnKeyPressed((event) -> {
-                });
+                suggestions.setOnKeyPressed((event) -> {});
 
                 label.setOnKeyPressed((event) -> {
                     if (event.getCode() == KeyCode.UP && suggestions.getChildren().size() > 0 && suggestions.getChildren().indexOf(label) > 0) {
@@ -504,13 +504,12 @@ public class NavigationBoxController extends SubController {
         } else if (!originTextArea.getText().isEmpty()) {
             addressTextArea.setText(originTextArea.getText());
         }
-
         Pin.ORIGIN.setVisible(false);
         Pin.DESTINATION.setVisible(false);
+
         mainController.getCanvas().originCoords = null;
         mainController.getCanvas().destinationCoords = null;
         mainController.getCanvas().resetCurrentRoute();
-
         mainController.getCanvas().repaint();
     }
 
@@ -551,20 +550,21 @@ public class NavigationBoxController extends SubController {
         originTextArea.setText("");
         destinationTextArea.setText("");
         addressTextArea.setText("");
+        routeDetails.setText("");
 
         suggestionsBox.getChildren().clear();
         originSuggestionsBox.getChildren().clear();
         destinationSuggestionsBox.getChildren().clear();
-        routeDetails.setText("");
+
         navigationDescriptionBox.setVisible(false);
         navigationDescriptionBox.setManaged(false);
 
         Pin.ORIGIN.setVisible(false);
         Pin.DESTINATION.setVisible(false);
+
         mainController.getCanvas().originCoords = null;
         mainController.getCanvas().destinationCoords = null;
         mainController.getCanvas().resetCurrentRoute();
-
         mainController.getCanvas().repaint();
     }
 }

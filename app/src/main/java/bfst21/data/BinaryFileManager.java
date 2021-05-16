@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
 /**
  * BinaryFileManager is used to save and load .obj files.
  * All the important data from the MapData is saved to an .obj file.
@@ -29,23 +30,23 @@ public class BinaryFileManager {
             input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fileName)));
         }
         return new MapData(
-                (List<MapWay>) input.readObject(),
-                (List<Way>) input.readObject(),
-                (List<Relation>) input.readObject(),
-                (List<MapText>) input.readObject(),
+            (List<MapWay>) input.readObject(),
+            (List<Way>) input.readObject(),
+            (List<Relation>) input.readObject(),
+            (List<MapText>) input.readObject(),
 
-                (TST) input.readObject(),
+            (TST) input.readObject(),
 
-                (HashMap<ElementGroup, KdTree<MapWay>>) input.readObject(),
-                (KdTree<Relation>) input.readObject(),
-                (KdTree<MapText>) input.readObject(),
-                (DirectedGraph) input.readObject(),
-                (List<UserNode>) input.readObject(),
+            (HashMap<ElementGroup, KdTree<MapWay>>) input.readObject(),
+            (KdTree<Relation>) input.readObject(),
+            (KdTree<MapText>) input.readObject(),
+            (DirectedGraph) input.readObject(),
+            (List<UserNode>) input.readObject(),
 
-                input.readFloat(),
-                input.readFloat(),
-                input.readFloat(),
-                input.readFloat()
+            input.readFloat(),
+            input.readFloat(),
+            input.readFloat(),
+            input.readFloat()
         );
     }
 

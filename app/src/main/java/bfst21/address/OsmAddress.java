@@ -1,6 +1,5 @@
 package bfst21.address;
 
-
 import bfst21.osm.Node;
 
 import java.io.Serializable;
@@ -31,10 +30,6 @@ public class OsmAddress implements Serializable {
 
     public Node getNode() {
         return node;
-    }
-
-    public String getPostcode() {
-        return postcode;
     }
 
     public String getStreet() {

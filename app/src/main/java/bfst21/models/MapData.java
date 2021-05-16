@@ -38,8 +38,9 @@ public class MapData {
 
     /**
      * MapData constructor.
+     * Merges relations that are multipolygons.
      * Creates directed graph for path finding.
-     * Builds kd-trees for Ways and Relations.
+     * Builds kd-trees for Ways, Relations and MapTexts.
      */
     public MapData(
             List<MapWay> islands,
@@ -119,6 +120,8 @@ public class MapData {
 
     /**
      * Builds a directed graph used for path finding.
+     *
+     * @param wayList list of Ways used to build the graph.
      */
     private void buildDirectedGraph(List<Way> wayList) {
 
@@ -153,16 +156,17 @@ public class MapData {
                         directedGraph.createVertex(fromCoords);
                         directedGraph.createVertex(toCoords);
 
-                        directedGraph.addEdge(name,
-                                fromCoords,
-                                toCoords,
-                                maxSpeed,
-                                junction,
-                                oneWay,
-                                oneWayBike,
-                                canDrive,
-                                canBike,
-                                canWalk);
+                        directedGraph.addEdge(
+                            name,
+                            fromCoords,
+                            toCoords,
+                            maxSpeed,
+                            junction,
+                            oneWay,
+                            oneWayBike,
+                            canDrive,
+                            canBike,
+                            canWalk);
                     }
                 }
             }
@@ -174,7 +178,7 @@ public class MapData {
     }
 
     /**
-     * Run dijkstra path finding if coords for origin and destination are present.
+     * Run dijkstra path finding for origin and destination coordinates.
      */
     public void runDijkstra(float[] originCoords, float[] destinationCoords) {
         dijkstraPath = new DijkstraPath(directedGraph, originCoords, destinationCoords);
