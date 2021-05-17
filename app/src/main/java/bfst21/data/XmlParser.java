@@ -314,7 +314,7 @@ public class XmlParser {
                                         if (value.equals("subway")) {
                                             elementType = ElementType.SUBWAY;
                                         }
-                                        if (value.equals("rail")) {
+                                        if (value.equals("rail") || value.equals("light_rail")) {
                                             elementType = ElementType.RAILWAY;
                                         }
                                         break;
