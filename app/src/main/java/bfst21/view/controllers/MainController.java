@@ -564,12 +564,12 @@ public class MainController extends BaseController {
         userNodeListView.setVisible(!userNodeListItems.isEmpty());
 
         if (userNodeListItems.size() == 1) {
-            userNodeListView.setMaxHeight(27.0D);
-            userNodeListView.setMinHeight(27.0D);
+            userNodeListView.setMaxHeight(25.0D);
+            userNodeListView.setMinHeight(25.0D);
 
         } else if (userNodeListItems.size() < 4) {
-            userNodeListView.setMaxHeight(userNodeListItems.size() * 25.0D);
-            userNodeListView.setMinHeight(userNodeListItems.size() * 25.0D);
+            userNodeListView.setMaxHeight(userNodeListItems.size() * 24.0D);
+            userNodeListView.setMinHeight(userNodeListItems.size() * 24.0D);
 
         } else {
             userNodeListView.setMaxHeight(85.0D);

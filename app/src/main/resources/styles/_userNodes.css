@@ -22,7 +22,7 @@
     -fx-max-height: 190;
     -fx-pref-height: 190;
     -fx-alignment: CENTER;
-    -fx-spacing: 8;
+    -fx-spacing: 12;
 }
 
 .userNodeNewNameOrDescVBoxes {
@@ -33,11 +33,23 @@
     -fx-spacing: 10;
 }
 
+#newUserNodeButton {
+    -fx-border-width: 0px;
+}
+
+#userNodeListView {
+    -fx-border-width: 0px;
+}
+
 #userNodeVBox {
     -fx-max-width: 140;
     -fx-max-height: 120;
     -fx-spacing: 8;
     -fx-padding: 40 0 15 0;
+}
+
+#userNodeClickedVBox {
+    -fx-spacing: 8;
 }
 
 #userNodeClickedName {

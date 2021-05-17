@@ -15,3 +15,6 @@
 #newUserNodeButton {
     -fx-background-color: #f6f6f6;
 }
+#newUserNodeButton:hover {
+    -fx-background-color: LIGHTGREY;
+}
