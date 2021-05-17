@@ -220,7 +220,7 @@ public class DirectedGraphTest {
     }
 
     @Test
-    public void getDirectionRightLeft_correctDirection() {
+    public void getDirectionFromBearing_correctDirection() {
         DirectedGraph directedGraph = new DirectedGraph();
 
         float[] bottomLeft = new float[]{1, 1};
