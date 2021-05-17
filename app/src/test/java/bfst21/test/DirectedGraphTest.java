@@ -183,7 +183,7 @@ public class DirectedGraphTest {
     }
 
     @Test
-    public void dijkstraPathTo_MotorwayVsSecondaryRoad_hasCorrectPath() {
+    public void dijkstraPathTo_motorwayVsSecondaryRoad_hasCorrectPath() {
 
         DirectedGraph directedGraph = new DirectedGraph();
         TransportOptions.getInstance().setCurrentlyEnabled(TransportOption.CAR);
