@@ -141,7 +141,7 @@ public class NavigationBoxController extends SubController {
                 Pin.DESTINATION.setCoords(osmAddress.getNodeCoords());
                 Pin.DESTINATION.setVisible(true);
 
-                mainController.getCanvas().changeView(osmAddress.getNode().getX(), osmAddress.getNode().getY());
+                mainController.getCanvas().changeView(osmAddress.getX(), osmAddress.getY());
                 return;
             }
             displayAlert(Alert.AlertType.ERROR, "Error", "Unable to find address: " + addressInput);
@@ -275,10 +275,10 @@ public class NavigationBoxController extends SubController {
             if (osmOrigin != null && osmDestination != null) {
 
                 originTextArea.setText(osmOrigin.toString());
-                float[] originCoords = new float[]{osmOrigin.getNode().getX(), osmOrigin.getNode().getY()};
+                float[] originCoords = new float[]{osmOrigin.getX(), osmOrigin.getY()};
 
                 destinationTextArea.setText(osmDestination.toString());
-                float[] destinationCoords = new float[]{osmDestination.getNode().getX(), osmDestination.getNode().getY()};
+                float[] destinationCoords = new float[]{osmDestination.getX(), osmDestination.getY()};
 
                 float avgX = (originCoords[0] + destinationCoords[0]) / 2;
                 float avgY = (originCoords[1] + destinationCoords[1]) / 2;

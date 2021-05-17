@@ -303,6 +303,7 @@ public class XmlParser {
                                                 way.setMaxSpeed(80);
                                                 break;
                                             case "tertiary":
+                                            case "tertiary_link":
                                             case "secondary":
                                             case "unclassified":
                                                 elementType = ElementType.TERTIARY;
