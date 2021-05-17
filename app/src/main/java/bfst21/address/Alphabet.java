@@ -3,6 +3,7 @@ package bfst21.address;
 
 /**
  * Alphabet class used to improve memory usage for our address TST.
+ * This decreases memory usage as we use byte instead of char.
  * <p>
  * This code was written by Philip Flyvholm, all credit goes to him.
  */
@@ -44,13 +45,13 @@ public enum Alphabet {
     THREE('3', (byte) 32),
     FOUR('4', (byte) 33),
     FIVE('5', (byte) 34),
-    SIX('6',(byte) 35),
-    SEVEN('7',(byte) 36),
-    EIGHT('8',(byte) 37),
-    NINE('9',(byte) 38),
-    SPACE(' ',(byte) 39),
-    DOT('.',(byte) 40),
-    COMMA(',',(byte) 41),
+    SIX('6', (byte) 35),
+    SEVEN('7', (byte) 36),
+    EIGHT('8', (byte) 37),
+    NINE('9', (byte) 38),
+    SPACE(' ', (byte) 39),
+    DOT('.', (byte) 40),
+    COMMA(',', (byte) 41),
     ACUTE('é', (byte) 42), // é
     UMLAUT('ü', (byte) 43), // ü
     HYPHEN('-', (byte) 44), // -
@@ -67,19 +68,20 @@ public enum Alphabet {
     private final char character;
     private final byte associatedByte;
 
-    Alphabet(char character, byte associatedByte){
+    Alphabet(char character, byte associatedByte) {
         this.character = character;
         this.associatedByte = associatedByte;
     }
 
     /**
      * Get the byte associated with the character
+     *
      * @param character A lowercase char
      * @return The associated byte with the char. -1 if invalid
      */
-    public static byte getByteValue(char character){
+    public static byte getByteValue(char character) {
         for (Alphabet value : Alphabet.values()) {
-            if(value.character == character){
+            if (value.character == character) {
                 return value.associatedByte;
             }
         }
@@ -88,12 +90,13 @@ public enum Alphabet {
 
     /**
      * Get the char associated with the byte
+     *
      * @param associatedByte A given byte
      * @return The associated char with the byte. '?' if invalid
      */
-    public static char getCharValue(byte associatedByte){
+    public static char getCharValue(byte associatedByte) {
         for (Alphabet value : Alphabet.values()) {
-            if(value.associatedByte == associatedByte){
+            if (value.associatedByte == associatedByte) {
                 return value.character;
             }
         }

@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 /**
  * OsmAddress is an address created by parsing the given OSM data.
- * Every OsmAddress has a Node which determines the location of the address.
+ * Every OsmAddress has a x and y value which determines the location of the address.
  * <p>
  * OsmAddress is placed as a node in a ternary search trie
  * which can be used to give relevant address suggestions.
@@ -17,19 +17,23 @@ public class OsmAddress implements Serializable {
     private static final long serialVersionUID = -377246689553287254L;
 
     private String city, postcode, houseNumber, street;
-
-    private final Node node;
+    private final float x, y;
 
     public OsmAddress(Node node) {
-        this.node = node;
+        this.x = node.getX();
+        this.y = node.getY();
     }
 
     public float[] getNodeCoords() {
-        return new float[]{node.getX(), node.getY()};
+        return new float[]{x, y};
     }
 
-    public Node getNode() {
-        return node;
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
     }
 
     public String getStreet() {
@@ -62,10 +66,7 @@ public class OsmAddress implements Serializable {
         if (city == null) {
             return false;
         }
-        if (postcode == null) {
-            return false;
-        }
-        return node != null;
+        return postcode != null;
     }
 
     public String toString() {
