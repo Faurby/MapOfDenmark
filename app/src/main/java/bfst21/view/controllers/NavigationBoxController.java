@@ -393,6 +393,11 @@ public class NavigationBoxController extends SubController {
                         textArea.setText(label.getText());
                         scrollPane.setVisible(false);
                         scrollPane.setManaged(false);
+                        if (!isNavigationBoxExpanded){
+                            searchButton.requestFocus();
+                        } else if (extended){
+                            findRouteButton.requestFocus();
+                        }
                     }
                 });
 
