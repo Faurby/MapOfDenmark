@@ -14,8 +14,7 @@ public class DisplayOptions {
 
     /**
      * @return current boolean value of specific DisplayOption.
-     * All settings will return true by default unless
-     * something else has been specified in the constructor.
+     * All settings will return true by default.
      */
     public boolean getBool(DisplayOption displayOption) {
         if (options.containsKey(displayOption)) {

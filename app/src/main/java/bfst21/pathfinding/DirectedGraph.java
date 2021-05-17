@@ -31,9 +31,10 @@ public class DirectedGraph implements Serializable {
 
     /**
      * Clean up vertices and edges by removing unused slots in the array.
+     * <p>
      * We count how many elements are actually present, then create a
      * new array with the correct size and copy all elements over.
-     * This decreases overall memory usage.
+     * This decreases overall memory usage for the graph.
      */
     public void cleanUp() {
 

@@ -40,7 +40,6 @@ public class Edge implements Serializable {
         this.from = from;
         this.to = to;
         this.weight = weight;
-
         this.distance = distance;
         this.canDrive = canDrive;
         this.canBike = canBike;

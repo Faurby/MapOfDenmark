@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Way is used to organize and construct MapWays for MapData.
  * <p>
- * Way is mostly while parsing and building MapData.
+ * Way is mostly used while parsing and building MapData.
  * When pre-construction is complete, MapWay is used for drawing elements on the map.
  * This decreases memory usage as we don't need specific fields after constructing MapData.
  */
