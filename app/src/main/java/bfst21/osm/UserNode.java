@@ -42,9 +42,6 @@ public class UserNode extends Node implements Serializable {
     }
 
     public void draw(GraphicsContext gc, double zoomLevel, ColorMode colorMode) {
-        if (zoomLevel <= 200.0D) {
-            zoomLevel = 200.0D;
-        }
         double x = getX() - (14.0D / zoomLevel);
         double y = getY() - (14.0D / zoomLevel);
 
