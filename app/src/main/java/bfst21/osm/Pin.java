@@ -23,6 +23,12 @@ public enum Pin {
         this.image = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imageStr)));
     }
 
+    public static void disableAllPins() {
+        for (Pin pin : Pin.values()) {
+            pin.setVisible(false);
+        }
+    }
+
     public void draw(GraphicsContext gc, double zoomLevel) {
 
         if (visible && coords != null) {

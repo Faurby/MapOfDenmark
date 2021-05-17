@@ -373,6 +373,8 @@ public class MainController extends BaseController {
         menuBarHBox.setVisible(false);
         footerGridPane.setVisible(false);
         zoomBox_outer.setVisible(false);
+
+        Pin.disableAllPins();
     }
 
     private void finishedLoadingFile() {
