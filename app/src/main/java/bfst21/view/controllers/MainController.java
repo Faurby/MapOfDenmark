@@ -546,6 +546,7 @@ public class MainController extends BaseController {
         newUserNodeVBox.setVisible(false);
         updateUserNodeList();
         userNodeNameText.setText("");
+        userNodeDescriptionText.setText("");
         canvas.repaint();
     }
 
