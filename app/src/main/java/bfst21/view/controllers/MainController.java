@@ -323,6 +323,7 @@ public class MainController extends BaseController {
     public void loadDefault() {
         if (model.getMapData() != null) {
             navigationBoxController.clearRoute(); //Clear route if present
+            navigationBoxController.minimizeNavigationBox();
         }
         Task<Void> task = new Task<>() {
             @Override
@@ -353,6 +354,7 @@ public class MainController extends BaseController {
         if (file != null) {
             if (model.getMapData() != null) {
                 navigationBoxController.clearRoute(); //Clear route if present
+                navigationBoxController.minimizeNavigationBox();
             }
             String filename = file.getAbsolutePath();
             model.setFileName(filename);

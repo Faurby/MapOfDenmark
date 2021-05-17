@@ -8,7 +8,7 @@ package bfst21.address;
  */
 public enum Alphabet {
 
-    //41 different chars excepted A-Å+0-9+" "+.+,
+    //54 different chars excepted A-Å+0-9+" "+.+,
     A('a', (byte) 0),
     B('b', (byte) 1),
     C('c', (byte) 2),
@@ -44,35 +44,42 @@ public enum Alphabet {
     THREE('3', (byte) 32),
     FOUR('4', (byte) 33),
     FIVE('5', (byte) 34),
-    SIX('6', (byte) 35),
-    SEVEN('7', (byte) 36),
-    EIGHT('8', (byte) 37),
-    NINE('9', (byte) 38),
-    SPACE(' ', (byte) 39),
-    DOT('.', (byte) 40),
-    COMMA(',', (byte) 41),
+    SIX('6',(byte) 35),
+    SEVEN('7',(byte) 36),
+    EIGHT('8',(byte) 37),
+    NINE('9',(byte) 38),
+    SPACE(' ',(byte) 39),
+    DOT('.',(byte) 40),
+    COMMA(',',(byte) 41),
     ACUTE('é', (byte) 42), // é
     UMLAUT('ü', (byte) 43), // ü
     HYPHEN('-', (byte) 44), // -
-    APOSTROPHE('\'', (byte) 45); // '
+    APOSTROPHE('\'', (byte) 45), // '
+    O_DIAERESIS('ö', (byte) 46),
+    A_DIAERESIS('ä', (byte) 47),
+    SLASH('/', (byte) 48),
+    Y_DIAERESIS('ÿ', (byte) 49),
+    BRACKET('(', (byte) 50),
+    END_BRACKET(')', (byte) 51),
+    E_DIAERESIS('ë', (byte) 52),
+    O_APOSTROPHE('ó', (byte) 53);
 
     private final char character;
     private final byte associatedByte;
 
-    Alphabet(char character, byte associatedByte) {
+    Alphabet(char character, byte associatedByte){
         this.character = character;
         this.associatedByte = associatedByte;
     }
 
     /**
-     * Get the byte associated with the character.
-     *
-     * @param character A lowercase char.
-     * @return The associated byte with the char. -1 if invalid.
+     * Get the byte associated with the character
+     * @param character A lowercase char
+     * @return The associated byte with the char. -1 if invalid
      */
-    public static byte getByteValue(char character) {
+    public static byte getByteValue(char character){
         for (Alphabet value : Alphabet.values()) {
-            if (value.character == character) {
+            if(value.character == character){
                 return value.associatedByte;
             }
         }
@@ -80,16 +87,16 @@ public enum Alphabet {
     }
 
     /**
-     * Get the char associated with the byte.
-     *
-     * @return The associated char with the byte. '0' if invalid.
+     * Get the char associated with the byte
+     * @param associatedByte A given byte
+     * @return The associated char with the byte. '?' if invalid
      */
-    public static char getCharValue(byte val) {
+    public static char getCharValue(byte associatedByte){
         for (Alphabet value : Alphabet.values()) {
-            if (value.associatedByte == val) {
+            if(value.associatedByte == associatedByte){
                 return value.character;
             }
         }
-        return '0';
+        return '?';
     }
 }
