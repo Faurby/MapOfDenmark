@@ -86,7 +86,7 @@
     </VBox>
 
     <VBox fx:id="routeBox"
-          minWidth="250"
+          minWidth="275"
           visible="false"
           managed="false"
           styleClass="searchBoxes">
