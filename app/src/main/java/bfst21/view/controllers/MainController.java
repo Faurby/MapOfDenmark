@@ -218,9 +218,9 @@ public class MainController extends BaseController {
 
         //Limit delta Y to avoid a rapid zoom update
         if (scrollEvent.getDeltaY() > 0.0D) {
-            deltaY = 32.0D;
+            deltaY = 24.0D;
         } else {
-            deltaY = -32.0D;
+            deltaY = -24.0D;
         }
         double factor = Math.pow(1.01D, deltaY);
 
