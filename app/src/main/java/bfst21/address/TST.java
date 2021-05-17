@@ -231,7 +231,7 @@ public class TST implements Serializable {
             it = keysWithPrefix(addressInput).iterator();
         }
 
-        //Has a valid street name been typed? Either street names or house numbers are then suggested
+        //Has a valid street name been typed?
         String streetName = null;
         if (it.hasNext()) {
             String streetInfo = keysWithPrefix(addressInput).iterator().next();
@@ -282,6 +282,8 @@ public class TST implements Serializable {
      * <p>
      * Gradually creates a shorter substring of the given address input
      * until a possible match has been found. Otherwise return address input.
+     * <p>
+     * Uses keysWithPrefix() to find a possible match.
      */
     private String findLongestSubstringWithMatches(String addressInput) {
 

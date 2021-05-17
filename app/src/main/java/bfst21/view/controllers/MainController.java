@@ -432,7 +432,7 @@ public class MainController extends BaseController {
             }
         }
 
-        if (text.contains("standard")) {
+        if (text.contains("standard") || text.contains("colorblind")) {
             scene.getStylesheets().setAll(
                     getClass().getResource("/styles/userNodes_default.css").toExternalForm(),
                     getClass().getResource("/styles/misc_default.css").toExternalForm()
@@ -448,8 +448,6 @@ public class MainController extends BaseController {
             debugBox.getStylesheets().setAll(getClass().getResource("/styles/debug_darkmode.css").toExternalForm());
             navigationBox.getStylesheets().setAll(getClass().getResource("/styles/navigation_darkmode.css").toExternalForm());
 
-        } else if (text.contains("colorblind")) {
-            //TODO: add color blind colors
         }
     }
 
@@ -546,6 +544,7 @@ public class MainController extends BaseController {
         newUserNodeVBox.setVisible(false);
         updateUserNodeList();
         userNodeNameText.setText("");
+        userNodeDescriptionText.setText("");
         canvas.repaint();
     }
 

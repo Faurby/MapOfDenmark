@@ -76,13 +76,13 @@
                 <Menu text="View">
                     <MenuItem fx:id="standard"
                               onAction="#changeColorMode"
-                              text="Standard"/>
+                              text="Standard mode"/>
                     <MenuItem fx:id="darkMode"
                               onAction="#changeColorMode"
-                              text="Dark Mode"/>
+                              text="Dark mode"/>
                     <MenuItem fx:id="colorBlind"
                               onAction="#changeColorMode"
-                              text="Color Blind"/>
+                              text="Color blind mode"/>
                     <MenuItem onAction="#toggleDebugVisibility"
                               text="Debug options"/>
                 </Menu>
