@@ -741,6 +741,9 @@ public class MainController extends BaseController {
             task.setOnFailed(event -> task.getException().printStackTrace());
             Thread thread = new Thread(task);
             thread.start();
+            displayAlert(Alert.AlertType.INFORMATION,
+                    "Notification",
+                    "We will notify you once OBJ is done saving");
         }
     }
 
