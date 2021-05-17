@@ -45,8 +45,8 @@ public class UserNode extends Node implements Serializable {
         double x = getX() - (14.0D / zoomLevel);
         double y = getY() - (14.0D / zoomLevel);
 
-        Image orangeStar = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("orange_star.png")));
-        Image greenStar = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("green_star.png")));
+        Image orangeStar = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("images/orange_star.png")));
+        Image greenStar = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("images/green_star.png")));
 
         if (colorMode == ColorMode.DARK_MODE) {
             gc.drawImage(greenStar, x, y, 28.0D / zoomLevel, 28.0D / zoomLevel);

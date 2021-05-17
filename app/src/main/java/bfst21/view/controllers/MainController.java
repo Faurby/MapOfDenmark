@@ -100,7 +100,7 @@ public class MainController extends BaseController {
     private boolean userNodeToggle = false;
     private UserNode currentUserNode = null;
 
-    private final ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("cursor_orange.png"))));
+    private final ImageCursor userNodeCursorImage = new ImageCursor(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("images/cursor_orange.png"))));
     private final ObservableList<UserNode> userNodeListItems = FXCollections.observableArrayList();
     private HashMap<String, UserNode> userNodesMap = new HashMap<>();
 

@@ -29,7 +29,7 @@
                 <graphic>
                     <ImageView preserveRatio="true"
                                styleClass="imageView">
-                        <Image url="/delete_icon16.png"/>
+                        <Image url="/images/delete_icon16.png"/>
                     </ImageView>
                 </graphic>
             </Button>
@@ -60,7 +60,7 @@
                 <graphic>
                     <ImageView preserveRatio="true"
                                styleClass="imageView">
-                        <Image url="/directions24.png"/>
+                        <Image url="/images/directions24.png"/>
                     </ImageView>
                 </graphic>
             </Button>
@@ -78,7 +78,7 @@
                 <graphic>
                     <ImageView preserveRatio="true"
                                styleClass="imageView">
-                        <Image url="/search_icon24.png"/>
+                        <Image url="/images/search_icon24.png"/>
                     </ImageView>
                 </graphic>
             </Button>
@@ -102,7 +102,7 @@
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
                                styleClass="imageView">
-                        <Image url="/car_icon32.png"/>
+                        <Image url="/images/car_icon32.png"/>
                     </ImageView>
                 </graphic>
 
@@ -120,7 +120,7 @@
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
                                styleClass="imageView">
-                        <Image url="/bike_icon32.png"/>
+                        <Image url="/images/bike_icon32.png"/>
                     </ImageView>
                 </graphic>
 
@@ -138,7 +138,7 @@
                     <ImageView fitHeight="32.0"
                                preserveRatio="true"
                                styleClass="imageView">
-                        <Image url="/walk_icon32.png"/>
+                        <Image url="/images/walk_icon32.png"/>
                     </ImageView>
                 </graphic>
 
@@ -158,7 +158,7 @@
                 <ImageView
                         fitHeight="50.0"
                         preserveRatio="true">
-                    <Image url="/to_from_image.png"/>
+                    <Image url="/images/to_from_image.png"/>
                 </ImageView>
             </StackPane>
 
@@ -215,7 +215,7 @@
                 <graphic>
                     <ImageView preserveRatio="true"
                                styleClass="imageView">
-                        <Image url="/switch_icon16.png"/>
+                        <Image url="/images/switch_icon16.png"/>
                     </ImageView>
                 </graphic>
 
@@ -233,7 +233,7 @@
                 <graphic>
                     <ImageView preserveRatio="true"
                                styleClass="imageView">
-                        <Image url="/minimize_icon24.png"/>
+                        <Image url="/images/minimize_icon24.png"/>
                     </ImageView>
                 </graphic>
             </Button>
@@ -245,7 +245,7 @@
                 <graphic>
                     <ImageView preserveRatio="true"
                                styleClass="imageView">
-                        <Image url="/clear_icon24.png"/>
+                        <Image url="/images/clear_icon24.png"/>
                     </ImageView>
                 </graphic>
             </Button>
@@ -261,7 +261,7 @@
                 <graphic>
                     <ImageView preserveRatio="true"
                                styleClass="imageView">
-                        <Image url="/search_icon24.png"/>
+                        <Image url="/images/search_icon24.png"/>
                     </ImageView>
                 </graphic>
             </Button>

@@ -202,7 +202,7 @@
                     <graphic>
                         <ImageView preserveRatio="true"
                                    styleClass="imageView">
-                            <Image url="/zoom-in24.png"/>
+                            <Image url="/images/zoom-in24.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
@@ -212,7 +212,7 @@
                     <graphic>
                         <ImageView preserveRatio="true"
                                    styleClass="imageView">
-                            <Image url="/zoom-out24.png"/>
+                            <Image url="/images/zoom-out24.png"/>
                         </ImageView>
                     </graphic>
                 </Button>

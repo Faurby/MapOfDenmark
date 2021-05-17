@@ -21,7 +21,7 @@ public class View {
         stage.setMaximized(true);
         stage.setTitle("Mapster");
         MainController mainController = loader.getController();
-        Image icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("globe_icon.png")));
+        Image icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("images/globe_icon.png")));
         stage.getIcons().add(icon);
         stage.show();
 
