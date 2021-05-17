@@ -331,7 +331,7 @@ public class NavigationBoxController extends SubController {
                 navigationDescriptionBox.setManaged(true);
 
                 routeDetails.setText(mainController.getCanvas().getCurrentRouteDuration()
-                            + "\n" + mainController.getCanvas().getRouteDistanceToString());
+                        + "\n" + mainController.getCanvas().getRouteDistanceToString());
 
                 int navListSize = navigationListView.getItems().size();
                 if (navListSize == 1) {
@@ -376,7 +376,8 @@ public class NavigationBoxController extends SubController {
                 });
 
                 //This line is necessary to remove other functionality
-                suggestions.setOnKeyPressed((event) -> {});
+                suggestions.setOnKeyPressed((event) -> {
+                });
 
                 label.setOnKeyPressed((event) -> {
                     if (event.getCode() == KeyCode.UP && suggestions.getChildren().size() > 0 && suggestions.getChildren().indexOf(label) > 0) {
@@ -393,9 +394,10 @@ public class NavigationBoxController extends SubController {
                         textArea.setText(label.getText());
                         scrollPane.setVisible(false);
                         scrollPane.setManaged(false);
-                        if (!isNavigationBoxExpanded){
+
+                        if (!isNavigationBoxExpanded) {
                             searchButton.requestFocus();
-                        } else if (extended){
+                        } else if (extended) {
                             findRouteButton.requestFocus();
                         }
                     }
