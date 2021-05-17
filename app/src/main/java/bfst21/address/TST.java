@@ -181,11 +181,14 @@ public class TST implements Serializable {
         if (addressKeys.size() > 0) {
 
             for (String key : addressKeys) {
-                for (OsmAddress osmAddress : get(key)) {
-                    String addr = osmAddress.toString().toLowerCase();
+                List<OsmAddress> osmAddresses = get(key);
+                if (osmAddresses != null) {
+                    for (OsmAddress osmAddress : osmAddresses) {
+                        String addr = osmAddress.toString().toLowerCase();
 
-                    if (addr.contains(originalInput)) {
-                        return osmAddress;
+                        if (addr.contains(originalInput)) {
+                            return osmAddress;
+                        }
                     }
                 }
             }

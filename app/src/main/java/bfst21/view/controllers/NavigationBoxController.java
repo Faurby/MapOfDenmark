@@ -359,9 +359,9 @@ public class NavigationBoxController extends SubController {
         int count = 0;
         suggestions.getChildren().clear();
 
-        List<String> localShownSuggestions = shownSuggestionsOrigin;
+        List<String> localShownSuggestions = new ArrayList<>(shownSuggestionsOrigin);
         if (extended) {
-            localShownSuggestions = shownSuggestionsDestination;
+            localShownSuggestions = new ArrayList<>(shownSuggestionsDestination);
         }
 
         for (String s : localShownSuggestions) {
