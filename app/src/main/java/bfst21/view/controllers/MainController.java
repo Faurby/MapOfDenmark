@@ -321,6 +321,9 @@ public class MainController extends BaseController {
 
     @FXML
     public void loadDefault() {
+        if (model.getMapData() != null) {
+            navigationBoxController.clearRoute(); //Clear route if present
+        }
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() throws Exception {
@@ -348,6 +351,9 @@ public class MainController extends BaseController {
         File file = fileChooser.showOpenDialog(new Stage());
 
         if (file != null) {
+            if (model.getMapData() != null) {
+                navigationBoxController.clearRoute(); //Clear route if present
+            }
             String filename = file.getAbsolutePath();
             model.setFileName(filename);
 
@@ -368,13 +374,12 @@ public class MainController extends BaseController {
     }
 
     private void startLoadingFile() {
+        Pin.disableAllPins();
         userNodeVBox.setVisible(false);
         loadingScreenBox.setVisible(true);
         menuBarHBox.setVisible(false);
         footerGridPane.setVisible(false);
         zoomBox_outer.setVisible(false);
-
-        Pin.disableAllPins();
     }
 
     private void finishedLoadingFile() {
