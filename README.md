@@ -1,9 +1,12 @@
-MAPSTER
+#MAPSTER
 
 Dette projekt er lavet på 2. semester af ITU Softwareudvikling.
 Her har man bl.a. arbejdet med Pathfinding (Dijkstra), Spatialle datastrukture (kD-tree), 
 parse XML fil, optimering af memory (simple datatyper vs. HashMap f.eks.), og mange andre ting.
 
+This project was done in the 2. semester of ITU Software development.
+In this project concepts such as Pathfinding (Dijkstra, Spatial datastructures (kD-tree),
+parsing XML files, optimization of memory (simple datatypes vs. eg. HashMap), and many other things.
 =========================================================
 
 DANSK:
