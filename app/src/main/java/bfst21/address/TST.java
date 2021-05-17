@@ -261,8 +261,9 @@ public class TST implements Serializable {
             //Returns a variation of suggestions if a full street hasn't been typed.
             while (it.hasNext()) {
                 List<OsmAddress> osmAddresses = get(it.next());
+
                 if (osmAddresses.size() > 0) {
-                    OsmAddress osmAddress = get(it.next()).get(0);
+                    OsmAddress osmAddress = osmAddresses.get(0);
 
                     if (osmAddress != null) {
                         String address = osmAddress.omitHouseNumberToString();
