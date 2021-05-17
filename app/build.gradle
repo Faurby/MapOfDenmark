@@ -89,7 +89,7 @@ tasks.withType(Test) {
 }
 
 tasks.withType(JavaExec) {
-    jvmArgs = ['-Xms5000m', '-Xmx5000m']
+    jvmArgs = ['-Xms6000m', '-Xmx6000m']
 }
 
 run {

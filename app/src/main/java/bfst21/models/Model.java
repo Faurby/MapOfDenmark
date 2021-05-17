@@ -79,6 +79,10 @@ public class Model {
         return mapData;
     }
 
+    public void setMapData(MapData mapData) {
+        this.mapData = mapData;
+    }
+
     public String getFileName() {
         return fileName;
     }

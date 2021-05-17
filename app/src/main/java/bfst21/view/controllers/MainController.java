@@ -376,6 +376,9 @@ public class MainController extends BaseController {
     }
 
     private void startLoadingFile() {
+        //Set mapData to null before loading to avoid out of memory error
+        model.setMapData(null);
+
         Pin.disableAllPins();
         userNodeVBox.setVisible(false);
         loadingScreenBox.setVisible(true);
